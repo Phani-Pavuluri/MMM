@@ -99,7 +99,7 @@ def run_panel_qa(
         spike_counts = 0
         total = 0
         z_thr = float(cfg.spend_spike_abs_z)
-        for j, ch in enumerate(chans):
+        for ch in chans:
             x = np.log1p(np.maximum(df[ch].to_numpy(dtype=float), 0.0))
             mu, sig = float(np.mean(x)), float(np.std(x) + 1e-12)
             z = np.abs((x - mu) / sig)

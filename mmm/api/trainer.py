@@ -19,9 +19,9 @@ from mmm.data.fingerprint import fingerprint_panel
 from mmm.data.loader import DatasetBuilder
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.decomposition.engine import DecompositionEngine
-from mmm.features.design_matrix import build_design_matrix
 from mmm.economics.canonical import assert_planner_scope_supported, build_economics_contract
 from mmm.evaluation.extension_runner import run_post_fit_extensions
+from mmm.features.design_matrix import build_design_matrix
 from mmm.governance.decision_safety import MSG_ANALYSIS_ONLY, decision_safety_artifact
 from mmm.models.bayesian.pymc_trainer import BayesianMMMTrainer
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer

@@ -5,16 +5,14 @@ from __future__ import annotations
 import json
 
 import numpy as np
+import pytest
 from typer.testing import CliRunner
 
-import pytest
-
-from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm
+from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm, RunEnvironment
+from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
 from mmm.economics.canonical import build_economics_contract
 from mmm.evaluation.extension_runner import run_post_fit_extensions
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
-from mmm.config.schema import RunEnvironment
-from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
 from mmm.optimization.budget.curve_bundles_io import gather_curve_bundles_from_dict
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 

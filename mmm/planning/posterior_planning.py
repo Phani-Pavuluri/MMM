@@ -22,10 +22,10 @@ from typing import Any, Literal
 import numpy as np
 
 from mmm.config.schema import MMMConfig, RunEnvironment
+from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.planning.baseline import BaselinePlan, bau_baseline_from_panel
 from mmm.planning.context import RidgeFitContext
 from mmm.planning.control_overlay import ControlOverlaySpec
-from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.planning.mu_path import (
     DeltaMuAggregation,
     aggregate_mean_mu_draws,
@@ -108,8 +108,9 @@ def posterior_planning_gate(
 
     Production additionally requires ``extensions.product.posterior_planning_mode == "draws"``.
 
-    Provide **exactly one** of ``linear_coef_draws`` (global Ridge-shaped) or ``hierarchical_draw_pack``
-    (per-geo ``alpha`` / ``beta`` from :func:`mmm.diagnostics.bayesian_draw_export.hierarchical_coefficient_draws_from_pymc_idata`).
+    Provide **exactly one** of ``linear_coef_draws`` (global Ridge-shaped) or
+    ``hierarchical_draw_pack`` (per-geo ``alpha`` / ``beta`` from
+    :func:`mmm.diagnostics.bayesian_draw_export.hierarchical_coefficient_draws_from_pymc_idata`).
     """
     reasons: list[str] = []
     if not _bayesian_diagnostics_ok(bayesian_fit_meta):

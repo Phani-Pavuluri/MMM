@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.planning import bau_baseline_from_panel, simulate
 from mmm.planning.context import ridge_context_from_fit
-from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
 

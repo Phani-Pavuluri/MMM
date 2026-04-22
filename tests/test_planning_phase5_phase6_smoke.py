@@ -4,19 +4,19 @@ from __future__ import annotations
 
 import numpy as np
 
-from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
+from mmm.config.extensions import ExtensionSuiteConfig, ProductScopeConfig
+from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm
+from mmm.data.schema import PanelSchema
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.planning import bau_baseline_from_panel, simulate
 from mmm.planning.context import ridge_context_from_fit
+from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
 from mmm.planning.posterior_planning import (
     delta_mu_draws_hierarchical_geo_beta,
     posterior_planning_gate,
     simulate_posterior,
 )
-from mmm.data.schema import PanelSchema
 from mmm.planning.spend_path import PiecewiseSpendPath
-from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
-from mmm.config.extensions import ExtensionSuiteConfig, ProductScopeConfig
-from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
 

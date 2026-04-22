@@ -12,30 +12,30 @@ from mmm.artifacts.decision_bundle import build_decision_bundle
 from mmm.config.schema import Framework, MMMConfig
 from mmm.config.transform_policy import build_transform_policy_manifest
 from mmm.data.fingerprint import fingerprint_panel
+from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import run_panel_qa
+from mmm.data.schema import PanelSchema
 from mmm.economics.canonical import (
     build_economics_contract,
     economics_output_metadata,
     validate_business_economics_metadata,
 )
-from mmm.governance.decision_safety import decision_safety_artifact
-from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
-from mmm.planning.context import ridge_fit_summary_from_artifacts
-from mmm.data.schema import PanelSchema
-from mmm.guidance.recommend import recommend_configuration
-from mmm.services.calibration_service import run_calibration_extensions
-from mmm.services.curve_service import build_curve_diagnostics_bundle
-from mmm.services.diagnostics_service import run_core_diagnostics
-from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
-from mmm.optimization.safety_gate import OptimizationSafetyGate
-from mmm.services.governance_service import build_governance_bundle
-from mmm.governance.model_release import infer_model_release_state
-from mmm.uncertainty.decomposition import UncertaintyDecomposer
-from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.evaluation.baselines import media_shuffled_within_geo, run_baselines
 from mmm.evaluation.calibration_extension import compute_replay_calibration_metrics
 from mmm.evaluation.feature_pipeline import build_extension_design_bundle
 from mmm.features.builder import build_extra_control_matrix
+from mmm.governance.decision_safety import decision_safety_artifact
+from mmm.governance.model_release import infer_model_release_state
+from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
+from mmm.guidance.recommend import recommend_configuration
+from mmm.optimization.safety_gate import OptimizationSafetyGate
+from mmm.planning.context import ridge_fit_summary_from_artifacts
+from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
+from mmm.services.calibration_service import run_calibration_extensions
+from mmm.services.curve_service import build_curve_diagnostics_bundle
+from mmm.services.diagnostics_service import run_core_diagnostics
+from mmm.services.governance_service import build_governance_bundle
+from mmm.uncertainty.decomposition import UncertaintyDecomposer
 
 
 def run_post_fit_extensions(

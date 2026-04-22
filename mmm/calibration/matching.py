@@ -70,9 +70,10 @@ def match_experiments(
             continue
         if "geo" in match_levels and ex.geo_id and available_geos and ex.geo_id not in available_geos:
             continue
-        if "time_window" in match_levels:
-            if not _time_window_ok(ex, panel_week_min=panel_week_min, panel_week_max=panel_week_max):
-                continue
+        if "time_window" in match_levels and not _time_window_ok(
+            ex, panel_week_min=panel_week_min, panel_week_max=panel_week_max
+        ):
+            continue
         if "device" in match_levels and ex.device:
             if allowed_devices is None:
                 continue

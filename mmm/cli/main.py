@@ -18,14 +18,14 @@ from mmm.config.schema import Framework, RunEnvironment
 from mmm.data.loader import DatasetBuilder
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.schema import validate_panel
+from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
 from mmm.economics.canonical import economics_contract_for_curve_bundles
-from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
-from mmm.planning.context import ridge_context_from_summary
 from mmm.governance.decision_safety import MSG_OPTIMIZATION_BLOCKED
 from mmm.optimization.budget.curve_bundles_io import gather_curve_bundles_from_dict, gather_curve_bundles_from_path
-from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
 from mmm.optimization.budget.optimizer import BudgetOptimizer
+from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
 from mmm.optimization.safety_gate import OptimizationSafetyGate
+from mmm.planning.context import ridge_context_from_summary
 from mmm.reporting.builder import ReportBuilder
 from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
 from mmm.services.calibration_service import run_calibration_extensions
@@ -209,7 +209,10 @@ def optimize_budget(
         Path | None,
         typer.Option(
             "--extension-report",
-            help="Training extension_report.json (governance, response_diagnostics, ridge_fit_summary). Required for gated optimize in all envs.",
+            help=(
+                "Training extension_report.json (governance, response_diagnostics, "
+                "ridge_fit_summary). Required for gated optimize in all envs."
+            ),
         ),
     ] = None,
     curve_bundle: Annotated[
@@ -223,7 +226,10 @@ def optimize_budget(
         bool,
         typer.Option(
             "--allow-unsafe-decision-apis",
-            help="Non-prod only: must match YAML allow_unsafe_decision_apis for legacy curve / placeholder paths. Forbidden in PROD (config load fails).",
+            help=(
+                "Non-prod only: must match YAML allow_unsafe_decision_apis for legacy curve / "
+                "placeholder paths. Forbidden in PROD (config load fails)."
+            ),
         ),
     ] = False,
     legacy_diagnostic_curve_optimizer: Annotated[
@@ -447,7 +453,10 @@ def simulate(
         Path,
         typer.Option(
             "--scenario",
-            help="YAML: candidate_spend / candidate_spend_by_geo / candidate_spend_path; optional baseline_spend, overlays.",
+            help=(
+                "YAML: candidate_spend / candidate_spend_by_geo / candidate_spend_path; "
+                "optional baseline_spend, overlays."
+            ),
         ),
     ],
     extension_report: Annotated[
@@ -645,6 +654,8 @@ def simulate_diagnostic_curves(
         SpendScenario,
         run_curve_bundle_scenario,
         run_stepped_scenario,
+    )
+    from mmm.simulation.engine import (
         simulate_curve_diagnostic as simulate_engine,
     )
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import pandas as pd
 
@@ -59,7 +59,7 @@ class CalibrationEngine(CalibrationEngineBase):
         levels: list[str],
         apply_quality: bool = True,
         panel: pd.DataFrame | None = None,
-        schema: "PanelSchema | None" = None,
+        schema: PanelSchema | None = None,
         allowed_devices: set[str] | None = None,
         allowed_products: set[str] | None = None,
     ) -> list[MatchedExperiment]:

@@ -162,7 +162,8 @@ class CalibrationConfig(BaseModel):
     use_quality_weights: bool = True
     #: Optional JSON registry (see ``mmm.experiments.durable_registry``) listing approved experiment_ids.
     experiment_registry_path: str | None = None
-    #: When ``True`` in PROD, every replay unit must carry a non-empty ``experiment_id`` that is ``approved`` in the registry.
+    #: When ``True`` in PROD, every replay unit must carry a non-empty ``experiment_id`` that is
+    #: ``approved`` in the registry.
     require_approved_experiment_registry: bool = False
 
 

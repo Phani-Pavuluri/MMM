@@ -128,9 +128,7 @@ def compute_bayesian_decision_diagnostics(
             ppc.setdefault("notes", []).append("posterior_predictive present but mean_abs_gap missing")
     else:
         # No strict PPC gap threshold configured: require a substantive numeric PPC summary.
-        if gap is not None and np.isfinite(gap):
-            posterior_predictive_ok = True
-        elif cov is not None and np.isfinite(cov):
+        if gap is not None and np.isfinite(gap) or cov is not None and np.isfinite(cov):
             posterior_predictive_ok = True
         else:
             posterior_predictive_ok = False

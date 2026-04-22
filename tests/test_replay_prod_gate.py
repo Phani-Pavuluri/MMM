@@ -15,7 +15,6 @@ from mmm.data.schema import PanelSchema
 from mmm.experiments.durable_registry import upsert_experiment_record
 from mmm.experiments.registry import ApprovalState, ExperimentRecord
 
-
 _OBS = pd.DataFrame({"g": [1], "w": [1], "y": [1.0], "c1": [1.0]})
 _BASE_UNIT = CalibrationUnit(
     unit_id="u1",

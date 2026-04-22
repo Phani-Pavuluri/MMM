@@ -34,7 +34,8 @@ class ProductScopeConfig(BaseModel):
     ] = "fixed_yaml_features_labeled"
     #: Full-panel budget SLSQP: number of feasible randomized starts (deterministic seed from ridge_bo.sampler_seed).
     simulation_optimizer_n_starts: int = Field(default=15, ge=10, le=20)
-    #: After the best start, re-solve from perturbed feasible points; used for allocation stability / decision_safe gating.
+    #: After the best start, re-solve from perturbed feasible points; used for allocation
+    #: stability / decision_safe gating.
     simulation_optimizer_stability_checks: int = Field(default=3, ge=0, le=32)
     #: Max L1 distance between normalized allocations across stability re-solves; above => not decision-safe.
     simulation_optimizer_stability_max_l1: float = Field(default=0.22, ge=0.0, le=1.0)

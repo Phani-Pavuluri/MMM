@@ -154,7 +154,7 @@ def locked_geo_plan_baseline(
     geos = list(spend_by_geo_channel.keys())
     all_ch: set[str] = set()
     for row in spend_by_geo_channel.values():
-        all_ch.update(str(k) for k in row.keys())
+        all_ch.update(str(k) for k in row)
     mean_ch = {
         ch: float(np.mean([float(spend_by_geo_channel[g].get(ch, 0.0)) for g in geos])) for ch in sorted(all_ch)
     }
