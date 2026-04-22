@@ -14,18 +14,18 @@ import yaml
 from mmm.api.trainer import MMMTrainer
 from mmm.calibration.units_io import write_calibration_units_to_json
 from mmm.config.load import load_config
-from mmm.config.schema import RunEnvironment
+from mmm.config.schema import Framework, RunEnvironment
 from mmm.data.loader import DatasetBuilder
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.schema import validate_panel
 from mmm.economics.canonical import economics_contract_for_curve_bundles
+from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
+from mmm.planning.context import ridge_context_from_summary
 from mmm.governance.decision_safety import MSG_OPTIMIZATION_BLOCKED
 from mmm.optimization.budget.curve_bundles_io import gather_curve_bundles_from_dict, gather_curve_bundles_from_path
-from mmm.optimization.budget.curve_optimizer import optimize_budget_from_curve_bundles
+from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
 from mmm.optimization.budget.optimizer import BudgetOptimizer
-from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
 from mmm.optimization.safety_gate import OptimizationSafetyGate
-from mmm.planning.context import ridge_context_from_summary
 from mmm.reporting.builder import ReportBuilder
 from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
 from mmm.services.calibration_service import run_calibration_extensions
@@ -197,10 +197,20 @@ def calibrate(
 
 @app.command()
 def optimize_budget(
-    config: Annotated[Path, typer.Argument(help="YAML config")],
+    config: Annotated[
+        Path,
+        typer.Argument(
+            help="Resolved YAML. PROD: unsafe APIs forbidden, gates must be on; use data.path + "
+            "--extension-report with ridge_fit_summary for full-panel Δμ. Bayesian blocked in PROD. "
+            "See docs/decision_runbook.md §2a."
+        ),
+    ],
     extension_report: Annotated[
         Path | None,
-        typer.Option("--extension-report", help="extension_report.json from a training run"),
+        typer.Option(
+            "--extension-report",
+            help="Training extension_report.json (governance, response_diagnostics, ridge_fit_summary). Required for gated optimize in all envs.",
+        ),
     ] = None,
     curve_bundle: Annotated[
         Path | None,
@@ -213,20 +223,29 @@ def optimize_budget(
         bool,
         typer.Option(
             "--allow-unsafe-decision-apis",
-            help="Required with YAML allow_unsafe_decision_apis to run experimental optimizer (Phase 0 freeze).",
+            help="Non-prod only: must match YAML allow_unsafe_decision_apis for legacy curve / placeholder paths. Forbidden in PROD (config load fails).",
         ),
     ] = False,
     legacy_diagnostic_curve_optimizer: Annotated[
         bool,
         typer.Option(
             "--legacy-diagnostic-curve-optimizer",
-            help="Non-prod only: allow deprecated curve-interpolation optimizer (not decision-safe).",
+            help="Non-prod: use clamped curve-bundle optimizer (diagnostic; not full-panel Δμ).",
         ),
     ] = False,
 ) -> None:
+    """Maximize Δμ vs baseline (Ridge full-panel) or run legacy diagnostic optimizers (non-prod only).
+
+    Default decision path: SLSQP on ``decision_simulate.simulate`` (point Δμ). Posterior/risk APIs
+    use precomputed ``delta_mu_draws_*`` (see runbook §7a), not per-iteration full-Bayes resampling.
+    """
     cfg = load_config(config)
-    if not cfg.allow_unsafe_decision_apis or not allow_unsafe_decision_apis:
-        typer.secho(MSG_OPTIMIZATION_BLOCKED, fg=typer.colors.YELLOW, err=True)
+    if cfg.framework == Framework.BAYESIAN and cfg.run_environment == RunEnvironment.PROD:
+        typer.secho(
+            "Bayesian optimize-budget is experimental_only and is blocked in run_environment=prod.",
+            fg=typer.colors.RED,
+            err=True,
+        )
         raise typer.Exit(code=2)
     gate = OptimizationSafetyGate(cfg.extensions.optimization_gates)
     gov: dict = {}
@@ -249,6 +268,7 @@ def optimize_budget(
     if not gr.allowed:
         typer.echo(json.dumps({"allowed": False, "reasons": gr.reasons, "audit": gr.audit}, indent=2))
         raise typer.Exit(code=2)
+
     names = list(cfg.data.channel_columns)
     n = len(names)
     total_budget = float(cfg.budget.total_budget or n * 1e5)
@@ -287,6 +307,25 @@ def optimize_budget(
         from mmm.artifacts.decision_bundle import build_decision_bundle
         from mmm.data.fingerprint import fingerprint_panel
 
+        optimizer_success = bool(res.get("optimizer_success", res.get("success")))
+        governance_passed = bool(gr.allowed)
+        allocation_stable = bool(res.get("allocation_stable", True))
+        optimizer_internal_safe = bool(res.get("decision_safe", False))
+        stability_score = float(res.get("stability_score", 0.0))
+        extrapolation_ok = True
+        sim_at = res.get("simulation_at_recommendation") or {}
+        em = sim_at.get("economics_metadata") if isinstance(sim_at, dict) else None
+        if isinstance(em, dict):
+            extrapolation_ok = not bool(em.get("extrapolation_flag", False))
+        gates_enabled = bool(cfg.extensions.optimization_gates.enabled)
+        decision_safe = bool(
+            governance_passed
+            and optimizer_success
+            and allocation_stable
+            and optimizer_internal_safe
+            and extrapolation_ok
+            and gates_enabled
+        )
         bundle = build_decision_bundle(
             config=cfg,
             schema=schema,
@@ -295,15 +334,34 @@ def optimize_budget(
             simulation_contract={"source": "full_model_simulation_slsqp", "objective": "delta_mu"},
             data_fingerprint=fingerprint_panel(panel, schema),
             uncertainty_mode="point",
-            decision_safe=bool(res.get("success")),
+            decision_safe=decision_safe,
+            governance_passed=governance_passed,
+            optimizer_success=optimizer_success,
             model_summary={
                 "objective_delta_mu": res.get("objective_delta_mu"),
-                "optimizer_success": res.get("success"),
+                "optimizer_success": optimizer_success,
+                "allocation_stable": allocation_stable,
+                "optimizer_decision_safe": optimizer_internal_safe,
+                "stability_score": stability_score,
+                "multistart": res.get("multistart"),
+                "stability": res.get("stability"),
+                "decision_safe_components": {
+                    "governance_passed": governance_passed,
+                    "optimizer_success": optimizer_success,
+                    "allocation_stable": allocation_stable,
+                    "optimizer_internal_safe": optimizer_internal_safe,
+                    "no_extrapolation": extrapolation_ok,
+                    "gates_enabled": gates_enabled,
+                },
             },
             economics_surface="full_model_simulation",
         )
         typer.echo(json.dumps({"optimization": res, "decision_bundle": bundle}, indent=2, default=str))
         return
+
+    if not cfg.allow_unsafe_decision_apis or not allow_unsafe_decision_apis:
+        typer.secho(MSG_OPTIMIZATION_BLOCKED, fg=typer.colors.YELLOW, err=True)
+        raise typer.Exit(code=2)
 
     if cfg.run_environment == RunEnvironment.PROD:
         typer.secho(
@@ -351,6 +409,7 @@ def optimize_budget(
         res = optimize_budget_from_curve_bundles(
             names,
             ordered_bundles,
+            config=cfg,
             current_spend=current,
             total_budget=total_budget,
             channel_min=channel_min,
@@ -377,21 +436,34 @@ def optimize_budget(
 
 @app.command()
 def simulate(
-    config: Annotated[Path, typer.Argument(help="Resolved YAML config (must include data.path)")],
+    config: Annotated[
+        Path,
+        typer.Argument(
+            help="YAML with data.path to the training panel. PROD requires data.path. "
+            "Uses mmm.planning.decision_simulate.simulate (canonical Δμ); not curve diagnostics."
+        ),
+    ],
     scenario: Annotated[
         Path,
         typer.Option(
             "--scenario",
-            help="YAML with candidate_spend: {channel: level} and optional baseline_spend (else BAU).",
+            help="YAML: candidate_spend / candidate_spend_by_geo / candidate_spend_path; optional baseline_spend, overlays.",
         ),
     ],
     extension_report: Annotated[
         Path,
-        typer.Option("--extension-report", help="extension_report.json with ridge_fit_summary"),
+        typer.Option(
+            "--extension-report",
+            help="extension_report.json containing ridge_fit_summary (coef, best_params, intercept).",
+        ),
     ],
     out: Annotated[Path | None, typer.Option("--out", help="Write JSON result")] = None,
 ) -> None:
-    """Canonical **full-panel** Δμ simulation (decision-grade). Not curve interpolation."""
+    """Full-panel Δμ decision simulation (Ridge ``decision_simulate.simulate``).
+
+    This is the **canonical decision** path: same μ construction as training. For curve interpolation
+    or SpendPlan scenarios, use ``simulate-diagnostic-curves`` (diagnostic only). See runbook §4 and §10.
+    """
     cfg = load_config(config)
     if cfg.run_environment == RunEnvironment.PROD and not cfg.data.path:
         typer.secho("Production simulate requires data.path on config.", fg=typer.colors.RED, err=True)
@@ -526,12 +598,18 @@ def simulate(
 
 @app.command()
 def simulate_diagnostic_curves(
-    config: Annotated[Path, typer.Argument(help="YAML config (channels must match curve data)")],
+    config: Annotated[
+        Path,
+        typer.Argument(
+            help="YAML (channels must match curve data). Diagnostic only — not ``decision_simulate``; "
+            "PROD curve bundles require economics_contract on bundles (fail-closed)."
+        ),
+    ],
     scenario: Annotated[
         Path,
         typer.Option(
             "--scenario",
-            help="YAML: SpendPlan (horizon_weeks, aggregate_steps) OR SpendScenario (baseline/proposed)",
+            help="SpendPlan YAML (horizon_weeks, aggregate_steps, …) OR SpendScenario (baseline/proposed_spend).",
         ),
     ],
     curve_bundle: Annotated[
@@ -555,7 +633,11 @@ def simulate_diagnostic_curves(
     ] = None,
     out: Annotated[Path | None, typer.Option("--out", help="Write scenario result JSON")] = None,
 ) -> None:
-    """Diagnostic only: curve / response-surface interpolation — not decision-grade full-panel Δμ."""
+    """Curve / response-surface diagnostics (``simulate_curve_diagnostic``) — **not** full-panel Δμ.
+
+    Do not use outputs for production budget decisions. For canonical Δμ, use ``simulate`` with
+    ``data.path`` + ``ridge_fit_summary``. See runbook §10.
+    """
     cfg = load_config(config)
     _ = cfg
     from mmm.simulation.engine import (
@@ -563,9 +645,7 @@ def simulate_diagnostic_curves(
         SpendScenario,
         run_curve_bundle_scenario,
         run_stepped_scenario,
-    )
-    from mmm.simulation.engine import (
-        simulate as simulate_engine,
+        simulate_curve_diagnostic as simulate_engine,
     )
 
     gathered = None

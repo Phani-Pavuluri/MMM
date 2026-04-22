@@ -11,6 +11,31 @@ from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.schema import PanelSchema
 
 
+def summarize_scenario_overlays(
+    baseline_overlay: ControlOverlaySpec | None,
+    plan_overlay: ControlOverlaySpec | None,
+) -> dict[str, Any]:
+    """
+    Machine-readable summary of which panel columns receive explicit counterfactual values.
+
+    Applies to controls, promos, holidays, or any other **modeled** column present on the panel.
+    """
+    bcols: list[str] = []
+    if baseline_overlay and baseline_overlay.rows:
+        bcols = [str(r["column"]) for r in baseline_overlay.rows]
+    pcols: list[str] = []
+    if plan_overlay and plan_overlay.rows:
+        pcols = [str(r["column"]) for r in plan_overlay.rows]
+    return {
+        "baseline_overlay_columns": sorted(set(bcols)),
+        "plan_overlay_columns": sorted(set(pcols)),
+        "all_overlay_columns": sorted(set(bcols) | set(pcols)),
+        "n_baseline_overrides": len(bcols),
+        "n_plan_overrides": len(pcols),
+        "overlay_semantics": "explicit_row_matched_geo_week_overwrites",
+    }
+
+
 @dataclass(frozen=True)
 class ControlOverlaySpec:
     """

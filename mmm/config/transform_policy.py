@@ -49,6 +49,7 @@ def build_transform_policy_manifest(config: MMMConfig) -> dict[str, Any]:
             "Do not treat Ridge vs Bayesian CV objectives as directly comparable unless transforms and "
             "media hyperparameters are explicitly harmonized (same decay/hill, same feature definition)."
         ),
+        "bayesian_decision_transform_stance": config.extensions.product.bayesian_decision_transform_stance,
     }
 
 

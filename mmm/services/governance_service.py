@@ -57,6 +57,9 @@ def build_governance_bundle(
         if config.run_environment == RunEnvironment.PROD and (not post_ok or not ppc_ok):
             appr_opt = False
             notes.append("prod_bayesian_decision_inference_not_ok_blocks_optimization")
+    if config.run_environment == RunEnvironment.PROD and config.framework == Framework.BAYESIAN:
+        notes.append("bayesian_prod_experimental_only_optimization_disabled")
+        appr_opt = False
     if baselines.signal_may_be_spurious_timing:
         notes.append("signal_may_be_spurious_timing_vs_shuffled_media")
     enriched = GovernanceScorecard(

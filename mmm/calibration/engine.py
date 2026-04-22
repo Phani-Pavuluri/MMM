@@ -5,8 +5,12 @@ from __future__ import annotations
 import json
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
+
+if TYPE_CHECKING:
+    from mmm.data.schema import PanelSchema
 
 from mmm.calibration.matching import MatchedExperiment, match_experiments
 from mmm.calibration.schema import ExperimentObservation
@@ -54,11 +58,32 @@ class CalibrationEngine(CalibrationEngineBase):
         channels: set[str],
         levels: list[str],
         apply_quality: bool = True,
+        panel: pd.DataFrame | None = None,
+        schema: "PanelSchema | None" = None,
+        allowed_devices: set[str] | None = None,
+        allowed_products: set[str] | None = None,
     ) -> list[MatchedExperiment]:
+        from mmm.data.schema import PanelSchema as _PS
+
+        p_min: pd.Timestamp | None = None
+        p_max: pd.Timestamp | None = None
+        if panel is not None and schema is not None and "time_window" in levels:
+            if not isinstance(schema, _PS):
+                raise TypeError("schema must be a PanelSchema when panel is provided for time_window matching")
+            wt = pd.to_datetime(panel[schema.week_column], errors="coerce")
+            if wt.isna().all():
+                p_min, p_max = None, None
+            else:
+                p_min = pd.Timestamp(wt.min())
+                p_max = pd.Timestamp(wt.max())
         return match_experiments(
             experiments,
             available_geos=geos,
             available_channels=channels,
             match_levels=levels,
             apply_quality=apply_quality,
+            panel_week_min=p_min,
+            panel_week_max=p_max,
+            allowed_devices=allowed_devices,
+            allowed_products=allowed_products,
         )

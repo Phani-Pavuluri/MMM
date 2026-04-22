@@ -106,6 +106,56 @@ def counterfactual_design_matrix(
     return bundle.X, df, path_note
 
 
+def aggregate_mean_mu_draws_hierarchical(
+    X: np.ndarray,
+    geo_idx: np.ndarray,
+    alpha_draws: np.ndarray,
+    beta_draws: np.ndarray,
+    df_cf: pd.DataFrame,
+    schema: PanelSchema,
+    aggregation: DeltaMuAggregation,
+) -> np.ndarray:
+    """
+    Same aggregation policy as :func:`aggregate_mean_mu_draws`, but with **per-geo** linear coefficients.
+
+    ``alpha_draws`` is ``(n_draws, n_geo)``, ``beta_draws`` is ``(n_draws, n_geo, n_coef)``, aligned with
+    PyMC-style partial / no pooling posteriors. Row ``i`` uses ``geo_idx[i]`` to index draws.
+    """
+    X = np.asarray(X, dtype=float)
+    geo_idx = np.asarray(geo_idx, dtype=int)
+    alpha_draws = np.asarray(alpha_draws, dtype=float)
+    beta_draws = np.asarray(beta_draws, dtype=float)
+    if alpha_draws.ndim != 2 or beta_draws.ndim != 3:
+        raise ValueError("alpha_draws must be (n_draws, n_geo) and beta_draws (n_draws, n_geo, n_coef)")
+    s, g, p = beta_draws.shape
+    if alpha_draws.shape != (s, g):
+        raise ValueError("alpha_draws shape must match beta_draws[:, :, 0] geo dimension")
+    if X.shape[1] != p:
+        raise ValueError(f"X has {X.shape[1]} cols but beta_draws has {p}")
+    n = X.shape[0]
+    if geo_idx.shape != (n,):
+        raise ValueError("geo_idx must be (n_rows,) aligned with X")
+    mu = np.zeros((n, s), dtype=float)
+    for draw in range(s):
+        a_row = alpha_draws[draw, geo_idx]
+        b_row = beta_draws[draw, geo_idx, :]
+        mu[:, draw] = a_row + np.sum(X * b_row, axis=1)
+    if aggregation == "global_row_mean":
+        return np.mean(mu, axis=0)
+    gcol = schema.geo_column
+    g = df_cf[gcol].astype(str).to_numpy()
+    _, inv = np.unique(g, return_inverse=True)
+    gcount = int(inv.max()) + 1 if inv.size else 1
+    out = np.zeros(s, dtype=float)
+    for draw in range(s):
+        col = mu[:, draw]
+        per_geo = np.bincount(inv, weights=col, minlength=gcount) / np.maximum(
+            np.bincount(inv, minlength=gcount), 1
+        )
+        out[draw] = float(np.mean(per_geo))
+    return out
+
+
 def aggregate_mean_mu_draws(
     X: np.ndarray,
     coef_draws: np.ndarray,

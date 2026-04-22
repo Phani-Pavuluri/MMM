@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
+import numpy as np
 import pandas as pd
 
 
@@ -20,11 +22,27 @@ class PanelValidationError(ValueError):
     pass
 
 
+def validate_panel_integrity_extended(df: pd.DataFrame, schema: PanelSchema) -> dict[str, Any]:
+    """
+    Temporal coverage, spend continuity, and structural QA beyond column presence.
+
+    Uses the same rules as ``mmm.data.panel_qa.run_panel_qa`` and **raises** on block severity.
+    """
+    from mmm.config.extensions import PanelQAConfig
+    from mmm.data.panel_qa import run_panel_qa
+
+    rep = run_panel_qa(df, schema, PanelQAConfig())
+    if rep.get("max_severity") == "block":
+        raise PanelValidationError(f"Panel integrity QA blocked: {rep.get('issues')}")
+    return dict(rep)
+
+
 def validate_panel(
     df: pd.DataFrame,
     schema: PanelSchema,
     *,
     allow_nan_controls: bool = True,
+    integrity_qa: bool = False,
 ) -> pd.DataFrame:
     required = (
         schema.geo_column,
@@ -57,6 +75,8 @@ def validate_panel(
     if dup.any():
         raise PanelValidationError("Duplicate (geo, week) rows present")
 
+    if integrity_qa:
+        validate_panel_integrity_extended(df, schema)
     return df
 
 

@@ -9,9 +9,14 @@ import numpy as np
 import pandas as pd
 
 from mmm.config.schema import BayesianBackend, Framework, MMMConfig, ModelForm, PoolingMode
+from mmm.data.panel_order import sort_panel_for_modeling
+from mmm.data.panel_qa import assert_panel_qa_allows_training
 from mmm.data.schema import PanelSchema, validate_panel
+from mmm.diagnostics.bayesian_draw_export import (
+    hierarchical_coefficient_draws_from_pymc_idata,
+    linear_coef_draws_from_pymc_idata,
+)
 from mmm.diagnostics.bayesian_inference_report import compute_bayesian_decision_diagnostics
-from mmm.diagnostics.bayesian_ppc import build_bayesian_predictive_artifact
 from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.models.base import BayesianMMMBase
 from mmm.transforms.stack import build_channel_features_from_params
@@ -44,6 +49,8 @@ class BayesianMMMTrainer(BayesianMMMBase):
             raise ImportError("Install pymc and arviz extras: pip install mmm[bayesian]") from e
 
         df = validate_panel(df, self.schema)
+        df = sort_panel_for_modeling(df, self.schema)
+        assert_panel_qa_allows_training(df, self.schema, self.config)
         decay = float(self.config.transforms.adstock_params.get("decay", 0.5))
         hill_half = float(self.config.transforms.saturation_params.get("half_max", 1.0))
         hill_slope = float(self.config.transforms.saturation_params.get("slope", 2.0))
@@ -135,10 +142,12 @@ class BayesianMMMTrainer(BayesianMMMBase):
             idata_out,
             y_obs=y_obs,
             pooling=self.config.pooling,
+            config=self.config,
             max_rhat=gv.bayesian_max_rhat,
             min_ess=gv.bayesian_min_ess_bulk,
             max_divergences=gv.bayesian_max_divergences,
             max_mean_abs_ppc_gap=gv.bayesian_max_mean_abs_ppc_gap,
+            min_ppc_empirical_coverage=gv.bayesian_min_ppc_empirical_coverage,
         )
         post = idata_out.posterior
         if self.config.pooling == PoolingMode.PARTIAL:
@@ -165,12 +174,44 @@ class BayesianMMMTrainer(BayesianMMMBase):
                 "thresholds": diag_pack.get("thresholds"),
             },
         )
-        ppc = build_bayesian_predictive_artifact(idata_out, config=self.config, y_obs=y_obs)
-        ppc["decision_inference"] = diag_pack
+        ppc = dict(diag_pack.get("ppc_artifact") or {})
+        decision_inference = {k: v for k, v in diag_pack.items() if k != "ppc_artifact"}
+        ppc["decision_inference"] = decision_inference
+        draws, draw_meta = linear_coef_draws_from_pymc_idata(
+            idata_out,
+            pooling=self.config.pooling,
+            n_media=len(self.schema.channel_columns),
+            n_controls=len(self.schema.control_columns),
+        )
+        hpack, hmeta = hierarchical_coefficient_draws_from_pymc_idata(
+            idata_out,
+            pooling=self.config.pooling,
+        )
+        if draws is not None:
+            ppc["linear_coef_draws_export"] = {
+                "shape": list(draws.shape),
+                "meta": draw_meta,
+            }
+        else:
+            ppc["linear_coef_draws_export"] = {"shape": None, "meta": draw_meta}
+        if hpack is not None:
+            ppc["hierarchical_draw_pack_export"] = {
+                "shapes": {
+                    "alpha": list(hpack["alpha_draws"].shape),
+                    "beta": list(hpack["beta_draws"].shape),
+                },
+                "meta": hmeta,
+            }
+        else:
+            ppc["hierarchical_draw_pack_export"] = {"shapes": None, "meta": hmeta}
         return {
             "idata": idata_out,
             "summary": self._summary,
             "ppc": ppc,
+            "linear_coef_draws": draws,
+            "linear_coef_draws_meta": draw_meta,
+            "hierarchical_draw_pack": hpack,
+            "hierarchical_draw_pack_meta": hmeta,
         }
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:

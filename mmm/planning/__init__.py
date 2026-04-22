@@ -9,12 +9,13 @@ from mmm.planning.baseline import (
     locked_geo_plan_baseline,
     zero_spend_baseline,
 )
+from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
 from mmm.planning.context import RidgeFitContext, ridge_context_from_fit
-from mmm.planning.control_overlay import ControlOverlaySpec
 from mmm.planning.decision_simulate import SimulationResult, simulate
 from mmm.planning.posterior_planning import (
     PosteriorPlanningDisabled,
     PosteriorPlanResult,
+    delta_mu_draws_hierarchical_geo_beta,
     posterior_planning_gate,
     simulate_posterior,
 )
@@ -24,6 +25,8 @@ __all__ = [
     "BaselinePlan",
     "BaselineType",
     "ControlOverlaySpec",
+    "summarize_scenario_overlays",
+    "delta_mu_draws_hierarchical_geo_beta",
     "PosteriorPlanResult",
     "PosteriorPlanningDisabled",
     "RidgeFitContext",

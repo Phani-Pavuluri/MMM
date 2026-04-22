@@ -160,6 +160,10 @@ class CalibrationConfig(BaseModel):
     )
     experiment_target_kpi: str | None = None
     use_quality_weights: bool = True
+    #: Optional JSON registry (see ``mmm.experiments.durable_registry``) listing approved experiment_ids.
+    experiment_registry_path: str | None = None
+    #: When ``True`` in PROD, every replay unit must carry a non-empty ``experiment_id`` that is ``approved`` in the registry.
+    require_approved_experiment_registry: bool = False
 
 
 class BudgetConfig(BaseModel):
@@ -221,12 +225,28 @@ class MMMConfig(BaseModel):
     model_config = {"extra": "forbid"}
 
     @model_validator(mode="after")
-    def _validate_channels(self) -> MMMConfig:
+    def _validate_channels_and_prod_safety(self) -> MMMConfig:
         if not self.data.channel_columns:
             raise ValueError("data.channel_columns must be non-empty")
         from mmm.config.validators import validate_implemented_transforms_for_framework
 
         validate_implemented_transforms_for_framework(self)
+        if self.run_environment == RunEnvironment.PROD:
+            if self.allow_unsafe_decision_apis:
+                raise ValueError("run_environment=prod requires allow_unsafe_decision_apis=False")
+            if not self.extensions.optimization_gates.enabled:
+                raise ValueError("run_environment=prod requires extensions.optimization_gates.enabled=True")
+            if self.framework == Framework.BAYESIAN and int(self.bayesian.posterior_predictive_draws or 0) <= 0:
+                raise ValueError(
+                    "run_environment=prod with framework=bayesian requires bayesian.posterior_predictive_draws>0"
+                )
+            fe = self.extensions.features
+            if fe.trend_spline_knots > 0 or fe.fourier_yearly_harmonics > 0 or (fe.holiday_country or "").strip():
+                raise ValueError(
+                    "run_environment=prod forbids implicit FeatureEngine-only controls "
+                    "(trend_spline_knots / fourier_yearly_harmonics / holiday_country); "
+                    "model them via explicit data.control_columns instead."
+                )
         return self
 
     def model_dump_resolved(self) -> dict[str, Any]:

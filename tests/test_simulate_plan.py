@@ -1,6 +1,6 @@
 from mmm.config.schema import DataConfig, Framework, MMMConfig, ModelForm
 from mmm.economics.canonical import build_economics_contract
-from mmm.simulation.engine import SpendPlan, simulate
+from mmm.simulation.engine import SpendPlan, simulate_curve_diagnostic
 
 
 def test_simulate_spend_plan_point():
@@ -27,7 +27,7 @@ def test_simulate_spend_plan_point():
         ],
         y_level_scale=50.0,
     )
-    out = simulate(plan, curves, uncertainty_mode="point")
+    out = simulate_curve_diagnostic(plan, curves, uncertainty_mode="point")
     assert out["kind"] == "simulate_point"
     assert "aggregate" in out
     assert out.get("economics_contract", {}).get("contract_version")

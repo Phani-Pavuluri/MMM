@@ -12,28 +12,30 @@ from mmm.artifacts.decision_bundle import build_decision_bundle
 from mmm.config.schema import Framework, MMMConfig
 from mmm.config.transform_policy import build_transform_policy_manifest
 from mmm.data.fingerprint import fingerprint_panel
-from mmm.data.panel_order import sort_panel_for_modeling
-from mmm.data.schema import PanelSchema
+from mmm.data.panel_qa import run_panel_qa
 from mmm.economics.canonical import (
     build_economics_contract,
     economics_output_metadata,
     validate_business_economics_metadata,
 )
+from mmm.governance.decision_safety import decision_safety_artifact
+from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
+from mmm.planning.context import ridge_fit_summary_from_artifacts
+from mmm.data.schema import PanelSchema
+from mmm.guidance.recommend import recommend_configuration
+from mmm.services.calibration_service import run_calibration_extensions
+from mmm.services.curve_service import build_curve_diagnostics_bundle
+from mmm.services.diagnostics_service import run_core_diagnostics
+from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
+from mmm.optimization.safety_gate import OptimizationSafetyGate
+from mmm.services.governance_service import build_governance_bundle
+from mmm.governance.model_release import infer_model_release_state
+from mmm.uncertainty.decomposition import UncertaintyDecomposer
+from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.evaluation.baselines import media_shuffled_within_geo, run_baselines
 from mmm.evaluation.calibration_extension import compute_replay_calibration_metrics
 from mmm.evaluation.feature_pipeline import build_extension_design_bundle
 from mmm.features.builder import build_extra_control_matrix
-from mmm.governance.decision_safety import decision_safety_artifact
-from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
-from mmm.guidance.recommend import recommend_configuration
-from mmm.optimization.safety_gate import OptimizationSafetyGate
-from mmm.planning.context import ridge_fit_summary_from_artifacts
-from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
-from mmm.services.calibration_service import run_calibration_extensions
-from mmm.services.curve_service import build_curve_diagnostics_bundle
-from mmm.services.diagnostics_service import run_core_diagnostics
-from mmm.services.governance_service import build_governance_bundle
-from mmm.uncertainty.decomposition import UncertaintyDecomposer
 
 
 def run_post_fit_extensions(
@@ -53,9 +55,22 @@ def run_post_fit_extensions(
     rng = np.random.default_rng(config.random_seed)
 
     panel_s = sort_panel_for_modeling(panel, schema)
+    out["panel_qa"] = run_panel_qa(panel_s, schema, ext.panel_qa)
     _bundle, X_media = build_extension_design_bundle(panel_s, schema, config, fit_out)
 
-    out.update(run_core_diagnostics(panel=panel_s, schema=schema, config=config, X_media=X_media, rng=rng))
+    ridge_la: float | None = None
+    if config.framework == Framework.RIDGE_BO and fit_out.get("artifacts") is not None:
+        ridge_la = float(fit_out["artifacts"].best_params.get("log_alpha", 0.0))
+    out.update(
+        run_core_diagnostics(
+            panel=panel_s,
+            schema=schema,
+            config=config,
+            X_media=X_media,
+            rng=rng,
+            ridge_log_alpha=ridge_la,
+        )
+    )
 
     extra = build_extra_control_matrix(panel_s, schema, ext.features)
     if extra.size:
@@ -122,6 +137,15 @@ def run_post_fit_extensions(
 
     if config.framework == Framework.RIDGE_BO and fit_out.get("artifacts"):
         out["ridge_fit_summary"] = ridge_fit_summary_from_artifacts(fit_out["artifacts"])
+    gov_js = out.get("governance") or {}
+    pq_js = out.get("panel_qa") or {}
+    out["model_release"] = infer_model_release_state(
+        config=config,
+        panel_qa_max_severity=str(pq_js.get("max_severity", "info")),
+        governance_approved_for_optimization=bool(gov_js.get("approved_for_optimization")),
+        governance_approved_for_reporting=bool(gov_js.get("approved_for_reporting")),
+        ridge_fit_summary_present=bool(out.get("ridge_fit_summary")),
+    )
     out["decision_policy"] = {
         "canonical_economic_quantity": "delta_mu_mean_row_mu_modeling_scale",
         "default_baseline_type": "bau",
@@ -191,6 +215,8 @@ def run_post_fit_extensions(
         "full_model_simulation" if out.get("ridge_fit_summary") else "other"
     )
     bundle_baseline_type = "replay_calibration" if is_replay else "extension_train_reference"
+    gov_ok = bool(gr.allowed)
+    opt_ok = bool(gov.get("approved_for_optimization"))
     out["decision_bundle"] = build_decision_bundle(
         config=config,
         schema=schema,
@@ -204,7 +230,9 @@ def run_post_fit_extensions(
         },
         data_fingerprint=fp,
         uncertainty_mode="point",
-        decision_safe=bool(gr.allowed and gov.get("approved_for_optimization")),
+        decision_safe=bool(gov_ok and opt_ok),
+        governance_passed=gov_ok,
+        optimizer_success=None,
         baseline_type=bundle_baseline_type,
         model_summary=model_summary,
         decision_safety_flags=decision_flags,

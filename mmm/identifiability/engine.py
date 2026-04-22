@@ -69,6 +69,8 @@ class IdentifiabilityEngine:
         channel_names: list[str],
         y_log: np.ndarray,
         rng: np.random.Generator,
+        *,
+        ridge_log_alpha: float | None = None,
     ) -> IdentifiabilityReport:
         warnings: list[str] = []
         X = np.asarray(X_media, dtype=float)
@@ -87,13 +89,14 @@ class IdentifiabilityEngine:
         if er < max(1, int(0.7 * p)):
             warnings.append("low_effective_rank_vs_channels: possible many equivalent solutions")
 
+        alpha_fit = float(10 ** float(ridge_log_alpha if ridge_log_alpha is not None else 0.0))
         boot_std: list[float] = []
         rounds = max(0, self.cfg.bootstrap_rounds)
         m = max(int(self.cfg.bootstrap_frac * n), p + 2)
         for _ in range(rounds):
             idx = rng.choice(n, size=m, replace=True)
             Xb, yb = X[idx], y_log[idx]
-            coef, _ = fit_ridge(Xb, yb, alpha=1.0)
+            coef, _ = fit_ridge(Xb, yb, alpha=alpha_fit)
             boot_std.append(float(np.mean(np.abs(coef))))
         instability = float(np.std(boot_std)) if boot_std else 0.0
         if instability > 0.15 * (np.mean(boot_std) + 1e-9):

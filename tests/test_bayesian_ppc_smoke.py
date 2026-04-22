@@ -24,3 +24,12 @@ def test_build_bayesian_predictive_artifact_reads_pp_groups():
     assert out["prior_predictive"] is not None
     assert out["posterior_predictive_check"] is not None
     assert "mean_abs_gap" in out["posterior_predictive_check"]
+
+
+def test_build_bayesian_predictive_artifact_config_none_still_runs_pp():
+    """Regression: diagnostics must not pass config=None and silently skip PPC."""
+    idata = FakeInferenceData()
+    y = np.ones(5)
+    out = build_bayesian_predictive_artifact(idata, config=None, y_obs=y)
+    assert out["posterior_predictive_check"] is not None
+    assert "mean_abs_gap" in out["posterior_predictive_check"]

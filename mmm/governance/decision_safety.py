@@ -1,4 +1,4 @@
-"""Phase 0: analysis-only defaults until replay calibration and model-bound optimization ship."""
+"""Decision-facing safety defaults and messaging."""
 
 from __future__ import annotations
 
@@ -6,22 +6,19 @@ from typing import Any
 
 # User-facing strings (reports, CLI, artifacts)
 MSG_ANALYSIS_ONLY = (
-    "This build is in analysis-only mode for decision-facing outputs: experiment calibration, "
-    "governance approval for optimization, and budget optimization are not decision-safe until "
-    "replay-based calibration and model-implied economics are wired. "
-    "Ridge coefficients are not experiment-aligned incremental lift."
+    "This build defaults to analysis-only posture for decision-facing outputs until replay calibration, "
+    "governance approval for optimization, and full-panel Δμ workflows are satisfied. "
+    "Coefficient-to-experiment calibration has been removed from training paths."
 )
 
 MSG_CALIBRATION_NOT_DECISION_SAFE = (
-    "Calibration vs experiments is not decision-safe: do not interpret any score as validating "
-    "incremental lift until replay-based model_implied_lift is used. "
-    "Coefficient-based calibration is disabled unless allow_unsafe_decision_apis is true."
+    "Calibration vs experiments is only decision-meaningful under replay with explicit estimands "
+    "and aligned spend frames; treat any other score as diagnostic."
 )
 
 MSG_OPTIMIZATION_BLOCKED = (
-    "Budget optimization is blocked under the safety freeze. "
-    "Set allow_unsafe_decision_apis: true in YAML and pass --allow-unsafe-decision-apis on the CLI "
-    "to run the experimental optimizer path only after explicit review."
+    "Budget optimization is blocked: pass governance + extension_report for full-panel Δμ, "
+    "or (non-prod only) enable allow_unsafe_decision_apis for legacy diagnostic curve paths."
 )
 
 
@@ -36,8 +33,8 @@ def decision_safety_artifact(*, allow_unsafe_decision_apis: bool) -> dict[str, A
                 MSG_ANALYSIS_ONLY
                 if not allow_unsafe_decision_apis
                 else (
-                    "allow_unsafe_decision_apis is true: experimental paths may run; "
-                    "coefficient-based calibration is still not replay-validated as experiment lift."
+                    "allow_unsafe_decision_apis is true: legacy diagnostic optimizers may run in non-prod; "
+                    "production still forbids unsafe APIs and curve optimizers."
                 )
             ),
             "calibration": MSG_CALIBRATION_NOT_DECISION_SAFE,
@@ -55,7 +52,7 @@ def report_decision_safety_section(*, allow_unsafe_decision_apis: bool) -> dict[
             "calibration": (
                 "not_decision_safe_yet (replay-based estimand required)"
                 if not allow_unsafe_decision_apis
-                else "experimental_only_not_replay_validated_do_not_treat_as_experiment_lift"
+                else "experimental_only_replay_required_for_decision_grade"
             ),
             "optimization": (
                 "not_decision_safe_yet (blocked by default)"

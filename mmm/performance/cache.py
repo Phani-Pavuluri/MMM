@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import hashlib
-import json
 from typing import Any
 
 import numpy as np
@@ -14,18 +13,12 @@ from mmm.validation.cv import CVStrategyBase
 
 
 def _df_fingerprint(df: pd.DataFrame, schema: PanelSchema) -> str:
-    key = json.dumps(
-        {
-            "rows": len(df),
-            "cols": list(df.columns),
-            "head": df.head(2).to_dict(),
-            "geo": schema.geo_column,
-            "week": schema.week_column,
-        },
-        default=str,
-        sort_keys=True,
-    )
-    return hashlib.sha256(key.encode()).hexdigest()[:24]
+    """Stable checksum over the full modeling-relevant columns (not just row count / head rows)."""
+    cols = [schema.geo_column, schema.week_column, schema.target_column, *schema.channel_columns]
+    sub = df.loc[:, cols].reset_index(drop=True)
+    h = pd.util.hash_pandas_object(sub, index=True)
+    blob = np.asarray(h.values, dtype=np.uint64).tobytes() + str(len(df)).encode()
+    return hashlib.sha256(blob).hexdigest()[:32]
 
 
 _cv_cache: dict[tuple[str, str], Any] = {}

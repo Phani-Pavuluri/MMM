@@ -2,10 +2,16 @@
 Posterior draw–based planning on the **Ridge design-matrix linear** μ path.
 
 Requires **Bayesian decision diagnostics** (``posterior_diagnostics_ok`` and
-``posterior_predictive_ok`` on ``bayesian_fit_meta``) plus caller-supplied
-``linear_coef_draws`` aligned with :func:`mmm.models.ridge_bo.ridge.predict_ridge`
-coefficients for the same ``X`` geometry as training (e.g. bootstrap or exported
-posterior over linear coefficients — not automatic from Ridge BO point fit).
+``posterior_predictive_ok`` on ``bayesian_fit_meta``) plus ``linear_coef_draws`` with shape
+``(n_draws, n_coef)`` matching the **same** stacked design columns as :class:`mmm.planning.context.RidgeFitContext`.
+
+**Draw sources:**
+
+- **PyMC full pooling:** use :func:`mmm.diagnostics.bayesian_draw_export.linear_coef_draws_from_pymc_idata`
+  on ``idata`` from :class:`mmm.models.bayesian.pymc_trainer.BayesianMMMTrainer` (also returned as
+  ``fit_out["linear_coef_draws"]`` when export succeeds), or bootstrap / other externally validated draws.
+- **Partial / no pooling:** global Ridge-shaped export is **not** supported — the μ path is per-geo;
+  prod posterior planning stays blocked unless you add an explicit hierarchical simulator.
 """
 
 from __future__ import annotations
@@ -19,9 +25,11 @@ from mmm.config.schema import MMMConfig, RunEnvironment
 from mmm.planning.baseline import BaselinePlan, bau_baseline_from_panel
 from mmm.planning.context import RidgeFitContext
 from mmm.planning.control_overlay import ControlOverlaySpec
+from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.planning.mu_path import (
     DeltaMuAggregation,
     aggregate_mean_mu_draws,
+    aggregate_mean_mu_draws_hierarchical,
     counterfactual_design_matrix,
 )
 from mmm.planning.spend_path import PiecewiseSpendPath
@@ -35,6 +43,18 @@ def _bayesian_diagnostics_ok(fit_meta: dict[str, Any] | None) -> bool:
     if not fit_meta:
         return False
     return bool(fit_meta.get("posterior_diagnostics_ok")) and bool(fit_meta.get("posterior_predictive_ok"))
+
+
+def _hierarchical_draw_pack_ok(pack: dict[str, Any] | None) -> bool:
+    if not pack or not isinstance(pack, dict):
+        return False
+    a = pack.get("alpha_draws")
+    b = pack.get("beta_draws")
+    if not isinstance(a, np.ndarray) or not isinstance(b, np.ndarray):
+        return False
+    if a.ndim != 2 or b.ndim != 3:
+        return False
+    return a.shape[0] == b.shape[0] and a.shape[1] == b.shape[1]
 
 
 def _overlay_from_controls_plan(controls_plan: Any) -> ControlOverlaySpec | None:
@@ -80,20 +100,28 @@ def posterior_planning_gate(
     config: MMMConfig,
     bayesian_fit_meta: dict[str, Any] | None,
     *,
-    linear_coef_draws: np.ndarray | None,
+    linear_coef_draws: np.ndarray | None = None,
+    hierarchical_draw_pack: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     Decision-safe gating for draw-based objectives and ``simulate(..., uncertainty_mode="posterior")``.
 
     Production additionally requires ``extensions.product.posterior_planning_mode == "draws"``.
+
+    Provide **exactly one** of ``linear_coef_draws`` (global Ridge-shaped) or ``hierarchical_draw_pack``
+    (per-geo ``alpha`` / ``beta`` from :func:`mmm.diagnostics.bayesian_draw_export.hierarchical_coefficient_draws_from_pymc_idata`).
     """
     reasons: list[str] = []
     if not _bayesian_diagnostics_ok(bayesian_fit_meta):
         reasons.append("bayesian_decision_diagnostics_not_ok")
+    hier_ok = _hierarchical_draw_pack_ok(hierarchical_draw_pack)
     draws = None if linear_coef_draws is None else np.asarray(linear_coef_draws, dtype=float)
-    if draws is None or draws.size == 0:
-        reasons.append("linear_coef_draws_missing_or_empty")
-    elif draws.ndim != 2:
+    line_ok = draws is not None and draws.size > 0 and draws.ndim == 2
+    if line_ok and hier_ok:
+        reasons.append("ambiguous_draw_inputs_linear_and_hierarchical")
+    elif not line_ok and not hier_ok:
+        reasons.append("missing_draw_pack_linear_or_hierarchical_required")
+    elif line_ok and draws is not None and draws.ndim != 2:
         reasons.append("linear_coef_draws_must_be_2d")
     allowed = len(reasons) == 0
     if (
@@ -103,15 +131,27 @@ def posterior_planning_gate(
     ):
         allowed = False
         reasons.append("prod_requires_extensions.product.posterior_planning_mode_draws")
-    return {"allowed": allowed, "reasons": reasons, "diagnostics_ok": _bayesian_diagnostics_ok(bayesian_fit_meta)}
+    return {
+        "allowed": allowed,
+        "reasons": reasons,
+        "diagnostics_ok": _bayesian_diagnostics_ok(bayesian_fit_meta),
+        "draw_mode": "hierarchical" if hier_ok else ("linear" if line_ok else "none"),
+    }
 
 
 def assert_posterior_planning_allowed(
     config: MMMConfig,
     bayesian_fit_meta: dict[str, Any] | None,
-    linear_coef_draws: np.ndarray | None,
+    linear_coef_draws: np.ndarray | None = None,
+    *,
+    hierarchical_draw_pack: dict[str, Any] | None = None,
 ) -> None:
-    g = posterior_planning_gate(config, bayesian_fit_meta, linear_coef_draws=linear_coef_draws)
+    g = posterior_planning_gate(
+        config,
+        bayesian_fit_meta,
+        linear_coef_draws=linear_coef_draws,
+        hierarchical_draw_pack=hierarchical_draw_pack,
+    )
     if not g["allowed"]:
         raise PosteriorPlanningDisabled(list(g["reasons"]))
 
@@ -217,6 +257,106 @@ def delta_mu_draws_linear_ridge(
     return mu_b, mu_p, mu_p - mu_b
 
 
+def delta_mu_draws_hierarchical_geo_beta(
+    ctx: RidgeFitContext,
+    *,
+    baseline_plan: BaselinePlan | None,
+    spend_plan: dict[str, float],
+    hierarchical_draw_pack: dict[str, Any],
+    spend_path_plan: PiecewiseSpendPath | None = None,
+    spend_plan_geo: dict[str, dict[str, float]] | None = None,
+    controls_plan: Any = None,
+    control_overlay: ControlOverlaySpec | None = None,
+    control_overlay_baseline: ControlOverlaySpec | None = None,
+    control_overlay_plan: ControlOverlaySpec | None = None,
+    delta_mu_aggregation: DeltaMuAggregation = "global_row_mean",
+    max_draws: int | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Δμ draws using **per-geo** intercept and coefficient posterior (PyMC partial / none pooling).
+
+    ``hierarchical_draw_pack`` must contain ``alpha_draws`` ``(S, n_geo)`` and ``beta_draws`` ``(S, n_geo, p)``
+    aligned with :func:`mmm.hierarchy.pooling.partial_pooling_indices` on the counterfactual panels.
+    """
+    if spend_path_plan is not None and spend_plan_geo is not None:
+        raise ValueError("set at most one of spend_path_plan and spend_plan_geo")
+    if not _hierarchical_draw_pack_ok(hierarchical_draw_pack):
+        raise ValueError("invalid hierarchical_draw_pack")
+    base = baseline_plan or bau_baseline_from_panel(ctx.panel, ctx.schema)
+    if spend_path_plan is not None and base.spend_by_geo_channel is not None:
+        raise ValueError(
+            "piecewise spend_path_plan with per-geo baseline (spend_by_geo_channel) is not supported"
+        )
+
+    alpha_draws = np.asarray(hierarchical_draw_pack["alpha_draws"], dtype=float)
+    beta_draws = np.asarray(hierarchical_draw_pack["beta_draws"], dtype=float)
+    if max_draws is not None and alpha_draws.shape[0] > int(max_draws):
+        alpha_draws = alpha_draws[: int(max_draws), :]
+        beta_draws = beta_draws[: int(max_draws), :, :]
+
+    geos = _geos_from_panel(ctx.panel, ctx.schema)
+    base_geo, _ = _baseline_geo_and_scalar(base, geos)
+    ob = control_overlay_baseline
+    op = _resolve_plan_control_overlay(control_overlay_plan, control_overlay, controls_plan)
+
+    if base.spend_by_geo_channel:
+        Xb, dfb, _ = counterfactual_design_matrix(
+            ctx.panel,
+            ctx.schema,
+            ctx.config,
+            best_params=ctx.best_params,
+            spend_by_geo_channel=base_geo,
+            control_overlay=ob,
+        )
+    else:
+        Xb, dfb, _ = counterfactual_design_matrix(
+            ctx.panel,
+            ctx.schema,
+            ctx.config,
+            best_params=ctx.best_params,
+            spend_by_channel=base.spend_by_channel,
+            control_overlay=ob,
+        )
+
+    if spend_path_plan is not None:
+        Xp, dfp, _ = counterfactual_design_matrix(
+            ctx.panel,
+            ctx.schema,
+            ctx.config,
+            best_params=ctx.best_params,
+            spend_path=spend_path_plan,
+            control_overlay=op,
+        )
+    elif spend_plan_geo is not None:
+        Xp, dfp, _ = counterfactual_design_matrix(
+            ctx.panel,
+            ctx.schema,
+            ctx.config,
+            best_params=ctx.best_params,
+            spend_by_geo_channel=spend_plan_geo,
+            control_overlay=op,
+        )
+    else:
+        Xp, dfp, _ = counterfactual_design_matrix(
+            ctx.panel,
+            ctx.schema,
+            ctx.config,
+            best_params=ctx.best_params,
+            spend_by_channel=spend_plan,
+            control_overlay=op,
+        )
+
+    gidx_b = partial_pooling_indices(dfb, ctx.schema)
+    gidx_p = partial_pooling_indices(dfp, ctx.schema)
+    mu_b = aggregate_mean_mu_draws_hierarchical(
+        Xb, gidx_b, alpha_draws, beta_draws, dfb, ctx.schema, delta_mu_aggregation
+    )
+    mu_p = aggregate_mean_mu_draws_hierarchical(
+        Xp, gidx_p, alpha_draws, beta_draws, dfp, ctx.schema, delta_mu_aggregation
+    )
+    return mu_b, mu_p, mu_p - mu_b
+
+
 RiskObjective = Literal["p50", "cvar", "expected_minus_lambda_std"]
 
 
@@ -275,7 +415,8 @@ def simulate_posterior(
     *,
     baseline_plan: BaselinePlan | None = None,
     bayesian_fit_meta: dict[str, Any] | None = None,
-    linear_coef_draws: np.ndarray,
+    linear_coef_draws: np.ndarray | None = None,
+    hierarchical_draw_pack: dict[str, Any] | None = None,
     intercept_draws: np.ndarray | None = None,
     draws: int | None = None,
     spend_path_plan: PiecewiseSpendPath | None = None,
@@ -287,29 +428,59 @@ def simulate_posterior(
     delta_mu_aggregation: DeltaMuAggregation | None = None,
 ) -> PosteriorPlanResult:
     """
-    Score a spend plan across posterior draws of linear coefficients (same ``X`` construction as training).
+    Score a spend plan across posterior draws (same ``X`` construction as training).
 
-    ``draws`` optionally truncates to the first ``draws`` rows of ``linear_coef_draws`` for runtime control.
+    Provide **exactly one** of ``linear_coef_draws`` (global) or ``hierarchical_draw_pack`` (per-geo).
+
+    ``draws`` optionally truncates to the first ``draws`` posterior samples for runtime control.
     """
-    assert_posterior_planning_allowed(ctx.config, bayesian_fit_meta, linear_coef_draws)
-    agg: DeltaMuAggregation = delta_mu_aggregation or ctx.config.extensions.product.planning_delta_mu_aggregation
-    mu_b, mu_p, dlt = delta_mu_draws_linear_ridge(
-        ctx,
-        baseline_plan=baseline_plan,
-        spend_plan=spend_plan,
-        linear_coef_draws=linear_coef_draws,
-        intercept_draws=intercept_draws,
-        spend_path_plan=spend_path_plan,
-        spend_plan_geo=spend_plan_geo,
-        controls_plan=controls_plan,
-        control_overlay=control_overlay,
-        control_overlay_baseline=control_overlay_baseline,
-        control_overlay_plan=control_overlay_plan,
-        delta_mu_aggregation=agg,
-        max_draws=draws,
+    assert_posterior_planning_allowed(
+        ctx.config,
+        bayesian_fit_meta,
+        linear_coef_draws,
+        hierarchical_draw_pack=hierarchical_draw_pack,
     )
+    agg: DeltaMuAggregation = delta_mu_aggregation or ctx.config.extensions.product.planning_delta_mu_aggregation
+    if hierarchical_draw_pack is not None:
+        mu_b, mu_p, dlt = delta_mu_draws_hierarchical_geo_beta(
+            ctx,
+            baseline_plan=baseline_plan,
+            spend_plan=spend_plan,
+            hierarchical_draw_pack=hierarchical_draw_pack,
+            spend_path_plan=spend_path_plan,
+            spend_plan_geo=spend_plan_geo,
+            controls_plan=controls_plan,
+            control_overlay=control_overlay,
+            control_overlay_baseline=control_overlay_baseline,
+            control_overlay_plan=control_overlay_plan,
+            delta_mu_aggregation=agg,
+            max_draws=draws,
+        )
+    else:
+        if linear_coef_draws is None:
+            raise ValueError("linear_coef_draws is required when hierarchical_draw_pack is not set")
+        mu_b, mu_p, dlt = delta_mu_draws_linear_ridge(
+            ctx,
+            baseline_plan=baseline_plan,
+            spend_plan=spend_plan,
+            linear_coef_draws=linear_coef_draws,
+            intercept_draws=intercept_draws,
+            spend_path_plan=spend_path_plan,
+            spend_plan_geo=spend_plan_geo,
+            controls_plan=controls_plan,
+            control_overlay=control_overlay,
+            control_overlay_baseline=control_overlay_baseline,
+            control_overlay_plan=control_overlay_plan,
+            delta_mu_aggregation=agg,
+            max_draws=draws,
+        )
     p10, p50, p90 = (float(x) for x in np.percentile(dlt, [10, 50, 90]))
-    gate = posterior_planning_gate(ctx.config, bayesian_fit_meta, linear_coef_draws=linear_coef_draws)
+    gate = posterior_planning_gate(
+        ctx.config,
+        bayesian_fit_meta,
+        linear_coef_draws=linear_coef_draws,
+        hierarchical_draw_pack=hierarchical_draw_pack,
+    )
     disc = ""
     if ctx.config.extensions.product.posterior_planning_mode != "draws":
         disc = (

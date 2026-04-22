@@ -19,9 +19,9 @@ from mmm.data.fingerprint import fingerprint_panel
 from mmm.data.loader import DatasetBuilder
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.decomposition.engine import DecompositionEngine
+from mmm.features.design_matrix import build_design_matrix
 from mmm.economics.canonical import assert_planner_scope_supported, build_economics_contract
 from mmm.evaluation.extension_runner import run_post_fit_extensions
-from mmm.features.design_matrix import build_design_matrix
 from mmm.governance.decision_safety import MSG_ANALYSIS_ONLY, decision_safety_artifact
 from mmm.models.bayesian.pymc_trainer import BayesianMMMTrainer
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
@@ -46,7 +46,11 @@ class MMMTrainer:
         cfg_blob = json.dumps(self.config.model_dump_resolved(), sort_keys=True, default=str)
         store.log_dict(
             "config_fingerprint",
-            {"sha256": hashlib.sha256(cfg_blob.encode()).hexdigest(), "version": "mmm_config_v1"},
+            {
+                "sha256": hashlib.sha256(cfg_blob.encode()).hexdigest(),
+                "version": "mmm_config_v1",
+                "package_version": __import__("mmm.version", fromlist=["__version__"]).__version__,
+            },
         )
         run_warnings: list[str] = []
         assert_planner_scope_supported(build_economics_contract(self.config))
@@ -61,8 +65,7 @@ class MMMTrainer:
         builder = DatasetBuilder(self.config.data, self.schema)
         panel = builder.build(df)
         panel_work = sort_panel_for_modeling(panel, self.schema)
-        if self.config.artifacts.write_data_fingerprint:
-            store.log_dict("data_fingerprint", fingerprint_panel(panel_work, self.schema))
+        store.log_dict("data_fingerprint", fingerprint_panel(panel_work, self.schema))
 
         if self.config.framework == Framework.RIDGE_BO:
             trainer = RidgeBOMMMTrainer(self.config, self.schema)

@@ -22,6 +22,7 @@ def run_core_diagnostics(
     config: MMMConfig,
     X_media: np.ndarray,
     rng: np.random.Generator,
+    ridge_log_alpha: float | None = None,
 ) -> dict[str, Any]:
     out: dict[str, Any] = {}
     out["data_quality"] = DataQualityEngine().run(panel, schema).to_json()
@@ -29,10 +30,14 @@ def run_core_diagnostics(
     ext = config.extensions
     if ext.identifiability.enabled:
         id_eng = IdentifiabilityEngine(ext.identifiability)
-        out["identifiability"] = id_eng.analyze(X_media, list(schema.channel_columns), y_log, rng).to_json()
+        out["identifiability"] = id_eng.analyze(
+            X_media, list(schema.channel_columns), y_log, rng, ridge_log_alpha=ridge_log_alpha
+        ).to_json()
     else:
         out["identifiability"] = {"skipped": True, "identifiability_score": 0.0, "instability_score": 0.0}
     out["lag_diagnostics"] = LagDiagnostics(schema).run(panel).to_json()
     out["geo_spillover"] = run_geo_spillover_diagnostics(panel, schema).to_json()
-    out["falsification"] = FalsificationEngine(schema, ext.falsification).run(X_media, y_log, rng).to_json()
+    out["falsification"] = FalsificationEngine(schema, ext.falsification).run(
+        X_media, y_log, rng, ridge_log_alpha=ridge_log_alpha
+    ).to_json()
     return out

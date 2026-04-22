@@ -27,6 +27,17 @@ class ProductScopeConfig(BaseModel):
     #: ``draws`` enables posterior draw–based P10/P50/P90 and risk-aware optimizers (with diagnostics + coef draws).
     #: ``disclosure_only`` adds artifact notes without requiring draw payloads.
     posterior_planning_mode: Literal["off", "disclosure_only", "draws"] = "off"
+    #: How transforms enter Bayesian decision runs vs Ridge+BO (cross-framework comparability).
+    bayesian_decision_transform_stance: Literal[
+        "fixed_yaml_features_labeled",
+        "research_only_experimental_harmonize",
+    ] = "fixed_yaml_features_labeled"
+    #: Full-panel budget SLSQP: number of feasible randomized starts (deterministic seed from ridge_bo.sampler_seed).
+    simulation_optimizer_n_starts: int = Field(default=15, ge=10, le=20)
+    #: After the best start, re-solve from perturbed feasible points; used for allocation stability / decision_safe gating.
+    simulation_optimizer_stability_checks: int = Field(default=3, ge=0, le=32)
+    #: Max L1 distance between normalized allocations across stability re-solves; above => not decision-safe.
+    simulation_optimizer_stability_max_l1: float = Field(default=0.22, ge=0.0, le=1.0)
 
 
 class IdentifiabilityRunConfig(BaseModel):
@@ -55,12 +66,14 @@ class GovernanceConfig(BaseModel):
     bayesian_max_divergences: int = 0
     #: When set, ``posterior_predictive_ok`` requires ``mean_abs_gap`` on the modeling scale to be <= this.
     bayesian_max_mean_abs_ppc_gap: float | None = None
+    #: When set (0–1), ``posterior_predictive_ok`` additionally requires ``empirical_coverage_p90`` >= this.
+    bayesian_min_ppc_empirical_coverage: float | None = Field(default=None, ge=0.0, le=1.0)
 
 
 class OptimizationGateConfig(BaseModel):
     """E11: block unsafe optimization."""
 
-    enabled: bool = False
+    enabled: bool = True
     require_governance_optimization_flag: bool = True
     require_response_curve_safe: bool = True
     max_identifiability_risk: float = 0.7
@@ -88,6 +101,19 @@ class CurveResponseConfig(BaseModel):
     require_curve_stress_for_optimization: bool = True
 
 
+class PanelQAConfig(BaseModel):
+    """Data QA above ``validate_panel`` — extension artifacts + optional PROD training blocks."""
+
+    enabled: bool = True
+    #: In ``PROD``, fail training when ``max_severity == "block"`` (e.g. duplicate geo-week keys).
+    prod_block_severity: Literal["off", "block"] = "off"
+    #: Warn when missing (geo, week) cells vs a full rectangular grid exceed this fraction.
+    missing_week_warn_fraction: float = Field(default=0.12, ge=0.0, le=1.0)
+    spend_spike_abs_z: float = Field(default=8.0, ge=3.0, le=30.0)
+    #: Warn when this fraction of rows have all channel spends <= 0.
+    all_channel_zero_warn_fraction: float = Field(default=0.2, ge=0.0, le=1.0)
+
+
 class ExtensionSuiteConfig(BaseModel):
     identifiability: IdentifiabilityRunConfig = Field(default_factory=IdentifiabilityRunConfig)
     governance: GovernanceConfig = Field(default_factory=GovernanceConfig)
@@ -97,5 +123,6 @@ class ExtensionSuiteConfig(BaseModel):
     features: FeatureEngineConfig = Field(default_factory=FeatureEngineConfig)
     falsification: FalsificationConfig = Field(default_factory=FalsificationConfig)
     curves: CurveResponseConfig = Field(default_factory=CurveResponseConfig)
+    panel_qa: PanelQAConfig = Field(default_factory=PanelQAConfig)
 
     model_config = {"extra": "forbid"}

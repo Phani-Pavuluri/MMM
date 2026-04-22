@@ -20,15 +20,20 @@ from mmm.planning.baseline import (
     total_spend_geo_plan,
     total_spend_vector,
 )
+from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
 from mmm.planning.context import RidgeFitContext
-from mmm.planning.control_overlay import ControlOverlaySpec
 from mmm.planning.mu_path import DeltaMuAggregation, mean_mu_and_kpi_summary
-from mmm.planning.posterior_planning import delta_mu_draws_linear_ridge, posterior_planning_gate
+from mmm.planning.posterior_planning import (
+    delta_mu_draws_hierarchical_geo_beta,
+    delta_mu_draws_linear_ridge,
+    posterior_planning_gate,
+)
 from mmm.planning.spend_path import (
     PiecewiseSpendPath,
     counterfactual_piecewise_spend_panel,
     time_mean_spend_by_channel,
 )
+
 
 UncertaintyMode = Literal["point", "posterior"]
 
@@ -157,6 +162,7 @@ def simulate(
     delta_mu_aggregation: DeltaMuAggregation | None = None,
     linear_coef_draws: np.ndarray | None = None,
     intercept_draws: np.ndarray | None = None,
+    hierarchical_draw_pack: dict[str, Any] | None = None,
 ) -> SimulationResult:
     """
     Evaluate **Δμ = μ̂(plan) − μ̂(baseline)** on the modeling scale (aggregation configurable).
@@ -176,10 +182,10 @@ def simulate(
     - Plan path uses ``control_overlay_plan``, else ``control_overlay``, else ``controls_plan`` parsed as
       :class:`ControlOverlaySpec` (dict with ``overrides`` / ``rows``).
 
-    **Posterior / P10–P90:** when ``uncertainty_mode="posterior"``, pass ``linear_coef_draws`` (and optional
-    ``intercept_draws``) together with ``bayesian_fit_meta`` satisfying
-    :func:`mmm.planning.posterior_planning.posterior_planning_gate` to populate ``p10`` / ``p50`` / ``p90``
-    on **Δμ draws** (linear μ on the Ridge design matrix).
+    **Posterior / P10–P90:** when ``uncertainty_mode="posterior"``, pass exactly one of ``linear_coef_draws``
+    (global Ridge-shaped) or ``hierarchical_draw_pack`` (per-geo PyMC export), plus ``bayesian_fit_meta``
+    satisfying :func:`mmm.planning.posterior_planning.posterior_planning_gate`, to populate ``p10`` / ``p50`` /
+    ``p90`` on **Δμ draws**.
 
     **Economics totals:** when the baseline or candidate uses per-geo spend levels, totals and L1 deltas
     use pooled **Σ_geo Σ_channel spend** for consistency. Piecewise paths use time-mean **national** vector
@@ -319,22 +325,49 @@ def simulate(
     p10 = p50 = p90 = None
     post_gate: dict[str, Any] | None = None
     if uncertainty_mode == "posterior":
-        post_gate = posterior_planning_gate(ctx.config, bayesian_fit_meta, linear_coef_draws=linear_coef_draws)
-        if linear_coef_draws is not None and post_gate.get("allowed"):
-            _, _, d_draws = delta_mu_draws_linear_ridge(
-                ctx,
-                baseline_plan=base,
-                spend_plan=spend_plan,
-                linear_coef_draws=np.asarray(linear_coef_draws, dtype=float),
-                intercept_draws=intercept_draws,
-                spend_path_plan=spend_path_plan,
-                spend_plan_geo=spend_plan_geo,
-                controls_plan=controls_plan,
-                control_overlay=control_overlay,
-                control_overlay_baseline=ob,
-                control_overlay_plan=op,
-                delta_mu_aggregation=agg,
+        post_gate = posterior_planning_gate(
+            ctx.config,
+            bayesian_fit_meta,
+            linear_coef_draws=linear_coef_draws,
+            hierarchical_draw_pack=hierarchical_draw_pack,
+        )
+        draw_ok = bool(
+            post_gate.get("allowed")
+            and (
+                (linear_coef_draws is not None and np.asarray(linear_coef_draws).size > 0)
+                or (hierarchical_draw_pack is not None)
             )
+        )
+        if draw_ok:
+            if hierarchical_draw_pack is not None:
+                _, _, d_draws = delta_mu_draws_hierarchical_geo_beta(
+                    ctx,
+                    baseline_plan=base,
+                    spend_plan=spend_plan,
+                    hierarchical_draw_pack=hierarchical_draw_pack,
+                    spend_path_plan=spend_path_plan,
+                    spend_plan_geo=spend_plan_geo,
+                    controls_plan=controls_plan,
+                    control_overlay=control_overlay,
+                    control_overlay_baseline=ob,
+                    control_overlay_plan=op,
+                    delta_mu_aggregation=agg,
+                )
+            else:
+                _, _, d_draws = delta_mu_draws_linear_ridge(
+                    ctx,
+                    baseline_plan=base,
+                    spend_plan=spend_plan,
+                    linear_coef_draws=np.asarray(linear_coef_draws, dtype=float),
+                    intercept_draws=intercept_draws,
+                    spend_path_plan=spend_path_plan,
+                    spend_plan_geo=spend_plan_geo,
+                    controls_plan=controls_plan,
+                    control_overlay=control_overlay,
+                    control_overlay_baseline=ob,
+                    control_overlay_plan=op,
+                    delta_mu_aggregation=agg,
+                )
             p10 = float(np.percentile(d_draws, 10))
             p50 = float(np.percentile(d_draws, 50))
             p90 = float(np.percentile(d_draws, 90))
@@ -412,6 +445,7 @@ def simulate(
             "baseline_plan_source": base.baseline_plan_source,
             "baseline_suitable_for_decisioning": base.suitable_for_decisioning,
             "controls_path_semantics": "+".join(ctrl_sem),
+            "scenario_overlay_summary": summarize_scenario_overlays(ob, op),
             "seasonality_path": "observed_panel_seasonality",
             "promo_path": "observed_panel_promos_if_in_design",
             "geo_time_aggregation": geo_time,

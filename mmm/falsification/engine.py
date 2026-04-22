@@ -26,19 +26,27 @@ class FalsificationEngine:
         self.schema = schema
         self.cfg = cfg
 
-    def run(self, X_media: np.ndarray, y_log: np.ndarray, rng: np.random.Generator) -> FalsificationReport:
+    def run(
+        self,
+        X_media: np.ndarray,
+        y_log: np.ndarray,
+        rng: np.random.Generator,
+        *,
+        ridge_log_alpha: float | None = None,
+    ) -> FalsificationReport:
         flags: list[str] = []
         if not self.cfg.enabled or self.cfg.placebo_draws <= 0:
             return FalsificationReport(0.0, flags)
+        alpha = float(10 ** float(ridge_log_alpha if ridge_log_alpha is not None else 0.0))
         coefs = []
         n = X_media.shape[0]
         for _ in range(self.cfg.placebo_draws):
             noise = rng.normal(0, 1.0, size=(n, 1))
             Xn = np.hstack([X_media, noise])
-            c, _ = fit_ridge(Xn, y_log, alpha=5.0)
+            c, _ = fit_ridge(Xn, y_log, alpha=alpha)
             coefs.append(float(c[-1]))
         mean_noise = float(np.mean(np.abs(coefs)))
-        cref, _ = fit_ridge(X_media, y_log, alpha=5.0)
+        cref, _ = fit_ridge(X_media, y_log, alpha=alpha)
         scale = float(np.mean(np.abs(cref)) + 1e-9)
         if mean_noise > 0.05 * scale:
             flags.append("spurious_attribution_risk: placebo channel absorbs signal")

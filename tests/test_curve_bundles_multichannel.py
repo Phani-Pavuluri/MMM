@@ -13,8 +13,9 @@ from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelF
 from mmm.economics.canonical import build_economics_contract
 from mmm.evaluation.extension_runner import run_post_fit_extensions
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
+from mmm.config.schema import RunEnvironment
+from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
 from mmm.optimization.budget.curve_bundles_io import gather_curve_bundles_from_dict
-from mmm.optimization.budget.curve_optimizer import optimize_budget_from_curve_bundles
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
 
@@ -30,6 +31,16 @@ def test_gather_curve_bundles_single_and_list():
     g2 = gather_curve_bundles_from_dict({"curve_bundles": [b, {**b, "channel": "c2"}]})
     assert g2 is not None
     assert g2[0] == ["c1", "c2"]
+
+
+def _curve_research_cfg() -> MMMConfig:
+    return MMMConfig(
+        framework=Framework.RIDGE_BO,
+        model_form=ModelForm.SEMI_LOG,
+        data=DataConfig(path=None, channel_columns=["a", "b"], target_column="y"),
+        allow_unsafe_decision_apis=True,
+        run_environment=RunEnvironment.RESEARCH,
+    )
 
 
 def test_multichannel_curve_optimizer_respects_budget():
@@ -50,6 +61,7 @@ def test_multichannel_curve_optimizer_respects_budget():
     res = optimize_budget_from_curve_bundles(
         names,
         bundles,
+        config=_curve_research_cfg(),
         current_spend=np.array([50.0, 50.0]),
         total_budget=100.0,
         channel_min=np.zeros(n),
@@ -85,6 +97,7 @@ def test_multichannel_optimizer_rejects_objective_key_not_in_contract() -> None:
         optimize_budget_from_curve_bundles(
             names,
             bundles,
+            config=_curve_research_cfg(),
             current_spend=np.array([50.0, 50.0]),
             total_budget=100.0,
             channel_min=np.zeros(n),
@@ -131,8 +144,29 @@ def test_extension_report_has_curve_bundles_per_channel():
     assert rep["transform_policy"]["policy_version"]
 
 
-def test_cli_prod_requires_curve_data(tmp_path):
-    from mmm.cli import main as cli_main
+def test_prod_yaml_rejects_disabled_optimization_gates(tmp_path):
+    from mmm.config.load import load_config
+
+    yaml = tmp_path / "c.yaml"
+    yaml.write_text(
+        """
+run_environment: prod
+allow_unsafe_decision_apis: false
+data:
+  channel_columns: [c1]
+  control_columns: []
+extensions:
+  optimization_gates:
+    enabled: false
+""",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="optimization_gates"):
+        load_config(yaml)
+
+
+def test_prod_yaml_rejects_allow_unsafe(tmp_path):
+    from mmm.config.load import load_config
 
     yaml = tmp_path / "c.yaml"
     yaml.write_text(
@@ -142,27 +176,11 @@ allow_unsafe_decision_apis: true
 data:
   channel_columns: [c1]
   control_columns: []
-budget:
-  total_budget: 100
-extensions:
-  optimization_gates:
-    enabled: false
 """,
         encoding="utf-8",
     )
-    runner = CliRunner()
-    result = runner.invoke(
-        cli_main.app,
-        ["optimize-budget", str(yaml), "--allow-unsafe-decision-apis"],
-    )
-    assert result.exit_code == 2
-    combined = (result.stderr or "") + (result.stdout or "")
-    cl = combined.lower()
-    assert (
-        "ridge_fit_summary" in cl
-        or "data.path" in cl
-        or "prod_requires_optimization_gates_enabled" in cl
-    )
+    with pytest.raises(ValueError, match="allow_unsafe_decision_apis"):
+        load_config(yaml)
 
 
 def test_cli_curve_bundle_file_runs(tmp_path):
@@ -228,62 +246,6 @@ extensions:
     assert "optimal_spend" in (result.stdout or "")
 
 
-def test_cli_prod_optimize_budget_rejects_curves_without_economics_contract(tmp_path):
-    """Prod requires every bundle to carry the same economics_contract (fail-closed)."""
-    from mmm.cli import main as cli_main
-
-    curve_path = tmp_path / "curves.json"
-    curve_path.write_text(
-        json.dumps(
-            {
-                "curve_bundles": [
-                    {
-                        "channel": "c1",
-                        "spend_grid": [1.0, 5.0, 10.0],
-                        "response_on_modeling_scale": [0.1, 0.4, 0.45],
-                    }
-                ]
-            }
-        ),
-        encoding="utf-8",
-    )
-    yaml = tmp_path / "c.yaml"
-    yaml.write_text(
-        """
-run_environment: prod
-allow_unsafe_decision_apis: true
-data:
-  channel_columns: [c1]
-  control_columns: []
-budget:
-  total_budget: 100
-extensions:
-  optimization_gates:
-    enabled: false
-""",
-        encoding="utf-8",
-    )
-    runner = CliRunner()
-    result = runner.invoke(
-        cli_main.app,
-        [
-            "optimize-budget",
-            str(yaml),
-            "--allow-unsafe-decision-apis",
-            "--curve-bundle",
-            str(curve_path),
-        ],
-    )
-    assert result.exit_code == 2
-    combined = (result.stderr or "") + (result.stdout or "")
-    cl = combined.lower()
-    assert (
-        "ridge_fit_summary" in cl
-        or "data.path" in cl
-        or "prod_requires_optimization_gates_enabled" in cl
-    )
-
-
 def test_cli_simulate_prod_requires_economics_contract_on_bundles(tmp_path):
     from mmm.cli import main as cli_main
 
@@ -316,7 +278,7 @@ proposed_spend:
     yaml.write_text(
         """
 run_environment: prod
-allow_unsafe_decision_apis: true
+allow_unsafe_decision_apis: false
 data:
   channel_columns: [c1]
   control_columns: []
@@ -422,7 +384,7 @@ def test_cli_prod_optimize_budget_full_model_smoke(tmp_path):
     yaml.write_text(
         f"""
 run_environment: prod
-allow_unsafe_decision_apis: true
+allow_unsafe_decision_apis: false
 data:
   path: {csv_path}
   geo_column: geo
@@ -444,7 +406,6 @@ extensions:
         [
             "optimize-budget",
             str(yaml),
-            "--allow-unsafe-decision-apis",
             "--extension-report",
             str(ext),
         ],

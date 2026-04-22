@@ -11,6 +11,26 @@ _EC = build_economics_contract(
 )
 
 
+def test_curve_interp_flags_out_of_grid_spend():
+    curves = [
+        {
+            "channel": "a",
+            "spend_grid": [10.0, 20.0],
+            "response_on_modeling_scale": [0.0, 1.0],
+            "economics_contract": _EC,
+        },
+    ]
+    scen = SpendScenario(
+        baseline_spend={"a": 5.0},
+        proposed_spend={"a": 15.0},
+        y_level_scale=None,
+    )
+    out = run_curve_bundle_scenario(curves, scen, curve_extrapolation_policy="clamp")
+    assert out["any_spend_out_of_curve_grid"] is True
+    row = out["per_channel"][0]
+    assert row["spend_out_of_curve_grid"] is True
+
+
 def test_run_curve_bundle_scenario_delta():
     curves = [
         {

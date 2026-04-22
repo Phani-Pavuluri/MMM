@@ -43,3 +43,7 @@ def test_extension_runner_after_ridge():
     assert em["baseline_type"] == "extension_train_reference"
     assert "decision_bundle" in rep
     assert rep["decision_bundle"]["economics_output_metadata"]["baseline_type"] == "extension_train_reference"
+    assert "panel_qa" in rep
+    assert rep["panel_qa"]["panel_qa_version"] == "mmm_panel_qa_v1"
+    assert "model_release" in rep
+    assert rep["model_release"]["state"]

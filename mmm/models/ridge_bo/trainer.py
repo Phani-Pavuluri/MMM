@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -10,13 +9,12 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from mmm.calibration.engine import CalibrationEngine
-from mmm.calibration.loss import calibration_mismatch_loss
 from mmm.calibration.replay_lift import aggregate_replay_calibration_loss
 from mmm.calibration.replay_prod_gate import assert_replay_production_ready
 from mmm.calibration.units_io import load_calibration_units_from_json
-from mmm.config.schema import Framework, MMMConfig, ModelForm
+from mmm.config.schema import Framework, MMMConfig, ModelForm, RunEnvironment
 from mmm.data.panel_order import sort_panel_for_modeling
+from mmm.data.panel_qa import assert_panel_qa_allows_training
 from mmm.data.schema import PanelSchema, validate_panel
 from mmm.features.design_matrix import apply_masks_for_fit, build_design_matrix
 from mmm.models.base import RidgeBOMMMBase
@@ -52,45 +50,27 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             assert_replay_production_ready(config, self._replay_units, schema=self.schema)
 
     def fit(self, df: pd.DataFrame) -> dict[str, Any]:
-        df = validate_panel(df, self.schema)
+        df = validate_panel(
+            df,
+            self.schema,
+            integrity_qa=self.config.run_environment == RunEnvironment.PROD,
+        )
         df = sort_panel_for_modeling(df, self.schema)
+        assert_panel_qa_allows_training(df, self.schema, self.config)
         cv = auto_cv_mode(df, self.schema, self.config.cv)
         splits = cv.split(df, self.schema)
         if not splits:
             raise RuntimeError("CV produced no splits; adjust min_train_weeks/horizon")
 
-        experiments = []
-        cal_loss_fn: Callable[..., float] | None = None
         if (
-            self.config.allow_unsafe_decision_apis
+            self.config.run_environment == RunEnvironment.PROD
             and self.config.calibration.enabled
-            and self.config.calibration.experiments_path
+            and not (self.config.calibration.use_replay_calibration and self._replay_units)
         ):
-            engine = CalibrationEngine(self.config.calibration.experiments_path)
-            experiments = engine.load()
-            geos = set(df[self.schema.geo_column].unique())
-            chans = set(self.schema.channel_columns)
-            matched = engine.match(
-                experiments,
-                geos=geos,
-                channels=chans,
-                levels=self.config.calibration.match_levels,
-                apply_quality=self.config.calibration.use_quality_weights,
+            raise ValueError(
+                "Production Ridge BO: calibration.enabled requires calibration.use_replay_calibration "
+                "and calibration.replay_units_path with explicit replay_estimand on each replay unit."
             )
-
-            def implied_channel_weights(best_coef: np.ndarray, chan_idx: dict[str, int]) -> dict[str, float]:
-                """Experimental only: raw media coefficients — NOT experiment incremental lift."""
-                out = {}
-                for ch, j in chan_idx.items():
-                    out[ch] = float(best_coef[j])
-                return out
-
-            def cal_loss(best_coef: np.ndarray, _X_cols: list[str]) -> float:
-                idx = {ch: i for i, ch in enumerate(self.schema.channel_columns)}
-                imp = implied_channel_weights(best_coef[: len(idx)], idx)
-                return calibration_mismatch_loss(matched, imp)
-
-            cal_loss_fn = cal_loss
 
         objective_history: list[dict[str, Any]] = []
         leaderboard: list[dict[str, Any]] = []
@@ -155,10 +135,6 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                 cal = float(rloss)
                 parts["replay"] = rmeta
                 parts["mean_lift_se"] = rmeta.get("mean_lift_se", 1.0)
-            if cal_loss_fn is not None and coef_rows:
-                c2 = float(cal_loss_fn(coef_rows[-1], []))
-                cal += c2
-                parts["coef_legacy"] = c2
             if parts:
                 parts["loss"] = float(cal)
                 cal_detail = parts
@@ -281,7 +257,11 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
     def predict(self, df: pd.DataFrame) -> np.ndarray:
         if self._coef is None or self._intercept is None:
             raise RuntimeError("Call fit() first")
-        df = validate_panel(df, self.schema)
+        df = validate_panel(
+            df,
+            self.schema,
+            integrity_qa=self.config.run_environment == RunEnvironment.PROD,
+        )
         df = sort_panel_for_modeling(df, self.schema)
         bundle = build_design_matrix(
             df,

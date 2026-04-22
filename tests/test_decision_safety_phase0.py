@@ -90,7 +90,8 @@ budget:
     result = runner.invoke(cli_main.app, ["optimize-budget", str(yaml)])
     assert result.exit_code == 2
     combined = (result.stderr or "") + (result.stdout or "")
-    assert "blocked" in combined.lower() or "safety" in combined.lower()
+    cl = combined.lower()
+    assert "blocked" in cl or "safety" in cl or "governance" in cl or '"allowed": false' in cl
 
 
 def test_decision_safety_artifact_never_claims_coefficient_lift():
@@ -98,3 +99,42 @@ def test_decision_safety_artifact_never_claims_coefficient_lift():
     assert art["coefficient_aligned_experiment_lift"] is False
     art2 = decision_safety_artifact(allow_unsafe_decision_apis=True)
     assert art2["coefficient_aligned_experiment_lift"] is False
+
+
+def test_prod_bayesian_policy_blocks_optimization_even_when_inference_ok():
+    """Prod + Bayesian: optimize-budget / governance must stay off until a validated prod path exists."""
+    from mmm.config.schema import BayesianConfig, Framework, RunEnvironment
+
+    cfg = MMMConfig(
+        framework=Framework.BAYESIAN,
+        run_environment=RunEnvironment.PROD,
+        bayesian=BayesianConfig(posterior_predictive_draws=500),
+        data={
+            "path": None,
+            "geo_column": "g",
+            "week_column": "w",
+            "target_column": "y",
+            "channel_columns": ["c1"],
+            "control_columns": [],
+        },
+    )
+    schema = PanelSchema("g", "w", "y", ("c1",))
+    panel = pd.DataFrame({"g": ["a"], "w": [0], "y": [1.0], "c1": [1.0]})
+    bl = BaselineComparisonReport(0.1, 1.0, 1.0, 1.0, True, {})
+    js = build_governance_bundle(
+        config=cfg,
+        panel=panel,
+        schema=schema,
+        yhat=panel["y"].to_numpy(),
+        baselines=bl,
+        identifiability_json={"identifiability_score": 0.0},
+        falsification_flags=[],
+        calibration_loss=None,
+        bayesian_decision_inference={
+            "posterior_diagnostics_ok": True,
+            "posterior_predictive_ok": True,
+        },
+    )
+    assert js["approved_for_optimization"] is False
+    assert "bayesian_prod_experimental_only_optimization_disabled" in js["notes"]
+    assert "prod_bayesian_decision_inference_not_ok_blocks_optimization" not in js["notes"]

@@ -52,6 +52,44 @@ class PiecewiseSpendPath:
             )
         return cls(segments=tuple(out))
 
+    @classmethod
+    def from_channel_linear_ramp(
+        cls,
+        *,
+        week_start: float,
+        week_end: float,
+        spend_start_by_channel: dict[str, float],
+        spend_end_by_channel: dict[str, float],
+        n_steps: int = 8,
+    ) -> PiecewiseSpendPath:
+        """
+        Build a **piecewise-constant** approximation of linear spend ramps per channel over ``[week_start, week_end]``.
+
+        Each segment holds spends interpolated at the segment index along ``n_steps`` partitions (inclusive endpoints).
+        """
+        if n_steps < 2:
+            raise ValueError("n_steps must be >= 2 for a ramp")
+        ws, we = float(week_start), float(week_end)
+        if we < ws:
+            raise ValueError("week_end must be >= week_start")
+        keys = sorted(set(spend_start_by_channel) | set(spend_end_by_channel))
+        if not keys:
+            raise ValueError("spend_start_by_channel / spend_end_by_channel must not both be empty")
+        out: list[SpendSegment] = []
+        for i in range(n_steps):
+            frac_lo = i / n_steps
+            frac_hi = (i + 1) / n_steps
+            t0 = ws + (we - ws) * frac_lo
+            t1 = ws + (we - ws) * frac_hi if i < n_steps - 1 else we
+            t_sp = i / max(n_steps - 1, 1)
+            sp: dict[str, float] = {}
+            for ch in keys:
+                a = float(spend_start_by_channel.get(ch, spend_end_by_channel.get(ch, 0.0)))
+                b = float(spend_end_by_channel.get(ch, spend_start_by_channel.get(ch, 0.0)))
+                sp[ch] = float(a + t_sp * (b - a))
+            out.append(SpendSegment(week_start=t0, week_end=t1, spend_by_channel=sp))
+        return cls(segments=tuple(out))
+
 
 def counterfactual_piecewise_spend_panel(
     panel: pd.DataFrame,

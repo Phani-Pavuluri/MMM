@@ -7,6 +7,8 @@ from mmm.calibration.replay_estimand import ReplayEstimandSpec
 from mmm.config.schema import MMMConfig, RunEnvironment
 from mmm.data.schema import PanelSchema
 from mmm.economics.canonical import REPLAY_LIFT_SCALES_KPI_LEVEL
+from mmm.experiments.durable_registry import get_experiment_from_registry, load_experiment_registry
+from mmm.experiments.registry import ApprovalState
 
 
 def validate_replay_units_economics_alignment(
@@ -91,3 +93,32 @@ def assert_replay_production_ready(
         except ValueError as e:
             raise ValueError(f"replay unit {u.unit_id!r}: invalid replay_estimand: {e}") from e
     validate_replay_units_economics_alignment(config, schema, units)
+    _assert_replay_experiment_registry_gate(config, units)
+
+
+def _assert_replay_experiment_registry_gate(config: MMMConfig, units: list[CalibrationUnit]) -> None:
+    if config.run_environment != RunEnvironment.PROD:
+        return
+    if not config.calibration.require_approved_experiment_registry:
+        return
+    path = (config.calibration.experiment_registry_path or "").strip()
+    if not path:
+        raise ValueError(
+            "calibration.require_approved_experiment_registry requires calibration.experiment_registry_path"
+        )
+    reg = load_experiment_registry(path)
+    for u in units:
+        eid = (u.experiment_id or "").strip()
+        if not eid:
+            raise ValueError(
+                f"replay unit {u.unit_id!r}: experiment_id required when "
+                "calibration.require_approved_experiment_registry is true in prod"
+            )
+        rec = get_experiment_from_registry(reg, eid)
+        if rec is None:
+            raise ValueError(f"replay unit {u.unit_id!r}: experiment_id {eid!r} not found in registry {path!r}")
+        if rec.approval != ApprovalState.APPROVED:
+            raise PermissionError(
+                f"replay unit {u.unit_id!r}: experiment_id {eid!r} has approval={rec.approval.value!r}; "
+                "expected approved in prod registry gate"
+            )

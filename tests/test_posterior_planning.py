@@ -7,7 +7,6 @@ import pytest
 
 from mmm.config.extensions import ExtensionSuiteConfig, ProductScopeConfig
 from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm, RunEnvironment
-from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.optimization.budget.risk_optimizer import optimize_budget_risk_aware
 from mmm.planning import bau_baseline_from_panel, simulate, simulate_posterior
 from mmm.planning.context import RidgeFitContext, ridge_context_from_fit
@@ -16,6 +15,7 @@ from mmm.planning.posterior_planning import (
     posterior_planning_gate,
     risk_objective_scalar,
 )
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
 
@@ -148,3 +148,8 @@ def test_optimize_budget_risk_aware_smoke() -> None:
     assert res["success"] in (True, False)
     assert "posterior_delta_mu_p50" in res
     assert "recommended_spend_plan" in res
+    ppm = res.get("posterior_planning_metadata") or {}
+    assert ppm.get("posterior_planning_mode") == "draw_based_approximation"
+    assert ppm.get("draw_source_artifact") == "linear_coef_draws"
+    assert ppm.get("decision_safe") is True  # non-prod ctx from _ctx()
+    assert ppm.get("economics_contract_version")
