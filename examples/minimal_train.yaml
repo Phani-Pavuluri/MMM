@@ -1,0 +1,38 @@
+run_id: null
+framework: ridge_bo
+model_form: semi_log
+pooling: partial
+random_seed: 42
+data:
+  path: examples/sample_panel.csv
+  geo_column: geo_id
+  week_column: week_start_date
+  target_column: revenue
+  channel_columns:
+    - search
+    - social
+    - tv
+  control_columns: []
+transforms:
+  adstock: geometric
+  saturation: hill
+  adstock_params:
+    decay: 0.5
+  saturation_params:
+    half_max: 1.0
+    slope: 2.0
+cv:
+  mode: auto
+  n_splits: 3
+  min_train_weeks: 20
+  horizon_weeks: 4
+ridge_bo:
+  n_trials: 6
+  sampler_seed: 1
+objective:
+  primary_metric: wmape
+calibration:
+  enabled: false
+artifacts:
+  backend: local
+  run_dir: ./mmm_runs

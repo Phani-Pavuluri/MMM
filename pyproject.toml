@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mmm"
+version = "0.1.0"
+description = "Production-grade weekly geo-level Marketing Mix Modeling"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "MMM Team" }]
+keywords = ["marketing", "mix", "modeling", "MMM", "geo", "Bayesian", "optimization"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "scipy>=1.11",
+  "pydantic>=2.5",
+  "pyyaml>=6.0",
+  "typer>=0.12",
+  "rich>=13.0",
+]
+
+[project.optional-dependencies]
+bayesian = ["pymc>=5.10", "arviz>=0.17"]
+stan = ["cmdstanpy>=1.2"]
+bo = ["optuna>=3.5"]
+tracking = ["mlflow>=2.10"]
+dev = [
+  "pytest>=7.4",
+  "pytest-cov>=4.1",
+  "ruff>=0.3",
+  "mypy>=1.8",
+  "types-PyYAML",
+]
+all = ["mmm[bayesian,stan,bo,tracking,dev]"]
+
+[project.scripts]
+mmm = "mmm.cli.main:app"
+
+[project.urls]
+Homepage = "https://example.com/mmm"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mmm*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "pymc: requires pymc",
+  "optuna: requires optuna",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_ignores = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
