@@ -105,9 +105,9 @@ def test_prod_bayesian_policy_blocks_optimization_even_when_inference_ok():
     """Prod + Bayesian: optimize-budget / governance must stay off until a validated prod path exists."""
     from mmm.config.schema import BayesianConfig, Framework, RunEnvironment
 
-    cfg = MMMConfig(
+    base = MMMConfig(
         framework=Framework.BAYESIAN,
-        run_environment=RunEnvironment.PROD,
+        run_environment=RunEnvironment.RESEARCH,
         bayesian=BayesianConfig(posterior_predictive_draws=500),
         data={
             "path": None,
@@ -117,6 +117,22 @@ def test_prod_bayesian_policy_blocks_optimization_even_when_inference_ok():
             "channel_columns": ["c1"],
             "control_columns": [],
         },
+    )
+    cfg = base.model_copy(
+        update={
+            "run_environment": RunEnvironment.PROD,
+            "cv": base.cv.model_copy(update={"mode": "rolling"}),
+            "objective": base.objective.model_copy(
+                update={"normalization_profile": "strict_prod"},
+            ),
+            "extensions": base.extensions.model_copy(
+                update={
+                    "governance": base.extensions.governance.model_copy(
+                        update={"bayesian_max_mean_abs_ppc_gap": 0.2}
+                    )
+                }
+            ),
+        }
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
     panel = pd.DataFrame({"g": ["a"], "w": [0], "y": [1.0], "c1": [1.0]})

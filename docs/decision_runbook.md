@@ -24,14 +24,63 @@ This document defines how to safely use the MMM system for decision-making.
 
 ---
 
-## 2a. Production policy (code-enforced)
+## 2a. Production requirements (CLI + Python API)
 
-These rules are validated when loading YAML (`MMMConfig`); do not rely on operators to remember them.
+These rules are **enforced in code** (config load, CLI, `mmm.decision.api`, and bundle validators). Missing inputs fail closed (typically exit code **2** on CLI, `SemanticContractError` from the Python API).
 
-- **`allow_unsafe_decision_apis`**: **must be `false`** in `run_environment=prod`. Unsafe / legacy surfaces (e.g. curve-bundle optimizers) are not available in prod.
-- **`extensions.optimization_gates.enabled`**: **must be `true`** in prod. Budget optimization without gates is rejected.
-- **Bayesian budget / planning in prod**: **Optimization approval is disabled** for Bayesian models in prod until a future validated implementation re-enables it (governance always sets `approved_for_optimization` false with an explicit note). **CLI `optimize-budget` also rejects** `framework=bayesian` in prod.
-- **Bayesian prod training**: **`bayesian.posterior_predictive_draws` must be > 0** in prod (PPC path required by config).
+| Requirement | Behavior |
+|-------------|----------|
+| **Canonical commands** | Use **`mmm decide simulate`** and **`mmm decide optimize-budget`**. Top-level **`mmm simulate`** / **`mmm optimize-budget`** are **compatibility shims** (same logic, **DeprecationWarning**). |
+| **`--out` (PROD)** | **Required** for both decide commands in `run_environment=prod` so decision JSON is always persisted and validated. |
+| **Extension report** | **Required** path for PROD optimize; simulate requires **`--extension-report`** with **`ridge_fit_summary.coef`**. |
+| **Decision bundle** | PROD success responses include **`decision_bundle`**; incomplete lineage, semantics, tier, or economics metadata **abort** the command. |
+| **`model_release.state`** | **Must be `planning_allowed`** for PROD **simulate** and **optimize-budget**. Other states (`research_only`, `reporting_allowed`, `invalidated`) **block** with stderr text listing the policy reason. |
+| **Panel QA** | PROD simulate requires **`panel_qa.max_severity` ≠ `block`**. Optimization gates may also block when `prod_block_on_panel_qa_*` is enabled. |
+| **CV in PROD** | **`cv.split_axis: calendar_week`** only. **`geo_rank`** / **`geo_blocked`** fail at **YAML parse** in prod. |
+| **Unsafe APIs** | **`allow_unsafe_decision_apis: false`** is **mandatory** in prod (parse-time). |
+| **Bayesian optimize** | **`mmm decide optimize-budget`** is **blocked** for `framework=bayesian` in prod (exit **2**). |
+| **Bayesian training in prod** | **`posterior_predictive_draws > 0`** and **`extensions.governance.bayesian_max_mean_abs_ppc_gap`** set (finite). That **does not** enable prod budget optimization for Bayesian. |
+| **Posterior planning** | Draw-based / posterior planning helpers **fail closed in prod** via `posterior_planning_gate` until explicitly re-certified. |
+
+Additional YAML / training rules (transforms, Ridge BO leaderboard refit, replay-only calibration approval, replay concentration) remain as configured in `MMMConfig` and extension governance—see checklist in §12.
+
+## 2b. Lineage and audit fields (PROD decision artifacts)
+
+Successful PROD **`mmm decide … --out`** JSON includes a **`decision_bundle`** with at least:
+
+- **`config_sha`** / **`config_fingerprint_sha256`** (identical)
+- **`data_fingerprint`** and **`panel_fingerprint`** (must match)
+- **`package_version`**
+- **`git_sha`** (set **`MMM_GIT_SHA`** or **`GITHUB_SHA`** in CI when `.git` is unavailable)
+- **`dependency_digest`**
+- **`artifact_tier`** = **`decision`**
+- **`economics_contract_version`** / economics metadata on the bundle and on enriched **`simulation`** objects
+- **`data_version_id`** when `data.data_version_id` is set in config
+
+## 2c. Artifact tiers (machine + operator)
+
+| Tier | Typical sources | Use for PROD budgeting / Δμ commitments |
+|------|-----------------|----------------------------------------|
+| **`diagnostic`** | Response curves, curve diagnostics CLI, decomposition columns | **No** — not dollar truth |
+| **`research`** | Extension-only bundles, proxies, exploratory JSON | **No** — not the gated decision path |
+| **`decision`** | Successful **`mmm decide …`** PROD outputs after gates + semantic validation | **Yes** — subject to human review of assumptions |
+
+**Only `artifact_tier=decision`** with **`not_for_budgeting=false`** and **`decision_safe=true`** satisfies the PROD CLI validators.
+
+## 2d. Command semantics (operator)
+
+| Command | Role |
+|---------|------|
+| **`mmm train`** | Fit, CV, extensions; writes **`extension_report.json`**. **Not** a Δμ decision. |
+| **`mmm diagnose`** / **`mmm evaluate`** | Summarize extension sections (baselines, governance, curve ROI summary). **Diagnostic read**, not allocation-safe by itself. |
+| **`mmm decide simulate`** | Full-panel **`decision_simulate.simulate`**. **Not** curve-based. |
+| **`mmm decide optimize-budget`** | SLSQP maximizing Δμ via the same simulator. **Blocked** in prod without extension report + ridge summary + gates + `planning_allowed`. |
+| **`mmm simulate-diagnostic-curves`** | Curve / SpendPlan diagnostics only. **Tier diagnostic**; do **not** substitute for `decide simulate`. |
+
+**Decomposition / ROI (read carefully)**
+
+- **Decomposition** channel columns are **not exact additive dollars**; artifacts carry `economics_output_metadata` with `computation_mode=approximate` for this surface.
+- **Curve mROAS / ROI summaries** are **local proxies** (`mroas_values_are_local_proxies_not_exact_business_truth` in reporting JSON). Do not treat as audited financial statements.
 
 ---
 
@@ -197,7 +246,7 @@ Every experiment used for calibration must declare (and you must verify):
 | Class | Examples | May be used for budgeting? |
 |--------|----------|----------------------------|
 | **Diagnostic** | Response **curves**, curve stress tests, identifiability, decomposition (often log / modeling scale), sensitivity sweeps | **No** |
-| **Decision** | **`simulate()`** on full model, **optimize-budget** via full-model simulation, **replay-aligned** calibration metrics | **Yes** (subject to governance + QA + stability) |
+| **Decision** | **`simulate()`** on full model (CLI: **`mmm decide simulate`**), **budget optimization** via full-model simulation (CLI: **`mmm decide optimize-budget`**), **replay-aligned** calibration metrics | **Yes** (subject to governance + QA + stability) |
 
 **Rule**
 

@@ -47,3 +47,8 @@ def test_extension_runner_after_ridge():
     assert rep["panel_qa"]["panel_qa_version"] == "mmm_panel_qa_v1"
     assert "model_release" in rep
     assert rep["model_release"]["state"]
+    assert "run_manifest" in rep
+    assert rep["run_manifest"]["manifest_version"]
+    assert "post_fit_validation" in rep
+    assert "operational_health" in rep
+    assert rep["operational_health"]["status"] in ("healthy", "warning", "blocked")

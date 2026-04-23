@@ -19,6 +19,7 @@ class GovernanceScorecard:
     approved_for_optimization: bool
     notes: list[str] = field(default_factory=list)
     decision_safe_uncertainty: bool = False
+    identifiability_limits_decision_safety: bool = False
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -31,6 +32,7 @@ class GovernanceScorecard:
             "approved_for_optimization": self.approved_for_optimization,
             "notes": self.notes,
             "decision_safe_uncertainty": self.decision_safe_uncertainty,
+            "identifiability_limits_decision_safety": self.identifiability_limits_decision_safety,
         }
 
 
@@ -49,13 +51,22 @@ def build_scorecard(
     notes: list[str] = []
     ok_fit = fit_mae <= cfg.max_mae_ratio_vs_baseline * baseline_mae
     ok_id = identifiability_score <= cfg.max_identifiability_risk
+    id_limits_safety = float(identifiability_score) > float(cfg.max_identifiability_risk) * float(
+        cfg.identifiability_decision_safety_margin
+    )
     if calibration_loss is None:
         ok_cal = True
     elif calibration_is_replay:
         ok_cal = float(calibration_loss) < cfg.max_replay_calibration_chi2
     else:
         ok_cal = float(calibration_loss) < cfg.max_legacy_calibration_loss
-    ok_false = (not cfg.require_falsification_pass) or (len(falsification_flags) == 0)
+    n_false = len(falsification_flags)
+    if cfg.require_falsification_pass:
+        ok_false = n_false == 0
+    elif cfg.falsification_max_allowed_flags_for_optimization is not None:
+        ok_false = n_false <= int(cfg.falsification_max_allowed_flags_for_optimization)
+    else:
+        ok_false = True
     appr_rep = bool(ok_fit and ok_id and beats_baselines)
     if decision_api_freeze:
         appr_opt = False
@@ -73,6 +84,14 @@ def build_scorecard(
         notes.append("main model does not beat baselines by configured margin")
     if not ok_id:
         notes.append("identifiability_risk exceeds governance.max_identifiability_risk")
+    if id_limits_safety:
+        notes.append(
+            "identifiability_approaches_governance_cap: decision_safety_downgraded_for_interpretation"
+        )
+    if not ok_false and cfg.falsification_max_allowed_flags_for_optimization is not None:
+        notes.append(
+            f"falsification_flag_count={n_false} exceeds governance.falsification_max_allowed_flags_for_optimization"
+        )
     return GovernanceScorecard(
         fit_mae=fit_mae,
         baseline_mae=baseline_mae,
@@ -83,4 +102,5 @@ def build_scorecard(
         approved_for_optimization=appr_opt,
         notes=notes,
         decision_safe_uncertainty=False,
+        identifiability_limits_decision_safety=bool(id_limits_safety or not ok_id),
     )

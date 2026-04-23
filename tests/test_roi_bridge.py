@@ -19,7 +19,7 @@ def test_marginal_revenue_scales_with_y():
 
 
 def test_curve_bundle_artifact_includes_mroas_when_y_scale_set():
-    grid = np.array([1.0, 5.0, 10.0])
+    grid = np.linspace(1.0, 10.0, 8)
     curve = build_curve_for_channel(
         grid, decay=0.5, hill_half=1.0, hill_slope=2.0, beta=0.5, model_form="semi_log"
     )
@@ -51,10 +51,14 @@ def test_curve_bundle_artifact_includes_mroas_when_y_scale_set():
     assert "mroas_level_consistent" in art
     assert len(art["mroas_level_proxy"]) == len(grid)
     assert len(art["mroas_level_consistent"]) == len(grid)
-    assert art["roi_bridge"]["y_level_scale"] == 50.0
+    tr = art.get("typed_roi_quantity") or {}
+    econ = tr.get("economics_notes") if isinstance(tr.get("economics_notes"), dict) else {}
+    assert econ.get("y_level_scale") == 50.0
     assert "economics" in art
     assert art["economics"]["version"] == "mmm_economics_v1"
     assert art.get("economics_contract", {}).get("contract_version")
+    assert "typed_curve_quantity" in art
+    assert art["typed_curve_quantity"].get("quantity_contract_version") == "mmm_quantity_envelope_v1"
 
 
 def test_roi_summary_reads_curve_bundles():
@@ -67,6 +71,7 @@ def test_roi_summary_reads_curve_bundles():
         }
     ]
     s = curve_bundles_to_roi_summary(bundles)
-    assert s["channels"][0]["channel"] == "a"
+    rows = (s.get("economics_notes") or {}).get("channels") if isinstance(s.get("economics_notes"), dict) else []
+    assert rows[0]["channel"] == "a"
     # mid index for len 2 is 1 → second grid value
-    assert s["channels"][0]["mroas_level_proxy_mid_grid"] == 1.0
+    assert rows[0]["mroas_level_proxy_mid_grid"] == 1.0

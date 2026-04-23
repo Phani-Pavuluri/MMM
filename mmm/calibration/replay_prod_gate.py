@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import numpy as np
+
 from mmm.calibration.contracts import CalibrationUnit
 from mmm.calibration.replay_estimand import ReplayEstimandSpec
 from mmm.config.schema import MMMConfig, RunEnvironment
@@ -93,7 +95,29 @@ def assert_replay_production_ready(
         except ValueError as e:
             raise ValueError(f"replay unit {u.unit_id!r}: invalid replay_estimand: {e}") from e
     validate_replay_units_economics_alignment(config, schema, units)
+    _assert_replay_inverse_se_concentration(config, units)
     _assert_replay_experiment_registry_gate(config, units)
+
+
+def _assert_replay_inverse_se_concentration(config: MMMConfig, units: list[CalibrationUnit]) -> None:
+    if config.run_environment != RunEnvironment.PROD or len(units) < 2:
+        return
+    inv: list[float] = []
+    for u in units:
+        se = float(u.lift_se) if u.lift_se is not None and float(u.lift_se) > 0 else 1.0
+        se = max(se, 1e-4)
+        inv.append(1.0 / se)
+    arr = np.asarray(inv, dtype=float)
+    s = float(arr.sum())
+    if s <= 0:
+        return
+    mx = float(arr.max() / s)
+    cap = float(config.extensions.governance.replay_max_unit_inverse_se_influence_share)
+    if mx > cap:
+        raise ValueError(
+            f"replay calibration inverse-SE concentration too high in prod (max share {mx:.3f} > {cap}); "
+            "add experiments or fix underestimated lift_se values."
+        )
 
 
 def _assert_replay_experiment_registry_gate(config: MMMConfig, units: list[CalibrationUnit]) -> None:

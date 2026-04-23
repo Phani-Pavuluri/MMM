@@ -1,6 +1,11 @@
 import pandas as pd
+import pytest
 
-from mmm.calibration.matching import match_experiments
+from mmm.calibration.matching import (
+    match_experiments,
+    match_experiments_with_trace,
+    validate_calibration_match_levels,
+)
 from mmm.calibration.schema import ExperimentObservation
 
 
@@ -78,3 +83,30 @@ def test_device_requires_allowed_set_when_match_levels_include_device():
         allowed_devices={"mobile", "desktop"},
     )
     assert len(m_ok) == 1
+
+
+def test_validate_rejects_unknown_match_level() -> None:
+    with pytest.raises(ValueError, match="unsupported"):
+        validate_calibration_match_levels(["geo", "not_a_real_level"])
+
+
+def test_match_trace_records_rejections_and_warnings() -> None:
+    exps = [
+        ExperimentObservation(
+            experiment_id="e1",
+            geo_id="G0",
+            channel="search",
+            lift=0.1,
+            lift_se=0.02,
+            device="mobile",
+        ),
+    ]
+    res = match_experiments_with_trace(
+        exps,
+        available_geos={"G0"},
+        available_channels={"search"},
+        match_levels=["geo", "channel", "device"],
+        allowed_devices=None,
+    )
+    assert res.trace["rejections"].get("device_set_but_no_allowed_devices_supplied", 0) >= 1
+    assert any("device_in_match_levels" in w for w in res.trace["warnings"])

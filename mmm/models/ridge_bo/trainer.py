@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -20,6 +21,7 @@ from mmm.features.design_matrix import apply_masks_for_fit, build_design_matrix
 from mmm.models.base import RidgeBOMMMBase
 from mmm.models.ridge_bo.objective import build_composite
 from mmm.models.ridge_bo.ridge import fit_ridge, predict_ridge
+from mmm.performance.cache import _df_fingerprint
 from mmm.validation.cv import auto_cv_mode
 
 
@@ -54,6 +56,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             df,
             self.schema,
             integrity_qa=self.config.run_environment == RunEnvironment.PROD,
+            calendar_strict=self.config.run_environment == RunEnvironment.PROD,
         )
         df = sort_panel_for_modeling(df, self.schema)
         assert_panel_qa_allows_training(df, self.schema, self.config)
@@ -74,8 +77,11 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
 
         objective_history: list[dict[str, Any]] = []
         leaderboard: list[dict[str, Any]] = []
+        design_bundle_cache: dict[tuple[Any, ...], Any] = {}
+        replay_loss_cache: dict[tuple[Any, ...], tuple[float, dict[str, Any]]] = {}
 
         def evaluate_trial(params: dict[str, float]) -> tuple[float, dict[str, Any]]:
+            t_wall0 = time.perf_counter()
             decay = params["decay"]
             hill_half = params["hill_half"]
             hill_slope = params["hill_slope"]
@@ -85,14 +91,22 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             intercept_rows: list[np.ndarray] = []
             y_true_folds: list[np.ndarray] = []
             y_pred_folds: list[np.ndarray] = []
-            bundle = build_design_matrix(
-                df,
-                self.schema,
-                self.config,
-                decay=decay,
-                hill_half=hill_half,
-                hill_slope=hill_slope,
+            dkey = (
+                _df_fingerprint(df, self.schema),
+                round(float(decay), 9),
+                round(float(hill_half), 9),
+                round(float(hill_slope), 9),
             )
+            if dkey not in design_bundle_cache:
+                design_bundle_cache[dkey] = build_design_matrix(
+                    df,
+                    self.schema,
+                    self.config,
+                    decay=decay,
+                    hill_half=hill_half,
+                    hill_slope=hill_slope,
+                )
+            bundle = design_bundle_cache[dkey]
             for train_mask, val_mask in splits:
                 if len(train_mask) != len(bundle.df_aligned):
                     raise RuntimeError("CV masks length mismatch; ensure panel is sorted by geo, week")
@@ -110,31 +124,39 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             cal = 0.0
             parts: dict[str, Any] = {}
             if self._replay_units and coef_rows and intercept_rows:
-                coef_l = coef_rows[-1]
-                int_l = intercept_rows[-1]
+                # Replay calibration must use the same coefficient object as a shipped model for these
+                # hyperparameters: full-panel refit on all rows (not any single CV fold).
+                rkey = (dkey, round(float(alpha), 9))
+                if rkey not in replay_loss_cache:
+                    coef_full, intercept_full = fit_ridge(bundle.X, bundle.y_modeling, alpha)
 
-                def predict_level(dfp: pd.DataFrame) -> np.ndarray:
-                    b = build_design_matrix(
-                        dfp,
-                        self.schema,
-                        self.config,
-                        decay=decay,
-                        hill_half=hill_half,
-                        hill_slope=hill_slope,
+                    def predict_level(dfp: pd.DataFrame) -> np.ndarray:
+                        b = build_design_matrix(
+                            dfp,
+                            self.schema,
+                            self.config,
+                            decay=decay,
+                            hill_half=hill_half,
+                            hill_slope=hill_slope,
+                        )
+                        ylog = predict_ridge(b.X, coef_full, intercept_full)
+                        return np.exp(ylog)
+
+                    rloss, rmeta = aggregate_replay_calibration_loss(
+                        self._replay_units,
+                        predict_level,
+                        schema=self.schema,
+                        target_col=self.schema.target_column,
+                        config=self.config,
                     )
-                    ylog = predict_ridge(b.X, coef_l, int_l)
-                    return np.exp(ylog)
-
-                rloss, rmeta = aggregate_replay_calibration_loss(
-                    self._replay_units,
-                    predict_level,
-                    schema=self.schema,
-                    target_col=self.schema.target_column,
-                    config=self.config,
-                )
+                    replay_loss_cache[rkey] = (float(rloss), dict(rmeta) if isinstance(rmeta, dict) else {})
+                rloss, rmeta = replay_loss_cache[rkey]
                 cal = float(rloss)
                 parts["replay"] = rmeta
                 parts["mean_lift_se"] = rmeta.get("mean_lift_se", 1.0)
+                parts["calibration_score_source"] = "full_data_refit_same_hyperparameters_as_shipped_model"
+                parts["predictive_score_source"] = "time_series_cv_folds"
+                parts["calibration_refit_n_rows"] = int(bundle.X.shape[0])
             if parts:
                 parts["loss"] = float(cal)
                 cal_detail = parts
@@ -149,6 +171,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                 log_alpha=log_alpha,
                 calibration_details=cal_detail,
                 cfg=self.config.objective,
+                include_weight_sensitivity=True,
             )
             detail = {
                 "total": total,
@@ -157,6 +180,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                 "objective_normalization": norm_report,
                 "normalization_profile": self.config.objective.normalization_profile.value,
                 "params": params,
+                "evaluate_wall_time_ms": float((time.perf_counter() - t_wall0) * 1000.0),
             }
             objective_history.append(detail)
             leaderboard.append(detail)
@@ -247,11 +271,21 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             intercept=intercept,
             leaderboard=sorted(leaderboard, key=lambda d: d["total"])[:20],
         )
+        hist = objective_history if used_optuna else leaderboard
+        times = [float(h.get("evaluate_wall_time_ms", 0.0)) for h in hist if isinstance(h, dict)]
+        telem = {
+            "n_hyperparameter_evaluations": len(times),
+            "total_eval_wall_time_ms": float(sum(times)),
+            "mean_eval_wall_time_ms": float(np.mean(times)) if times else 0.0,
+            "design_matrix_cache_unique_hyperparameter_keys": len(design_bundle_cache),
+            "replay_calibration_loss_cache_entries": len(replay_loss_cache),
+        }
         return {
             "best_score": best_score,
             "best_detail": best_detail,
             "used_optuna": used_optuna,
             "artifacts": self._artifacts,
+            "ridge_bo_telemetry": telem,
         }
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
@@ -261,6 +295,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             df,
             self.schema,
             integrity_qa=self.config.run_environment == RunEnvironment.PROD,
+            calendar_strict=self.config.run_environment == RunEnvironment.PROD,
         )
         df = sort_panel_for_modeling(df, self.schema)
         bundle = build_design_matrix(

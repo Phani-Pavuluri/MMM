@@ -42,6 +42,7 @@ def validate_panel(
     *,
     allow_nan_controls: bool = True,
     integrity_qa: bool = False,
+    calendar_strict: bool = False,
 ) -> pd.DataFrame:
     required = (
         schema.geo_column,
@@ -73,6 +74,16 @@ def validate_panel(
     dup = df.duplicated(subset=[schema.geo_column, schema.week_column])
     if dup.any():
         raise PanelValidationError("Duplicate (geo, week) rows present")
+
+    if calendar_strict:
+        wparsed = pd.to_datetime(df[schema.week_column], errors="coerce")
+        if wparsed.isna().any():
+            raise PanelValidationError(
+                f"Week column {schema.week_column!r} must be parseable as datetimes in strict calendar mode "
+                "(prod ingest); fix typing before training."
+            )
+        df = df.copy()
+        df[schema.week_column] = wparsed
 
     if integrity_qa:
         validate_panel_integrity_extended(df, schema)

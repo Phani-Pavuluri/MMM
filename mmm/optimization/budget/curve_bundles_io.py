@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from mmm.decomposition.curve_export_gate import validate_curve_bundle_typed_curve_quantity
+
 
 def _valid_bundle(d: dict[str, Any]) -> bool:
     g = d.get("spend_grid")
@@ -13,7 +15,11 @@ def _valid_bundle(d: dict[str, Any]) -> bool:
     return isinstance(g, list) and isinstance(r, list) and len(g) >= 2 and len(g) == len(r)
 
 
-def gather_curve_bundles_from_dict(data: dict[str, Any]) -> tuple[list[str], list[dict[str, Any]]] | None:
+def gather_curve_bundles_from_dict(
+    data: dict[str, Any],
+    *,
+    require_typed_curve_quantity: bool = False,
+) -> tuple[list[str], list[dict[str, Any]]] | None:
     """
     Parse ``curve_bundles`` (preferred) or a single ``curve_bundle`` dict.
 
@@ -29,6 +35,8 @@ def gather_curve_bundles_from_dict(data: dict[str, Any]) -> tuple[list[str], lis
             ch = item.get("channel")
             if not isinstance(ch, str) or not ch:
                 continue
+            if require_typed_curve_quantity:
+                validate_curve_bundle_typed_curve_quantity(item, context=f"gather_curve_bundles[{ch}]")
             names.append(ch)
             bundles.append(item)
         if names:
@@ -38,6 +46,8 @@ def gather_curve_bundles_from_dict(data: dict[str, Any]) -> tuple[list[str], lis
     if isinstance(one, dict) and _valid_bundle(one):
         ch = one.get("channel")
         if isinstance(ch, str) and ch:
+            if require_typed_curve_quantity:
+                validate_curve_bundle_typed_curve_quantity(one, context=f"gather_curve_bundles[{ch}]")
             return ([ch], [one])
     return None
 
@@ -46,9 +56,13 @@ def load_curve_bundles_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def gather_curve_bundles_from_path(path: Path) -> tuple[list[str], list[dict[str, Any]]] | None:
+def gather_curve_bundles_from_path(
+    path: Path,
+    *,
+    require_typed_curve_quantity: bool = False,
+) -> tuple[list[str], list[dict[str, Any]]] | None:
     """Load JSON file; body may be a full extension report or ``{\"curve_bundles\": [...]}``."""
     data = load_curve_bundles_json(path)
     if not isinstance(data, dict):
         return None
-    return gather_curve_bundles_from_dict(data)
+    return gather_curve_bundles_from_dict(data, require_typed_curve_quantity=require_typed_curve_quantity)

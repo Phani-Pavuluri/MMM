@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from mmm.config.schema import BayesianBackend, Framework, MMMConfig, ModelForm, PoolingMode
+from mmm.config.schema import BayesianBackend, Framework, MMMConfig, ModelForm, PoolingMode, RunEnvironment
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import assert_panel_qa_allows_training
 from mmm.data.schema import PanelSchema, validate_panel
@@ -48,7 +48,19 @@ class BayesianMMMTrainer(BayesianMMMBase):
         except ImportError as e:  # pragma: no cover
             raise ImportError("Install pymc and arviz extras: pip install mmm[bayesian]") from e
 
-        df = validate_panel(df, self.schema)
+        n_pp_cfg = int(getattr(self.config.bayesian, "posterior_predictive_draws", 0) or 0)
+        if self.config.run_environment == RunEnvironment.PROD and n_pp_cfg <= 0:
+            raise ValueError(
+                "run_environment=prod with framework=bayesian requires bayesian.posterior_predictive_draws>0 "
+                "so PPC artifacts are always generated for governance."
+            )
+
+        df = validate_panel(
+            df,
+            self.schema,
+            integrity_qa=self.config.run_environment == RunEnvironment.PROD,
+            calendar_strict=self.config.run_environment == RunEnvironment.PROD,
+        )
         df = sort_panel_for_modeling(df, self.schema)
         assert_panel_qa_allows_training(df, self.schema, self.config)
         decay = float(self.config.transforms.adstock_params.get("decay", 0.5))
@@ -61,6 +73,7 @@ class BayesianMMMTrainer(BayesianMMMBase):
             decay=decay,
             hill_half=hill_half,
             hill_slope=hill_slope,
+            modeling_config=self.config,
         )
         y = df[self.schema.target_column].to_numpy(dtype=float)
         if self.config.model_form == ModelForm.SEMI_LOG:
@@ -79,6 +92,7 @@ class BayesianMMMTrainer(BayesianMMMBase):
         assert n_m + n_c == p
         s_m = float(self.config.bayesian.media_coef_sigma)
         s_c = float(self.config.bayesian.control_coef_sigma)
+        media_prior = str(getattr(self.config.bayesian, "media_channel_prior", "half_normal_nonneg"))
 
         n_pr = int(getattr(self.config.bayesian, "prior_predictive_draws", 0) or 0)
         n_pp = int(getattr(self.config.bayesian, "posterior_predictive_draws", 0) or 0)
@@ -89,7 +103,10 @@ class BayesianMMMTrainer(BayesianMMMBase):
             if self.config.pooling == PoolingMode.PARTIAL:
                 parts_mu = []
                 if n_m > 0:
-                    parts_mu.append(pm.HalfNormal("beta_mu_media", sigma=s_m, shape=n_m))
+                    if media_prior == "normal_symmetric":
+                        parts_mu.append(pm.Normal("beta_mu_media", mu=0.0, sigma=s_m, shape=n_m))
+                    else:
+                        parts_mu.append(pm.HalfNormal("beta_mu_media", sigma=s_m, shape=n_m))
                 if n_c > 0:
                     parts_mu.append(pm.Normal("beta_mu_ctrl", mu=0.0, sigma=s_c, shape=n_c))
                 beta_mu = pm.Deterministic("beta_mu", pm.math.concatenate(parts_mu))
@@ -100,7 +117,10 @@ class BayesianMMMTrainer(BayesianMMMBase):
             elif self.config.pooling == PoolingMode.FULL:
                 parts_b = []
                 if n_m > 0:
-                    parts_b.append(pm.HalfNormal("beta_media", sigma=s_m, shape=n_m))
+                    if media_prior == "normal_symmetric":
+                        parts_b.append(pm.Normal("beta_media", mu=0.0, sigma=s_m, shape=n_m))
+                    else:
+                        parts_b.append(pm.HalfNormal("beta_media", sigma=s_m, shape=n_m))
                 if n_c > 0:
                     parts_b.append(pm.Normal("beta_ctrl", mu=0.0, sigma=s_c, shape=n_c))
                 beta = pm.Deterministic("beta", pm.math.concatenate(parts_b))
@@ -212,12 +232,28 @@ class BayesianMMMTrainer(BayesianMMMBase):
             "linear_coef_draws_meta": draw_meta,
             "hierarchical_draw_pack": hpack,
             "hierarchical_draw_pack_meta": hmeta,
+            "bayesian_prior_policy": {
+                "media_channel_prior": media_prior,
+                "pooling_mode": self.config.pooling.value,
+                "prod_budget_decision_posture": "Bayesian draws and posterior planning are research/diagnostic only under current prod policy; not approved for prod Δμ budgeting.",
+                "positivity_assumption_note": (
+                    "HalfNormal on media channels encodes non-negative media elasticities on the modeling scale; "
+                    "use bayesian.media_channel_prior=normal_symmetric only when negative effects are scientifically required."
+                    if media_prior == "half_normal_nonneg"
+                    else "Normal(0, sigma) media prior allows negative elasticities; review KPI sign semantics before interpreting."
+                ),
+            },
         }
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
         if self._idata is None:
             raise RuntimeError("fit first")
-        df = validate_panel(df, self.schema)
+        df = validate_panel(
+            df,
+            self.schema,
+            integrity_qa=self.config.run_environment == RunEnvironment.PROD,
+            calendar_strict=self.config.run_environment == RunEnvironment.PROD,
+        )
         decay = float(self.config.transforms.adstock_params.get("decay", 0.5))
         hill_half = float(self.config.transforms.saturation_params.get("half_max", 1.0))
         hill_slope = float(self.config.transforms.saturation_params.get("slope", 2.0))
@@ -228,6 +264,7 @@ class BayesianMMMTrainer(BayesianMMMBase):
             decay=decay,
             hill_half=hill_half,
             hill_slope=hill_slope,
+            modeling_config=self.config,
         )
         if self.config.model_form == ModelForm.LOG_LOG:
             X = safe_log(np.maximum(X, 1e-9))

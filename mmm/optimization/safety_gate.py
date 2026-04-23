@@ -31,6 +31,7 @@ class OptimizationSafetyGate:
         identifiability_score: float,
         run_environment: RunEnvironment | None = None,
         extension_report_present: bool = False,
+        panel_qa: dict[str, Any] | None = None,
     ) -> GateResult:
         audit: list[str] = []
         if run_environment == RunEnvironment.PROD:
@@ -51,6 +52,23 @@ class OptimizationSafetyGate:
                     False,
                     ["prod_requires_governance_section_in_extension_report"],
                     audit=["empty_governance"],
+                )
+            pq = panel_qa or {}
+            sev = str(pq.get("max_severity", "info"))
+            if self.cfg.prod_block_on_panel_qa_block and sev == "block":
+                return GateResult(
+                    False,
+                    [
+                        "prod_panel_qa_block_severity_in_extension_report",
+                        "panel_qa_block_includes_calendar_integrity_or_duplicate_geo_week_issues_fix_data_first",
+                    ],
+                    audit=["panel_qa_block"],
+                )
+            if self.cfg.prod_block_on_panel_qa_warn and sev == "warn":
+                return GateResult(
+                    False,
+                    ["prod_panel_qa_warn_severity_in_extension_report"],
+                    audit=["panel_qa_warn"],
                 )
 
         if not self.cfg.enabled:

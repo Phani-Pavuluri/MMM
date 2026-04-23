@@ -4,6 +4,10 @@ from __future__ import annotations
 
 from typing import Any
 
+from mmm.contracts.quantity_models import (
+    curve_quantity_result_from_response_curve,
+    roi_approx_quantity_from_level_bridge_artifact,
+)
 from mmm.decomposition.curve_stress import CurveStressReport
 from mmm.decomposition.curves import ResponseCurve
 from mmm.decomposition.response_diagnostics import ResponseDiagnostics
@@ -25,6 +29,12 @@ def curve_bundle_to_artifact(
     target_column: str = "revenue",
     anchor_spend: float | None = None,
 ) -> dict[str, Any]:
+    qty = curve_quantity_result_from_response_curve(
+        curve,
+        channel=channel,
+        non_canonical_builder="none",
+        validity_diagnostics={"horizon_weeks": horizon_weeks, "aggregation": aggregation},
+    )
     base: dict[str, Any] = {
         "channel": channel,
         "horizon_weeks": horizon_weeks,
@@ -33,6 +43,7 @@ def curve_bundle_to_artifact(
         "spend_grid": curve.spend_grid.tolist(),
         "response_on_modeling_scale": curve.response.tolist(),
         "marginal_roi_modeling_scale": curve.marginal_roi.tolist(),
+        "typed_curve_quantity": qty.section_dict(),
         "diagnostics": diagnostics.to_json(),
         "stress": stress.to_json(),
         "marginal_roi_definition": (
@@ -48,10 +59,15 @@ def curve_bundle_to_artifact(
             anchor_spend=anchor_spend,
         )
         return attach_contract_to_curve_artifact(art, economics_contract)
-    base["roi_bridge"] = {
-        "model_form": model_form,
-        "y_level_scale": None,
-        "notes": "Pass y_level_scale to curve_bundle_to_artifact for level-space mROAS proxy.",
-    }
-    base["roi_bridge"]["target_kpi_column"] = target_column
+    typed_roi = roi_approx_quantity_from_level_bridge_artifact(
+        mroas_level_proxy=[],
+        economics_notes={
+            "model_form": model_form,
+            "y_level_scale": None,
+            "notes": "Pass y_level_scale to curve_bundle_to_artifact for level-space mROAS proxy.",
+            "target_kpi_column": target_column,
+        },
+        validity_diagnostics={"source": "curve_bundle_to_artifact:no_y_level_scale"},
+    )
+    base["typed_roi_quantity"] = typed_roi.section_dict()
     return attach_contract_to_curve_artifact(base, economics_contract)

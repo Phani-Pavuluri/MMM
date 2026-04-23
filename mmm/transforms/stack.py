@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 import pandas as pd
 
-from mmm.config.schema import ModelForm, TransformConfig
+from mmm.config.schema import MMMConfig, ModelForm, TransformConfig
 from mmm.data.schema import PanelSchema
 from mmm.transforms.registry import apply_adstock_saturation_series
 
@@ -29,10 +29,15 @@ def build_channel_features_from_params(
     decay: float | None = None,
     hill_half: float | None = None,
     hill_slope: float | None = None,
+    modeling_config: MMMConfig | None = None,
 ) -> np.ndarray:
     """Build (n_rows, n_channels) transformed media matrix with explicit hyperparameters."""
+    from mmm.contracts.canonical_transforms import assert_canonical_media_stack_for_modeling
     from mmm.transforms.adstock.geometric import GeometricAdstock
     from mmm.transforms.saturation.hill import HillSaturation
+
+    if modeling_config is not None:
+        assert_canonical_media_stack_for_modeling(modeling_config)
 
     if transform_cfg.adstock != "geometric":
         raise NotImplementedError("Only geometric adstock in fast path for BO")

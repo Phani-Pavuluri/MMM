@@ -20,8 +20,8 @@ from mmm.planning.baseline import (
     total_spend_geo_plan,
     total_spend_vector,
 )
-from mmm.planning.context import RidgeFitContext
 from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
+from mmm.planning.context import RidgeFitContext
 from mmm.planning.mu_path import DeltaMuAggregation, mean_mu_and_kpi_summary
 from mmm.planning.posterior_planning import (
     delta_mu_draws_hierarchical_geo_beta,
@@ -33,6 +33,7 @@ from mmm.planning.spend_path import (
     counterfactual_piecewise_spend_panel,
     time_mean_spend_by_channel,
 )
+
 
 UncertaintyMode = Literal["point", "posterior"]
 
@@ -441,6 +442,11 @@ def simulate(
         aggregation_semantics=agg_sem,
         kpi_column=ctx.schema.target_column,
         extra={
+            "decision_geography_contract": {
+                "delta_mu_aggregation": agg,
+                "budget_geo_budget_enabled": bool(ctx.config.budget.geo_budget_enabled),
+                "optimizer_mode": "per_geo_channel" if ctx.config.budget.geo_budget_enabled else "national_channel_vector",
+            },
             "baseline_plan_source": base.baseline_plan_source,
             "baseline_suitable_for_decisioning": base.suitable_for_decisioning,
             "controls_path_semantics": "+".join(ctrl_sem),

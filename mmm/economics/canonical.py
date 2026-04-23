@@ -253,10 +253,13 @@ def economics_contract_for_curve_bundles(
         return json.dumps(ec, sort_keys=True, default=str)
 
     if strict:
+        from mmm.decomposition.curve_export_gate import validate_curve_bundle_typed_curve_quantity
+
         ref_s: str | None = None
         ref_dict: dict[str, Any] | None = None
         for b in bundles:
             ch = str(b.get("channel", "?"))
+            validate_curve_bundle_typed_curve_quantity(b, context=f"economics_contract_for_curve_bundles[{ch}]")
             ec = b.get("economics_contract")
             if not isinstance(ec, dict) or not ec.get("contract_version"):
                 raise ValueError(

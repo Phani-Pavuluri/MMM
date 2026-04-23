@@ -15,6 +15,7 @@ from mmm.data.schema import PanelSchema
 from mmm.experiments.durable_registry import upsert_experiment_record
 from mmm.experiments.registry import ApprovalState, ExperimentRecord
 
+
 _OBS = pd.DataFrame({"g": [1], "w": [1], "y": [1.0], "c1": [1.0]})
 _BASE_UNIT = CalibrationUnit(
     unit_id="u1",
@@ -55,6 +56,12 @@ def test_prod_replay_gate_ok_complete_unit() -> None:
             target_column="y",
         ),
         run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        cv={"mode": "rolling"},
+        objective={
+            "normalization_profile": "strict_prod",
+            "named_profile": "ridge_bo_standard_v1",
+        },
         calibration=CalibrationConfig(use_replay_calibration=True, replay_units_path="x.json"),
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
@@ -73,6 +80,12 @@ def test_prod_replay_gate_missing_estimand() -> None:
             target_column="y",
         ),
         run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        cv={"mode": "rolling"},
+        objective={
+            "normalization_profile": "strict_prod",
+            "named_profile": "ridge_bo_standard_v1",
+        },
         calibration=CalibrationConfig(use_replay_calibration=True, replay_units_path="x.json"),
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
@@ -92,6 +105,12 @@ def test_prod_replay_gate_rejects_unknown_lift_scale() -> None:
             target_column="y",
         ),
         run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        cv={"mode": "rolling"},
+        objective={
+            "normalization_profile": "strict_prod",
+            "named_profile": "ridge_bo_standard_v1",
+        },
         calibration=CalibrationConfig(use_replay_calibration=True, replay_units_path="x.json"),
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
@@ -129,6 +148,12 @@ def _prod_schema_cfg(tmp_reg: Path | None) -> tuple[MMMConfig, PanelSchema]:
             target_column="y",
         ),
         run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        cv={"mode": "rolling"},
+        objective={
+            "normalization_profile": "strict_prod",
+            "named_profile": "ridge_bo_standard_v1",
+        },
         calibration=CalibrationConfig(**cal_kw),
     )
     schema = PanelSchema("g", "w", "y", ("c1",))

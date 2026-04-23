@@ -5,15 +5,15 @@ from __future__ import annotations
 import json
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
-if TYPE_CHECKING:
-    from mmm.data.schema import PanelSchema
-
-from mmm.calibration.matching import MatchedExperiment, match_experiments
+from mmm.calibration.matching import MatchedExperiment, match_experiments_with_trace
 from mmm.calibration.schema import ExperimentObservation
+
+if TYPE_CHECKING:
+    from mmm.config.schema import RunEnvironment
 
 
 class CalibrationEngineBase(ABC):
@@ -59,16 +59,44 @@ class CalibrationEngine(CalibrationEngineBase):
         levels: list[str],
         apply_quality: bool = True,
         panel: pd.DataFrame | None = None,
-        schema: PanelSchema | None = None,
+        schema: Any = None,
         allowed_devices: set[str] | None = None,
         allowed_products: set[str] | None = None,
     ) -> list[MatchedExperiment]:
-        from mmm.data.schema import PanelSchema as _PS
+        matched, _trace = self.match_with_trace(
+            experiments,
+            geos=geos,
+            channels=channels,
+            levels=levels,
+            apply_quality=apply_quality,
+            panel=panel,
+            schema=schema,
+            allowed_devices=allowed_devices,
+            allowed_products=allowed_products,
+        )
+        return matched
+
+    def match_with_trace(
+        self,
+        experiments: list[ExperimentObservation],
+        *,
+        geos: set[str] | None,
+        channels: set[str],
+        levels: list[str],
+        apply_quality: bool = True,
+        panel: pd.DataFrame | None = None,
+        schema: Any = None,
+        allowed_devices: set[str] | None = None,
+        allowed_products: set[str] | None = None,
+        run_environment: RunEnvironment | None = None,
+    ) -> tuple[list[MatchedExperiment], dict[str, Any]]:
+        """Like ``match`` but returns ``(matched, trace_json)`` for calibration artifacts."""
+        from mmm.data.schema import PanelSchema as _PanelSchema
 
         p_min: pd.Timestamp | None = None
         p_max: pd.Timestamp | None = None
         if panel is not None and schema is not None and "time_window" in levels:
-            if not isinstance(schema, _PS):
+            if not isinstance(schema, _PanelSchema):
                 raise TypeError("schema must be a PanelSchema when panel is provided for time_window matching")
             wt = pd.to_datetime(panel[schema.week_column], errors="coerce")
             if wt.isna().all():
@@ -76,7 +104,7 @@ class CalibrationEngine(CalibrationEngineBase):
             else:
                 p_min = pd.Timestamp(wt.min())
                 p_max = pd.Timestamp(wt.max())
-        return match_experiments(
+        res = match_experiments_with_trace(
             experiments,
             available_geos=geos,
             available_channels=channels,
@@ -86,4 +114,6 @@ class CalibrationEngine(CalibrationEngineBase):
             panel_week_max=p_max,
             allowed_devices=allowed_devices,
             allowed_products=allowed_products,
+            run_environment=run_environment,
         )
+        return res.matched, res.trace

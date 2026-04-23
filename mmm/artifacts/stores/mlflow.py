@@ -1,4 +1,10 @@
-"""Optional MLflow store — lazy import, never required for core."""
+"""Optional MLflow store — lazy import, never required for core.
+
+**Support posture:** local file-store tracking is exercised in development; remote tracking URIs,
+artifact server ACLs, and MLflow server version skew are **not** integration-guaranteed in this package.
+Treat ``ArtifactBackend.MLFLOW`` as **experimental** unless your environment pins MLflow and runs your
+own contract tests. Prefer ``ArtifactBackend.LOCAL`` for reproducible CI and audited decision bundles.
+"""
 
 from __future__ import annotations
 
@@ -43,8 +49,9 @@ class MLflowArtifactStore(ArtifactStoreBase):
         self._mlflow.log_artifacts(str(path), artifact_path=name)
 
     def log_dict(self, name: str, payload: dict[str, Any]) -> None:
-        import json
         import tempfile
+
+        import json
 
         with tempfile.TemporaryDirectory() as td:
             p = Path(td) / f"{name}.json"

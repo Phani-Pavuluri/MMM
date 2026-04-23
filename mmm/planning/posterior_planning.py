@@ -12,6 +12,10 @@ Requires **Bayesian decision diagnostics** (``posterior_diagnostics_ok`` and
   ``fit_out["linear_coef_draws"]`` when export succeeds), or bootstrap / other externally validated draws.
 - **Partial / no pooling:** global Ridge-shaped export is **not** supported — the μ path is per-geo;
   prod posterior planning stays blocked unless you add an explicit hierarchical simulator.
+
+**Alignment with point Δμ:** :func:`delta_mu_draws_linear_ridge` and :func:`mmm.planning.decision_simulate.simulate`
+share :func:`mmm.planning.mu_path.counterfactual_design_matrix` / ``predict_ridge`` aggregation semantics for the
+Ridge path; see ``tests/test_posterior_point_mu_alignment.py`` for a line-of-logic collapse test (identical draws).
 """
 
 from __future__ import annotations
@@ -22,10 +26,10 @@ from typing import Any, Literal
 import numpy as np
 
 from mmm.config.schema import MMMConfig, RunEnvironment
-from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.planning.baseline import BaselinePlan, bau_baseline_from_panel
 from mmm.planning.context import RidgeFitContext
 from mmm.planning.control_overlay import ControlOverlaySpec
+from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.planning.mu_path import (
     DeltaMuAggregation,
     aggregate_mean_mu_draws,
@@ -125,13 +129,10 @@ def posterior_planning_gate(
     elif line_ok and draws is not None and draws.ndim != 2:
         reasons.append("linear_coef_draws_must_be_2d")
     allowed = len(reasons) == 0
-    if (
-        allowed
-        and config.run_environment == RunEnvironment.PROD
-        and config.extensions.product.posterior_planning_mode != "draws"
-    ):
+    # Option A (locked contract): draw-based posterior planning remains experimental; block all prod use.
+    if config.run_environment == RunEnvironment.PROD:
         allowed = False
-        reasons.append("prod_requires_extensions.product.posterior_planning_mode_draws")
+        reasons.append("prod_posterior_planning_blocked_experimental_only_policy")
     return {
         "allowed": allowed,
         "reasons": reasons,

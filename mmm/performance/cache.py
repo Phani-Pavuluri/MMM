@@ -18,7 +18,7 @@ def _df_fingerprint(df: pd.DataFrame, schema: PanelSchema) -> str:
     sub = df.loc[:, cols].reset_index(drop=True)
     h = pd.util.hash_pandas_object(sub, index=True)
     blob = np.asarray(h.values, dtype=np.uint64).tobytes() + str(len(df)).encode()
-    return hashlib.sha256(blob).hexdigest()[:32]
+    return hashlib.sha256(blob).hexdigest()
 
 
 _cv_cache: dict[tuple[str, str], Any] = {}

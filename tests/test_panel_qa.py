@@ -50,6 +50,12 @@ def test_assert_panel_qa_prod_block_raises() -> None:
         model_form=ModelForm.SEMI_LOG,
         data=DataConfig(path=None, geo_column="g", week_column="w", channel_columns=["c1"], target_column="y"),
         run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        cv={"mode": "rolling"},
+        objective={
+            "normalization_profile": "strict_prod",
+            "named_profile": "ridge_bo_standard_v1",
+        },
         extensions={"panel_qa": {"prod_block_severity": "block"}},
     )
     with pytest.raises(PermissionError, match="panel QA"):

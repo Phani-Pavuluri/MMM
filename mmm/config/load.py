@@ -21,9 +21,10 @@ def load_config(path: str | Path) -> MMMConfig:
 
 def resolve_config(cfg: MMMConfig) -> MMMConfig:
     """Apply environment-derived defaults (normalization profile) before training."""
-    from mmm.config.validators import apply_environment_objective_profile
+    from mmm.config.validators import apply_environment_objective_profile_inplace
 
-    return apply_environment_objective_profile(cfg)
+    apply_environment_objective_profile_inplace(cfg)
+    return cfg
 
 
 def dump_resolved_config(cfg: MMMConfig, dest: str | Path) -> None:

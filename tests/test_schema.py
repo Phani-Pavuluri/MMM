@@ -17,6 +17,20 @@ def test_validate_panel_ok():
     validate_panel(df, schema)
 
 
+def test_validate_panel_calendar_strict_rejects_bad_week_strings() -> None:
+    df = pd.DataFrame(
+        {
+            "geo_id": ["A", "A"],
+            "week": ["2024-01-01", "not-a-date"],
+            "revenue": [10.0, 11.0],
+            "c1": [1.0, 2.0],
+        }
+    )
+    schema = PanelSchema("geo_id", "week", "revenue", ("c1",))
+    with pytest.raises(PanelValidationError, match="parseable"):
+        validate_panel(df, schema, calendar_strict=True)
+
+
 def test_validate_negative_spend_raises():
     df = pd.DataFrame(
         {

@@ -9,6 +9,8 @@ def test_identifiability_engine_runs():
     y_lin = (X @ np.array([0.1, 0.2, 0.3]) + rng.normal(0, 0.1, size=200)).astype(float)
     y_log = np.log(np.maximum(y_lin, 1e-6))
     eng = IdentifiabilityEngine()
-    r = eng.analyze(X, ["a", "b", "c"], y_log, rng)
-    assert "identifiability_score" in r.to_json()
+    r = eng.analyze(X, ["a", "b", "c"], y_log, rng, ridge_log_alpha=-1.0)
+    js = r.to_json()
+    assert "identifiability_score" in js
     assert r.max_vif >= 1.0
+    assert js.get("diagnostic_context", {}).get("ridge_log_alpha_passed") == -1.0

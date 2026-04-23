@@ -199,6 +199,38 @@ def _vector_binding_report(
     }
 
 
+def _decision_safe_false_reasons(
+    *,
+    optimizer_success: bool,
+    allocation_stable: bool,
+    jitter_ok: bool,
+) -> list[str]:
+    """Programmatic reasons when ``decision_safe`` is false but the solver may still report success."""
+    out: list[str] = []
+    if not optimizer_success:
+        out.append("numerical_optimizer_did_not_report_success")
+    if not allocation_stable:
+        out.append("allocation_unstable_across_perturbed_multistart_re_solves")
+    if not jitter_ok:
+        out.append("delta_mu_materially_sensitive_to_small_budget_perturbation_vs_scale")
+    return out
+
+
+def _objective_path_economics_metadata(*, mode: str) -> dict[str, Any]:
+    return {
+        "canonical_decision_quantity": "delta_mu_vs_baseline",
+        "uncertainty_mode_in_objective": "point",
+        "exact_vs_approximate": (
+            "point_delta_mu_under_fixed_ridge_coefficients_is_exact_given_the_fitted_mu_map"
+        ),
+        "approximation_flags": {
+            "slsqp": "local_nlp_solver_may_not_find_global_budget_optimum",
+            "multistart": "finite_random_feasible_starts_cap_exploration",
+            "mode": mode,
+        },
+    }
+
+
 def _normalized_allocation_stability(
     neg_f: Callable[[np.ndarray], float],
     opt_x: np.ndarray,
@@ -405,6 +437,11 @@ def _optimize_budget_geo(
     ref_scale = max(abs(float(final_sim.delta_mu)), 1.0)
     jitter_ok = dm_std <= 0.02 * ref_scale
     opt_decision_safe = bool(res.success and stab_ok and jitter_ok)
+    dsr = _decision_safe_false_reasons(
+        optimizer_success=bool(res.success),
+        allocation_stable=stab_ok,
+        jitter_ok=jitter_ok,
+    )
     sim_js = final_sim.to_json()
     sim_js.setdefault(
         "economics_metadata",
@@ -434,6 +471,8 @@ def _optimize_budget_geo(
         "multistart": multistart_meta,
         "stability": stab_meta,
         "constraint_binding": binding,
+        "decision_safe_false_reasons": [] if opt_decision_safe else dsr,
+        "objective_path_economics_metadata": _objective_path_economics_metadata(mode="geo_pooled_total_budget"),
         "product_language_note": (
             "This is a simulation-scored **per-geo** budget allocation from full-panel Δμ; "
             "constraints follow budget.geo_* config; validate before decisioning."
@@ -459,6 +498,13 @@ def optimize_budget_via_simulation(
     ``(geo × channel)`` vector with pooled total ``sum_{g,c} spend = total_budget`` plus
     ``budget.geo_*`` inequalities; ``current_spend`` is ignored (warm start from baseline / BAU per geo).
     """
+    from mmm.decision.gates import decision_pipeline_active
+
+    if not decision_pipeline_active():
+        raise RuntimeError(
+            "optimize_budget_via_simulation is decision-gated: use mmm.decision.api.run_decision_optimization, "
+            "or in tests wrap the call with mmm.decision.gates.allow_decision_pipeline()."
+        )
     names = list(ctx.schema.channel_columns)
     n = len(names)
     if current_spend.shape != (n,) or channel_min.shape != (n,) or channel_max.shape != (n,):
@@ -556,6 +602,11 @@ def optimize_budget_via_simulation(
     ref_scale = max(abs(float(final_sim.delta_mu)), 1.0)
     jitter_ok = dm_std <= 0.02 * ref_scale
     opt_decision_safe = bool(res.success and stab_ok and jitter_ok)
+    dsr = _decision_safe_false_reasons(
+        optimizer_success=bool(res.success),
+        allocation_stable=stab_ok,
+        jitter_ok=jitter_ok,
+    )
     sim_js = final_sim.to_json()
     sim_js.setdefault(
         "economics_metadata",
@@ -584,6 +635,8 @@ def optimize_budget_via_simulation(
         "multistart": multistart_meta,
         "stability": stab_meta,
         "constraint_binding": binding,
+        "decision_safe_false_reasons": [] if opt_decision_safe else dsr,
+        "objective_path_economics_metadata": _objective_path_economics_metadata(mode="national_total_budget"),
         "product_language_note": (
             "This is a simulation-scored budget allocation candidate from full-panel Δμ; "
             "do not describe as globally optimal unless validation and business review pass."

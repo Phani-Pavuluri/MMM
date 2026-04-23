@@ -6,8 +6,15 @@ import numpy as np
 import pytest
 
 from mmm.config.extensions import ExtensionSuiteConfig, ProductScopeConfig
-from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm, RunEnvironment
-from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
+from mmm.config.schema import (
+    CVConfig,
+    DataConfig,
+    Framework,
+    MMMConfig,
+    ModelForm,
+    NormalizationProfile,
+    RunEnvironment,
+)
 from mmm.optimization.budget.risk_optimizer import optimize_budget_risk_aware
 from mmm.planning import bau_baseline_from_panel, simulate, simulate_posterior
 from mmm.planning.context import RidgeFitContext, ridge_context_from_fit
@@ -16,6 +23,7 @@ from mmm.planning.posterior_planning import (
     posterior_planning_gate,
     risk_objective_scalar,
 )
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
 
@@ -93,6 +101,13 @@ def test_prod_requires_posterior_planning_mode_draws() -> None:
     cfg = cfg0.model_copy(
         update={
             "run_environment": RunEnvironment.PROD,
+            "prod_canonical_modeling_contract_id": "ridge_bo_semi_log_calendar_cv_v1",
+            "objective": cfg0.objective.model_copy(
+                update={
+                    "normalization_profile": NormalizationProfile.STRICT_PROD,
+                    "named_profile": "ridge_bo_standard_v1",
+                }
+            ),
             "extensions": cfg0.extensions.model_copy(
                 update={"product": ProductScopeConfig(posterior_planning_mode="off")}
             ),

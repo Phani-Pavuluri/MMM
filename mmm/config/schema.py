@@ -84,6 +84,8 @@ class DataConfig(BaseModel):
     channel_columns: list[str] = Field(default_factory=list)
     control_columns: list[str] = Field(default_factory=list)
     wide_format: bool = True
+    #: Optional durable dataset version (lakehouse snapshot id, etc.) for decision bundle lineage.
+    data_version_id: str | None = None
 
 
 class TransformConfig(BaseModel):
@@ -124,6 +126,9 @@ class BayesianConfig(BaseModel):
     nuts_seed: int = 42
     media_coef_sigma: float = 0.8
     control_coef_sigma: float = 2.0
+    #: ``half_normal_nonneg`` encodes a positivity prior on **media** channels (default). ``normal_symmetric``
+    #: allows negative media elasticities when KPI/channel semantics require it (research; document in artifacts).
+    media_channel_prior: Literal["half_normal_nonneg", "normal_symmetric"] = "half_normal_nonneg"
     prior_predictive_draws: int = 0
     posterior_predictive_draws: int = 0
 
@@ -135,6 +140,16 @@ class ObjectiveWeights(BaseModel):
     plausibility: float = 0.25
     complexity: float = 0.1
 
+    @model_validator(mode="after")
+    def _nonnegative_and_positive_sum(self) -> ObjectiveWeights:
+        d = self.model_dump()
+        for k, v in d.items():
+            if float(v) < 0:
+                raise ValueError(f"objective.weights.{k} must be >= 0 (got {v})")
+        if sum(float(x) for x in d.values()) <= 0:
+            raise ValueError("objective.weights must sum to a positive value")
+        return self
+
 
 class CompositeObjectiveConfig(BaseModel):
     """Ridge+BO composite objective — components are normalized before weighting."""
@@ -144,6 +159,11 @@ class CompositeObjectiveConfig(BaseModel):
     multi_objective: bool = False
     pareto_store_trials: bool = True
     normalization_profile: NormalizationProfile = NormalizationProfile.RESEARCH
+    #: Prod Ridge+BO: required explicit objective contract name (no silent default-objective behavior).
+    named_profile: str | None = Field(
+        default=None,
+        description="Named Ridge+BO objective profile for prod governance (e.g. ridge_bo_standard_v1).",
+    )
 
 
 class CalibrationConfig(BaseModel):
@@ -165,6 +185,18 @@ class CalibrationConfig(BaseModel):
     #: When ``True`` in PROD, every replay unit must carry a non-empty ``experiment_id`` that is
     #: ``approved`` in the registry.
     require_approved_experiment_registry: bool = False
+
+    @model_validator(mode="after")
+    def _validate_calibration_match_levels(self) -> CalibrationConfig:
+        from mmm.calibration.matching import validate_calibration_match_levels
+
+        validate_calibration_match_levels(self.match_levels)
+        if self.enabled and self.experiments_path and "channel" not in self.match_levels:
+            raise ValueError(
+                "calibration.enabled with experiments_path requires 'channel' in calibration.match_levels "
+                "(experiment rows are always filtered by channel against panel channel_columns)."
+            )
+        return self
 
 
 class BudgetConfig(BaseModel):
@@ -191,6 +223,7 @@ class BudgetConfig(BaseModel):
 
 
 class ArtifactConfig(BaseModel):
+    #: ``mlflow`` is **experimental** in this package (remote tracking not contract-tested); prefer ``local`` for CI.
     backend: ArtifactBackend = ArtifactBackend.LOCAL
     run_dir: str = "./mmm_runs"
     mlflow_experiment: str | None = None
@@ -222,25 +255,56 @@ class MMMConfig(BaseModel):
     #: objective; governance never approves optimization; CLI ``optimize-budget`` is blocked unless
     #: YAML sets this ``True`` **and** ``--allow-unsafe-decision-apis`` is passed.
     allow_unsafe_decision_apis: bool = False
+    #: Prod **Ridge+BO** only: explicit acknowledgement that ``model_form`` / link matches a supported contract.
+    #: Must be ``ridge_bo_semi_log_calendar_cv_v1`` when ``model_form=semi_log``, or
+    #: ``ridge_bo_log_log_calendar_cv_v1`` when ``model_form=log_log``.
+    prod_canonical_modeling_contract_id: str | None = Field(default=None)
 
     model_config = {"extra": "forbid"}
 
     @model_validator(mode="after")
     def _validate_channels_and_prod_safety(self) -> MMMConfig:
+        import os
+
+        from mmm.config.validators import (
+            apply_environment_objective_profile_inplace,
+            validate_geo_budget_planning_consistency,
+            validate_prod_cv_configuration,
+            validate_prod_explicit_modeling_policy,
+            validate_prod_model_form_contract,
+            validate_transform_stack_for_framework,
+        )
+
+        apply_environment_objective_profile_inplace(self)
         if not self.data.channel_columns:
             raise ValueError("data.channel_columns must be non-empty")
-        from mmm.config.validators import validate_implemented_transforms_for_framework
-
-        validate_implemented_transforms_for_framework(self)
+        validate_transform_stack_for_framework(self)
+        validate_geo_budget_planning_consistency(self)
         if self.run_environment == RunEnvironment.PROD:
+            validate_prod_cv_configuration(self)
+            validate_prod_explicit_modeling_policy(self)
+            validate_prod_model_form_contract(self)
+            dvid = str(self.data.data_version_id or os.environ.get("MMM_DATA_VERSION_ID") or "").strip()
+            if not dvid:
+                raise ValueError(
+                    "run_environment=prod requires data.data_version_id (dataset snapshot / durable version id). "
+                    "Tests may set MMM_DATA_VERSION_ID only as a non-production escape hatch."
+                )
             if self.allow_unsafe_decision_apis:
                 raise ValueError("run_environment=prod requires allow_unsafe_decision_apis=False")
             if not self.extensions.optimization_gates.enabled:
                 raise ValueError("run_environment=prod requires extensions.optimization_gates.enabled=True")
-            if self.framework == Framework.BAYESIAN and int(self.bayesian.posterior_predictive_draws or 0) <= 0:
-                raise ValueError(
-                    "run_environment=prod with framework=bayesian requires bayesian.posterior_predictive_draws>0"
-                )
+            if self.framework == Framework.BAYESIAN:
+                if int(self.bayesian.posterior_predictive_draws or 0) <= 0:
+                    raise ValueError(
+                        "run_environment=prod with framework=bayesian requires bayesian.posterior_predictive_draws>0"
+                    )
+                gv = self.extensions.governance
+                if gv.bayesian_max_mean_abs_ppc_gap is None:
+                    raise ValueError(
+                        "run_environment=prod with framework=bayesian requires "
+                        "extensions.governance.bayesian_max_mean_abs_ppc_gap (finite PPC mean-abs gap gate)"
+                    )
             fe = self.extensions.features
             if fe.trend_spline_knots > 0 or fe.fourier_yearly_harmonics > 0 or (fe.holiday_country or "").strip():
                 raise ValueError(

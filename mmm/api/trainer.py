@@ -18,10 +18,11 @@ from mmm.config.schema import Framework, MMMConfig
 from mmm.data.fingerprint import fingerprint_panel
 from mmm.data.loader import DatasetBuilder
 from mmm.data.panel_order import sort_panel_for_modeling
+from mmm.data.panel_qa import run_panel_qa
 from mmm.decomposition.engine import DecompositionEngine
+from mmm.features.design_matrix import build_design_matrix
 from mmm.economics.canonical import assert_planner_scope_supported, build_economics_contract
 from mmm.evaluation.extension_runner import run_post_fit_extensions
-from mmm.features.design_matrix import build_design_matrix
 from mmm.governance.decision_safety import MSG_ANALYSIS_ONLY, decision_safety_artifact
 from mmm.models.bayesian.pymc_trainer import BayesianMMMTrainer
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
@@ -66,6 +67,13 @@ class MMMTrainer:
         panel = builder.build(df)
         panel_work = sort_panel_for_modeling(panel, self.schema)
         store.log_dict("data_fingerprint", fingerprint_panel(panel_work, self.schema))
+        store.log_dict(
+            "data_validation_preview",
+            {
+                "panel_qa": run_panel_qa(panel_work, self.schema, self.config.extensions.panel_qa),
+                "note": "Structural QA before fit; extension_report.panel_qa is canonical post-sort.",
+            },
+        )
 
         if self.config.framework == Framework.RIDGE_BO:
             trainer = RidgeBOMMMTrainer(self.config, self.schema)
@@ -75,6 +83,11 @@ class MMMTrainer:
         yhat = trainer.predict(panel_work)
         resid = panel_work[self.config.data.target_column].to_numpy(dtype=float) - yhat
         store.log_metrics({"mae": float(np.mean(np.abs(resid)))})
+        if self.config.framework == Framework.RIDGE_BO and isinstance(fit_out, dict):
+            if fit_out.get("ridge_bo_telemetry"):
+                store.log_dict("ridge_bo_telemetry", fit_out["ridge_bo_telemetry"])
+        elif isinstance(fit_out, dict) and fit_out.get("bayesian_prior_policy"):
+            store.log_dict("bayesian_prior_policy", fit_out["bayesian_prior_policy"])
 
         if self.config.framework == Framework.RIDGE_BO:
             art = fit_out["artifacts"]
@@ -96,6 +109,7 @@ class MMMTrainer:
                     "is_exact_additive": decomp.is_exact_additive,
                     "safe_for_budgeting": decomp.safe_for_budgeting,
                     "notes": decomp.notes,
+                    "economics_output_metadata": decomp.economics_output_metadata,
                 },
             )
             store.log_dict("leaderboard", {"top": art.leaderboard[:5]})

@@ -8,34 +8,38 @@ import numpy as np
 import pandas as pd
 
 from mmm.artifacts.base import ArtifactStoreBase
-from mmm.artifacts.decision_bundle import build_decision_bundle
-from mmm.config.schema import Framework, MMMConfig
+from mmm.artifacts.decision_bundle import build_decision_bundle, validate_prod_decision_bundle
+from mmm.config.schema import Framework, MMMConfig, RunEnvironment
+from mmm.contracts.quantity_models import PosteriorExplorationQuantityResult, UncertaintyBucketsQuantityResult
 from mmm.config.transform_policy import build_transform_policy_manifest
 from mmm.data.fingerprint import fingerprint_panel
-from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import run_panel_qa
-from mmm.data.schema import PanelSchema
 from mmm.economics.canonical import (
     build_economics_contract,
     economics_output_metadata,
     validate_business_economics_metadata,
 )
+from mmm.governance.decision_safety import decision_safety_artifact
+from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
+from mmm.planning.context import ridge_fit_summary_from_artifacts
+from mmm.data.schema import PanelSchema
+from mmm.guidance.recommend import recommend_configuration
+from mmm.services.calibration_service import run_calibration_extensions
+from mmm.services.curve_service import build_curve_diagnostics_bundle
+from mmm.services.diagnostics_service import run_core_diagnostics
+from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
+from mmm.optimization.safety_gate import OptimizationSafetyGate
+from mmm.services.governance_service import build_governance_bundle
+from mmm.contracts.run_manifest import build_run_manifest
+from mmm.evaluation.post_fit_validation import compute_post_fit_validation_bundle
+from mmm.governance.model_release import infer_model_release_state
+from mmm.governance.operational_health import compute_operational_health
+from mmm.uncertainty.decomposition import UncertaintyDecomposer
+from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.evaluation.baselines import media_shuffled_within_geo, run_baselines
 from mmm.evaluation.calibration_extension import compute_replay_calibration_metrics
 from mmm.evaluation.feature_pipeline import build_extension_design_bundle
 from mmm.features.builder import build_extra_control_matrix
-from mmm.governance.decision_safety import decision_safety_artifact
-from mmm.governance.model_release import infer_model_release_state
-from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
-from mmm.guidance.recommend import recommend_configuration
-from mmm.optimization.safety_gate import OptimizationSafetyGate
-from mmm.planning.context import ridge_fit_summary_from_artifacts
-from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
-from mmm.services.calibration_service import run_calibration_extensions
-from mmm.services.curve_service import build_curve_diagnostics_bundle
-from mmm.services.diagnostics_service import run_core_diagnostics
-from mmm.services.governance_service import build_governance_bundle
-from mmm.uncertainty.decomposition import UncertaintyDecomposer
 
 
 def run_post_fit_extensions(
@@ -71,6 +75,13 @@ def run_post_fit_extensions(
             ridge_log_alpha=ridge_la,
         )
     )
+    out["post_fit_validation"] = compute_post_fit_validation_bundle(
+        panel=panel_s,
+        schema=schema,
+        config=config,
+        fit_out=fit_out,
+        yhat=yhat,
+    )
 
     extra = build_extra_control_matrix(panel_s, schema, ext.features)
     if extra.size:
@@ -102,7 +113,7 @@ def run_post_fit_extensions(
         out["curve_bundles"] = curve_bundle["curve_bundles"]
         out["roi_summary"] = curve_bundles_to_roi_summary(curve_bundle["curve_bundles"])
 
-    out.update(run_calibration_extensions(config))
+    out.update(run_calibration_extensions(config, panel=panel_s, schema=schema))
 
     replay_loss, replay_meta, is_replay = compute_replay_calibration_metrics(
         panel_s, schema, config, fit_out
@@ -128,10 +139,22 @@ def run_post_fit_extensions(
         bayesian_decision_inference=bayesian_di,
     )
 
-    out["uncertainty_decomposition"] = UncertaintyDecomposer.build_report(
+    if config.framework == Framework.BAYESIAN:
+        di_summary: dict[str, Any] = {"surface": "extension_train_diagnostic"}
+        if isinstance(bayesian_di, dict):
+            di_summary["decision_inference_keys"] = sorted(str(k) for k in bayesian_di)
+        out["posterior_exploration_quantity"] = PosteriorExplorationQuantityResult(
+            draw_summary=di_summary,
+            validity_diagnostics={"framework": "bayesian", "prod_decisioning_allowed": False},
+        ).section_dict()
+
+    ud_report = UncertaintyDecomposer.build_report(
         bootstrap_width={"coef_dispersion_proxy": float(id_json.get("instability_score", 0.0))},
         experiment_se_scale=1.0,
     )
+    out["uncertainty_decomposition"] = UncertaintyBucketsQuantityResult(
+        validity_diagnostics={"uncertainty_buckets": ud_report},
+    ).section_dict()
     id_score = float(id_json.get("identifiability_score", 0.0))
     out["guidance"] = recommend_configuration(len(panel), len(schema.channel_columns), id_score)
 
@@ -145,6 +168,8 @@ def run_post_fit_extensions(
         governance_approved_for_optimization=bool(gov_js.get("approved_for_optimization")),
         governance_approved_for_reporting=bool(gov_js.get("approved_for_reporting")),
         ridge_fit_summary_present=bool(out.get("ridge_fit_summary")),
+        post_fit_validation=out.get("post_fit_validation") if isinstance(out.get("post_fit_validation"), dict) else None,
+        operational_health=out.get("operational_health") if isinstance(out.get("operational_health"), dict) else None,
     )
     out["decision_policy"] = {
         "canonical_economic_quantity": "delta_mu_mean_row_mu_modeling_scale",
@@ -179,6 +204,12 @@ def run_post_fit_extensions(
         identifiability_score=float(id_json.get("identifiability_score", 0.0)),
         run_environment=config.run_environment,
         extension_report_present=True,
+        panel_qa=out.get("panel_qa") if isinstance(out.get("panel_qa"), dict) else None,
+    )
+    out["operational_health"] = compute_operational_health(
+        config=config,
+        extension_report=out,
+        optimization_gate_allowed=bool(gr.allowed),
     )
     cal_summary = {
         "replay_calibration_active": is_replay,
@@ -210,7 +241,9 @@ def run_post_fit_extensions(
         "optimization_gate_allowed": gr.allowed,
         "decision_safety": decision_safety_artifact(allow_unsafe_decision_apis=config.allow_unsafe_decision_apis),
     }
-    fp = fingerprint_panel(panel_s, schema) if config.artifacts.write_data_fingerprint else None
+    fp = fingerprint_panel(panel_s, schema) if (
+        config.artifacts.write_data_fingerprint or config.run_environment == RunEnvironment.PROD
+    ) else None
     econ_surface = "replay_calibration" if is_replay else (
         "full_model_simulation" if out.get("ridge_fit_summary") else "other"
     )
@@ -237,7 +270,24 @@ def run_post_fit_extensions(
         model_summary=model_summary,
         decision_safety_flags=decision_flags,
         economics_surface=econ_surface,
+        panel_qa=out.get("panel_qa") if isinstance(out.get("panel_qa"), dict) else None,
+        experiment_matching=out.get("experiment_matching")
+        if isinstance(out.get("experiment_matching"), dict)
+        else None,
+        model_release=out.get("model_release") if isinstance(out.get("model_release"), dict) else None,
+        artifact_tier="research",
+        extension_report=out if isinstance(out, dict) else None,
     )
+    if config.run_environment == RunEnvironment.PROD:
+        miss = validate_prod_decision_bundle(
+            out["decision_bundle"],
+            run_environment=config.run_environment,
+            decision_cli_surface=False,
+        )
+        if miss:
+            raise RuntimeError("PROD extension decision_bundle failed completeness audit: " + "; ".join(miss))
+
+    out["run_manifest"] = build_run_manifest(out, run_id=config.run_id)
 
     if store:
         store.log_dict("extension_report", out)

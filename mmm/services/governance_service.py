@@ -48,6 +48,9 @@ def build_governance_bundle(
         identifiability_risk_ok=id_ok,
     )
     notes = list(sc.notes) + pol_notes
+    if config.run_environment == RunEnvironment.PROD and calibration_loss is not None and not calibration_is_replay:
+        appr_opt = False
+        notes.append("prod_rejects_non_replay_calibration_path_replay_only_for_decision_grade")
     if bayesian_decision_inference is not None and config.framework == Framework.BAYESIAN:
         post_ok = bool(bayesian_decision_inference.get("posterior_diagnostics_ok"))
         ppc_ok = bool(bayesian_decision_inference.get("posterior_predictive_ok"))
@@ -72,6 +75,7 @@ def build_governance_bundle(
         approved_for_optimization=appr_opt,
         notes=notes,
         decision_safe_uncertainty=False,
+        identifiability_limits_decision_safety=sc.identifiability_limits_decision_safety,
     )
     js = enriched.to_json()
     js["environment_policy"] = {

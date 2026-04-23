@@ -119,6 +119,36 @@ def run_panel_qa(
                 }
             )
 
+    # Calendar continuity: large gaps between consecutive dated weeks within a geo (bounded scan).
+    try:
+        wtd = pd.to_datetime(df[wcol], errors="coerce")
+        if bool(wtd.notna().any()):
+            dfw = df.assign(__wk=wtd)
+            gap_warned = False
+            for g in list(geos)[:128]:
+                sub = dfw[dfw[gcol] == g].sort_values("__wk")["__wk"].drop_duplicates()
+                if len(sub) < 6:
+                    continue
+                gaps = sub.diff().dropna().dt.days.astype(float)
+                med = float(np.nanmedian(gaps)) or 7.0
+                if float(np.nanmax(gaps)) > max(21.0, med * 5.0):
+                    issues.append(
+                        {
+                            "code": "large_inter_week_gap_in_geo_calendar",
+                            "severity": "warn",
+                            "detail": (
+                                f"geo={g!s}: max gap between consecutive dated weeks is "
+                                f"{float(np.nanmax(gaps)):.0f}d vs median {med:.0f}d"
+                            ),
+                        }
+                    )
+                    gap_warned = True
+                    break
+            metrics["calendar_gap_scan_geos"] = int(min(len(geos), 128))
+            metrics["calendar_gap_warn_emitted"] = bool(gap_warned)
+    except Exception:
+        metrics["calendar_gap_scan"] = "skipped_due_to_exception"
+
     max_sev: Severity = "info"
     for it in issues:
         s = it.get("severity", "warn")

@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import numpy as np
 
+from mmm.config.extensions import ExtensionSuiteConfig, ProductScopeConfig
 from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm
 from mmm.data.schema import PanelSchema
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
+from mmm.decision.gates import allow_decision_pipeline
 from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
 from mmm.planning import (
     bau_baseline_from_panel,
@@ -14,8 +16,8 @@ from mmm.planning import (
     simulate,
 )
 from mmm.planning.baseline import total_spend_geo_plan
-from mmm.planning.context import RidgeFitContext, ridge_context_from_fit
 from mmm.planning.control_overlay import ControlOverlaySpec
+from mmm.planning.context import RidgeFitContext, ridge_context_from_fit
 from mmm.planning.spend_path import PiecewiseSpendPath, SpendSegment
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
@@ -188,6 +190,9 @@ def test_geo_budget_optimizer_smoke() -> None:
         ),
         cv=CVConfig(mode="rolling", n_splits=2, min_train_weeks=8, horizon_weeks=2),
         ridge_bo={"n_trials": 2},
+        extensions=ExtensionSuiteConfig(
+            product=ProductScopeConfig(planning_delta_mu_aggregation="geo_mean_then_global_mean")
+        ),
     )
     ctx = _fit_ctx(df, schema, cfg)
     bau_pg = bau_baseline_per_geo_from_panel(df, schema)
@@ -206,14 +211,15 @@ def test_geo_budget_optimizer_smoke() -> None:
         coef=ctx.coef,
         intercept=ctx.intercept,
     )
-    res = optimize_budget_via_simulation(
-        ctx_g,
-        baseline_plan=bau_pg,
-        current_spend=np.ones(n),
-        total_budget=float(tot),
-        channel_min=channel_min,
-        channel_max=channel_max,
-    )
+    with allow_decision_pipeline():
+        res = optimize_budget_via_simulation(
+            ctx_g,
+            baseline_plan=bau_pg,
+            current_spend=np.ones(n),
+            total_budget=float(tot),
+            channel_min=channel_min,
+            channel_max=channel_max,
+        )
     assert res.get("recommended_spend_plan_by_geo")
     opt_tot = sum(
         float(res["recommended_spend_plan_by_geo"][g][c])

@@ -21,6 +21,7 @@ class IdentifiabilityReport:
     vif_by_channel: dict[str, float]
     warnings: list[str] = field(default_factory=list)
     correlation_matrix: list[list[float]] | None = None
+    diagnostic_context: dict[str, Any] = field(default_factory=dict)
 
     def to_json(self) -> dict[str, Any]:
         d = asdict(self)
@@ -71,6 +72,7 @@ class IdentifiabilityEngine:
         rng: np.random.Generator,
         *,
         ridge_log_alpha: float | None = None,
+        diagnostic_context_extra: dict[str, Any] | None = None,
     ) -> IdentifiabilityReport:
         warnings: list[str] = []
         X = np.asarray(X_media, dtype=float)
@@ -108,6 +110,19 @@ class IdentifiabilityEngine:
         ident_score = float(np.clip(0.4 * risk_vif + 0.35 * risk_cond + 0.25 * risk_rank, 0.0, 1.0))
         inst_score = float(np.clip(instability / (np.mean(boot_std) + 1e-6), 0.0, 1.0)) if boot_std else 0.0
 
+        diag_ctx: dict[str, Any] = {
+            "ridge_log_alpha_passed": ridge_log_alpha,
+            "ridge_alpha_used_in_identifiability": float(alpha_fit),
+            "n_rows": int(n),
+            "n_media_features": int(p),
+            "bootstrap_rounds_configured": int(self.cfg.bootstrap_rounds),
+            "bootstrap_frac_configured": float(self.cfg.bootstrap_frac),
+            "vif_threshold_configured": float(self.cfg.vif_threshold),
+            "condition_threshold_configured": float(self.cfg.condition_threshold),
+            "note": "VIF/conditioning/bootstrap use the same ridge alpha as the selected BO trial when provided.",
+        }
+        if diagnostic_context_extra:
+            diag_ctx.update(diagnostic_context_extra)
         return IdentifiabilityReport(
             identifiability_score=ident_score,
             instability_score=inst_score,
@@ -117,6 +132,7 @@ class IdentifiabilityEngine:
             vif_by_channel=vifs,
             warnings=warnings,
             correlation_matrix=corr.tolist(),
+            diagnostic_context=diag_ctx,
         )
 
     def posterior_correlation_summary(self, posterior_draws: np.ndarray | None) -> dict[str, Any] | None:

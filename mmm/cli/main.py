@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 from typing import Annotated, Any
 
-import numpy as np
 import pandas as pd
 import typer
 import yaml
@@ -14,33 +13,142 @@ import yaml
 from mmm.api.trainer import MMMTrainer
 from mmm.calibration.units_io import write_calibration_units_to_json
 from mmm.config.load import load_config
-from mmm.config.schema import Framework, RunEnvironment
-from mmm.data.loader import DatasetBuilder
-from mmm.data.panel_order import sort_panel_for_modeling
-from mmm.data.schema import validate_panel
-from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
+from mmm.config.schema import RunEnvironment
 from mmm.economics.canonical import economics_contract_for_curve_bundles
-from mmm.governance.decision_safety import MSG_OPTIMIZATION_BLOCKED
 from mmm.optimization.budget.curve_bundles_io import gather_curve_bundles_from_dict, gather_curve_bundles_from_path
-from mmm.optimization.budget.optimizer import BudgetOptimizer
-from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
-from mmm.optimization.safety_gate import OptimizationSafetyGate
-from mmm.planning.context import ridge_context_from_summary
 from mmm.reporting.builder import ReportBuilder
 from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
 from mmm.services.calibration_service import run_calibration_extensions
 
-app = typer.Typer(add_completion=False, no_args_is_help=True)
+app = typer.Typer(
+    add_completion=False,
+    no_args_is_help=True,
+    help=(
+        "MMM CLI: ``train`` fits models and writes artifacts (not a Δμ decision). ``diagnose``/``evaluate`` read "
+        "extension reports (diagnostic summaries). For allocation-grade Δμ, use ``mmm decide …``; it runs config + "
+        "governance + semantic checks in prod (fail-closed). Top-level ``simulate``/``optimize-budget`` shims delegate "
+        "to the same decide logic but are deprecated."
+    ),
+)
+
+decide_app = typer.Typer(
+    help=(
+        "Full-panel Δμ simulation and budget optimization. PROD fail-closed: extension_report, "
+        "``model_release.state=planning_allowed``, optimization gates, panel QA rules, ``--out``, lineage, "
+        "``artifact_tier=decision``, and semantic contract validation on ``decision_bundle`` + ``simulation``. "
+        "Curves are not used here—use ``simulate-diagnostic-curves`` (diagnostic tier only). "
+        "Bayesian / posterior-draw outputs elsewhere in the repo are **research or diagnostic only** under "
+        "current prod policy—not approved for prod Δμ budgeting or CLI ``decide`` surfaces."
+    ),
+    add_completion=False,
+    no_args_is_help=True,
+)
+
+
+@decide_app.command("simulate")
+def decide_simulate(
+    config: Annotated[Path, typer.Argument(help="Resolved YAML (must include data.path for full-panel Δμ).")],
+    scenario: Annotated[
+        Path,
+        typer.Option("--scenario", help="Scenario YAML (candidate spend / paths / overlays)."),
+    ],
+    extension_report: Annotated[
+        Path,
+        typer.Option("--extension-report", help="extension_report.json with ridge_fit_summary."),
+    ],
+    out: Annotated[
+        Path | None,
+        typer.Option("--out", help="Write JSON decision artifact (required in PROD)."),
+    ] = None,
+) -> None:
+    """Canonical governance-checked full-panel Δμ simulate (delegates to ``decision.service``)."""
+    from mmm.cli.decision_layer import run_decision_simulate
+
+    code = run_decision_simulate(
+        config=config,
+        scenario=scenario,
+        extension_report=extension_report,
+        out=out,
+    )
+    raise typer.Exit(code)
+
+
+@decide_app.command("optimize-budget")
+def decide_optimize_budget(
+    config: Annotated[Path, typer.Argument(help="Resolved YAML.")],
+    extension_report: Annotated[
+        Path | None,
+        typer.Option(
+            "--extension-report",
+            help="Training extension_report.json (required for PROD full-panel optimize).",
+        ),
+    ] = None,
+    curve_bundle: Annotated[
+        Path | None,
+        typer.Option("--curve-bundle", help="Optional curve bundles JSON (legacy diagnostic path)."),
+    ] = None,
+    allow_unsafe_decision_apis: Annotated[
+        bool,
+        typer.Option(
+            "--allow-unsafe-decision-apis",
+            help="Non-prod: must match YAML for legacy curve paths.",
+        ),
+    ] = False,
+    legacy_diagnostic_curve_optimizer: Annotated[
+        bool,
+        typer.Option(
+            "--legacy-diagnostic-curve-optimizer",
+            help="Non-prod: use clamped curve-bundle optimizer when full-panel inputs unavailable.",
+        ),
+    ] = False,
+    out: Annotated[
+        Path | None,
+        typer.Option("--out", help="Write optimization + decision bundle JSON (required in PROD)."),
+    ] = None,
+) -> None:
+    """Canonical governance-checked full-panel Δμ budget optimize."""
+    from mmm.cli.decision_layer import run_decision_optimize_budget
+
+    code = run_decision_optimize_budget(
+        config=config,
+        extension_report=extension_report,
+        curve_bundle=curve_bundle,
+        allow_unsafe_decision_apis=allow_unsafe_decision_apis,
+        legacy_diagnostic_curve_optimizer=legacy_diagnostic_curve_optimizer,
+        out=out,
+    )
+    raise typer.Exit(code)
+
+
+app.add_typer(decide_app, name="decide")
 
 
 @app.command()
 def train(config: Path) -> None:
-    """Train model from YAML."""
+    """Fit model + CV + extensions; writes ``extension_report.json``.
+
+    Does not run ``decide`` gates or emit a decision bundle.
+    """
     trainer = MMMTrainer.from_yaml(config)
     out = trainer.run()
     typer.echo(f"Finished run: {out['run_id']} artifacts at {out['store']}")
     for w in out.get("warnings") or []:
         typer.secho(w, fg=typer.colors.YELLOW, err=True)
+
+
+@app.command()
+def diagnose(
+    config: Path,
+    extension_report: Annotated[
+        Path,
+        typer.Option("--extension-report", help="extension_report.json from a training run (diagnostic read)."),
+    ],
+) -> None:
+    """Diagnostic-only workflow: summarize extension artifacts (not a Δμ decision command).
+
+    For canonical planning, use ``mmm decide simulate`` or ``mmm decide optimize-budget`` (PROD gates).
+    """
+    evaluate(config, extension_report=extension_report)
 
 
 @app.command()
@@ -239,12 +347,29 @@ def optimize_budget(
             help="Non-prod: use clamped curve-bundle optimizer (diagnostic; not full-panel Δμ).",
         ),
     ] = False,
+    out: Annotated[
+        Path | None,
+        typer.Option(
+            "--out",
+            help="Write JSON (optimization + decision_bundle). Required in PROD for full-panel optimize.",
+        ),
+    ] = None,
 ) -> None:
     """Maximize Δμ vs baseline (Ridge full-panel) or run legacy diagnostic optimizers (non-prod only).
 
     Default decision path: SLSQP on ``decision_simulate.simulate`` (point Δμ). Posterior/risk APIs
     use precomputed ``delta_mu_draws_*`` (see runbook §7a), not per-iteration full-Bayes resampling.
     """
+    import os
+
+    import numpy as np
+
+    from mmm.config.schema import Framework
+    from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
+    from mmm.governance.decision_safety import MSG_OPTIMIZATION_BLOCKED
+    from mmm.optimization.budget.optimizer import BudgetOptimizer
+    from mmm.optimization.safety_gate import OptimizationSafetyGate
+
     cfg = load_config(config)
     if cfg.framework == Framework.BAYESIAN and cfg.run_environment == RunEnvironment.PROD:
         typer.secho(
@@ -264,12 +389,14 @@ def optimize_budget(
         gov = er_data.get("governance", {})
         resp = er_data.get("response_diagnostics")
         ident = float(er_data.get("identifiability", {}).get("identifiability_score", 0.0))
+    pq_er = er_data.get("panel_qa") if isinstance(er_data, dict) else None
     gr = gate.check(
         governance=gov,
         response_diag=resp,
         identifiability_score=ident,
         run_environment=cfg.run_environment,
         extension_report_present=ext_present,
+        panel_qa=pq_er if isinstance(pq_er, dict) else None,
     )
     if not gr.allowed:
         typer.echo(json.dumps({"allowed": False, "reasons": gr.reasons, "audit": gr.audit}, indent=2))
@@ -294,76 +421,44 @@ def optimize_budget(
         )
         raise typer.Exit(code=2)
 
-    if full_model_ready:
-        builder = DatasetBuilder(cfg.data)
-        schema = builder.schema()
-        panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
-        try:
-            ctx = ridge_context_from_summary(panel, schema, cfg, ridge_summary)  # type: ignore[arg-type]
-        except (ValueError, KeyError) as e:
-            typer.secho(f"Invalid ridge_fit_summary: {e}", fg=typer.colors.RED, err=True)
-            raise typer.Exit(code=2) from e
-        res = optimize_budget_via_simulation(
-            ctx,
-            current_spend=current,
-            total_budget=total_budget,
-            channel_min=channel_min,
-            channel_max=channel_max,
+    if cfg.run_environment == RunEnvironment.PROD and full_model_ready and out is None:
+        typer.secho(
+            "Production optimize-budget requires --out PATH to persist the decision bundle and optimization JSON.",
+            fg=typer.colors.RED,
+            err=True,
         )
-        from mmm.artifacts.decision_bundle import build_decision_bundle
-        from mmm.data.fingerprint import fingerprint_panel
+        raise typer.Exit(code=2)
 
-        optimizer_success = bool(res.get("optimizer_success", res.get("success")))
-        governance_passed = bool(gr.allowed)
-        allocation_stable = bool(res.get("allocation_stable", True))
-        optimizer_internal_safe = bool(res.get("decision_safe", False))
-        stability_score = float(res.get("stability_score", 0.0))
-        extrapolation_ok = True
-        sim_at = res.get("simulation_at_recommendation") or {}
-        em = sim_at.get("economics_metadata") if isinstance(sim_at, dict) else None
-        if isinstance(em, dict):
-            extrapolation_ok = not bool(em.get("extrapolation_flag", False))
-        gates_enabled = bool(cfg.extensions.optimization_gates.enabled)
-        decision_safe = bool(
-            governance_passed
-            and optimizer_success
-            and allocation_stable
-            and optimizer_internal_safe
-            and extrapolation_ok
-            and gates_enabled
+    if cfg.run_environment == RunEnvironment.PROD and ext_present and isinstance(er_data, dict):
+        from mmm.governance.model_release import prod_release_allows_decision_cli
+
+        mr0 = er_data.get("model_release")
+        ok_mr, mr_notes = prod_release_allows_decision_cli(
+            mr0 if isinstance(mr0, dict) else None,
+            surface="optimize_budget",
+            run_environment=cfg.run_environment,
         )
-        bundle = build_decision_bundle(
-            config=cfg,
-            schema=schema,
-            governance=gov,
-            optimization_gate=gr.to_json(),
-            simulation_contract={"source": "full_model_simulation_slsqp", "objective": "delta_mu"},
-            data_fingerprint=fingerprint_panel(panel, schema),
-            uncertainty_mode="point",
-            decision_safe=decision_safe,
-            governance_passed=governance_passed,
-            optimizer_success=optimizer_success,
-            model_summary={
-                "objective_delta_mu": res.get("objective_delta_mu"),
-                "optimizer_success": optimizer_success,
-                "allocation_stable": allocation_stable,
-                "optimizer_decision_safe": optimizer_internal_safe,
-                "stability_score": stability_score,
-                "multistart": res.get("multistart"),
-                "stability": res.get("stability"),
-                "decision_safe_components": {
-                    "governance_passed": governance_passed,
-                    "optimizer_success": optimizer_success,
-                    "allocation_stable": allocation_stable,
-                    "optimizer_internal_safe": optimizer_internal_safe,
-                    "no_extrapolation": extrapolation_ok,
-                    "gates_enabled": gates_enabled,
-                },
-            },
-            economics_surface="full_model_simulation",
+        if not ok_mr:
+            typer.secho(
+                "Production optimize-budget blocked by model_release: " + "; ".join(mr_notes),
+                fg=typer.colors.RED,
+                err=True,
+            )
+            raise typer.Exit(code=2)
+
+    if full_model_ready:
+        from mmm.cli.decision_layer import CANONICAL_OPTIMIZE, emit_shim_deprecation, run_decision_optimize_budget
+
+        emit_shim_deprecation(legacy_subcommand="optimize-budget", canonical=CANONICAL_OPTIMIZE)
+        code = run_decision_optimize_budget(
+            config=config,
+            extension_report=extension_report,
+            curve_bundle=curve_bundle,
+            allow_unsafe_decision_apis=allow_unsafe_decision_apis,
+            legacy_diagnostic_curve_optimizer=legacy_diagnostic_curve_optimizer,
+            out=out,
         )
-        typer.echo(json.dumps({"optimization": res, "decision_bundle": bundle}, indent=2, default=str))
-        return
+        raise typer.Exit(code)
 
     if not cfg.allow_unsafe_decision_apis or not allow_unsafe_decision_apis:
         typer.secho(MSG_OPTIMIZATION_BLOCKED, fg=typer.colors.YELLOW, err=True)
@@ -381,6 +476,15 @@ def optimize_budget(
         typer.secho(
             "Full-panel inputs unavailable. Pass --legacy-diagnostic-curve-optimizer (non-prod) to use "
             "deprecated curve interpolation, or provide data.path + ridge_fit_summary.",
+            fg=typer.colors.RED,
+            err=True,
+        )
+        raise typer.Exit(code=2)
+
+    if os.environ.get("MMM_UNSAFE_LEGACY_DIAGNOSTIC_BUDGET", "").strip() != "1":
+        typer.secho(
+            "Legacy curve-only budget optimization is quarantined: set MMM_UNSAFE_LEGACY_DIAGNOSTIC_BUDGET=1 "
+            "in the environment to acknowledge non-canonical, non-decision-safe behavior.",
             fg=typer.colors.RED,
             err=True,
         )
@@ -473,136 +577,16 @@ def simulate(
     This is the **canonical decision** path: same μ construction as training. For curve interpolation
     or SpendPlan scenarios, use ``simulate-diagnostic-curves`` (diagnostic only). See runbook §4 and §10.
     """
-    cfg = load_config(config)
-    if cfg.run_environment == RunEnvironment.PROD and not cfg.data.path:
-        typer.secho("Production simulate requires data.path on config.", fg=typer.colors.RED, err=True)
-        raise typer.Exit(code=2)
-    if not cfg.data.path:
-        typer.secho("simulate requires config.data.path to the training panel.", fg=typer.colors.RED, err=True)
-        raise typer.Exit(code=1)
-    if not extension_report.exists():
-        typer.secho("--extension-report must exist and include ridge_fit_summary.", fg=typer.colors.RED, err=True)
-        raise typer.Exit(code=1)
-    er = json.loads(extension_report.read_text(encoding="utf-8"))
-    rs = er.get("ridge_fit_summary")
-    if not isinstance(rs, dict) or not rs.get("coef"):
-        typer.secho("extension_report must contain ridge_fit_summary.coef", fg=typer.colors.RED, err=True)
-        raise typer.Exit(code=1)
-    raw = yaml.safe_load(scenario.read_text(encoding="utf-8"))
-    if not isinstance(raw, dict):
-        typer.secho("scenario YAML must be a mapping.", fg=typer.colors.RED, err=True)
-        raise typer.Exit(code=1)
-    from mmm.planning.baseline import (
-        channel_means_from_geo_plan,
-        locked_geo_plan_baseline,
-        locked_plan_baseline,
-    )
-    from mmm.planning.control_overlay import ControlOverlaySpec
-    from mmm.planning.decision_simulate import simulate as decision_simulate
-    from mmm.planning.spend_path import (
-        PiecewiseSpendPath,
-        counterfactual_piecewise_spend_panel,
-        time_mean_spend_by_channel,
-    )
+    from mmm.cli.decision_layer import CANONICAL_SIMULATE, emit_shim_deprecation, run_decision_simulate
 
-    builder = DatasetBuilder(cfg.data)
-    schema = builder.schema()
-    panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
-    ctx = ridge_context_from_summary(panel, schema, cfg, rs)
-    geos_cli = sorted({str(x) for x in panel[schema.geo_column].unique()})
-    spend_path = None
-    if isinstance(raw.get("candidate_spend_path"), dict):
-        spend_path = PiecewiseSpendPath.from_dict(raw["candidate_spend_path"])
-    has_geo_cand = isinstance(raw.get("candidate_spend_by_geo"), dict)
-    has_scalar_cand = isinstance(raw.get("candidate_spend"), dict)
-    if spend_path is not None and has_geo_cand:
-        typer.secho(
-            "scenario YAML: candidate_spend_path cannot be combined with candidate_spend_by_geo.",
-            fg=typer.colors.RED,
-            err=True,
-        )
-        raise typer.Exit(code=1)
-    if has_geo_cand and has_scalar_cand:
-        typer.secho(
-            "scenario YAML: use either candidate_spend or candidate_spend_by_geo, not both.",
-            fg=typer.colors.RED,
-            err=True,
-        )
-        raise typer.Exit(code=1)
-    if spend_path is None and not has_scalar_cand and not has_geo_cand:
-        typer.secho(
-            "scenario YAML must include candidate_spend, candidate_spend_by_geo, and/or candidate_spend_path.",
-            fg=typer.colors.RED,
-            err=True,
-        )
-        raise typer.Exit(code=1)
-    spend_plan_geo = None
-    if spend_path is not None:
-        if has_scalar_cand and isinstance(raw.get("candidate_spend"), dict):
-            cand = {str(k): float(v) for k, v in raw["candidate_spend"].items()}
-        else:
-            tmp_df = counterfactual_piecewise_spend_panel(panel, schema, spend_path)
-            cand = time_mean_spend_by_channel(tmp_df, schema)
-    elif has_geo_cand:
-        raw_geo = raw["candidate_spend_by_geo"]
-        spend_plan_geo = {
-            str(g): {str(c): float(v) for c, v in row.items()} for g, row in raw_geo.items() if isinstance(row, dict)
-        }
-        cand = channel_means_from_geo_plan(spend_plan_geo, schema, geos_cli)
-    else:
-        cs = raw.get("candidate_spend")
-        if not isinstance(cs, dict):
-            typer.secho("scenario YAML must include candidate_spend when candidate_spend_path is absent.", err=True)
-            raise typer.Exit(code=1)
-        cand = {str(k): float(v) for k, v in cs.items()}
-    base_plan = None
-    if isinstance(raw.get("baseline_spend"), dict):
-        base_plan = locked_plan_baseline(
-            {str(k): float(v) for k, v in raw["baseline_spend"].items()},
-            source="scenario_yaml:baseline_spend",
-            notes="baseline_spend from scenario YAML (non-BAU; labeled locked_plan).",
-        )
-    elif isinstance(raw.get("baseline_spend_by_geo"), dict):
-        raw_bg = raw["baseline_spend_by_geo"]
-        by_geo = {
-            str(g): {str(c): float(v) for c, v in row.items()} for g, row in raw_bg.items() if isinstance(row, dict)
-        }
-        base_plan = locked_geo_plan_baseline(
-            by_geo,
-            source="scenario_yaml:baseline_spend_by_geo",
-            notes="baseline_spend_by_geo from scenario YAML (non-BAU; labeled locked_plan).",
-        )
-    co_b = ControlOverlaySpec.from_dict(raw["control_overlay_baseline"]) if isinstance(
-        raw.get("control_overlay_baseline"), dict
-    ) else None
-    co_p = ControlOverlaySpec.from_dict(raw["control_overlay_plan"]) if isinstance(
-        raw.get("control_overlay_plan"), dict
-    ) else None
-    co_single = (
-        ControlOverlaySpec.from_dict(raw["control_overlay"])
-        if isinstance(raw.get("control_overlay"), dict)
-        else None
+    emit_shim_deprecation(legacy_subcommand="simulate", canonical=CANONICAL_SIMULATE)
+    code = run_decision_simulate(
+        config=config,
+        scenario=scenario,
+        extension_report=extension_report,
+        out=out,
     )
-    ctrls_yaml = raw.get("controls_plan")
-    sim = decision_simulate(
-        cand,
-        ctx,
-        baseline_plan=base_plan,
-        uncertainty_mode="point",
-        spend_path_plan=spend_path,
-        spend_plan_geo=spend_plan_geo,
-        controls_plan=ctrls_yaml if co_p is None and co_single is None else None,
-        control_overlay_baseline=co_b,
-        control_overlay_plan=co_p,
-        control_overlay=co_single if co_p is None else None,
-    )
-    text = json.dumps(sim.to_json(), indent=2, default=str)
-    if out is not None:
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(text, encoding="utf-8")
-        typer.echo(f"wrote {out}")
-    else:
-        typer.echo(text)
+    raise typer.Exit(code)
 
 
 @app.command()
@@ -644,7 +628,7 @@ def simulate_diagnostic_curves(
 ) -> None:
     """Curve / response-surface diagnostics (``simulate_curve_diagnostic``) — **not** full-panel Δμ.
 
-    Do not use outputs for production budget decisions. For canonical Δμ, use ``simulate`` with
+    Do not use outputs for production budget decisions. For canonical Δμ, use ``mmm decide simulate`` with
     ``data.path`` + ``ridge_fit_summary``. See runbook §10.
     """
     cfg = load_config(config)
@@ -654,16 +638,20 @@ def simulate_diagnostic_curves(
         SpendScenario,
         run_curve_bundle_scenario,
         run_stepped_scenario,
-    )
-    from mmm.simulation.engine import (
         simulate_curve_diagnostic as simulate_engine,
     )
 
+    _typed_curves = cfg.run_environment == RunEnvironment.PROD
     gathered = None
     if curve_bundle is not None and curve_bundle.exists():
-        gathered = gather_curve_bundles_from_path(curve_bundle)
+        gathered = gather_curve_bundles_from_path(
+            curve_bundle, require_typed_curve_quantity=_typed_curves
+        )
     elif extension_report is not None and extension_report.exists():
-        gathered = gather_curve_bundles_from_dict(json.loads(extension_report.read_text(encoding="utf-8")))
+        gathered = gather_curve_bundles_from_dict(
+            json.loads(extension_report.read_text(encoding="utf-8")),
+            require_typed_curve_quantity=_typed_curves,
+        )
     if gathered is None:
         typer.secho("Provide --curve-bundle or --extension-report with curve data.", fg=typer.colors.RED, err=True)
         raise typer.Exit(code=1)

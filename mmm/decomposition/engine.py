@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
 
 from mmm.config.schema import MMMConfig, ModelForm
 from mmm.data.schema import PanelSchema
+from mmm.economics.canonical import economics_output_metadata, validate_business_economics_metadata
 from mmm.features.design_matrix import build_design_matrix
 
 
@@ -21,6 +22,7 @@ class DecompositionResult:
     is_exact_additive: bool = False
     safe_for_budgeting: bool = False
     notes: list[str] = field(default_factory=list)
+    economics_output_metadata: dict[str, Any] | None = None
 
 
 class DecompositionEngine:
@@ -59,6 +61,27 @@ class DecompositionEngine:
             "Contributions are on the modeling (log) scale for semi-log/log-log; "
             "not literal incremental dollars without an explicit level map."
         ]
+        econ = economics_output_metadata(
+            config,
+            uncertainty_mode="point",
+            surface="decomposition",
+            baseline_type="training_fit_reference",
+            decision_safe=False,
+        )
+        validate_business_economics_metadata(
+            econ,
+            require_specific_baseline=False,
+            require_decision_safe_bool=False,
+        )
+        econ.update(
+            {
+                "artifact_tier": "diagnostic",
+                "approximate": True,
+                "not_for_budgeting": True,
+                "is_proxy_metric": True,
+                "not_exact_business_value": True,
+            }
+        )
         return DecompositionResult(
             channel_contributions=frame,
             total_media=total,
@@ -66,4 +89,5 @@ class DecompositionEngine:
             is_exact_additive=False,
             safe_for_budgeting=False,
             notes=notes,
+            economics_output_metadata=econ,
         )

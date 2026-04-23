@@ -8,11 +8,11 @@ from typing import Any
 import numpy as np
 
 from mmm.config.schema import CompositeObjectiveConfig, FitMetric, NormalizationProfile
-from mmm.evaluation.metrics import fit_metric
 from mmm.evaluation.normalization_policy import (
     describe_objective_normalization,
     normalize_objective_vector,
 )
+from mmm.evaluation.metrics import fit_metric
 
 
 @dataclass
@@ -95,7 +95,9 @@ def complexity_penalty(decay: float, hill_half: float, hill_slope: float, log_al
     return float(np.linalg.norm(vec))
 
 
-def _weight_sensitivity_one_at_a_time(norm: ObjectiveComponents, cfg: CompositeObjectiveConfig) -> list[dict[str, Any]]:
+def _weight_sensitivity_one_at_a_time(
+    norm: ObjectiveComponents, cfg: CompositeObjectiveConfig
+) -> list[dict[str, Any]]:
     """±10% single-weight bump on each axis (normalized components held fixed)."""
     base = float(norm.weighted_total(cfg))
     rows: list[dict[str, Any]] = []
@@ -127,6 +129,7 @@ def build_composite(
     calibration_details: dict | None,
     cfg: CompositeObjectiveConfig,
     baseline_predictive: float | None = None,
+    include_weight_sensitivity: bool = True,
 ) -> tuple[float, ObjectiveComponents, ObjectiveComponents, dict[str, Any]]:
     pred_loss = predictive_loss(y_true_folds, y_pred_folds, metric)
     cal = 0.0
@@ -162,5 +165,9 @@ def build_composite(
     }
     norm_report["weighted_total"] = float(total)
     norm_report["weighted_total_formula"] = "sum(weight_k * normalized_component_k)"
-    norm_report["weight_one_at_a_time_10pct_bump"] = _weight_sensitivity_one_at_a_time(norm, cfg)
+    if include_weight_sensitivity:
+        norm_report["weight_one_at_a_time_10pct_bump"] = _weight_sensitivity_one_at_a_time(norm, cfg)
+        norm_report["weight_sensitivity_surface"] = "diagnostic_objective_component_stability"
+    else:
+        norm_report["weight_sensitivity_surface"] = "omitted"
     return total, raw, norm, norm_report

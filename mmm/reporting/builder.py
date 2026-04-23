@@ -25,4 +25,11 @@ class ReportBuilder(ReporterBase):
         import json
 
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(self.sections, indent=2, default=str), encoding="utf-8")
+        envelope = {
+            "report_contract_version": "mmm_json_report_v2",
+            "artifact_tier": "diagnostic",
+            "not_for_budgeting": True,
+            "surface": "report_builder_cli",
+            "sections": self.sections,
+        }
+        path.write_text(json.dumps(envelope, indent=2, default=str), encoding="utf-8")

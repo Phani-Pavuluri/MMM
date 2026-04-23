@@ -6,7 +6,7 @@ from mmm.diagnostics.curve_optimizer import optimize_spend_from_curve_bundle
 
 
 def test_curve_horizon_changes_saturation_level():
-    grid = np.array([10.0, 15.0, 20.0])
+    grid = np.linspace(10.0, 20.0, 6)
     c_short = build_curve_for_channel(
         grid, decay=0.5, hill_half=1.0, hill_slope=2.0, beta=1.0, model_form="semi_log", horizon_weeks=8
     )

@@ -14,6 +14,8 @@ from typing import Any
 
 import numpy as np
 
+from mmm.contracts.quantity_models import roi_approx_quantity_from_level_bridge_artifact
+
 
 def marginal_revenue_and_mroas_level_proxy(
     *,
@@ -31,6 +33,10 @@ def marginal_revenue_and_mroas_level_proxy(
     return {
         "marginal_revenue_level_proxy": marginal_revenue.tolist(),
         "mroas_level_proxy": marginal_revenue.tolist(),
+        "kpi_level_values_exact": False,
+        "computation_mode": "approximate",
+        "mroas_is_local_first_order_proxy": True,
+        "not_exact_business_mroas": True,
         "roi_bridge": {
             "model_form": model_form,
             "y_level_scale": y,
@@ -75,6 +81,10 @@ def consistent_level_kpi_and_mroas(
     return {
         "kpi_level_implied_by_partial_curve": y_level.tolist(),
         "mroas_level_consistent": mroas_c.tolist(),
+        "kpi_level_values_exact": False,
+        "computation_mode": "approximate",
+        "mroas_is_partial_curve_derivative": True,
+        "not_exact_business_mroas": True,
         "roi_bridge_consistent": {
             "method": "exp(mu_rest + r(S)); mu_rest=log(y_anchor)-r(S_anchor)",
             "anchor_spend": float(g[idx]),
@@ -99,13 +109,30 @@ def attach_level_roi_to_curve_artifact(
         y_level_scale=y_level_scale,
     )
     out = {**artifact, **extra}
-    out["roi_bridge"]["target_kpi_column"] = target_column
+    out.pop("roi_bridge", None)
     g = np.asarray(artifact["spend_grid"], dtype=float)
     r = np.asarray(artifact["response_on_modeling_scale"], dtype=float)
     cons = consistent_level_kpi_and_mroas(g, r, y_level_scale, anchor_spend=anchor_spend)
     out["kpi_level_implied_by_partial_curve"] = cons["kpi_level_implied_by_partial_curve"]
     out["mroas_level_consistent"] = cons["mroas_level_consistent"]
-    out["roi_bridge"]["consistent_partial_curve"] = cons["roi_bridge_consistent"]
+    rb_linear = extra.get("roi_bridge") if isinstance(extra.get("roi_bridge"), dict) else {}
+    economics_notes: dict[str, Any] = {
+        **dict(rb_linear),
+        "target_kpi_column": target_column,
+        "consistent_partial_curve": cons["roi_bridge_consistent"],
+    }
+    mroas_lp = extra.get("mroas_level_proxy")
+    mroas_list = [float(x) for x in np.asarray(mroas_lp, dtype=float).ravel()] if mroas_lp is not None else []
+    typed_roi = roi_approx_quantity_from_level_bridge_artifact(
+        mroas_level_proxy=mroas_list,
+        economics_notes=economics_notes,
+        validity_diagnostics={
+            "adapter": "attach_level_roi_to_curve_artifact",
+            "y_level_scale": float(y_level_scale),
+            "model_form": mf,
+        },
+    )
+    out["typed_roi_quantity"] = typed_roi.section_dict()
     out["marginal_roi_definition"] = (
         "marginal_roi_modeling_scale: d(β·x)/d(spend) on log-mean scale; "
         "mroas_level_proxy: linear dy/dS ≈ y_anchor * marginal_modeling (global scale); "
