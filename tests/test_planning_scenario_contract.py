@@ -31,12 +31,23 @@ from mmm.planning.policy import evaluate_control_scenario_policy
 from mmm.planning.scenario import planning_scenario_from_dict
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
+_PROD_OBJECTIVE = {
+    "normalization_profile": "strict_prod",
+    "named_profile": "ridge_bo_standard_v1",
+}
+
 
 def _ridge_ctx_with_promo():
     df0, _ = generate_geo_panel(
         SyntheticGeoPanelSpec(n_geos=2, n_weeks=16, channels=("a",), betas=(0.4,))
     )
-    df = df0.copy()
+    df = df0.rename(
+        columns={
+            "geo_id": "geo",
+            "week_start_date": "week",
+            "revenue": "y",
+        }
+    )
     df["promo"] = 0.0
     schema = PanelSchema(
         geo_column="geo",
@@ -132,6 +143,8 @@ def test_strict_prod_blocks_observed_sensitive_controls(tmp_path: Path) -> None:
     cfg = cfg.model_copy(
         update={
             "run_environment": RunEnvironment.PROD,
+            "prod_canonical_modeling_contract_id": "ridge_bo_semi_log_calendar_cv_v1",
+            "objective": dict(_PROD_OBJECTIVE),
             "extensions": cfg.extensions.model_copy(
                 update={
                     "planning_policy": cfg.extensions.planning_policy.model_copy(
@@ -228,7 +241,13 @@ def test_infer_controls_assumption_frozen() -> None:
 
 
 def test_prod_bundle_requires_planning_assumptions() -> None:
-    cfg = MMMConfig(run_environment=RunEnvironment.PROD, data={"channel_columns": ["a"], "control_columns": []})
+    cfg = MMMConfig(
+        run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        objective=dict(_PROD_OBJECTIVE),
+        data={"channel_columns": ["a"], "control_columns": []},
+        cv={"mode": "rolling"},
+    )
     schema = PanelSchema("g", "w", "y", ("a",))
     fp = {"sha256_panel_keycols_sorted_csv": "x" * 64, "sha256_schema_json": "y" * 64, "n_rows": 1}
     bundle = build_decision_bundle(
@@ -246,7 +265,13 @@ def test_prod_bundle_requires_planning_assumptions() -> None:
 
 
 def test_explicit_scenario_requires_lineage_hash() -> None:
-    cfg = MMMConfig(run_environment=RunEnvironment.PROD, data={"channel_columns": ["a"], "control_columns": []})
+    cfg = MMMConfig(
+        run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        objective=dict(_PROD_OBJECTIVE),
+        data={"channel_columns": ["a"], "control_columns": []},
+        cv={"mode": "rolling"},
+    )
     schema = PanelSchema("g", "w", "y", ("a",))
     fp = {"sha256_panel_keycols_sorted_csv": "x" * 64, "sha256_schema_json": "y" * 64, "n_rows": 1}
     bundle = build_decision_bundle(
@@ -289,9 +314,23 @@ def test_scenario_lineage_includes_overlay_hashes() -> None:
         },
     }
     ps = planning_scenario_from_dict(raw)
+    assert ps.overlay_specs()[2] is not None
+    assert ps.overlay_specs()[2].rows
     lin = ps.lineage_payload()
     assert lin.get("plan_overlay_spec_sha256")
+    assert len(str(lin.get("plan_overlay_spec_sha256"))) == 64
     assert lin.get("scenario_hash")
+
+
+def test_nested_controls_block_parsed_from_legacy_dict() -> None:
+    raw = {
+        "scenario_id": "nested_overlay",
+        "controls": {"control_overlay_plan": {"overrides": [{"geo": "G1", "week": 1, "column": "x", "value": 1.0}]}},
+    }
+    ps = planning_scenario_from_dict(raw)
+    _, _, plan = ps.overlay_specs()
+    assert plan is not None
+    assert len(plan.rows) == 1
 
 
 def test_policy_warning_on_observed_sensitive_controls() -> None:

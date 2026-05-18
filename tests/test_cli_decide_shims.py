@@ -12,12 +12,9 @@ from typer.testing import CliRunner
 
 
 def _strip_volatile_decision_payload(d: dict) -> dict:
-    """Drop wall-clock bundle fields so back-to-back decide vs shim comparisons are stable."""
-    out = json.loads(json.dumps(d))
-    db = out.get("decision_bundle")
-    if isinstance(db, dict):
-        db.pop("created_at", None)
-    return out
+    from tests.decision_payload_scrub import strip_volatile_decision_payload
+
+    return strip_volatile_decision_payload(d)
 
 
 def _prod_panel_extension_and_yaml(tmp_path: Path) -> tuple[Path, Path, Path]:

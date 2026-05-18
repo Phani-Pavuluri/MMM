@@ -81,8 +81,20 @@ class PlanningScenario(BaseModel):
     def canonical_dict(self) -> dict[str, Any]:
         return self.model_dump(mode="json", exclude_none=True)
 
+    def semantic_canonical_dict(self) -> dict[str, Any]:
+        """Stable payload for ``scenario_hash`` (excludes runtime-only metadata)."""
+        d = self.model_dump(mode="json", exclude_none=True)
+        meta = d.get("metadata")
+        if isinstance(meta, dict):
+            stable_meta = {k: v for k, v in meta.items() if k not in ("created_at", "source_path")}
+            if stable_meta:
+                d["metadata"] = stable_meta
+            else:
+                d.pop("metadata", None)
+        return d
+
     def scenario_hash(self) -> str:
-        blob = json.dumps(self.canonical_dict(), sort_keys=True, default=str)
+        blob = json.dumps(self.semantic_canonical_dict(), sort_keys=True, default=str)
         return hashlib.sha256(blob.encode()).hexdigest()
 
     def overlay_specs(self) -> tuple[ControlOverlaySpec | None, ControlOverlaySpec | None, ControlOverlaySpec | None]:
@@ -220,6 +232,12 @@ def planning_scenario_from_dict(raw: dict[str, Any], *, source_path: str | None 
     return PlanningScenario.model_validate(block)
 
 
+def _overlay_keys_from_mapping(mapping: dict[str, Any], into: dict[str, Any]) -> None:
+    for k in ("control_overlay", "control_overlay_baseline", "control_overlay_plan", "controls_plan"):
+        if k in mapping:
+            into[k if k != "controls_plan" else "control_overlay"] = mapping[k]
+
+
 def _legacy_dict_to_scenario_block(raw: dict[str, Any]) -> dict[str, Any]:
     media: dict[str, Any] = {}
     for k in (
@@ -232,9 +250,10 @@ def _legacy_dict_to_scenario_block(raw: dict[str, Any]) -> dict[str, Any]:
         if k in raw:
             media[k] = raw[k]
     controls: dict[str, Any] = {}
-    for k in ("control_overlay", "control_overlay_baseline", "control_overlay_plan", "controls_plan"):
-        if k in raw:
-            controls[k if k != "controls_plan" else "control_overlay"] = raw[k]
+    nested = raw.get("controls")
+    if isinstance(nested, dict):
+        _overlay_keys_from_mapping(nested, controls)
+    _overlay_keys_from_mapping(raw, controls)
     sid = raw.get("scenario_id") or raw.get("id")
     return {
         "scenario_id": sid or "legacy_inline",
