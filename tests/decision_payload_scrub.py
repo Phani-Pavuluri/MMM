@@ -27,4 +27,11 @@ def strip_volatile_decision_payload(d: dict[str, Any]) -> dict[str, Any]:
     sim = out.get("simulation")
     if isinstance(sim, dict):
         _scrub_lineage_metadata(sim.get("scenario_lineage") if isinstance(sim.get("scenario_lineage"), dict) else None)
+    dr = out.get("decision_result")
+    if isinstance(dr, dict):
+        lr = dr.get("lineage_refs")
+        if isinstance(lr, dict):
+            _scrub_lineage_metadata(
+                lr.get("scenario_lineage") if isinstance(lr.get("scenario_lineage"), dict) else None
+            )
     return out
