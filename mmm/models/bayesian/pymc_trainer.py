@@ -235,12 +235,21 @@ class BayesianMMMTrainer(BayesianMMMBase):
             "bayesian_prior_policy": {
                 "media_channel_prior": media_prior,
                 "pooling_mode": self.config.pooling.value,
-                "prod_budget_decision_posture": "Bayesian draws and posterior planning are research/diagnostic only under current prod policy; not approved for prod Δμ budgeting.",
+                "prod_budget_decision_posture": (
+                    "Bayesian draws and posterior planning are research/diagnostic only under current "
+                    "prod policy; not approved for prod Δμ budgeting."
+                ),
                 "positivity_assumption_note": (
-                    "HalfNormal on media channels encodes non-negative media elasticities on the modeling scale; "
-                    "use bayesian.media_channel_prior=normal_symmetric only when negative effects are scientifically required."
+                    (
+                        "HalfNormal on media channels encodes non-negative media elasticities on the "
+                        "modeling scale; use bayesian.media_channel_prior=normal_symmetric only when "
+                        "negative effects are scientifically required."
+                    )
                     if media_prior == "half_normal_nonneg"
-                    else "Normal(0, sigma) media prior allows negative elasticities; review KPI sign semantics before interpreting."
+                    else (
+                        "Normal(0, sigma) media prior allows negative elasticities; review KPI sign "
+                        "semantics before interpreting."
+                    )
                 ),
             },
         }

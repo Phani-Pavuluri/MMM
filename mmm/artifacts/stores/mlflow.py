@@ -49,9 +49,8 @@ class MLflowArtifactStore(ArtifactStoreBase):
         self._mlflow.log_artifacts(str(path), artifact_path=name)
 
     def log_dict(self, name: str, payload: dict[str, Any]) -> None:
-        import tempfile
-
         import json
+        import tempfile
 
         with tempfile.TemporaryDirectory() as td:
             p = Path(td) / f"{name}.json"

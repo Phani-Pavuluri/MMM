@@ -113,10 +113,14 @@ def compute_post_fit_validation_bundle(
         sev = "warn"
         reasons.append(f"objective_top_trial_total_cv={obj_cv:.3f}_exceeds_{obj_cv_warn}")
 
-    if config.model_form == ModelForm.SEMI_LOG and "log_mean_ratio" in kpi_sanity:
-        if abs(kpi_sanity["log_mean_ratio"]) > kpi_warn and sev != "block":
-            sev = "warn"
-            reasons.append(f"kpi_mean_level_vs_yhat_log_ratio_exceeds_{kpi_warn}")
+    if (
+        config.model_form == ModelForm.SEMI_LOG
+        and "log_mean_ratio" in kpi_sanity
+        and abs(kpi_sanity["log_mean_ratio"]) > kpi_warn
+        and sev != "block"
+    ):
+        sev = "warn"
+        reasons.append(f"kpi_mean_level_vs_yhat_log_ratio_exceeds_{kpi_warn}")
 
     return {
         "policy_version": "post_fit_validation_v1",

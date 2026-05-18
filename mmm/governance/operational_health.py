@@ -66,10 +66,14 @@ def compute_operational_health(
     if pq_sev == "warn":
         warns.append("panel_qa_max_severity_warn")
 
-    replay = extension_report.get("calibration_summary") if isinstance(extension_report.get("calibration_summary"), dict) else {}
-    if replay and not replay.get("replay_calibration_active"):
-        if config.run_environment == RunEnvironment.PROD:
-            warns.append("prod_decision_paths_prefer_replay_calibration_evidence_missing_or_inactive")
+    calibration_summary = extension_report.get("calibration_summary")
+    replay = calibration_summary if isinstance(calibration_summary, dict) else {}
+    if (
+        replay
+        and not replay.get("replay_calibration_active")
+        and config.run_environment == RunEnvironment.PROD
+    ):
+        warns.append("prod_decision_paths_prefer_replay_calibration_evidence_missing_or_inactive")
 
     if optimization_gate_allowed is False:
         if config.run_environment == RunEnvironment.PROD:
