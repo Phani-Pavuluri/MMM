@@ -10,9 +10,9 @@ from typer.testing import CliRunner
 
 from mmm.artifacts.decision_bundle import build_decision_bundle, validate_prod_decision_bundle
 from mmm.config.schema import CVSplitAxis, MMMConfig, RunEnvironment
-from mmm.governance.policy import PolicyError
 from mmm.contracts.runtime_validation import SemanticContractError, validate_semantic_contract
 from mmm.data.schema import PanelSchema
+from mmm.governance.policy import PolicyError
 from mmm.reporting.safe_language import assert_safe_reporting_language
 
 

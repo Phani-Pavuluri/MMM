@@ -9,6 +9,13 @@ import numpy as np
 
 from mmm.config.schema import Framework, MMMConfig, RunEnvironment
 from mmm.economics.canonical import economics_output_metadata
+from mmm.planning.assumptions import (
+    build_planning_assumptions,
+    infer_controls_assumption,
+    infer_media_assumption,
+    infer_world_assumption,
+    merge_disclosure,
+)
 from mmm.planning.baseline import (
     BaselinePlan,
     BaselineType,
@@ -20,15 +27,8 @@ from mmm.planning.baseline import (
     total_spend_geo_plan,
     total_spend_vector,
 )
-from mmm.planning.assumptions import (
-    build_planning_assumptions,
-    infer_controls_assumption,
-    infer_media_assumption,
-    infer_world_assumption,
-    merge_disclosure,
-)
-from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
 from mmm.planning.context import RidgeFitContext
+from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
 from mmm.planning.mu_path import DeltaMuAggregation, mean_mu_and_kpi_summary
 from mmm.planning.posterior_planning import (
     delta_mu_draws_hierarchical_geo_beta,
@@ -40,7 +40,6 @@ from mmm.planning.spend_path import (
     counterfactual_piecewise_spend_panel,
     time_mean_spend_by_channel,
 )
-
 
 UncertaintyMode = Literal["point", "posterior"]
 
@@ -479,7 +478,11 @@ def simulate(
             "decision_geography_contract": {
                 "delta_mu_aggregation": agg,
                 "budget_geo_budget_enabled": bool(ctx.config.budget.geo_budget_enabled),
-                "optimizer_mode": "per_geo_channel" if ctx.config.budget.geo_budget_enabled else "national_channel_vector",
+                "optimizer_mode": (
+                    "per_geo_channel"
+                    if ctx.config.budget.geo_budget_enabled
+                    else "national_channel_vector"
+                ),
             },
             "baseline_plan_source": base.baseline_plan_source,
             "baseline_suitable_for_decisioning": base.suitable_for_decisioning,

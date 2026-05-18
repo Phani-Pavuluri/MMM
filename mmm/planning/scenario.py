@@ -111,7 +111,12 @@ class PlanningScenario(BaseModel):
         panel_s = sort_panel_for_modeling(panel, schema)
         ctrl_set = set(control_columns)
         single, base_ov, plan_ov = self.overlay_specs()
-        for label, ov in (("control_overlay", single), ("control_overlay_baseline", base_ov), ("control_overlay_plan", plan_ov)):
+        overlay_pairs = (
+            ("control_overlay", single),
+            ("control_overlay_baseline", base_ov),
+            ("control_overlay_plan", plan_ov),
+        )
+        for label, ov in overlay_pairs:
             if ov is None:
                 continue
             for r in ov.rows:
@@ -208,7 +213,8 @@ def planning_scenario_from_dict(raw: dict[str, Any], *, source_path: str | None 
             meta.setdefault("source_path", source_path)
             meta.setdefault("source", "yaml")
     if not block.get("scenario_id"):
-        block["scenario_id"] = f"legacy_{hashlib.sha256(json.dumps(raw, sort_keys=True, default=str).encode()).hexdigest()[:12]}"
+        raw_blob = json.dumps(raw, sort_keys=True, default=str).encode()
+        block["scenario_id"] = f"legacy_{hashlib.sha256(raw_blob).hexdigest()[:12]}"
     if not block.get("metadata", {}).get("created_at"):
         block.setdefault("metadata", {})["created_at"] = datetime.now(timezone.utc).isoformat()
     return PlanningScenario.model_validate(block)

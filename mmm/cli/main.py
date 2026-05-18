@@ -652,6 +652,8 @@ def simulate_diagnostic_curves(
         SpendScenario,
         run_curve_bundle_scenario,
         run_stepped_scenario,
+    )
+    from mmm.simulation.engine import (
         simulate_curve_diagnostic as simulate_engine,
     )
 

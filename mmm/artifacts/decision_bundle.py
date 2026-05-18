@@ -16,7 +16,6 @@ from mmm.contracts.quantity_models import (
     DecompositionQuantityResult,
     ROIApproxQuantityResult,
 )
-from mmm.governance.semantics import DecisionSemantics, SafetyFlags
 from mmm.data.schema import PanelSchema
 from mmm.economics.canonical import (
     EconomicsOutputSurface,
@@ -24,6 +23,7 @@ from mmm.economics.canonical import (
     economics_output_metadata,
     validate_business_economics_metadata,
 )
+from mmm.governance.semantics import DecisionSemantics, SafetyFlags
 
 
 def decision_resolved_config_snapshot(config: MMMConfig) -> dict[str, Any]:

@@ -5,22 +5,30 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
+import numpy as np
 import pytest
 from typer.testing import CliRunner
 
+from mmm.artifacts.decision_bundle import build_decision_bundle, validate_prod_decision_bundle
+from mmm.cli import main as cli_main
 from mmm.config.extensions import ExtensionSuiteConfig, PlanningPolicyConfig
-from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm, RunEnvironment
+from mmm.config.schema import BudgetConfig, CVConfig, DataConfig, Framework, MMMConfig, ModelForm, RunEnvironment
 from mmm.data.schema import PanelSchema
 from mmm.decision.gates import allow_decision_pipeline
-from mmm.decision.service import optimize_budget_decision, simulate_decision
+from mmm.decision.service import _scenario_lineage_for_optimize_without_scenario, simulate_decision
 from mmm.governance.policy import PolicyError
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
+from mmm.optimization.budget import simulation_optimizer as sim_opt
+from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
 from mmm.planning import bau_baseline_from_panel, simulate
-from mmm.planning.assumptions import infer_controls_assumption
+from mmm.planning.assumptions import build_planning_assumptions, infer_controls_assumption
 from mmm.planning.context import ridge_context_from_fit
-from mmm.planning.control_overlay import ControlOverlaySpec
-from mmm.planning.scenario import PlanningScenario, planning_scenario_from_dict
+from mmm.planning.control_overlay import ControlOverlaySpec, overlay_spec_sha256
+from mmm.planning.optimize_context import OptimizeNonMediaContext
+from mmm.planning.policy import evaluate_control_scenario_policy
+from mmm.planning.scenario import planning_scenario_from_dict
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
 
@@ -169,17 +177,11 @@ def test_strict_prod_blocks_observed_sensitive_controls(tmp_path: Path) -> None:
 
 def test_optimize_fixed_scenario_same_overlay_each_eval() -> None:
     ctx, df, schema, cfg = _ridge_ctx_with_promo()
-    bau = bau_baseline_from_panel(df, schema)
     wk = df[schema.week_column].iloc[0]
     geo = str(df[schema.geo_column].iloc[0])
     ov = ControlOverlaySpec.from_dict(
         {"overrides": [{"geo": geo, "week": wk, "column": "promo", "value": 1.0}]}
     )
-    from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
-    from mmm.planning.optimize_context import OptimizeNonMediaContext
-
-    from mmm.config.schema import BudgetConfig
-
     cfg = cfg.model_copy(
         update={
             "budget": BudgetConfig(
@@ -189,7 +191,14 @@ def test_optimize_fixed_scenario_same_overlay_each_eval() -> None:
             )
         }
     )
-    ctx = type(ctx)(panel=ctx.panel, schema=ctx.schema, config=cfg, best_params=ctx.best_params, coef=ctx.coef, intercept=ctx.intercept)
+    ctx = type(ctx)(
+        panel=ctx.panel,
+        schema=ctx.schema,
+        config=cfg,
+        best_params=ctx.best_params,
+        coef=ctx.coef,
+        intercept=ctx.intercept,
+    )
     nm = OptimizeNonMediaContext(
         control_overlay_plan=ov,
         frozen_non_media=True,
@@ -198,10 +207,10 @@ def test_optimize_fixed_scenario_same_overlay_each_eval() -> None:
     with allow_decision_pipeline():
         res = optimize_budget_via_simulation(
             ctx,
-            current_spend=__import__("numpy").array([10.0]),
+            current_spend=np.array([10.0]),
             total_budget=20.0,
-            channel_min=__import__("numpy").array([0.0]),
-            channel_max=__import__("numpy").array([20.0]),
+            channel_min=np.array([0.0]),
+            channel_max=np.array([20.0]),
             non_media=nm,
         )
     sim_at = res.get("simulation_at_recommendation") or {}
@@ -210,14 +219,15 @@ def test_optimize_fixed_scenario_same_overlay_each_eval() -> None:
 
 
 def test_infer_controls_assumption_frozen() -> None:
-    assert infer_controls_assumption(has_baseline_overlay=False, has_plan_overlay=True, frozen_non_media=True) == "frozen_scenario"
+    got = infer_controls_assumption(
+        has_baseline_overlay=False,
+        has_plan_overlay=True,
+        frozen_non_media=True,
+    )
+    assert got == "frozen_scenario"
 
 
 def test_prod_bundle_requires_planning_assumptions() -> None:
-    from mmm.artifacts.decision_bundle import build_decision_bundle, validate_prod_decision_bundle
-    from mmm.config.schema import MMMConfig, RunEnvironment
-    from mmm.data.schema import PanelSchema
-
     cfg = MMMConfig(run_environment=RunEnvironment.PROD, data={"channel_columns": ["a"], "control_columns": []})
     schema = PanelSchema("g", "w", "y", ("a",))
     fp = {"sha256_panel_keycols_sorted_csv": "x" * 64, "sha256_schema_json": "y" * 64, "n_rows": 1}
@@ -236,11 +246,6 @@ def test_prod_bundle_requires_planning_assumptions() -> None:
 
 
 def test_explicit_scenario_requires_lineage_hash() -> None:
-    from mmm.artifacts.decision_bundle import build_decision_bundle, validate_prod_decision_bundle
-    from mmm.config.schema import MMMConfig, RunEnvironment
-    from mmm.data.schema import PanelSchema
-    from mmm.planning.assumptions import build_planning_assumptions
-
     cfg = MMMConfig(run_environment=RunEnvironment.PROD, data={"channel_columns": ["a"], "control_columns": []})
     schema = PanelSchema("g", "w", "y", ("a",))
     fp = {"sha256_panel_keycols_sorted_csv": "x" * 64, "sha256_schema_json": "y" * 64, "n_rows": 1}
@@ -265,8 +270,6 @@ def test_explicit_scenario_requires_lineage_hash() -> None:
 
 
 def test_overlay_spec_sha256_stable() -> None:
-    from mmm.planning.control_overlay import ControlOverlaySpec, overlay_spec_sha256
-
     ov = ControlOverlaySpec.from_dict(
         {"overrides": [{"geo": "G1", "week": 1, "column": "promo", "value": 1.0}]}
     )
@@ -292,8 +295,6 @@ def test_scenario_lineage_includes_overlay_hashes() -> None:
 
 
 def test_policy_warning_on_observed_sensitive_controls() -> None:
-    from mmm.planning.policy import evaluate_control_scenario_policy
-
     ctx, df, schema, cfg = _ridge_ctx_with_promo()
     pol = evaluate_control_scenario_policy(cfg, controls_assumption="observed")
     assert pol.severity == "warning"
@@ -302,11 +303,6 @@ def test_policy_warning_on_observed_sensitive_controls() -> None:
 
 
 def test_optimizer_passes_overlay_on_each_simulate_call() -> None:
-    from unittest.mock import patch
-
-    from mmm.optimization.budget import simulation_optimizer as sim_opt
-    from mmm.planning.optimize_context import OptimizeNonMediaContext
-
     ctx, df, schema, cfg = _ridge_ctx_with_promo()
     wk = df[schema.week_column].iloc[0]
     geo = str(df[schema.geo_column].iloc[0])
@@ -319,8 +315,6 @@ def test_optimizer_passes_overlay_on_each_simulate_call() -> None:
     def _capture(*args: Any, **kwargs: Any) -> Any:
         calls.append(dict(kwargs))
         return sim_opt.simulate(*args, **kwargs)
-
-    from mmm.config.schema import BudgetConfig
 
     cfg = cfg.model_copy(
         update={
@@ -349,10 +343,10 @@ def test_optimizer_passes_overlay_on_each_simulate_call() -> None:
     with patch.object(sim_opt, "simulate", side_effect=_capture):
         sim_opt.optimize_budget_via_simulation(
             ctx,
-            current_spend=__import__("numpy").array([10.0]),
+            current_spend=np.array([10.0]),
             total_budget=20.0,
-            channel_min=__import__("numpy").array([0.0]),
-            channel_max=__import__("numpy").array([20.0]),
+            channel_min=np.array([0.0]),
+            channel_max=np.array([20.0]),
             non_media=nm,
         )
     assert len(calls) >= 2
@@ -362,16 +356,12 @@ def test_optimizer_passes_overlay_on_each_simulate_call() -> None:
 
 
 def test_optimize_without_scenario_lineage_explicit() -> None:
-    from mmm.decision.service import _scenario_lineage_for_optimize_without_scenario
-
     lin = _scenario_lineage_for_optimize_without_scenario()
     assert lin["non_media_overlay_supplied"] is False
     assert lin["non_media_overlay_applied"] is False
 
 
 def test_cli_help_mentions_planning_assumptions() -> None:
-    from mmm.cli import main as cli_main
-
     r = CliRunner().invoke(cli_main.app, ["decide", "optimize-budget", "--help"])
     assert r.exit_code == 0
     assert "media" in (r.stdout or "").lower()
