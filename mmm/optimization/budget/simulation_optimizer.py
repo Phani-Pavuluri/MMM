@@ -17,6 +17,7 @@ from mmm.planning.baseline import (
 )
 from mmm.planning.context import RidgeFitContext
 from mmm.planning.decision_simulate import simulate
+from mmm.planning.optimize_context import OptimizeNonMediaContext
 
 
 def _effective_n_starts(n: int) -> int:
@@ -278,6 +279,7 @@ def _optimize_budget_geo(
     total_budget: float,
     channel_min: np.ndarray,
     channel_max: np.ndarray,
+    non_media: OptimizeNonMediaContext | None = None,
 ) -> dict[str, Any]:
     bcfg = ctx.config.budget
     names = list(ctx.schema.channel_columns)
@@ -370,6 +372,8 @@ def _optimize_budget_geo(
     agg = ctx.config.extensions.product.planning_delta_mu_aggregation
     names_list = names
 
+    skw = _simulate_kwargs(non_media)
+
     def neg_delta_mu(x: np.ndarray) -> float:
         gdict = _flat_to_geo_dict(x, geos, names_list)
         sim = simulate(
@@ -379,6 +383,7 @@ def _optimize_budget_geo(
             uncertainty_mode="point",
             spend_plan_geo=gdict,
             delta_mu_aggregation=agg,
+            **skw,
         )
         return -float(sim.delta_mu)
 
@@ -415,6 +420,7 @@ def _optimize_budget_geo(
         uncertainty_mode="point",
         spend_plan_geo=opt_geo,
         delta_mu_aggregation=agg,
+        **skw,
     )
     disc = disclosure_for_non_bau_optimization(base)
     mean_ch = channel_means_from_geo_plan(opt_geo, ctx.schema, geos)
@@ -480,6 +486,18 @@ def _optimize_budget_geo(
     }
 
 
+def _simulate_kwargs(non_media: OptimizeNonMediaContext | None) -> dict[str, Any]:
+    if non_media is None:
+        return {}
+    ob, op = non_media.resolved_overlays()
+    return {
+        "control_overlay_baseline": ob,
+        "control_overlay_plan": op,
+        "frozen_non_media_controls": non_media.frozen_non_media,
+        "scenario_lineage": non_media.scenario_lineage,
+    }
+
+
 def optimize_budget_via_simulation(
     ctx: RidgeFitContext,
     *,
@@ -488,6 +506,7 @@ def optimize_budget_via_simulation(
     total_budget: float,
     channel_min: np.ndarray,
     channel_max: np.ndarray,
+    non_media: OptimizeNonMediaContext | None = None,
 ) -> dict[str, Any]:
     """
     Maximize **Δμ vs baseline** subject to sum(spend)=budget and box constraints.
@@ -516,6 +535,7 @@ def optimize_budget_via_simulation(
             total_budget=total_budget,
             channel_min=channel_min,
             channel_max=channel_max,
+            non_media=non_media,
         )
     base = baseline_plan or bau_baseline_from_panel(ctx.panel, ctx.schema)
     base_vec = np.array([float(base.spend_by_channel[c]) for c in names], dtype=float)
@@ -534,6 +554,8 @@ def optimize_budget_via_simulation(
     agg = prod.planning_delta_mu_aggregation
     rng = np.random.default_rng(int(ctx.config.ridge_bo.sampler_seed))
 
+    skw = _simulate_kwargs(non_media)
+
     def neg_delta_mu(x: np.ndarray) -> float:
         sim = simulate(
             spend_dict(x),
@@ -541,6 +563,7 @@ def optimize_budget_via_simulation(
             baseline_plan=base,
             uncertainty_mode="point",
             delta_mu_aggregation=agg,
+            **skw,
         )
         return -float(sim.delta_mu)
 
@@ -583,6 +606,7 @@ def optimize_budget_via_simulation(
         baseline_plan=base,
         uncertainty_mode="point",
         delta_mu_aggregation=agg,
+        **skw,
     )
     disc = disclosure_for_non_bau_optimization(base)
     ch_labels = [f"national:{c}" for c in names]

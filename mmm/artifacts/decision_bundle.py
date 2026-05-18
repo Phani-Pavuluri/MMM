@@ -95,9 +95,19 @@ PROD_DECISION_CLI_BUNDLE_REQUIRED_TOP_LEVEL = PROD_EXTENSION_BUNDLE_REQUIRED_TOP
 )
 
 
-def compute_unsupported_questions(cfg: MMMConfig, extension_report: dict[str, Any] | None) -> list[str]:
+def compute_unsupported_questions(
+    cfg: MMMConfig,
+    extension_report: dict[str, Any] | None,
+    *,
+    controls_assumption: str | None = None,
+) -> list[str]:
     """List business questions this run cannot answer decision-grade (transparency)."""
     qs: list[str] = []
+    if controls_assumption in (None, "observed"):
+        qs.append(
+            "This decision does not simulate future non-media conditions unless an explicit "
+            "PlanningScenario or control overlay was supplied."
+        )
     if cfg.framework == Framework.BAYESIAN:
         qs.append("Decision-grade Bayesian uncertainty for prod budget optimization (blocked in prod).")
         qs.append("Bayesian posterior draws as the sole basis for audited dollar ROI (not certified here).")
@@ -172,6 +182,14 @@ def validate_prod_decision_bundle(
         missing.append("config_sha_must_match_config_fingerprint_sha256")
     if decision_cli_surface and bundle.get("artifact_tier") != DECISION_TIER_VALUE:
         missing.append("artifact_tier_must_be_decision_for_cli")
+    pa = bundle.get("planning_assumptions")
+    if not isinstance(pa, dict) or not pa.get("controls_assumption"):
+        missing.append("planning_assumptions_required_on_decision_cli_bundle")
+    world = (pa or {}).get("world_assumption") if isinstance(pa, dict) else None
+    if world == "explicit_scenario":
+        sl = bundle.get("scenario_lineage")
+        if not isinstance(sl, dict) or not sl.get("scenario_id") or not sl.get("scenario_hash"):
+            missing.append("explicit_scenario_requires_scenario_lineage_id_and_hash")
     return missing
 
 
@@ -213,6 +231,9 @@ def build_decision_bundle(
     package_version: str | None = None,
     simulation_json: dict[str, Any] | None = None,
     extension_report: dict[str, Any] | None = None,
+    scenario_lineage: dict[str, Any] | None = None,
+    planning_assumptions: dict[str, Any] | None = None,
+    control_scenario_policy: dict[str, Any] | None = None,
     artifact_tier: str | None = None,
     approximate: bool | None = None,
     not_for_budgeting: bool | None = None,
@@ -287,7 +308,24 @@ def build_decision_bundle(
     if nfb is None:
         nfb = tier != DECISION_TIER_VALUE
 
-    uq = compute_unsupported_questions(config, extension_report)
+    if planning_assumptions is None and isinstance(simulation_json, dict):
+        pa_js = simulation_json.get("planning_assumptions")
+        if isinstance(pa_js, dict):
+            planning_assumptions = pa_js
+    if scenario_lineage is None and isinstance(simulation_json, dict):
+        sl_js = simulation_json.get("scenario_lineage")
+        if isinstance(sl_js, dict) and sl_js:
+            scenario_lineage = sl_js
+
+    uq = compute_unsupported_questions(
+        config,
+        extension_report,
+        controls_assumption=(
+            str(planning_assumptions.get("controls_assumption"))
+            if isinstance(planning_assumptions, dict)
+            else None
+        ),
+    )
 
     primary_sem = (
         DecisionSemantics.FULL_PANEL_DELTA_MU.value
@@ -387,4 +425,10 @@ def build_decision_bundle(
         out["experiment_matching"] = experiment_matching
     if model_release is not None:
         out["model_release"] = model_release
+    if planning_assumptions is not None:
+        out["planning_assumptions"] = planning_assumptions
+    if scenario_lineage is not None:
+        out["scenario_lineage"] = scenario_lineage
+    if control_scenario_policy is not None:
+        out["control_scenario_policy"] = control_scenario_policy
     return out

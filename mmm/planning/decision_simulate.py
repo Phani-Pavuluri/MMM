@@ -20,6 +20,13 @@ from mmm.planning.baseline import (
     total_spend_geo_plan,
     total_spend_vector,
 )
+from mmm.planning.assumptions import (
+    build_planning_assumptions,
+    infer_controls_assumption,
+    infer_media_assumption,
+    infer_world_assumption,
+    merge_disclosure,
+)
 from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
 from mmm.planning.context import RidgeFitContext
 from mmm.planning.mu_path import DeltaMuAggregation, mean_mu_and_kpi_summary
@@ -139,6 +146,10 @@ class SimulationResult:
             "aggregation_semantics": self.aggregation_semantics,
             "kpi_column": self.kpi_column,
         }
+        if "planning_assumptions" in self.extra:
+            d["planning_assumptions"] = self.extra["planning_assumptions"]
+        if self.extra.get("scenario_lineage"):
+            d["scenario_lineage"] = self.extra["scenario_lineage"]
         d.update(self.extra)
         return d
 
@@ -163,6 +174,8 @@ def simulate(
     linear_coef_draws: np.ndarray | None = None,
     intercept_draws: np.ndarray | None = None,
     hierarchical_draw_pack: dict[str, Any] | None = None,
+    scenario_lineage: dict[str, Any] | None = None,
+    frozen_non_media_controls: bool = False,
 ) -> SimulationResult:
     """
     Evaluate **Δμ = μ̂(plan) − μ̂(baseline)** on the modeling scale (aggregation configurable).
@@ -415,6 +428,27 @@ def simulate(
     else:
         ctrl_sem.append("plan_observed_controls")
 
+    controls_asm = infer_controls_assumption(
+        has_baseline_overlay=bool(ob and ob.rows),
+        has_plan_overlay=bool(op and op.rows),
+        frozen_non_media=frozen_non_media_controls,
+    )
+    media_asm = infer_media_assumption(
+        optimized=False,
+        spend_plan_geo=spend_plan_geo is not None,
+        spend_path=spend_path_plan is not None,
+    )
+    world_asm = infer_world_assumption(
+        scenario_id=str((scenario_lineage or {}).get("scenario_id") or ""),
+        explicit_scenario=bool(scenario_lineage),
+    )
+    planning_assumptions = build_planning_assumptions(
+        controls_assumption=controls_asm,
+        media_assumption=media_asm,
+        world_assumption=world_asm,
+    )
+    disc = merge_disclosure(disc, planning_assumptions)
+
     return SimulationResult(
         baseline_mu=baseline_mu,
         plan_mu=plan_mu,
@@ -451,6 +485,8 @@ def simulate(
             "baseline_suitable_for_decisioning": base.suitable_for_decisioning,
             "controls_path_semantics": "+".join(ctrl_sem),
             "scenario_overlay_summary": summarize_scenario_overlays(ob, op),
+            "planning_assumptions": planning_assumptions,
+            "scenario_lineage": scenario_lineage or {},
             "seasonality_path": "observed_panel_seasonality",
             "promo_path": "observed_panel_promos_if_in_design",
             "geo_time_aggregation": geo_time,

@@ -27,7 +27,13 @@ def run_decision_simulation(
     er = json.loads(extension_report.read_text(encoding="utf-8"))
     try:
         raw = load_scenario_yaml(scenario)
-        payload = simulate_decision(cfg=cfg, scenario=raw, extension_report=er, out=out)
+        payload = simulate_decision(
+            cfg=cfg,
+            scenario=raw,
+            extension_report=er,
+            out=out,
+            scenario_source_path=str(scenario),
+        )
     except PolicyError as e:
         raise SemanticContractError(str(e)) from e
     except ValueError as e:
@@ -42,6 +48,7 @@ def run_decision_optimization(
     config: Path,
     extension_report: Path | None,
     out: Path,
+    scenario: Path | None = None,
     curve_bundle: Path | None = None,
     allow_unsafe_decision_apis: bool = False,
     legacy_diagnostic_curve_optimizer: bool = False,
@@ -49,9 +56,10 @@ def run_decision_optimization(
     """
     Full-panel optimize via ``optimize_budget_decision`` (same runtime policy as CLI).
 
-    **Non-canonical:** If full-panel inputs are unavailable *and* ``run_environment`` is not prod,
-    ``legacy_diagnostic_curve_optimizer`` may run ``run_legacy_diagnostic_optimize_budget`` (curve /
-    placeholder path). That path is not decision-grade.
+    Optimizes **media spend only** under one fixed non-media world (observed controls by default).
+    Optional ``scenario`` supplies fixed control overlays for every optimizer evaluation.
+
+    **Non-canonical:** legacy curve path when full-panel inputs are unavailable (non-prod only).
     """
     cfg = load_config(config)
     if extension_report is None or not extension_report.exists():
@@ -65,9 +73,16 @@ def run_decision_optimization(
     ridge = er.get("ridge_fit_summary")
     full_model_ready = bool(cfg.data.path and isinstance(ridge, dict) and ridge.get("coef"))
 
+    raw_scenario = load_scenario_yaml(scenario) if scenario is not None and scenario.exists() else None
     if full_model_ready:
         try:
-            payload = optimize_budget_decision(cfg=cfg, extension_report=er, out=out)
+            payload = optimize_budget_decision(
+                cfg=cfg,
+                extension_report=er,
+                out=out,
+                scenario=raw_scenario,
+                scenario_source_path=str(scenario) if scenario is not None else None,
+            )
         except PolicyError as e:
             raise SemanticContractError(str(e)) from e
         except (ValueError, KeyError) as e:

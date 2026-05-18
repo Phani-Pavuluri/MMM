@@ -66,7 +66,13 @@ def run_decision_simulate(
         return 1
     try:
         raw = load_scenario_yaml(scenario)
-        payload = simulate_decision(cfg=cfg, scenario=raw, extension_report=er, out=out)
+        payload = simulate_decision(
+            cfg=cfg,
+            scenario=raw,
+            extension_report=er,
+            out=out,
+            scenario_source_path=str(scenario),
+        )
     except PolicyError as e:
         typer.secho(str(e), fg=typer.colors.RED, err=True)
         return 2
@@ -80,6 +86,10 @@ def run_decision_simulate(
         typer.echo(f"wrote {out}")
     else:
         typer.echo(text)
+    from mmm.planning.cli_display import emit_planning_summary_to_stderr
+
+    if isinstance(payload, dict):
+        emit_planning_summary_to_stderr(payload)
     return 0
 
 
@@ -87,6 +97,7 @@ def run_decision_optimize_budget(
     *,
     config: Path,
     extension_report: Path | None,
+    scenario: Path | None,
     curve_bundle: Path | None,
     allow_unsafe_decision_apis: bool,
     legacy_diagnostic_curve_optimizer: bool,
@@ -130,7 +141,14 @@ def run_decision_optimize_budget(
     if full_model_ready:
         assert er_data is not None  # full_model_ready implies path + ridge in extension
         try:
-            payload = optimize_budget_decision(cfg=cfg, extension_report=er_data, out=out)
+            raw_scenario = load_scenario_yaml(scenario) if scenario is not None and scenario.exists() else None
+            payload = optimize_budget_decision(
+                cfg=cfg,
+                extension_report=er_data,
+                out=out,
+                scenario=raw_scenario,
+                scenario_source_path=str(scenario) if scenario is not None else None,
+            )
         except PolicyError as e:
             typer.secho(str(e), fg=typer.colors.RED, err=True)
             return 2
@@ -144,6 +162,9 @@ def run_decision_optimize_budget(
             typer.echo(f"wrote {out}")
         if cfg.run_environment != RunEnvironment.PROD or out is None:
             typer.echo(text)
+        from mmm.planning.cli_display import emit_planning_summary_to_stderr
+
+        emit_planning_summary_to_stderr(payload)
         return 0
 
     if not cfg.allow_unsafe_decision_apis or not allow_unsafe_decision_apis:

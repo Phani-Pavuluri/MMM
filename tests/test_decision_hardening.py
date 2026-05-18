@@ -50,6 +50,8 @@ def test_validate_prod_cli_bundle_requires_lineage(monkeypatch: pytest.MonkeyPat
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
     fp = {"sha256_panel_keycols_sorted_csv": "x" * 64, "sha256_schema_json": "y" * 64, "n_rows": 1}
+    from mmm.planning.assumptions import minimal_planning_assumptions_optimize
+
     b = build_decision_bundle(
         config=cfg,
         schema=schema,
@@ -61,6 +63,7 @@ def test_validate_prod_cli_bundle_requires_lineage(monkeypatch: pytest.MonkeyPat
         governance_passed=True,
         extension_report={"ridge_fit_summary": {"coef": [0.1]}},
         simulation_json={"aggregation_semantics": "mean_mu_over_all_panel_rows_equal_weight"},
+        planning_assumptions=minimal_planning_assumptions_optimize(),
     )
     b2 = dict(b)
     b2.pop("git_sha")

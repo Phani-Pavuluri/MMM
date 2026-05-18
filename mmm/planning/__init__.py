@@ -10,7 +10,13 @@ from mmm.planning.baseline import (
     zero_spend_baseline,
 )
 from mmm.planning.context import RidgeFitContext, ridge_context_from_fit
+from mmm.planning.assumptions import (
+    CONTROLS_DISCLOSURE,
+    OPTIMIZE_MEDIA_DISCLOSURE,
+    build_planning_assumptions,
+)
 from mmm.planning.control_overlay import ControlOverlaySpec, summarize_scenario_overlays
+from mmm.planning.scenario import PlanningScenario, planning_scenario_from_dict
 from mmm.planning.decision_simulate import SimulationResult, simulate
 from mmm.planning.posterior_planning import (
     PosteriorPlanningDisabled,

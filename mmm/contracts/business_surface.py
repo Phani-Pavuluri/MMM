@@ -119,4 +119,6 @@ def optimization_response_business_metadata(
         "unsupported_questions": list(bundle.get("unsupported_questions") or []),
         "optimization_surface": "full_model_simulation_slsqp",
         "prod_environment": prod,
+        "planning_assumptions": bundle.get("planning_assumptions"),
+        "scenario_lineage": bundle.get("scenario_lineage"),
     }

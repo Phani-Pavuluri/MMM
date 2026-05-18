@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass
 from typing import Any
 
@@ -9,6 +11,30 @@ import pandas as pd
 
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.schema import PanelSchema
+
+
+def overlay_rows_canonical(overlay: ControlOverlaySpec | None) -> list[dict[str, Any]]:
+    """Stable JSON-serializable overlay rows for hashing / audit."""
+    if overlay is None or not overlay.rows:
+        return []
+    return [
+        {
+            "geo": str(r["geo"]),
+            "week": r["week"],
+            "column": str(r["column"]),
+            "value": float(r["value"]),
+        }
+        for r in overlay.rows
+    ]
+
+
+def overlay_spec_sha256(overlay: ControlOverlaySpec | None) -> str | None:
+    """SHA-256 of canonical overlay rows (empty overlay → ``None``)."""
+    rows = overlay_rows_canonical(overlay)
+    if not rows:
+        return None
+    blob = json.dumps(rows, sort_keys=True, default=str)
+    return hashlib.sha256(blob.encode()).hexdigest()
 
 
 def summarize_scenario_overlays(
