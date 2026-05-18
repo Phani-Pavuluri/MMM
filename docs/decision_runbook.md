@@ -75,7 +75,62 @@ Successful PROD **`mmm decide … --out`** JSON includes a **`decision_bundle`**
 | **`mmm diagnose`** / **`mmm evaluate`** | Summarize extension sections (baselines, governance, curve ROI summary). **Diagnostic read**, not allocation-safe by itself. |
 | **`mmm decide simulate`** | Full-panel **`decision_simulate.simulate`**. **Not** curve-based. |
 | **`mmm decide optimize-budget`** | SLSQP maximizing Δμ via the same simulator. **Blocked** in prod without extension report + ridge summary + gates + `planning_allowed`. |
-| **`mmm simulate-diagnostic-curves`** | Curve / SpendPlan diagnostics only. **Tier diagnostic**; do **not** substitute for `decide simulate`. |
+| **`mmm simulate-diagnostic-curves`** | Curve / SpendPlan diagnostics only. **Tier diagnostic**; media-only; **not** full-panel planning; **not** non-media scenario simulation. |
+
+## 2e. Planning contract (media vs non-media)
+
+**Step-by-step usage:** [planning_howto.md](planning_howto.md) (scenarios, CLI, Python API, checklist).
+
+Every **`mmm decide …`** output includes **`planning_assumptions`**:
+
+| Field | Values | Meaning |
+|-------|--------|---------|
+| `controls_assumption` | `observed` \| `overlay` \| `frozen_scenario` | How non-media panel columns enter μ |
+| `media_assumption` | `constant` \| `geo_channel` \| `piecewise_path` \| `optimized` | How media spend is set |
+| `world_assumption` | `historical_panel` \| `explicit_scenario` | Whether a typed `PlanningScenario` was supplied |
+
+**`mmm decide simulate`**
+
+- Changes **media** spend (national, per-geo, or piecewise path).
+- **Non-media** controls default to **observed historical panel values** per row.
+- Optional **`PlanningScenario`** YAML (or legacy keys): sparse `control_overlay_*` on existing `data.control_columns`.
+- Does **not** generate macro/promo/pricing futures; overlays must match panel `(geo, week)` rows.
+
+**`mmm decide optimize-budget`**
+
+- **Optimizes media only** (SLSQP on full-panel Δμ).
+- **Does not** optimize promos, pricing, macro, or other controls.
+- Default non-media world = **observed** historical controls.
+- Optional **`--scenario`**: fixed non-media overlays applied to **every** optimizer evaluation (`controls_assumption=frozen_scenario` when only plan overlay is set).
+
+**Artifacts:** `scenario_lineage` carries `scenario_id`, `scenario_hash`, overlay summaries, and spend path hashes for audit replay.
+
+**Strict prod:** set `extensions.planning_policy.strict_prod_requires_explicit_control_scenario: true` to block decision paths when sensitive control columns (configured or name-heuristic) use observed controls without overlays.
+
+**Worked examples**
+
+Media-only simulate (observed controls; policy may warn on `promo`):
+
+```bash
+mmm decide simulate \
+  --config configs/prod.yaml \
+  --extension-report artifacts/extension_report.json \
+  --scenario '{"candidate_spend": {"tv": 1.2e6, "search": 800000}}' \
+  --out decisions/sim_media_only.json
+```
+
+Promo overlay via scenario file (fixed non-media on optimize):
+
+```bash
+# examples/planning_scenario_promo.yaml — scenario_id + control_overlay_plan rows
+mmm decide optimize-budget \
+  --config configs/prod.yaml \
+  --extension-report artifacts/extension_report.json \
+  --scenario examples/planning_scenario_promo.yaml \
+  --out decisions/opt_promo_fixed.json
+```
+
+CLI prints **Planning assumptions**, **PLANNING POLICY WARNING** (when applicable), and **Non-media: no overlay** / overlay SHA hints on stderr. Full field reference: [planning_artifact_schema.md](planning_artifact_schema.md).
 
 **Decomposition / ROI (read carefully)**
 

@@ -1,5 +1,10 @@
 """Decision planning: baseline policy, full-model μ simulation, and optimization contracts."""
 
+from mmm.planning.assumptions import (
+    CONTROLS_DISCLOSURE,
+    OPTIMIZE_MEDIA_DISCLOSURE,
+    build_planning_assumptions,
+)
 from mmm.planning.baseline import (
     BaselinePlan,
     BaselineType,
@@ -19,12 +24,18 @@ from mmm.planning.posterior_planning import (
     posterior_planning_gate,
     simulate_posterior,
 )
+from mmm.planning.scenario import PlanningScenario, planning_scenario_from_dict
 from mmm.planning.spend_path import PiecewiseSpendPath, SpendSegment
 
 __all__ = [
+    "CONTROLS_DISCLOSURE",
+    "OPTIMIZE_MEDIA_DISCLOSURE",
     "BaselinePlan",
     "BaselineType",
     "ControlOverlaySpec",
+    "PlanningScenario",
+    "build_planning_assumptions",
+    "planning_scenario_from_dict",
     "summarize_scenario_overlays",
     "delta_mu_draws_hierarchical_geo_beta",
     "PosteriorPlanResult",

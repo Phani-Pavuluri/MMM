@@ -33,12 +33,13 @@ app = typer.Typer(
 
 decide_app = typer.Typer(
     help=(
-        "Full-panel Δμ simulation and budget optimization. PROD fail-closed: extension_report, "
-        "``model_release.state=planning_allowed``, optimization gates, panel QA rules, ``--out``, lineage, "
-        "``artifact_tier=decision``, and semantic contract validation on ``decision_bundle`` + ``simulation``. "
-        "Curves are not used here—use ``simulate-diagnostic-curves`` (diagnostic tier only). "
-        "Bayesian / posterior-draw outputs elsewhere in the repo are **research or diagnostic only** under "
-        "current prod policy—not approved for prod Δμ budgeting or CLI ``decide`` surfaces."
+        "Full-panel Δμ simulation and budget optimization. "
+        "``decide simulate``: changes media spend; optional PlanningScenario/control overlays; "
+        "non-media controls default to observed historical panel values. "
+        "``decide optimize-budget``: optimizes media only under one fixed non-media world "
+        "(observed controls by default); does not optimize promo/pricing/macro. "
+        "PROD fail-closed: extension_report, planning_allowed, gates, ``--out``, lineage. "
+        "Curves: use ``simulate-diagnostic-curves`` (media-only diagnostic; not full-panel planning)."
     ),
     add_completion=False,
     no_args_is_help=True,
@@ -50,7 +51,10 @@ def decide_simulate(
     config: Annotated[Path, typer.Argument(help="Resolved YAML (must include data.path for full-panel Δμ).")],
     scenario: Annotated[
         Path,
-        typer.Option("--scenario", help="Scenario YAML (candidate spend / paths / overlays)."),
+        typer.Option(
+            "--scenario",
+            help="PlanningScenario YAML (candidate spend, control overlays, scenario_id).",
+        ),
     ],
     extension_report: Annotated[
         Path,
@@ -61,7 +65,7 @@ def decide_simulate(
         typer.Option("--out", help="Write JSON decision artifact (required in PROD)."),
     ] = None,
 ) -> None:
-    """Canonical governance-checked full-panel Δμ simulate (delegates to ``decision.service``)."""
+    """Full-panel Δμ simulate: media changes; optional non-media overlays; controls default observed."""
     from mmm.cli.decision_layer import run_decision_simulate
 
     code = run_decision_simulate(
@@ -81,6 +85,13 @@ def decide_optimize_budget(
         typer.Option(
             "--extension-report",
             help="Training extension_report.json (required for PROD full-panel optimize).",
+        ),
+    ] = None,
+    scenario: Annotated[
+        Path | None,
+        typer.Option(
+            "--scenario",
+            help="Optional PlanningScenario YAML: fixed non-media control overlays for all optimizer evaluations.",
         ),
     ] = None,
     curve_bundle: Annotated[
@@ -106,12 +117,13 @@ def decide_optimize_budget(
         typer.Option("--out", help="Write optimization + decision bundle JSON (required in PROD)."),
     ] = None,
 ) -> None:
-    """Canonical governance-checked full-panel Δμ budget optimize."""
+    """Optimize media spend under a fixed non-media world (observed controls unless --scenario)."""
     from mmm.cli.decision_layer import run_decision_optimize_budget
 
     code = run_decision_optimize_budget(
         config=config,
         extension_report=extension_report,
+        scenario=scenario,
         curve_bundle=curve_bundle,
         allow_unsafe_decision_apis=allow_unsafe_decision_apis,
         legacy_diagnostic_curve_optimizer=legacy_diagnostic_curve_optimizer,
@@ -453,6 +465,7 @@ def optimize_budget(
         code = run_decision_optimize_budget(
             config=config,
             extension_report=extension_report,
+            scenario=None,
             curve_bundle=curve_bundle,
             allow_unsafe_decision_apis=allow_unsafe_decision_apis,
             legacy_diagnostic_curve_optimizer=legacy_diagnostic_curve_optimizer,
@@ -626,10 +639,11 @@ def simulate_diagnostic_curves(
     ] = None,
     out: Annotated[Path | None, typer.Option("--out", help="Write scenario result JSON")] = None,
 ) -> None:
-    """Curve / response-surface diagnostics (``simulate_curve_diagnostic``) — **not** full-panel Δμ.
+    """Curve / response-surface diagnostics — **media-only**; not full-panel Δμ; not non-media scenarios.
 
-    Do not use outputs for production budget decisions. For canonical Δμ, use ``mmm decide simulate`` with
-    ``data.path`` + ``ridge_fit_summary``. See runbook §10.
+    Do not use for production budget decisions. For canonical planning use ``mmm decide simulate`` (media +
+    optional control overlays) or ``mmm decide optimize-budget`` (media optimization under fixed controls).
+    See ``docs/decision_runbook.md`` §2e.
     """
     cfg = load_config(config)
     _ = cfg
@@ -638,6 +652,8 @@ def simulate_diagnostic_curves(
         SpendScenario,
         run_curve_bundle_scenario,
         run_stepped_scenario,
+    )
+    from mmm.simulation.engine import (
         simulate_curve_diagnostic as simulate_engine,
     )
 

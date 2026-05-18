@@ -10,7 +10,11 @@ Production-oriented Python library for weekly geo-level MMM with:
 - **Decisioning**: decomposition, response curves, uncertainty (P10/P50/P90), budget optimization, scenarios
 - **Artifacts**: pluggable stores (local default; MLflow optional, lazy-loaded)
 
-See `docs/` for architecture, YAML reference, and framework guides. Quickstart:
+See `docs/` for architecture, YAML reference, and framework guides.
+
+**Decision planning** (full-panel Δμ, media vs non-media contract): [docs/planning_howto.md](docs/planning_howto.md) — simulate candidate plans and optimize media with optional fixed promo/control overlays.
+
+Quickstart:
 
 ```bash
 pip install -e ".[bayesian,bo,dev]"

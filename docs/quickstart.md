@@ -15,3 +15,5 @@ trainer.run()
 ```
 
 Bayesian extras: `pip install mmm[bayesian]`. BO extras: `pip install mmm[bo]` (falls back to grid search if Optuna missing).
+
+After training, use **`mmm decide simulate`** / **`mmm decide optimize-budget`** for full-panel planning — see [planning_howto.md](planning_howto.md).

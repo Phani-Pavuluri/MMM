@@ -1,0 +1,22 @@
+# Example PlanningScenario for ``mmm decide simulate`` / ``mmm decide optimize-budget --scenario``.
+# Walkthrough: docs/planning_howto.md
+# Non-media overlays must match rows in the training panel (geo, week) and existing columns.
+
+scenario_id: example_promo_week1
+scenario_version: "1"
+description: Illustrative promo overlay; media candidate spend is national constant levels.
+
+media:
+  candidate_spend:
+    search: 100.0
+    social: 80.0
+    tv: 50.0
+
+# Optional: sparse control overrides (column must exist on panel + ideally in data.control_columns)
+# controls:
+#   control_overlay_plan:
+#     overrides:
+#       - geo: G1
+#         week: 1
+#         column: promo_flag
+#         value: 1.0

@@ -47,7 +47,11 @@ from mmm.governance.policy import (
 )
 from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
 from mmm.optimization.safety_gate import OptimizationSafetyGate
+from mmm.planning.assumptions import ControlsAssumption, build_planning_assumptions, infer_controls_assumption
 from mmm.planning.context import ridge_context_from_summary
+from mmm.planning.optimize_context import OptimizeNonMediaContext
+from mmm.planning.policy import evaluate_control_scenario_policy
+from mmm.planning.scenario import PlanningScenario, planning_scenario_from_dict, resolve_simulate_inputs
 
 
 def _prod_extension_gate(cfg: MMMConfig, er: dict[str, Any]) -> Any:
@@ -84,25 +88,72 @@ def _apply_runtime_policy_prechecks(cfg: MMMConfig, er: dict[str, Any], policy: 
     require_identifiability_for_prod_decision(cfg, er, policy)
 
 
+def _load_planning_scenario(raw: dict[str, Any], *, source_path: str | None = None) -> PlanningScenario:
+    return planning_scenario_from_dict(raw, source_path=source_path)
+
+
+def _apply_control_scenario_policy(
+    cfg: MMMConfig,
+    *,
+    controls_assumption: ControlsAssumption,
+) -> dict[str, Any]:
+    pol = evaluate_control_scenario_policy(cfg, controls_assumption=controls_assumption)
+    if pol.severity == "block":
+        raise PolicyError("; ".join(pol.messages))
+    return pol.to_json()
+
+
+def _optimize_non_media_from_scenario(
+    ps: PlanningScenario | None,
+    *,
+    panel: Any,
+    schema: Any,
+    cfg: MMMConfig,
+) -> OptimizeNonMediaContext | None:
+    if ps is None:
+        return None
+    strict = cfg.extensions.planning_policy.strict_prod_requires_explicit_control_scenario
+    ps.validate_against_panel(
+        panel,
+        schema,
+        control_columns=schema.control_columns,
+        require_overlay_coverage=strict,
+    )
+    single, co_b, co_p = ps.overlay_specs()
+    co_plan = co_p or single
+    frozen = bool(co_plan and co_plan.rows and not (co_b and co_b.rows))
+    store_full = bool(cfg.extensions.planning_policy.store_full_control_overlays_in_artifacts)
+    lineage = ps.lineage_payload(store_full_overlays=store_full)
+    lineage["non_media_overlay_supplied"] = True
+    lineage["non_media_overlay_applied"] = bool(co_plan and co_plan.rows)
+    return OptimizeNonMediaContext(
+        control_overlay_baseline=co_b,
+        control_overlay_plan=co_plan,
+        frozen_non_media=frozen,
+        scenario_lineage=lineage,
+    )
+
+
+def _scenario_lineage_for_optimize_without_scenario() -> dict[str, Any]:
+    return {
+        "non_media_overlay_supplied": False,
+        "non_media_overlay_applied": False,
+        "scenario_id": None,
+        "scenario_hash": None,
+        "note": "optimize_used_observed_historical_panel_controls_only",
+    }
+
+
 def _scenario_simulate(
     cfg: MMMConfig,
     er: dict[str, Any],
     raw: dict[str, Any],
-) -> tuple[Any, dict[str, Any]]:
+    *,
+    scenario_source_path: str | None = None,
+) -> tuple[Any, dict[str, Any], dict[str, Any], dict[str, Any]]:
     reject_approximate_quantity_subtrees_in_payload(raw, context="scenario_yaml")
 
-    from mmm.planning.baseline import (
-        channel_means_from_geo_plan,
-        locked_geo_plan_baseline,
-        locked_plan_baseline,
-    )
-    from mmm.planning.control_overlay import ControlOverlaySpec
     from mmm.planning.decision_simulate import simulate as decision_simulate
-    from mmm.planning.spend_path import (
-        PiecewiseSpendPath,
-        counterfactual_piecewise_spend_panel,
-        time_mean_spend_by_channel,
-    )
 
     rs = er.get("ridge_fit_summary")
     if not isinstance(rs, dict) or not rs.get("coef"):
@@ -111,78 +162,39 @@ def _scenario_simulate(
     schema = builder.schema()
     panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
     ctx = ridge_context_from_summary(panel, schema, cfg, rs)
-    geos_cli = sorted({str(x) for x in panel[schema.geo_column].unique()})
-    spend_path = None
-    if isinstance(raw.get("candidate_spend_path"), dict):
-        spend_path = PiecewiseSpendPath.from_dict(raw["candidate_spend_path"])
-    has_geo_cand = isinstance(raw.get("candidate_spend_by_geo"), dict)
-    has_scalar_cand = isinstance(raw.get("candidate_spend"), dict)
-    if spend_path is not None and has_geo_cand:
-        raise ValueError("scenario YAML: candidate_spend_path cannot be combined with candidate_spend_by_geo")
-    if has_geo_cand and has_scalar_cand:
-        raise ValueError("scenario YAML: use either candidate_spend or candidate_spend_by_geo, not both")
-    if spend_path is None and not has_scalar_cand and not has_geo_cand:
-        raise ValueError(
-            "scenario YAML must include candidate_spend, candidate_spend_by_geo, and/or candidate_spend_path."
-        )
-    spend_plan_geo = None
-    if spend_path is not None:
-        if has_scalar_cand and isinstance(raw.get("candidate_spend"), dict):
-            cand = {str(k): float(v) for k, v in raw["candidate_spend"].items()}
-        else:
-            tmp_df = counterfactual_piecewise_spend_panel(panel, schema, spend_path)
-            cand = time_mean_spend_by_channel(tmp_df, schema)
-    elif has_geo_cand:
-        raw_geo = raw["candidate_spend_by_geo"]
-        spend_plan_geo = {
-            str(g): {str(c): float(v) for c, v in row.items()} for g, row in raw_geo.items() if isinstance(row, dict)
-        }
-        cand = channel_means_from_geo_plan(spend_plan_geo, schema, geos_cli)
-    else:
-        cs = raw.get("candidate_spend")
-        if not isinstance(cs, dict):
-            raise ValueError("scenario YAML must include candidate_spend when candidate_spend_path is absent.")
-        cand = {str(k): float(v) for k, v in cs.items()}
-    base_plan = None
-    if isinstance(raw.get("baseline_spend"), dict):
-        base_plan = locked_plan_baseline(
-            {str(k): float(v) for k, v in raw["baseline_spend"].items()},
-            source="scenario_yaml:baseline_spend",
-            notes="baseline_spend from scenario YAML (non-BAU; labeled locked_plan).",
-        )
-    elif isinstance(raw.get("baseline_spend_by_geo"), dict):
-        raw_bg = raw["baseline_spend_by_geo"]
-        by_geo = {
-            str(g): {str(c): float(v) for c, v in row.items()} for g, row in raw_bg.items() if isinstance(row, dict)
-        }
-        base_plan = locked_geo_plan_baseline(
-            by_geo,
-            source="scenario_yaml:baseline_spend_by_geo",
-            notes="baseline_spend_by_geo from scenario YAML (non-BAU; labeled locked_plan).",
-        )
-    co_b = ControlOverlaySpec.from_dict(raw["control_overlay_baseline"]) if isinstance(
-        raw.get("control_overlay_baseline"), dict
-    ) else None
-    co_p = ControlOverlaySpec.from_dict(raw["control_overlay_plan"]) if isinstance(
-        raw.get("control_overlay_plan"), dict
-    ) else None
-    co_single = (
-        ControlOverlaySpec.from_dict(raw["control_overlay"]) if isinstance(raw.get("control_overlay"), dict) else None
+    ps = _load_planning_scenario(raw, source_path=scenario_source_path)
+    warn = ps.validate_against_panel(panel, schema, control_columns=schema.control_columns)
+    inputs = resolve_simulate_inputs(ps, panel, schema)
+    single, co_b, co_p = ps.overlay_specs()
+    co_plan = co_p or single
+    controls_asm: ControlsAssumption = infer_controls_assumption(
+        has_baseline_overlay=bool(co_b and co_b.rows),
+        has_plan_overlay=bool(co_plan and co_plan.rows),
+        frozen_non_media=False,
     )
-    ctrls_yaml = raw.get("controls_plan")
+    policy_js = _apply_control_scenario_policy(cfg, controls_assumption=controls_asm)
+    store_full = bool(cfg.extensions.planning_policy.store_full_control_overlays_in_artifacts)
+    lineage = ps.lineage_payload(store_full_overlays=store_full)
     sim = decision_simulate(
-        cand,
+        inputs["cand"],
         ctx,
-        baseline_plan=base_plan,
+        baseline_plan=inputs["base_plan"],
         uncertainty_mode="point",
-        spend_path_plan=spend_path,
-        spend_plan_geo=spend_plan_geo,
-        controls_plan=ctrls_yaml if co_p is None and co_single is None else None,
-        control_overlay_baseline=co_b,
-        control_overlay_plan=co_p,
-        control_overlay=co_single if co_p is None else None,
+        spend_path_plan=inputs["spend_path"],
+        spend_plan_geo=inputs["spend_plan_geo"],
+        control_overlay_baseline=inputs["control_overlay_baseline"],
+        control_overlay_plan=inputs["control_overlay_plan"],
+        control_overlay=inputs["control_overlay"],
+        controls_plan=inputs["controls_plan"],
+        scenario_lineage=lineage,
+        frozen_non_media_controls=False,
     )
-    return sim, sim.to_json()
+    sim_js = sim.to_json()
+    planning_assumptions = sim_js.get("planning_assumptions") or sim.extra.get("planning_assumptions")
+    if warn:
+        sim_js["scenario_validation_warnings"] = warn
+    sim_js["control_scenario_policy"] = policy_js
+    return sim, sim_js, lineage, planning_assumptions if isinstance(planning_assumptions, dict) else {}
 
 
 def simulate_decision(
@@ -191,6 +203,7 @@ def simulate_decision(
     scenario: dict[str, Any],
     extension_report: dict[str, Any],
     out: Path | None,
+    scenario_source_path: str | None = None,
 ) -> dict[str, Any]:
     """
     Full-panel Δμ simulate with centralized runtime policy.
@@ -213,12 +226,18 @@ def simulate_decision(
         if not gr_prod.allowed:
             raise PolicyError("optimization_gate_blocked: " + "; ".join(gr_prod.reasons))
 
-    sim, sim_js = _scenario_simulate(cfg, extension_report, scenario)
+    sim, sim_js, scenario_lineage, planning_assumptions = _scenario_simulate(
+        cfg, extension_report, scenario, scenario_source_path=scenario_source_path
+    )
     er = extension_report
     sim_js_pre, _sim_audit = apply_simulation_at_recommendation_allowlist(
         dict(sim_js), cfg=cfg, context="simulate_decision.simulation_json.pre_enrich"
     )
-    _uq_sim = compute_unsupported_questions(cfg, er if isinstance(er, dict) else None)
+    _uq_sim = compute_unsupported_questions(
+        cfg,
+        er if isinstance(er, dict) else None,
+        controls_assumption=str(planning_assumptions.get("controls_assumption", "observed")),
+    )
     _gate_sim = bool(gr_prod.allowed) if cfg.run_environment == RunEnvironment.PROD and gr_prod is not None else True
     sim_js = enrich_decision_simulation_json(
         sim_js_pre, cfg=cfg, unsupported_questions=_uq_sim, governance_gate_allowed=_gate_sim
@@ -279,6 +298,9 @@ def simulate_decision(
         extension_report=er if isinstance(er, dict) else None,
         runtime_policy_hash=policy_hash,
         model_release_id=mr_id,
+        scenario_lineage=scenario_lineage,
+        planning_assumptions=planning_assumptions,
+        control_scenario_policy=sim_js.get("control_scenario_policy"),
     )
     try:
         finalize_and_validate_cli_decision_bundle(bundle, cfg, simulation_json=sim_js)
@@ -288,10 +310,16 @@ def simulate_decision(
     canon = SimulationDecisionResult.from_simulation_json(
         sim_js,
         governance_refs={"optimization_gate": gr.to_json(), "governance": gov},
-        lineage_refs={"bundle_keys": list(bundle.keys())},
+        lineage_refs={"bundle_keys": list(bundle.keys()), "scenario_lineage": scenario_lineage},
     )
     require_decision_safe_result(canon.as_result_dict(), policy)
-    return {"simulation": sim_js, "decision_bundle": bundle, "decision_result": canon.model_dump(mode="json")}
+    return {
+        "simulation": sim_js,
+        "decision_bundle": bundle,
+        "decision_result": canon.model_dump(mode="json"),
+        "planning_assumptions": planning_assumptions,
+        "scenario_lineage": scenario_lineage,
+    }
 
 
 def optimize_budget_decision(
@@ -299,6 +327,8 @@ def optimize_budget_decision(
     cfg: MMMConfig,
     extension_report: dict[str, Any],
     out: Path | None,
+    scenario: dict[str, Any] | None = None,
+    scenario_source_path: str | None = None,
 ) -> dict[str, Any]:
     """Full-panel optimize with centralized runtime policy."""
     policy = runtime_policy_from_config(cfg)
@@ -330,6 +360,29 @@ def optimize_budget_decision(
     channel_min = np.array([float(cfg.budget.channel_min.get(c, 0.0)) for c in names], dtype=float)
     channel_max = np.array([float(cfg.budget.channel_max.get(c, 1e6)) for c in names], dtype=float)
     current = np.ones(n, dtype=float) * 1e5
+    ps = _load_planning_scenario(scenario, source_path=scenario_source_path) if scenario else None
+    non_media = _optimize_non_media_from_scenario(ps, panel=panel, schema=schema, cfg=cfg)
+    controls_asm: ControlsAssumption = "observed"
+    scenario_lineage: dict[str, Any] = _scenario_lineage_for_optimize_without_scenario()
+    planning_assumptions = build_planning_assumptions(
+        controls_assumption="observed",
+        media_assumption="optimized",
+        world_assumption="historical_panel",
+    )
+    if non_media is not None:
+        scenario_lineage = non_media.scenario_lineage or {}
+        ob, op = non_media.resolved_overlays()
+        controls_asm = infer_controls_assumption(
+            has_baseline_overlay=bool(ob and ob.rows),
+            has_plan_overlay=bool(op and op.rows),
+            frozen_non_media=non_media.frozen_non_media,
+        )
+        planning_assumptions = build_planning_assumptions(
+            controls_assumption=controls_asm,
+            media_assumption="optimized",
+            world_assumption="explicit_scenario" if scenario_lineage.get("scenario_id") else "historical_panel",
+        )
+    policy_js = _apply_control_scenario_policy(cfg, controls_assumption=controls_asm)
     with allow_decision_pipeline():
         res = optimize_budget_via_simulation(
             ctx,
@@ -337,6 +390,7 @@ def optimize_budget_decision(
             total_budget=total_budget,
             channel_min=channel_min,
             channel_max=channel_max,
+            non_media=non_media,
         )
     optimizer_success = bool(res.get("optimizer_success", res.get("success")))
     governance_passed = bool(gr.allowed)
@@ -349,7 +403,11 @@ def optimize_budget_decision(
         sim_at_pre, allow_audit = apply_simulation_at_recommendation_allowlist(
             sim_at, cfg=cfg, context="optimize_budget_decision.simulation_at_recommendation.pre_enrich"
         )
-        _uq_opt = compute_unsupported_questions(cfg, er_data if isinstance(er_data, dict) else None)
+        _uq_opt = compute_unsupported_questions(
+            cfg,
+            er_data if isinstance(er_data, dict) else None,
+            controls_assumption=str(planning_assumptions.get("controls_assumption", "observed")),
+        )
         sim_at = enrich_decision_simulation_json(
             sim_at_pre,
             cfg=cfg,
@@ -423,7 +481,16 @@ def optimize_budget_decision(
         extension_report=er_data if isinstance(er_data, dict) else None,
         runtime_policy_hash=policy_hash,
         model_release_id=mr_id,
+        scenario_lineage=scenario_lineage or None,
+        planning_assumptions=planning_assumptions,
+        control_scenario_policy=policy_js,
     )
+    res = {
+        **res,
+        "planning_assumptions": planning_assumptions,
+        "scenario_lineage": scenario_lineage,
+        "control_scenario_policy": policy_js,
+    }
     _sim_for_val = sim_at if sim_at else None
     try:
         finalize_and_validate_cli_decision_bundle(bundle, cfg, simulation_json=_sim_for_val)
@@ -446,7 +513,13 @@ def optimize_budget_decision(
             lineage_refs={"bundle_keys": list(bundle.keys())},
         )
         require_decision_safe_result(canon.as_result_dict(), policy)
-    return {"optimization": res, "decision_bundle": bundle, "business_surface": bs}
+    return {
+        "optimization": res,
+        "decision_bundle": bundle,
+        "business_surface": bs,
+        "planning_assumptions": planning_assumptions,
+        "scenario_lineage": scenario_lineage,
+    }
 
 
 def load_scenario_yaml(path: Path) -> dict[str, Any]:

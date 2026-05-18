@@ -138,6 +138,21 @@ class CurveResponseConfig(BaseModel):
     require_curve_stress_for_optimization: bool = True
 
 
+class PlanningPolicyConfig(BaseModel):
+    """Guardrails for non-media control assumptions on decision paths."""
+
+    promo_columns: list[str] = Field(default_factory=list)
+    pricing_columns: list[str] = Field(default_factory=list)
+    macro_columns: list[str] = Field(default_factory=list)
+    seasonality_columns: list[str] = Field(default_factory=list)
+    #: When True in prod, decision paths with sensitive controls + observed assumptions fail closed.
+    strict_prod_requires_explicit_control_scenario: bool = False
+    #: Optional name-based warnings for columns in data.control_columns (never blocks alone).
+    name_heuristic_warnings: bool = True
+    #: When True, decision artifacts include full overlay row lists; otherwise SHA-256 hashes only.
+    store_full_control_overlays_in_artifacts: bool = False
+
+
 class PanelQAConfig(BaseModel):
     """Data QA above ``validate_panel`` — extension artifacts + optional PROD training blocks."""
 
@@ -153,6 +168,7 @@ class PanelQAConfig(BaseModel):
 
 class ExtensionSuiteConfig(BaseModel):
     identifiability: IdentifiabilityRunConfig = Field(default_factory=IdentifiabilityRunConfig)
+    planning_policy: PlanningPolicyConfig = Field(default_factory=PlanningPolicyConfig)
     governance: GovernanceConfig = Field(default_factory=GovernanceConfig)
     optimization_gates: OptimizationGateConfig = Field(default_factory=OptimizationGateConfig)
     estimand: EstimandConfig = Field(default_factory=EstimandConfig)
