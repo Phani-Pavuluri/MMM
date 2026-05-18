@@ -10,36 +10,36 @@ import pandas as pd
 from mmm.artifacts.base import ArtifactStoreBase
 from mmm.artifacts.decision_bundle import build_decision_bundle, validate_prod_decision_bundle
 from mmm.config.schema import Framework, MMMConfig, RunEnvironment
-from mmm.contracts.quantity_models import PosteriorExplorationQuantityResult, UncertaintyBucketsQuantityResult
 from mmm.config.transform_policy import build_transform_policy_manifest
+from mmm.contracts.quantity_models import PosteriorExplorationQuantityResult, UncertaintyBucketsQuantityResult
+from mmm.contracts.run_manifest import build_run_manifest
 from mmm.data.fingerprint import fingerprint_panel
+from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import run_panel_qa
+from mmm.data.schema import PanelSchema
 from mmm.economics.canonical import (
     build_economics_contract,
     economics_output_metadata,
     validate_business_economics_metadata,
 )
-from mmm.governance.decision_safety import decision_safety_artifact
-from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
-from mmm.planning.context import ridge_fit_summary_from_artifacts
-from mmm.data.schema import PanelSchema
-from mmm.guidance.recommend import recommend_configuration
-from mmm.services.calibration_service import run_calibration_extensions
-from mmm.services.curve_service import build_curve_diagnostics_bundle
-from mmm.services.diagnostics_service import run_core_diagnostics
-from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
-from mmm.optimization.safety_gate import OptimizationSafetyGate
-from mmm.services.governance_service import build_governance_bundle
-from mmm.contracts.run_manifest import build_run_manifest
-from mmm.evaluation.post_fit_validation import compute_post_fit_validation_bundle
-from mmm.governance.model_release import infer_model_release_state
-from mmm.governance.operational_health import compute_operational_health
-from mmm.uncertainty.decomposition import UncertaintyDecomposer
-from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.evaluation.baselines import media_shuffled_within_geo, run_baselines
 from mmm.evaluation.calibration_extension import compute_replay_calibration_metrics
 from mmm.evaluation.feature_pipeline import build_extension_design_bundle
+from mmm.evaluation.post_fit_validation import compute_post_fit_validation_bundle
 from mmm.features.builder import build_extra_control_matrix
+from mmm.governance.decision_safety import decision_safety_artifact
+from mmm.governance.model_release import infer_model_release_state
+from mmm.governance.operational_health import compute_operational_health
+from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
+from mmm.guidance.recommend import recommend_configuration
+from mmm.optimization.safety_gate import OptimizationSafetyGate
+from mmm.planning.context import ridge_fit_summary_from_artifacts
+from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
+from mmm.services.calibration_service import run_calibration_extensions
+from mmm.services.curve_service import build_curve_diagnostics_bundle
+from mmm.services.diagnostics_service import run_core_diagnostics
+from mmm.services.governance_service import build_governance_bundle
+from mmm.uncertainty.decomposition import UncertaintyDecomposer
 
 
 def run_post_fit_extensions(
@@ -162,14 +162,18 @@ def run_post_fit_extensions(
         out["ridge_fit_summary"] = ridge_fit_summary_from_artifacts(fit_out["artifacts"])
     gov_js = out.get("governance") or {}
     pq_js = out.get("panel_qa") or {}
+    post_fit_validation = out.get("post_fit_validation")
+    post_fit_validation_js = post_fit_validation if isinstance(post_fit_validation, dict) else None
+    operational_health = out.get("operational_health")
+    operational_health_js = operational_health if isinstance(operational_health, dict) else None
     out["model_release"] = infer_model_release_state(
         config=config,
         panel_qa_max_severity=str(pq_js.get("max_severity", "info")),
         governance_approved_for_optimization=bool(gov_js.get("approved_for_optimization")),
         governance_approved_for_reporting=bool(gov_js.get("approved_for_reporting")),
         ridge_fit_summary_present=bool(out.get("ridge_fit_summary")),
-        post_fit_validation=out.get("post_fit_validation") if isinstance(out.get("post_fit_validation"), dict) else None,
-        operational_health=out.get("operational_health") if isinstance(out.get("operational_health"), dict) else None,
+        post_fit_validation=post_fit_validation_js,
+        operational_health=operational_health_js,
     )
     out["decision_policy"] = {
         "canonical_economic_quantity": "delta_mu_mean_row_mu_modeling_scale",

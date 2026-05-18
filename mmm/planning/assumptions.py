@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any
 
-ControlsAssumption = Literal["observed", "overlay", "frozen_scenario"]
-MediaAssumption = Literal["constant", "geo_channel", "piecewise_path", "optimized"]
-WorldAssumption = Literal["historical_panel", "explicit_scenario", "multi_world"]
+from mmm.planning.assumption_contract import (
+    ControlsAssumption,
+    MediaAssumption,
+    PlanningAssumptionsContract,
+    WorldAssumption,
+)
 
 CONTROLS_DISCLOSURE = (
     "Non-media controls are held at observed historical panel values unless an explicit "
@@ -75,17 +78,18 @@ def build_planning_assumptions(
         disclosures.append(OPTIMIZE_MEDIA_DISCLOSURE)
     else:
         disclosures.append(SIMULATE_PARTIAL_WORLD_DISCLOSURE)
-    return {
-        "controls_assumption": controls_assumption,
-        "media_assumption": media_assumption,
-        "world_assumption": world_assumption,
-        "seasonality_assumption": seasonality_assumption,
-        "promo_assumption": promo_assumption,
-        "macro_assumption": macro_assumption,
-        "pricing_assumption": pricing_assumption,
-        "planning_disclosures": disclosures,
-        "controls_disclosure": CONTROLS_DISCLOSURE,
-    }
+    contract = PlanningAssumptionsContract(
+        controls_assumption=controls_assumption,
+        media_assumption=media_assumption,
+        world_assumption=world_assumption,
+        seasonality_assumption=seasonality_assumption,
+        promo_assumption=promo_assumption,
+        macro_assumption=macro_assumption,
+        pricing_assumption=pricing_assumption,
+        planning_disclosures=disclosures,
+        controls_disclosure=CONTROLS_DISCLOSURE,
+    )
+    return contract.to_artifact_dict()
 
 
 def minimal_planning_assumptions_simulate(

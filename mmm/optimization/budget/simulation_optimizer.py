@@ -8,6 +8,7 @@ from typing import Any
 import numpy as np
 from scipy.optimize import minimize
 
+from mmm.planning.assumptions import build_planning_assumptions, infer_controls_assumption, infer_world_assumption
 from mmm.planning.baseline import (
     BaselinePlan,
     bau_baseline_from_panel,
@@ -18,6 +19,28 @@ from mmm.planning.baseline import (
 from mmm.planning.context import RidgeFitContext
 from mmm.planning.decision_simulate import simulate
 from mmm.planning.optimize_context import OptimizeNonMediaContext
+
+
+def _optimizer_planning_assumptions(non_media: OptimizeNonMediaContext | None) -> dict[str, Any]:
+    controls_asm = "observed"
+    scenario_lineage: dict[str, Any] = {}
+    if non_media is not None:
+        scenario_lineage = dict(non_media.scenario_lineage or {})
+        ob, op = non_media.resolved_overlays()
+        controls_asm = infer_controls_assumption(
+            has_baseline_overlay=bool(ob and ob.rows),
+            has_plan_overlay=bool(op and op.rows),
+            frozen_non_media=non_media.frozen_non_media,
+        )
+    world_asm = infer_world_assumption(
+        scenario_id=str(scenario_lineage.get("scenario_id") or ""),
+        explicit_scenario=bool(scenario_lineage.get("scenario_id")),
+    )
+    return build_planning_assumptions(
+        controls_assumption=controls_asm,
+        media_assumption="optimized",
+        world_assumption=world_asm,
+    )
 
 
 def _effective_n_starts(n: int) -> int:
@@ -449,6 +472,7 @@ def _optimize_budget_geo(
         jitter_ok=jitter_ok,
     )
     sim_js = final_sim.to_json()
+    sim_js["planning_assumptions"] = _optimizer_planning_assumptions(non_media)
     sim_js.setdefault(
         "economics_metadata",
         {
@@ -632,6 +656,7 @@ def optimize_budget_via_simulation(
         jitter_ok=jitter_ok,
     )
     sim_js = final_sim.to_json()
+    sim_js["planning_assumptions"] = _optimizer_planning_assumptions(non_media)
     sim_js.setdefault(
         "economics_metadata",
         {

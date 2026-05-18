@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from mmm.config.schema import ModelForm, MMMConfig
+from mmm.config.schema import MMMConfig, ModelForm
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.schema import PanelSchema
 from mmm.transforms.stack import build_channel_features_from_params

@@ -184,15 +184,9 @@ extensions:
     cli_js = json.loads(out_cli.read_text(encoding="utf-8"))
     api_js = json.loads(out_api.read_text(encoding="utf-8"))
 
-    def _scrub_nondeterministic(d: dict) -> None:
-        db = d.get("decision_bundle")
-        if isinstance(db, dict):
-            db.pop("created_at", None)
-            db.pop("python_version", None)
+    from tests.decision_payload_scrub import strip_volatile_decision_payload
 
-    _scrub_nondeterministic(cli_js)
-    _scrub_nondeterministic(api_js)
-    assert cli_js == api_js
+    assert strip_volatile_decision_payload(cli_js) == strip_volatile_decision_payload(api_js)
 
 
 def test_diagnostic_tier_rejected_for_cli_validation() -> None:

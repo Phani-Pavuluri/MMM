@@ -10,13 +10,13 @@ from mmm.contracts.business_surface import (
     BusinessSurfaceMetadataError,
     validate_business_facing_payload,
 )
+from mmm.contracts.quantity_models import validate_typed_approximate_artifact_section
 from mmm.contracts.runtime_validation import (
     SemanticContractError,
     assert_decision_artifact_tier,
     validate_semantic_contract,
 )
 from mmm.governance.policy import PolicyError as GovernancePolicyError
-from mmm.contracts.quantity_models import validate_typed_approximate_artifact_section
 from mmm.governance.validation import (
     validate_approximate_not_decision_safe,
     validate_decision_tier_lineage,

@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from mmm.governance.semantics import ArtifactTier, DECISION_TIER_VALUE
+from mmm.governance.semantics import DECISION_TIER_VALUE, ArtifactTier
 
 __all__ = ["ArtifactTier", "DECISION_TIER_VALUE"]

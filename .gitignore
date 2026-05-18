@@ -8,3 +8,4 @@ mmm_runs/
 dist/
 build/
 *.egg-info/
+.venv-ruff/

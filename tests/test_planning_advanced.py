@@ -7,8 +7,8 @@ import numpy as np
 from mmm.config.extensions import ExtensionSuiteConfig, ProductScopeConfig
 from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm
 from mmm.data.schema import PanelSchema
-from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.decision.gates import allow_decision_pipeline
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
 from mmm.planning import (
     bau_baseline_from_panel,
@@ -16,8 +16,8 @@ from mmm.planning import (
     simulate,
 )
 from mmm.planning.baseline import total_spend_geo_plan
-from mmm.planning.control_overlay import ControlOverlaySpec
 from mmm.planning.context import RidgeFitContext, ridge_context_from_fit
+from mmm.planning.control_overlay import ControlOverlaySpec
 from mmm.planning.spend_path import PiecewiseSpendPath, SpendSegment
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 

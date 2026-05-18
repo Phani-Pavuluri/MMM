@@ -26,10 +26,10 @@ from typing import Any, Literal
 import numpy as np
 
 from mmm.config.schema import MMMConfig, RunEnvironment
+from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.planning.baseline import BaselinePlan, bau_baseline_from_panel
 from mmm.planning.context import RidgeFitContext
 from mmm.planning.control_overlay import ControlOverlaySpec
-from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.planning.mu_path import (
     DeltaMuAggregation,
     aggregate_mean_mu_draws,

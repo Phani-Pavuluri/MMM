@@ -48,7 +48,13 @@ class SimulationDecisionResult(BaseModel):
     lineage_refs: dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
-    def from_simulation_json(cls, sim: dict[str, Any], *, governance_refs: dict, lineage_refs: dict) -> SimulationDecisionResult:
+    def from_simulation_json(
+        cls,
+        sim: dict[str, Any],
+        *,
+        governance_refs: dict,
+        lineage_refs: dict,
+    ) -> SimulationDecisionResult:
         return cls(
             baseline_mu=float(sim["baseline_mu"]),
             candidate_mu=float(sim["plan_mu"]),

@@ -1,5 +1,13 @@
 """Decision planning: baseline policy, full-model μ simulation, and optimization contracts."""
 
+from mmm.planning.assumption_contract import (
+    CONTROLS_ASSUMPTION_VALUES,
+    MEDIA_ASSUMPTION_VALUES,
+    WORLD_ASSUMPTION_VALUES,
+    PlanningAssumptionsContract,
+    parse_planning_assumptions,
+    validate_planning_assumptions_semantics,
+)
 from mmm.planning.assumptions import (
     CONTROLS_DISCLOSURE,
     OPTIMIZE_MEDIA_DISCLOSURE,
@@ -28,8 +36,14 @@ from mmm.planning.scenario import PlanningScenario, planning_scenario_from_dict
 from mmm.planning.spend_path import PiecewiseSpendPath, SpendSegment
 
 __all__ = [
+    "CONTROLS_ASSUMPTION_VALUES",
     "CONTROLS_DISCLOSURE",
+    "MEDIA_ASSUMPTION_VALUES",
     "OPTIMIZE_MEDIA_DISCLOSURE",
+    "PlanningAssumptionsContract",
+    "WORLD_ASSUMPTION_VALUES",
+    "parse_planning_assumptions",
+    "validate_planning_assumptions_semantics",
     "BaselinePlan",
     "BaselineType",
     "ControlOverlaySpec",

@@ -74,7 +74,8 @@ def validate_prod_model_form_contract(config: MMMConfig) -> None:
         raise PolicyError(
             "run_environment=prod with framework=ridge_bo requires prod_canonical_modeling_contract_id="
             f"{expected!r} for model_form={config.model_form.value} (got {got!r}). "
-            "Add this key to YAML to acknowledge the supported semi-log vs log-log link and calendar-CV training contract."
+            "Add this key to YAML to acknowledge the supported semi-log vs log-log link "
+            "and calendar-CV training contract."
         )
 
 

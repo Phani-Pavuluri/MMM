@@ -31,7 +31,10 @@ def run_calibration_extensions(
             "n_experiments_loaded": len(exps),
             "n_inadmissible": len(adm_samples),
             "inadmissible_sample": adm_samples[:25],
-            "policy_note": "Rows with violations are excluded from prod matching paths; review before enabling calibration.enabled in prod.",
+            "policy_note": (
+                "Rows with violations are excluded from prod matching paths; review before enabling "
+                "calibration.enabled in prod."
+            ),
         }
         ev = EstimandValidator(config.extensions.estimand, config.calibration.experiment_target_kpi)
         evr = ev.validate_experiments(exps)

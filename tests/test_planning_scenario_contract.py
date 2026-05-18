@@ -26,17 +26,29 @@ from mmm.planning import bau_baseline_from_panel, simulate
 from mmm.planning.assumptions import build_planning_assumptions, infer_controls_assumption
 from mmm.planning.context import ridge_context_from_fit
 from mmm.planning.control_overlay import ControlOverlaySpec, overlay_spec_sha256
+from mmm.planning.decision_simulate import simulate as decision_simulate
 from mmm.planning.optimize_context import OptimizeNonMediaContext
 from mmm.planning.policy import evaluate_control_scenario_policy
 from mmm.planning.scenario import planning_scenario_from_dict
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
+
+_PROD_OBJECTIVE = {
+    "normalization_profile": "strict_prod",
+    "named_profile": "ridge_bo_standard_v1",
+}
 
 
 def _ridge_ctx_with_promo():
     df0, _ = generate_geo_panel(
         SyntheticGeoPanelSpec(n_geos=2, n_weeks=16, channels=("a",), betas=(0.4,))
     )
-    df = df0.copy()
+    df = df0.rename(
+        columns={
+            "geo_id": "geo",
+            "week_start_date": "week",
+            "revenue": "y",
+        }
+    )
     df["promo"] = 0.0
     schema = PanelSchema(
         geo_column="geo",
@@ -129,9 +141,11 @@ def test_planning_scenario_hash_deterministic() -> None:
 
 def test_strict_prod_blocks_observed_sensitive_controls(tmp_path: Path) -> None:
     ctx, df, schema, cfg = _ridge_ctx_with_promo()
-    cfg = cfg.model_copy(
+    cfg_prod = cfg.model_copy(
         update={
             "run_environment": RunEnvironment.PROD,
+            "prod_canonical_modeling_contract_id": "ridge_bo_semi_log_calendar_cv_v1",
+            "objective": dict(_PROD_OBJECTIVE),
             "extensions": cfg.extensions.model_copy(
                 update={
                     "planning_policy": cfg.extensions.planning_policy.model_copy(
@@ -143,16 +157,15 @@ def test_strict_prod_blocks_observed_sensitive_controls(tmp_path: Path) -> None:
     )
     csv = tmp_path / "panel.csv"
     df.to_csv(csv, index=False)
-    cfg = cfg.model_copy(update={"data": cfg.data.model_copy(update={"path": str(csv)})})
+    cfg_prod = cfg_prod.model_copy(update={"data": cfg_prod.data.model_copy(update={"path": str(csv)})})
     ext = tmp_path / "ext.json"
-    art = RidgeBOMMMTrainer(cfg, schema).fit(df)["artifacts"]
     ext.write_text(
         json.dumps(
             {
                 "ridge_fit_summary": {
-                    "best_params": dict(art.best_params),
-                    "coef": art.coef.tolist(),
-                    "intercept": art.intercept.tolist(),
+                    "best_params": dict(ctx.best_params),
+                    "coef": np.asarray(ctx.coef).tolist(),
+                    "intercept": np.asarray(ctx.intercept).tolist(),
                 },
                 "governance": {"approved_for_optimization": True},
                 "response_diagnostics": {"safe_for_optimization": True},
@@ -168,7 +181,7 @@ def test_strict_prod_blocks_observed_sensitive_controls(tmp_path: Path) -> None:
     scen.write_text("candidate_spend:\n  a: 12.0\n", encoding="utf-8")
     with pytest.raises(PolicyError, match="explicit"):
         simulate_decision(
-            cfg=cfg,
+            cfg=cfg_prod,
             scenario={"candidate_spend": {"a": 12.0}},
             extension_report=json.loads(ext.read_text()),
             out=tmp_path / "out.json",
@@ -228,7 +241,13 @@ def test_infer_controls_assumption_frozen() -> None:
 
 
 def test_prod_bundle_requires_planning_assumptions() -> None:
-    cfg = MMMConfig(run_environment=RunEnvironment.PROD, data={"channel_columns": ["a"], "control_columns": []})
+    cfg = MMMConfig(
+        run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        objective=dict(_PROD_OBJECTIVE),
+        data={"channel_columns": ["a"], "control_columns": []},
+        cv={"mode": "rolling"},
+    )
     schema = PanelSchema("g", "w", "y", ("a",))
     fp = {"sha256_panel_keycols_sorted_csv": "x" * 64, "sha256_schema_json": "y" * 64, "n_rows": 1}
     bundle = build_decision_bundle(
@@ -242,11 +261,17 @@ def test_prod_bundle_requires_planning_assumptions() -> None:
         artifact_tier="decision",
     )
     miss = validate_prod_decision_bundle(bundle, run_environment=RunEnvironment.PROD, decision_cli_surface=True)
-    assert any("planning_assumptions" in m for m in miss)
+    assert any("planning_assumptions_missing" in m for m in miss)
 
 
 def test_explicit_scenario_requires_lineage_hash() -> None:
-    cfg = MMMConfig(run_environment=RunEnvironment.PROD, data={"channel_columns": ["a"], "control_columns": []})
+    cfg = MMMConfig(
+        run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        objective=dict(_PROD_OBJECTIVE),
+        data={"channel_columns": ["a"], "control_columns": []},
+        cv={"mode": "rolling"},
+    )
     schema = PanelSchema("g", "w", "y", ("a",))
     fp = {"sha256_panel_keycols_sorted_csv": "x" * 64, "sha256_schema_json": "y" * 64, "n_rows": 1}
     bundle = build_decision_bundle(
@@ -289,9 +314,23 @@ def test_scenario_lineage_includes_overlay_hashes() -> None:
         },
     }
     ps = planning_scenario_from_dict(raw)
+    assert ps.overlay_specs()[2] is not None
+    assert ps.overlay_specs()[2].rows
     lin = ps.lineage_payload()
     assert lin.get("plan_overlay_spec_sha256")
+    assert len(str(lin.get("plan_overlay_spec_sha256"))) == 64
     assert lin.get("scenario_hash")
+
+
+def test_nested_controls_block_parsed_from_legacy_dict() -> None:
+    raw = {
+        "scenario_id": "nested_overlay",
+        "controls": {"control_overlay_plan": {"overrides": [{"geo": "G1", "week": 1, "column": "x", "value": 1.0}]}},
+    }
+    ps = planning_scenario_from_dict(raw)
+    _, _, plan = ps.overlay_specs()
+    assert plan is not None
+    assert len(plan.rows) == 1
 
 
 def test_policy_warning_on_observed_sensitive_controls() -> None:
@@ -314,7 +353,7 @@ def test_optimizer_passes_overlay_on_each_simulate_call() -> None:
 
     def _capture(*args: Any, **kwargs: Any) -> Any:
         calls.append(dict(kwargs))
-        return sim_opt.simulate(*args, **kwargs)
+        return decision_simulate(*args, **kwargs)
 
     cfg = cfg.model_copy(
         update={
@@ -340,7 +379,10 @@ def test_optimizer_passes_overlay_on_each_simulate_call() -> None:
         coef=ctx.coef,
         intercept=ctx.intercept,
     )
-    with patch.object(sim_opt, "simulate", side_effect=_capture):
+    with (
+        patch("mmm.optimization.budget.simulation_optimizer.simulate", side_effect=_capture),
+        allow_decision_pipeline(),
+    ):
         sim_opt.optimize_budget_via_simulation(
             ctx,
             current_spend=np.array([10.0]),
@@ -349,8 +391,9 @@ def test_optimizer_passes_overlay_on_each_simulate_call() -> None:
             channel_max=np.array([20.0]),
             non_media=nm,
         )
-    assert len(calls) >= 2
-    for kw in calls:
+    overlay_calls = [kw for kw in calls if kw.get("control_overlay_plan") is not None]
+    assert len(overlay_calls) >= 2
+    for kw in overlay_calls:
         assert kw.get("frozen_non_media_controls") is True
         assert kw.get("control_overlay_plan") is not None
 

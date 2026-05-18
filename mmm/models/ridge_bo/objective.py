@@ -8,11 +8,11 @@ from typing import Any
 import numpy as np
 
 from mmm.config.schema import CompositeObjectiveConfig, FitMetric, NormalizationProfile
+from mmm.evaluation.metrics import fit_metric
 from mmm.evaluation.normalization_policy import (
     describe_objective_normalization,
     normalize_objective_vector,
 )
-from mmm.evaluation.metrics import fit_metric
 
 
 @dataclass
