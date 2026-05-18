@@ -108,7 +108,7 @@ When `experiment_recommended` appears:
 
 ## Configuration
 
-See `extensions.feature_separability` in [config_yaml.md](config_yaml.md). Thresholds cover correlation bands, VIF bands, sign-flip rate, coefficient CV, and contribution share variance.
+See `extensions.feature_separability` in [../01_getting_started/config_yaml.md](../01_getting_started/config_yaml.md). Thresholds cover correlation bands, VIF bands, sign-flip rate, coefficient CV, and contribution share variance.
 
 Bootstrap rounds reuse `extensions.identifiability` settings by default to avoid duplicate expensive tuning.
 
@@ -116,4 +116,4 @@ Bootstrap rounds reuse `extensions.identifiability` settings by default to avoid
 
 - [diagnostics.md](diagnostics.md) — identifiability and collinearity
 - [calibration.md](calibration.md) — experiment matching
-- [prod_safety_checklist.md](prod_safety_checklist.md) — decision-grade artifacts
+- [../04_governance/prod_safety_checklist.md](../04_governance/prod_safety_checklist.md) — decision-grade artifacts

@@ -1,5 +1,5 @@
 # Example PlanningScenario for ``mmm decide simulate`` / ``mmm decide optimize-budget --scenario``.
-# Walkthrough: docs/planning_howto.md
+# Walkthrough: docs/03_planning/planning_howto.md
 # Non-media overlays must match rows in the training panel (geo, week) and existing columns.
 
 scenario_id: example_promo_week1

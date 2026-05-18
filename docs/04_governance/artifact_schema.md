@@ -1,12 +1,19 @@
-# Planning artifact schema (decision bundles)
+# Artifact schema
 
-**How to produce these fields:** [planning_howto.md](planning_howto.md).
+Reference for persisted and CLI JSON artifact shapes. Organized by artifact family.
+
+| Family | Where produced | Primary doc |
+|--------|----------------|-------------|
+| **Decision bundles** | `mmm decide simulate` / `optimize-budget` | This page (planning fields below) |
+| **Extension reports** | `mmm train` post-fit extensions | [../02_concepts/diagnostics.md](../02_concepts/diagnostics.md) |
+| **Calibration matching** | Train + calibration config | [../02_concepts/calibration.md](../02_concepts/calibration.md) |
+| **Planning scenarios** | Scenario YAML / dict | [../03_planning/planning_howto.md](../03_planning/planning_howto.md) |
+
+**How to produce planning bundle fields:** [../03_planning/planning_howto.md](../03_planning/planning_howto.md).
 
 Fields below are written by **`mmm decide simulate`** / **`mmm decide optimize-budget`** into CLI JSON and the persisted **`decision_bundle`**.
 
-Canonical contract: `mmm/planning/assumption_contract.py` (`PlanningAssumptionsContract`).
-
-## `planning_assumptions`
+## Decision bundle: `planning_assumptions`
 
 | Field | Type | Allowed values / notes |
 |-------|------|------------------------|
@@ -56,7 +63,7 @@ Enforced by `validate_planning_assumptions_semantics` on **`artifact_tier=decisi
 | Optimize bundle | `media_assumption` must be `optimized` |
 | `multi_world` | Rejected in prod (`multi_world_not_implemented_for_decision_bundles`) |
 
-## `scenario_lineage`
+## Decision bundle: `scenario_lineage`
 
 Present when a typed **`PlanningScenario`** is supplied, or (for optimize without `--scenario`) as an explicit “no overlay” stub.
 
@@ -79,7 +86,7 @@ Present when a typed **`PlanningScenario`** is supplied, or (for optimize withou
 | `plan_control_overlay_spec` | list | **Optional** — same |
 | `note` | string | Optimize-without-scenario stub only |
 
-## `control_scenario_policy`
+## Decision bundle: `control_scenario_policy`
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -88,8 +95,8 @@ Present when a typed **`PlanningScenario`** is supplied, or (for optimize withou
 | `sensitive_columns_matched` | string[] | Configured / heuristic matches |
 | `controls_assumption` | string | Echo of active controls mode |
 
-## `scenario_validation_warnings`
+## Decision bundle: `scenario_validation_warnings`
 
 List of strings on the simulation payload when panel/scenario validation finds non-fatal issues. Surfaced on CLI as **SCENARIO VALIDATION WARNING**.
 
-See also: [decision_runbook.md](decision_runbook.md) §2e, [planning_contract_deliverable.md](planning_contract_deliverable.md), [config_yaml.md](config_yaml.md).
+See also: [../03_planning/decision_runbook.md](../03_planning/decision_runbook.md) §2e, [../03_planning/planning_execution.md](../03_planning/planning_execution.md), [../01_getting_started/config_yaml.md](../01_getting_started/config_yaml.md).
