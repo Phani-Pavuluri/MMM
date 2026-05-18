@@ -39,6 +39,20 @@ extensions:
 - **`name_heuristic_warnings`**: optional substring heuristics on control column names (warning-only unless strict prod is enabled).
 - **`store_full_control_overlays_in_artifacts`**: when `true`, embed canonical overlay rows in `scenario_lineage` (default hashes only). See [planning_artifact_schema.md](planning_artifact_schema.md).
 
+### Feature separability (`extensions.feature_separability`)
+
+Diagnostic-only guidance when related channel columns (for example `Meta_prospecting` / `Meta_retargeting`) may not be reliably separable. **Does not merge columns or change training.**
+
+```yaml
+extensions:
+  feature_separability:
+    enabled: true
+    auto_group_prefix: true
+    feature_groups: {}   # optional explicit groups; overrides auto when non-empty
+```
+
+Output: `extension_report.feature_separability_report`. See [feature_separability.md](feature_separability.md).
+
 ### PlanningScenario YAML (`mmm decide` `--scenario`)
 
 Typed scenario for simulate / optimize. **Full walkthrough:** [planning_howto.md](planning_howto.md). Contract summary: [decision_runbook.md](decision_runbook.md) §2e.
