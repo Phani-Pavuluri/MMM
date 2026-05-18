@@ -25,6 +25,7 @@ from mmm.economics.canonical import (
 from mmm.evaluation.baselines import media_shuffled_within_geo, run_baselines
 from mmm.evaluation.calibration_extension import compute_replay_calibration_metrics
 from mmm.evaluation.feature_pipeline import build_extension_design_bundle
+from mmm.evaluation.feature_separability import compute_feature_separability_report
 from mmm.evaluation.post_fit_validation import compute_post_fit_validation_bundle
 from mmm.features.builder import build_extra_control_matrix
 from mmm.governance.decision_safety import decision_safety_artifact
@@ -137,6 +138,21 @@ def run_post_fit_extensions(
         calibration_is_replay=is_replay,
         calibration_raw=replay_meta if is_replay else None,
         bayesian_decision_inference=bayesian_di,
+    )
+
+    gov_js = out.get("governance") if isinstance(out.get("governance"), dict) else {}
+    out["feature_separability_report"] = compute_feature_separability_report(
+        panel=panel_s,
+        schema=schema,
+        config=config,
+        fit_out=fit_out,
+        X_media=X_media,
+        identifiability_json=id_json if isinstance(id_json, dict) else None,
+        experiment_matching_json=out.get("experiment_matching")
+        if isinstance(out.get("experiment_matching"), dict)
+        else None,
+        rng=rng,
+        governance_approved_for_optimization=bool(gov_js.get("approved_for_optimization")),
     )
 
     if config.framework == Framework.BAYESIAN:

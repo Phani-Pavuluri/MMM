@@ -50,5 +50,7 @@ def test_extension_runner_after_ridge():
     assert "run_manifest" in rep
     assert rep["run_manifest"]["manifest_version"]
     assert "post_fit_validation" in rep
+    assert "feature_separability_report" in rep
+    assert rep["feature_separability_report"]["policy_version"] == "feature_separability_v1"
     assert "operational_health" in rep
     assert rep["operational_health"]["status"] in ("healthy", "warning", "blocked")
