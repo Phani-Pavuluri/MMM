@@ -37,7 +37,7 @@ extensions:
 
 - **`promo_columns` / `pricing_columns` / `macro_columns` / `seasonality_columns`**: explicit lists; when present in `data.control_columns` and `controls_assumption=observed`, emits **warnings** (or **blocks** in prod if `strict_prod_requires_explicit_control_scenario: true`).
 - **`name_heuristic_warnings`**: optional substring heuristics on control column names (warning-only unless strict prod is enabled).
-- **`store_full_control_overlays_in_artifacts`**: when `true`, embed canonical overlay rows in `scenario_lineage` (default hashes only). See [planning_artifact_schema.md](planning_artifact_schema.md).
+- **`store_full_control_overlays_in_artifacts`**: when `true`, embed canonical overlay rows in `scenario_lineage` (default hashes only). See [../04_governance/artifact_schema.md](../04_governance/artifact_schema.md).
 
 ### Feature separability (`extensions.feature_separability`)
 
@@ -51,11 +51,11 @@ extensions:
     feature_groups: {}   # optional explicit groups; overrides auto when non-empty
 ```
 
-Output: `extension_report.feature_separability_report`. See [feature_separability.md](feature_separability.md).
+Output: `extension_report.feature_separability_report`. See [../02_concepts/feature_separability.md](../02_concepts/feature_separability.md).
 
 ### PlanningScenario YAML (`mmm decide` `--scenario`)
 
-Typed scenario for simulate / optimize. **Full walkthrough:** [planning_howto.md](planning_howto.md). Contract summary: [decision_runbook.md](decision_runbook.md) §2e.
+Typed scenario for simulate / optimize. **Full walkthrough:** [../03_planning/planning_howto.md](../03_planning/planning_howto.md). Contract summary: [../03_planning/decision_runbook.md](../03_planning/decision_runbook.md) §2e.
 
 ```yaml
 scenario_id: q1_promo_lift

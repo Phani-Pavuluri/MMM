@@ -322,7 +322,7 @@ def optimize_budget(
         typer.Argument(
             help="Resolved YAML. PROD: unsafe APIs forbidden, gates must be on; use data.path + "
             "--extension-report with ridge_fit_summary for full-panel Δμ. Bayesian blocked in PROD. "
-            "See docs/decision_runbook.md §2a."
+            "See docs/03_planning/decision_runbook.md §2a."
         ),
     ],
     extension_report: Annotated[
@@ -643,7 +643,7 @@ def simulate_diagnostic_curves(
 
     Do not use for production budget decisions. For canonical planning use ``mmm decide simulate`` (media +
     optional control overlays) or ``mmm decide optimize-budget`` (media optimization under fixed controls).
-    See ``docs/decision_runbook.md`` §2e.
+    See ``docs/03_planning/decision_runbook.md`` §2e.
     """
     cfg = load_config(config)
     _ = cfg

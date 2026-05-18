@@ -7,8 +7,8 @@ End-to-end guide for **production decision planning**: full-panel Δμ simulatio
 | Doc | Use when |
 |-----|----------|
 | [decision_runbook.md](decision_runbook.md) §2e | Operator rules, prod gates, artifact tiers |
-| [config_yaml.md](config_yaml.md) | `extensions.planning_policy` and scenario YAML fields |
-| [planning_artifact_schema.md](planning_artifact_schema.md) | JSON / bundle field reference |
+| [../01_getting_started/config_yaml.md](../01_getting_started/config_yaml.md) | `extensions.planning_policy` and scenario YAML fields |
+| [../04_governance/artifact_schema.md](../04_governance/artifact_schema.md) | JSON / bundle field reference |
 | [planning_execution.md](planning_execution.md) | Internal simulate pipeline (developers) |
 
 ---

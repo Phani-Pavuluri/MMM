@@ -130,9 +130,9 @@ mmm decide optimize-budget \
   --out decisions/opt_promo_fixed.json
 ```
 
-CLI prints **Planning assumptions**, **PLANNING POLICY WARNING** (when applicable), and **Non-media: no overlay** / overlay SHA hints on stderr. Full field reference: [planning_artifact_schema.md](planning_artifact_schema.md).
+CLI prints **Planning assumptions**, **PLANNING POLICY WARNING** (when applicable), and **Non-media: no overlay** / overlay SHA hints on stderr. Full field reference: [../04_governance/artifact_schema.md](../04_governance/artifact_schema.md).
 
-**Prod bundle gate:** `planning_assumptions` enums are validated semantically (allowed literals + required combinations with `scenario_lineage`). Typos such as `observeddd` or `optimised` fail closed. See validation table in [planning_artifact_schema.md](planning_artifact_schema.md#prod-semantic-validation-rules).
+**Prod bundle gate:** `planning_assumptions` enums are validated semantically (allowed literals + required combinations with `scenario_lineage`). Typos such as `observeddd` or `optimised` fail closed. See validation table in [../04_governance/artifact_schema.md](../04_governance/artifact_schema.md#prod-semantic-validation-rules).
 
 **Decomposition / ROI (read carefully)**
 

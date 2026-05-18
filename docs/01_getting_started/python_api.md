@@ -12,7 +12,7 @@ Configs are `pydantic` models (`MMMConfig`) and round-trip to YAML via `dump_res
 
 ## Decision planning API
 
-Full-panel planning (same gates and artifacts as `mmm decide …`). **Walkthrough:** [planning_howto.md](planning_howto.md).
+Full-panel planning (same gates and artifacts as `mmm decide …`). **Walkthrough:** [../03_planning/planning_howto.md](../03_planning/planning_howto.md).
 
 | Function | Purpose |
 |----------|---------|
