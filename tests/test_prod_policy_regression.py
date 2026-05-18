@@ -10,10 +10,10 @@ from typer.testing import CliRunner
 
 from mmm.artifacts.decision_bundle import build_decision_bundle, validate_prod_decision_bundle
 from mmm.config.schema import CVSplitAxis, Framework, MMMConfig, RunEnvironment
-from mmm.governance.policy import PolicyError
 from mmm.contracts.runtime_validation import SemanticContractError, assert_decision_artifact_tier
 from mmm.data.schema import PanelSchema
 from mmm.decision.core import finalize_and_validate_cli_decision_bundle
+from mmm.governance.policy import PolicyError
 
 
 def _prod_ext_planning_allowed() -> dict:
