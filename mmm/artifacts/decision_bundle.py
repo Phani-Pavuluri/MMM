@@ -24,6 +24,7 @@ from mmm.economics.canonical import (
     validate_business_economics_metadata,
 )
 from mmm.governance.semantics import DecisionSemantics, SafetyFlags
+from mmm.planning.assumption_contract import validate_planning_assumptions_semantics
 
 
 def decision_resolved_config_snapshot(config: MMMConfig) -> dict[str, Any]:
@@ -182,14 +183,16 @@ def validate_prod_decision_bundle(
         missing.append("config_sha_must_match_config_fingerprint_sha256")
     if decision_cli_surface and bundle.get("artifact_tier") != DECISION_TIER_VALUE:
         missing.append("artifact_tier_must_be_decision_for_cli")
-    pa = bundle.get("planning_assumptions")
-    if not isinstance(pa, dict) or not pa.get("controls_assumption"):
-        missing.append("planning_assumptions_required_on_decision_cli_bundle")
-    world = (pa or {}).get("world_assumption") if isinstance(pa, dict) else None
-    if world == "explicit_scenario":
-        sl = bundle.get("scenario_lineage")
-        if not isinstance(sl, dict) or not sl.get("scenario_id") or not sl.get("scenario_hash"):
-            missing.append("explicit_scenario_requires_scenario_lineage_id_and_hash")
+    if decision_cli_surface:
+        sl = bundle.get("scenario_lineage") if isinstance(bundle.get("scenario_lineage"), dict) else None
+        missing.extend(
+            validate_planning_assumptions_semantics(
+                bundle.get("planning_assumptions"),
+                scenario_lineage=sl,
+                bundle=bundle,
+                strict=True,
+            )
+        )
     return missing
 
 

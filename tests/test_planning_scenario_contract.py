@@ -242,7 +242,7 @@ def test_prod_bundle_requires_planning_assumptions() -> None:
         artifact_tier="decision",
     )
     miss = validate_prod_decision_bundle(bundle, run_environment=RunEnvironment.PROD, decision_cli_surface=True)
-    assert any("planning_assumptions" in m for m in miss)
+    assert any("planning_assumptions_missing" in m for m in miss)
 
 
 def test_explicit_scenario_requires_lineage_hash() -> None:

@@ -132,6 +132,8 @@ mmm decide optimize-budget \
 
 CLI prints **Planning assumptions**, **PLANNING POLICY WARNING** (when applicable), and **Non-media: no overlay** / overlay SHA hints on stderr. Full field reference: [planning_artifact_schema.md](planning_artifact_schema.md).
 
+**Prod bundle gate:** `planning_assumptions` enums are validated semantically (allowed literals + required combinations with `scenario_lineage`). Typos such as `observeddd` or `optimised` fail closed. See validation table in [planning_artifact_schema.md](planning_artifact_schema.md#prod-semantic-validation-rules).
+
 **Decomposition / ROI (read carefully)**
 
 - **Decomposition** channel columns are **not exact additive dollars**; artifacts carry `economics_output_metadata` with `computation_mode=approximate` for this surface.
