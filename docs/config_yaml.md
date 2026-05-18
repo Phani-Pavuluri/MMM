@@ -41,7 +41,7 @@ extensions:
 
 ### PlanningScenario YAML (`mmm decide` `--scenario`)
 
-Typed scenario for simulate / optimize (see `docs/decision_runbook.md` §2e):
+Typed scenario for simulate / optimize. **Full walkthrough:** [planning_howto.md](planning_howto.md). Contract summary: [decision_runbook.md](decision_runbook.md) §2e.
 
 ```yaml
 scenario_id: q1_promo_lift

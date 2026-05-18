@@ -79,6 +79,8 @@ Successful PROD **`mmm decide … --out`** JSON includes a **`decision_bundle`**
 
 ## 2e. Planning contract (media vs non-media)
 
+**Step-by-step usage:** [planning_howto.md](planning_howto.md) (scenarios, CLI, Python API, checklist).
+
 Every **`mmm decide …`** output includes **`planning_assumptions`**:
 
 | Field | Values | Meaning |

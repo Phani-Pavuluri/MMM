@@ -1,6 +1,6 @@
 # Planning contract deliverable (changelog)
 
-Grouped summary of the explicit media vs non-media planning contract.
+Grouped summary of the explicit media vs non-media planning contract. **Operator how-to:** [planning_howto.md](planning_howto.md).
 
 ## Contract (operator view)
 

@@ -1,5 +1,7 @@
 # Planning artifact schema (decision bundles)
 
+**How to produce these fields:** [planning_howto.md](planning_howto.md).
+
 Fields below are written by **`mmm decide simulate`** / **`mmm decide optimize-budget`** into CLI JSON and the persisted **`decision_bundle`**.
 
 ## `planning_assumptions`
