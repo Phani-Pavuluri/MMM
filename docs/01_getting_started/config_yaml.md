@@ -53,6 +53,18 @@ extensions:
 
 Output: `extension_report.feature_separability_report`. See [../02_concepts/feature_separability.md](../02_concepts/feature_separability.md).
 
+### Experiment scheduler (`extensions.experiment_scheduler`)
+
+Prioritizes **where to run geo/incrementality experiments** from post-fit diagnostics (no test design or execution). Requires `feature_separability_report`.
+
+```yaml
+extensions:
+  experiment_scheduler:
+    enabled: true
+```
+
+Output: `extension_report.experiment_scheduler_report`. See [../02_concepts/experiment_scheduler.md](../02_concepts/experiment_scheduler.md).
+
 ### PlanningScenario YAML (`mmm decide` `--scenario`)
 
 Typed scenario for simulate / optimize. **Full walkthrough:** [../03_planning/planning_howto.md](../03_planning/planning_howto.md). Contract summary: [../03_planning/decision_runbook.md](../03_planning/decision_runbook.md) §2e.

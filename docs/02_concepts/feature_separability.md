@@ -114,6 +114,7 @@ Bootstrap rounds reuse `extensions.identifiability` settings by default to avoid
 
 ## Related docs
 
+- [experiment_scheduler.md](experiment_scheduler.md) — prioritize experimentation budget from separability + calibration
 - [diagnostics.md](diagnostics.md) — identifiability and collinearity
 - [calibration.md](calibration.md) — experiment matching
 - [../04_governance/prod_safety_checklist.md](../04_governance/prod_safety_checklist.md) — decision-grade artifacts
