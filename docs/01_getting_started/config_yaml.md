@@ -5,7 +5,7 @@ Canonical keys mirror `MMMConfig` in `mmm/config/schema.py`. Important sections:
 - `framework`: `ridge_bo` | `bayesian`
 - `model_form`: `semi_log` (default) | `log_log`
 - `pooling`: `none` | `full` | `partial`
-- `data`: paths, column names, channel list
+- `data`: paths, column names, channel list (see [../02_concepts/control_templates.md](../02_concepts/control_templates.md) for illustrative control CSV scaffolds)
 - `transforms`: `adstock` (`geometric`|`weibull`), `saturation` (`hill`|`log`|`logistic`), optional param dicts
 - `cv`: `mode` (`auto`|`rolling`|`expanding`), `n_splits`, `min_train_weeks`, `horizon_weeks`, `gap_weeks`
 - `ridge_bo` / `bayesian`: backend-specific knobs
