@@ -45,6 +45,16 @@ Canonical contract: `mmm/planning/assumption_contract.py` (`PlanningAssumptionsC
 
 Enforced by `validate_planning_assumptions_semantics` on **`artifact_tier=decision`** prod CLI bundles (fail closed → `SemanticContractError`).
 
+## Training extension vs CLI decision bundle
+
+| Artifact | Typical `artifact_tier` | Use |
+|----------|-------------------------|-----|
+| `extension_report` (train output) | research / diagnostic | Governance review, diagnostics, promotion inputs |
+| Nested `extension_report.decision_bundle` | **research** | Not a substitute for `mmm decide` outputs |
+| `mmm decide simulate\|optimize-budget --out` JSON | **decision** | Production budgeting and simulation contracts |
+
+After training, `extension_report.artifact_tier_disclosure` repeats this split. **Do not** feed the nested research bundle into prod decide paths as if it were CLI decision-grade.
+
 | Rule | Condition |
 |------|-----------|
 | Structure | `planning_assumptions` must be a dict with all three enum fields |

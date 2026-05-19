@@ -159,6 +159,8 @@ class PanelQAConfig(BaseModel):
     enabled: bool = True
     #: In ``PROD``, fail training when ``max_severity == "block"`` (e.g. duplicate geo-week keys).
     prod_block_severity: Literal["off", "block"] = "off"
+    #: When ``True`` in prod, allows ``prod_block_severity: off`` (explicit waiver of training blocks).
+    prod_block_waiver: bool = False
     #: Warn when missing (geo, week) cells vs a full rectangular grid exceed this fraction.
     missing_week_warn_fraction: float = Field(default=0.12, ge=0.0, le=1.0)
     spend_spike_abs_z: float = Field(default=8.0, ge=3.0, le=30.0)

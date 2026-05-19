@@ -236,6 +236,8 @@ class MMMConfig(BaseModel):
     run_id: str | None = None
     run_environment: RunEnvironment = RunEnvironment.RESEARCH
     override_unsafe: bool = False
+    #: Required in prod when ``override_unsafe=True`` — JSON waiver artifact (see ``unsafe_override_waiver``).
+    override_unsafe_waiver_path: str | None = None
     framework: Framework = Framework.RIDGE_BO
     model_form: ModelForm = ModelForm.SEMI_LOG
     pooling: PoolingMode = PoolingMode.PARTIAL
@@ -292,6 +294,16 @@ class MMMConfig(BaseModel):
                 )
             if self.allow_unsafe_decision_apis:
                 raise ValueError("run_environment=prod requires allow_unsafe_decision_apis=False")
+            if self.override_unsafe:
+                wpath = str(self.override_unsafe_waiver_path or "").strip()
+                if not wpath:
+                    raise ValueError(
+                        "run_environment=prod forbids override_unsafe=True without "
+                        "override_unsafe_waiver_path (signed waiver JSON)"
+                    )
+                from mmm.governance.unsafe_override_waiver import load_unsafe_override_waiver
+
+                load_unsafe_override_waiver(wpath)
             if not self.extensions.optimization_gates.enabled:
                 raise ValueError("run_environment=prod requires extensions.optimization_gates.enabled=True")
             if self.framework == Framework.BAYESIAN:

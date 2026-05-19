@@ -14,6 +14,7 @@ from mmm.contracts.runtime_validation import SemanticContractError, validate_sem
 from mmm.data.schema import PanelSchema
 from mmm.governance.policy import PolicyError
 from mmm.reporting.safe_language import assert_safe_reporting_language
+from tests.prod_extension_fixtures import prod_replay_evidence_block
 
 
 def test_prod_config_rejects_geo_rank_cv() -> None:
@@ -130,7 +131,7 @@ def test_cli_decide_simulate_matches_api_json(tmp_path: Path, monkeypatch: pytes
                 "identifiability": {"identifiability_score": 0.5},
                 "panel_qa": {"max_severity": "info", "issues": []},
                 "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-                "experiment_matching": {"replay_ok": True},
+                **prod_replay_evidence_block(),
             }
         ),
         encoding="utf-8",

@@ -31,6 +31,7 @@ from mmm.planning.optimize_context import OptimizeNonMediaContext
 from mmm.planning.policy import evaluate_control_scenario_policy
 from mmm.planning.scenario import planning_scenario_from_dict
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
+from tests.prod_extension_fixtures import prod_replay_evidence_block
 
 _PROD_OBJECTIVE = {
     "normalization_profile": "strict_prod",
@@ -172,7 +173,7 @@ def test_strict_prod_blocks_observed_sensitive_controls(tmp_path: Path) -> None:
                 "identifiability": {"identifiability_score": 0.1},
                 "panel_qa": {"max_severity": "info", "issues": []},
                 "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-                "experiment_matching": {"ok": True},
+                **prod_replay_evidence_block(),
             }
         ),
         encoding="utf-8",

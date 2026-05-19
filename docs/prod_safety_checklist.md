@@ -22,8 +22,18 @@ Use this before enabling automated spend recommendations or publishing model-bas
 ## Experiments & replay
 
 - [ ] `experiment_id` is UUID and immutable in downstream stores.
-- [ ] `experiment_readiness` returns `ready: true` before replay (approved, signed, calibration ref present).
+- [ ] `experiment_readiness` returns `ready: true` before replay (approved, signed, calibration ref present) — **enforced in code** when `calibration.require_approved_experiment_registry` is true.
+- [ ] Prod decide paths: `extension_report.calibration_summary.replay_calibration_active=true` **or** `experiment_matching.n_matched >= 1` (not `skipped`).
 - [ ] Calibration artifact version pinned and traceable in metadata.
+
+## Artifact tiers
+
+- [ ] Training `extension_report` / nested bundle: **research** tier (diagnostics only).
+- [ ] Budget decisions: fresh `mmm decide` JSON with `artifact_tier=decision` (see `extension_report.artifact_tier_disclosure` after train).
+
+## Panel QA (training)
+
+- [ ] In prod, `extensions.panel_qa.prod_block_severity` defaults to **block** unless `prod_block_waiver: true`.
 
 ## Economics metadata
 

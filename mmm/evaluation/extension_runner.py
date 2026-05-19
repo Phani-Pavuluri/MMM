@@ -30,6 +30,7 @@ from mmm.features.builder import build_extra_control_matrix
 from mmm.governance.decision_safety import decision_safety_artifact
 from mmm.governance.model_release import infer_model_release_state
 from mmm.governance.operational_health import compute_operational_health
+from mmm.governance.split_channel_policy import apply_split_channel_governance
 from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
 from mmm.guidance.recommend import recommend_configuration
 from mmm.optimization.safety_gate import OptimizationSafetyGate
@@ -119,6 +120,11 @@ def run_post_fit_extensions(
         panel_s, schema, config, fit_out
     )
     cal_loss = float(replay_loss) if replay_loss is not None else None
+    out["calibration_summary"] = {
+        "replay_calibration_active": is_replay,
+        "replay_loss": cal_loss,
+        "replay_meta": replay_meta if is_replay else None,
+    }
     id_json = out.get("identifiability", {})
     bayesian_di: dict[str, Any] | None = None
     if config.framework == Framework.BAYESIAN:
@@ -138,6 +144,7 @@ def run_post_fit_extensions(
         calibration_raw=replay_meta if is_replay else None,
         bayesian_decision_inference=bayesian_di,
     )
+    apply_split_channel_governance(out)
 
     if config.framework == Framework.BAYESIAN:
         di_summary: dict[str, Any] = {"surface": "extension_train_diagnostic"}
@@ -215,11 +222,7 @@ def run_post_fit_extensions(
         extension_report=out,
         optimization_gate_allowed=bool(gr.allowed),
     )
-    cal_summary = {
-        "replay_calibration_active": is_replay,
-        "replay_loss": cal_loss,
-        "replay_meta": replay_meta if is_replay else None,
-    }
+    cal_summary = dict(out["calibration_summary"])
     if is_replay:
         cal_summary["economics_output_metadata_replay"] = economics_output_metadata(
             config,
@@ -254,6 +257,16 @@ def run_post_fit_extensions(
     bundle_baseline_type = "replay_calibration" if is_replay else "extension_train_reference"
     gov_ok = bool(gr.allowed)
     opt_ok = bool(gov.get("approved_for_optimization"))
+    out["artifact_tier_disclosure"] = {
+        "extension_report_role": "training_diagnostics",
+        "nested_decision_bundle_artifact_tier": "research",
+        "cli_decision_bundle_artifact_tier": "decision",
+        "note": (
+            "Training extension_report and nested decision_bundle are research/diagnostic tier. "
+            "Production budgeting requires a fresh mmm decide simulate|optimize-budget JSON bundle "
+            "with artifact_tier=decision (see docs/planning_artifact_schema.md and prod safety checklist)."
+        ),
+    }
     out["decision_bundle"] = build_decision_bundle(
         config=config,
         schema=schema,

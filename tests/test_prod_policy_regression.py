@@ -29,7 +29,7 @@ def _prod_ext_planning_allowed() -> dict:
         "identifiability": {"identifiability_score": 0.5},
         "panel_qa": {"max_severity": "info", "issues": []},
         "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-        "experiment_matching": {"replay_ok": True},
+        "calibration_summary": {"replay_calibration_active": True, "replay_loss": 0.5},
     }
 
 
