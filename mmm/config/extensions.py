@@ -153,6 +153,18 @@ class PlanningPolicyConfig(BaseModel):
     store_full_control_overlays_in_artifacts: bool = False
 
 
+class ExperimentSchedulerConfig(BaseModel):
+    """Prioritize experimentation effort from post-fit diagnostics (no execution)."""
+
+    enabled: bool = True
+    high_priority_threshold: float = Field(default=0.62, ge=0.0, le=1.0)
+    low_priority_threshold: float = Field(default=0.38, ge=0.0, le=1.0)
+    #: Score when calibration evidence is absent (higher → more stale / needs experiment).
+    staleness_absent_calibration: float = Field(default=1.0, ge=0.0, le=1.0)
+    staleness_partial_calibration: float = Field(default=0.55, ge=0.0, le=1.0)
+    staleness_strong_calibration: float = Field(default=0.12, ge=0.0, le=1.0)
+
+
 class FeatureSeparabilityConfig(BaseModel):
     """Diagnostic separability guidance for split media variables (no automatic merges)."""
 
@@ -191,6 +203,7 @@ class PanelQAConfig(BaseModel):
 class ExtensionSuiteConfig(BaseModel):
     identifiability: IdentifiabilityRunConfig = Field(default_factory=IdentifiabilityRunConfig)
     feature_separability: FeatureSeparabilityConfig = Field(default_factory=FeatureSeparabilityConfig)
+    experiment_scheduler: ExperimentSchedulerConfig = Field(default_factory=ExperimentSchedulerConfig)
     planning_policy: PlanningPolicyConfig = Field(default_factory=PlanningPolicyConfig)
     governance: GovernanceConfig = Field(default_factory=GovernanceConfig)
     optimization_gates: OptimizationGateConfig = Field(default_factory=OptimizationGateConfig)

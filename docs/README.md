@@ -24,6 +24,7 @@ Concepts and modeling behavior (read before production decisioning):
 | Experiments & calibration | [02_concepts/calibration.md](02_concepts/calibration.md) |
 | Post-fit diagnostics | [02_concepts/diagnostics.md](02_concepts/diagnostics.md) |
 | Split-channel separability | [02_concepts/feature_separability.md](02_concepts/feature_separability.md) |
+| Experiment prioritization | [02_concepts/experiment_scheduler.md](02_concepts/experiment_scheduler.md) |
 | Response curves (diagnostic) | [02_concepts/response_curves.md](02_concepts/response_curves.md) |
 | CV modes | [02_concepts/cv_modes.md](02_concepts/cv_modes.md) |
 | Ridge + BO | [02_concepts/ridge_bo.md](02_concepts/ridge_bo.md) |
