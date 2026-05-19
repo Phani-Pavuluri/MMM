@@ -22,6 +22,8 @@ EXTENSION_REPORT_SURFACE_TIERS: dict[str, str] = {
     "uncertainty_decomposition": "research",
     "falsification": "diagnostic",
     "identifiability": "diagnostic",
+    "feature_separability_report": "diagnostic",
+    "experiment_scheduler_report": "diagnostic",
     "baselines": "diagnostic",
     "panel_qa": "diagnostic",
     "calibration_summary": "diagnostic",

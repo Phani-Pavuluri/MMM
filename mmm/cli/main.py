@@ -322,7 +322,7 @@ def optimize_budget(
         typer.Argument(
             help="Resolved YAML. PROD: unsafe APIs forbidden, gates must be on; use data.path + "
             "--extension-report with ridge_fit_summary for full-panel Δμ. Bayesian blocked in PROD. "
-            "See docs/decision_runbook.md §2a."
+            "See docs/03_planning/decision_runbook.md §2a."
         ),
     ],
     extension_report: Annotated[
@@ -643,7 +643,7 @@ def simulate_diagnostic_curves(
 
     Do not use for production budget decisions. For canonical planning use ``mmm decide simulate`` (media +
     optional control overlays) or ``mmm decide optimize-budget`` (media optimization under fixed controls).
-    See ``docs/decision_runbook.md`` §2e.
+    See ``docs/03_planning/decision_runbook.md`` §2e.
     """
     cfg = load_config(config)
     _ = cfg
@@ -721,6 +721,46 @@ def simulate_diagnostic_curves(
         typer.echo(f"wrote {out}")
     else:
         typer.echo(text)
+
+
+@app.command("generate-control-template")
+def generate_control_template_cmd(
+    domain: Annotated[
+        str,
+        typer.Option("--domain", help="generic | b2b | ecommerce | retail | saas | travel"),
+    ] = "generic",
+    frequency: Annotated[
+        str,
+        typer.Option("--frequency", help="weekly | monthly"),
+    ] = "weekly",
+    rows: Annotated[int, typer.Option("--rows", help="Number of illustrative periods", min=1)] = 52,
+    out: Annotated[Path, typer.Option("--out", help="Output CSV path")] = Path("control_template.csv"),
+) -> None:
+    """Write an illustrative control-variable CSV scaffold (onboarding helper only).
+
+    Does not modify training, ``control_columns``, planning, or optimization. Replace all
+    values with real historical data before modeling. See ``docs/02_concepts/control_templates.md``.
+    """
+    from mmm.helpers.control_templates import generate_control_template, parse_domain, parse_frequency
+
+    try:
+        result = generate_control_template(
+            domain=parse_domain(domain),
+            frequency=parse_frequency(frequency),
+            n_rows=rows,
+            out=out,
+        )
+    except ValueError as e:
+        typer.secho(str(e), fg=typer.colors.RED, err=True)
+        raise typer.Exit(code=1) from e
+    typer.echo(f"wrote {result['csv_path']}")
+    if result.get("metadata_path"):
+        typer.echo(f"wrote {result['metadata_path']}")
+    typer.secho(
+        "SYNTHETIC_ILLUSTRATIVE — replace with real historical controls before training.",
+        fg=typer.colors.YELLOW,
+        err=True,
+    )
 
 
 @app.command()

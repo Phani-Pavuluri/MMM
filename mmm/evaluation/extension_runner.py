@@ -27,7 +27,9 @@ from mmm.evaluation.baselines import media_shuffled_within_geo, run_baselines
 from mmm.evaluation.calibration_extension import compute_replay_calibration_metrics
 from mmm.evaluation.curve_decision_alignment import evaluate_curve_decision_alignment
 from mmm.evaluation.drift_monitor import build_drift_report
+from mmm.evaluation.experiment_scheduler import compute_experiment_scheduler_report
 from mmm.evaluation.feature_pipeline import build_extension_design_bundle
+from mmm.evaluation.feature_separability import compute_feature_separability_report
 from mmm.evaluation.post_fit_validation import compute_post_fit_validation_bundle
 from mmm.features.builder import build_extra_control_matrix
 from mmm.governance.decision_safety import decision_safety_artifact
@@ -154,6 +156,21 @@ def run_post_fit_extensions(
     )
     apply_split_channel_governance(out)
 
+    gov_js = out.get("governance") if isinstance(out.get("governance"), dict) else {}
+    out["feature_separability_report"] = compute_feature_separability_report(
+        panel=panel_s,
+        schema=schema,
+        config=config,
+        fit_out=fit_out,
+        X_media=X_media,
+        identifiability_json=id_json if isinstance(id_json, dict) else None,
+        experiment_matching_json=out.get("experiment_matching")
+        if isinstance(out.get("experiment_matching"), dict)
+        else None,
+        rng=rng,
+        governance_approved_for_optimization=bool(gov_js.get("approved_for_optimization")),
+    )
+
     if config.framework == Framework.BAYESIAN:
         di_summary: dict[str, Any] = {"surface": "extension_train_diagnostic"}
         if isinstance(bayesian_di, dict):
@@ -228,6 +245,24 @@ def run_post_fit_extensions(
     out["operational_health"] = compute_operational_health(
         config=config,
         extension_report=out,
+        optimization_gate_allowed=bool(gr.allowed),
+    )
+    ch_cols = list(schema.channel_columns)
+    panel_media_total = (
+        sum(float(panel_s[c].astype(float).clip(lower=0.0).sum()) for c in ch_cols if c in panel_s.columns)
+        + 1e-12
+    )
+    spend_share_panel = {
+        c: float(panel_s[c].astype(float).clip(lower=0.0).sum()) / panel_media_total
+        for c in ch_cols
+        if c in panel_s.columns
+    }
+    out["experiment_scheduler_report"] = compute_experiment_scheduler_report(
+        config=config,
+        extension_report=out,
+        channel_columns=ch_cols,
+        channel_spend_share_of_panel=spend_share_panel,
+        target_column=schema.target_column,
         optimization_gate_allowed=bool(gr.allowed),
     )
     cal_summary = dict(out["calibration_summary"])

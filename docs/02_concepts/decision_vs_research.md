@@ -15,4 +15,4 @@
 
 ## Rule of thumb
 
-If a downstream system spends money or sets public targets from the model, treat the path as **decision** and require the stricter checklist in `prod_safety_checklist.md`.
+If a downstream system spends money or sets public targets from the model, treat the path as **decision** and require the stricter checklist in [../04_governance/prod_safety_checklist.md](../04_governance/prod_safety_checklist.md).

@@ -153,6 +153,40 @@ class PlanningPolicyConfig(BaseModel):
     store_full_control_overlays_in_artifacts: bool = False
 
 
+class ExperimentSchedulerConfig(BaseModel):
+    """Prioritize experimentation effort from post-fit diagnostics (no execution)."""
+
+    enabled: bool = True
+    high_priority_threshold: float = Field(default=0.62, ge=0.0, le=1.0)
+    low_priority_threshold: float = Field(default=0.38, ge=0.0, le=1.0)
+    #: Score when calibration evidence is absent (higher → more stale / needs experiment).
+    staleness_absent_calibration: float = Field(default=1.0, ge=0.0, le=1.0)
+    staleness_partial_calibration: float = Field(default=0.55, ge=0.0, le=1.0)
+    staleness_strong_calibration: float = Field(default=0.12, ge=0.0, le=1.0)
+
+
+class FeatureSeparabilityConfig(BaseModel):
+    """Diagnostic separability guidance for split media variables (no automatic merges)."""
+
+    enabled: bool = True
+    #: Explicit groups override auto prefix detection when non-empty.
+    feature_groups: dict[str, list[str]] = Field(default_factory=dict)
+    auto_group_prefix: bool = True
+    correlation_moderate: float = Field(default=0.5, ge=0.0, le=1.0)
+    correlation_high: float = Field(default=0.8, ge=0.0, le=1.0)
+    sign_flip_rate_unstable: float = Field(default=0.2, ge=0.0, le=1.0)
+    coef_cv_unstable: float = Field(default=0.5, ge=0.0, le=10.0)
+    vif_healthy: float = Field(default=5.0, ge=1.0, le=100.0)
+    vif_warning: float = Field(default=10.0, ge=1.0, le=200.0)
+    contribution_share_variance_unstable: float = Field(default=0.08, ge=0.0, le=1.0)
+    business_importance_high_spend_share: float = Field(default=0.08, ge=0.0, le=1.0)
+    business_importance_high_contribution_share: float = Field(default=0.10, ge=0.0, le=1.0)
+    #: Minimum group spend share of panel media before ``experiment_recommended`` (tiny splits → caution only).
+    experiment_min_group_spend_share: float = Field(default=0.03, ge=0.0, le=1.0)
+    reuse_identifiability_bootstrap: bool = True
+    bootstrap_rounds: int = Field(default=12, ge=0, le=64)
+
+
 class PanelQAConfig(BaseModel):
     """Data QA above ``validate_panel`` — extension artifacts + optional PROD training blocks."""
 
@@ -170,6 +204,8 @@ class PanelQAConfig(BaseModel):
 
 class ExtensionSuiteConfig(BaseModel):
     identifiability: IdentifiabilityRunConfig = Field(default_factory=IdentifiabilityRunConfig)
+    feature_separability: FeatureSeparabilityConfig = Field(default_factory=FeatureSeparabilityConfig)
+    experiment_scheduler: ExperimentSchedulerConfig = Field(default_factory=ExperimentSchedulerConfig)
     planning_policy: PlanningPolicyConfig = Field(default_factory=PlanningPolicyConfig)
     governance: GovernanceConfig = Field(default_factory=GovernanceConfig)
     optimization_gates: OptimizationGateConfig = Field(default_factory=OptimizationGateConfig)
