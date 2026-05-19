@@ -264,7 +264,10 @@ def simulate_decision(
     builder = DatasetBuilder(cfg.data)
     schema = builder.schema()
     panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
-    fp = fingerprint_panel(panel, schema)
+    from mmm.contracts.seed_resolution import resolve_seed_contract
+
+    seed_resolution = resolve_seed_contract(cfg)
+    fp = fingerprint_panel(panel, schema, config=cfg, seed_resolution=seed_resolution)
     em = er.get("experiment_matching") if isinstance(er, dict) else None
     mr = er.get("model_release") if isinstance(er, dict) else None
     policy_hash = policy.policy_fingerprint()
@@ -445,13 +448,16 @@ def optimize_budget_decision(
     mr_id = None
     if isinstance(mr_b, dict):
         mr_id = str(hash(tuple(sorted((str(k), str(v)) for k, v in mr_b.items()))))
+    from mmm.contracts.seed_resolution import resolve_seed_contract
+
+    seed_resolution_opt = resolve_seed_contract(cfg)
     bundle = build_decision_bundle(
         config=cfg,
         schema=schema,
         governance=gov,
         optimization_gate=gr.to_json(),
         simulation_contract={"source": "full_model_simulation_slsqp", "objective": "delta_mu"},
-        data_fingerprint=fingerprint_panel(panel, schema),
+        data_fingerprint=fingerprint_panel(panel, schema, config=cfg, seed_resolution=seed_resolution_opt),
         uncertainty_mode="point",
         decision_safe=decision_safe,
         governance_passed=governance_passed,

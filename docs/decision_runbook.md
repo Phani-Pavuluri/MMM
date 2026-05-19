@@ -49,7 +49,7 @@ Additional YAML / training rules (transforms, Ridge BO leaderboard refit, replay
 Successful PROD **`mmm decide … --out`** JSON includes a **`decision_bundle`** with at least:
 
 - **`config_sha`** / **`config_fingerprint_sha256`** (identical)
-- **`data_fingerprint`** and **`panel_fingerprint`** (must match)
+- **`data_fingerprint`** and **`panel_fingerprint`** (must match). Prefer **`sha256_combined`** when present (fingerprint v2); older bundles may only expose **`sha256_panel_keycols_sorted_csv`** — see [planning_artifact_schema.md](planning_artifact_schema.md#data_fingerprint--panel_fingerprint).
 - **`package_version`**
 - **`git_sha`** (set **`MMM_GIT_SHA`** or **`GITHUB_SHA`** in CI when `.git` is unavailable)
 - **`dependency_digest`**

@@ -38,6 +38,9 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
     """Time-series CV + Optuna over adstock/saturation/ridge alpha."""
 
     def __init__(self, config: MMMConfig, schema: PanelSchema) -> None:
+        from mmm.contracts.seed_resolution import resolve_seed_contract
+
+        resolve_seed_contract(config)
         if config.framework != Framework.RIDGE_BO:
             raise ValueError("RidgeBOMMMTrainer requires framework=ridge_bo")
         self.config = config

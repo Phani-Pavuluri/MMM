@@ -17,16 +17,22 @@ def load_config(path: str | Path) -> MMMConfig:
     if not isinstance(raw, dict):
         raise ValueError(f"Config at {p} must be a mapping")
     from mmm.config.validators import apply_prod_runtime_defaults
+    from mmm.contracts.seed_resolution import resolve_seed_contract
 
-    return apply_prod_runtime_defaults(MMMConfig.model_validate(raw))
+    cfg = apply_prod_runtime_defaults(MMMConfig.model_validate(raw))
+    resolve_seed_contract(cfg)
+    return cfg
 
 
 def resolve_config(cfg: MMMConfig) -> MMMConfig:
     """Apply environment-derived defaults (normalization profile) before training."""
     from mmm.config.validators import apply_environment_objective_profile_inplace, apply_prod_runtime_defaults
+    from mmm.contracts.seed_resolution import resolve_seed_contract
 
     apply_environment_objective_profile_inplace(cfg)
-    return apply_prod_runtime_defaults(cfg)
+    cfg = apply_prod_runtime_defaults(cfg)
+    resolve_seed_contract(cfg)
+    return cfg
 
 
 def dump_resolved_config(cfg: MMMConfig, dest: str | Path) -> None:

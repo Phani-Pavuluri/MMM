@@ -89,6 +89,31 @@ Present when a typed **`PlanningScenario`** is supplied, or (for optimize withou
 | `plan_control_overlay_spec` | list | **Optional** — same |
 | `note` | string | Optimize-without-scenario stub only |
 
+## `data_fingerprint` / `panel_fingerprint`
+
+On training and `mmm decide` paths, `data_fingerprint` and `panel_fingerprint` are identical dicts attached to decision bundles.
+
+### Fingerprint v2 (current)
+
+| Field | Description |
+|-------|-------------|
+| `fingerprint_version` | `fingerprint_v2` |
+| `sha256_combined` | Canonical combined hash (panel key columns incl. controls, schema, model form, transforms, config schema version, `data_version_id`, resolved seeds) |
+| `sha256_panel_keycols_sorted_csv` | Legacy panel hash (geo, week, target, channels, controls) |
+| `sha256_schema_json` | Legacy schema hash |
+| `n_rows` | Panel row count |
+| `fingerprint_details.included_fields` | Auditable list of hashed inputs |
+| `fingerprint_details.omitted_fields` | Non-hashed volatile metadata (`run_id`, timestamps, generated IDs) |
+
+### Legacy bundles (pre-v2)
+
+Older artifacts may omit `sha256_combined` and `fingerprint_version`. They remain valid for lineage when `sha256_panel_keycols_sorted_csv` (and usually `sha256_schema_json`) are present. Compare fingerprints in this order:
+
+1. If both sides have `sha256_combined`, require equality on that field.
+2. Else require equality on `sha256_panel_keycols_sorted_csv` (and schema hash if recorded).
+
+New runs should always emit v2 fields. See [documentation_truth_audit.md](documentation_truth_audit.md#fingerprint-v2-migration-legacy-compatible).
+
 ## `control_scenario_policy`
 
 | Field | Type | Description |

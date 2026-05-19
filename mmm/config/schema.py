@@ -106,13 +106,15 @@ class CVConfig(BaseModel):
         default=CVSplitAxis.CALENDAR_WEEK,
         description="Use calendar_week for weekly panels; geo_rank is legacy within-geo dense rank.",
     )
-    geo_blocked_seed: int = 42
+    #: ``None`` inherits from top-level ``random_seed`` at resolve time.
+    geo_blocked_seed: int | None = None
 
 
 class RidgeBOConfig(BaseModel):
     n_trials: int = 32
     timeout_sec: float | None = None
-    sampler_seed: int = 42
+    #: ``None`` inherits from top-level ``random_seed`` at resolve time.
+    sampler_seed: int | None = None
     alpha_ridge_bounds: tuple[float, float] = (1e-4, 1e3)
     use_pruner: bool = True
 
@@ -123,7 +125,8 @@ class BayesianConfig(BaseModel):
     tune: int = 1000
     chains: int = 4
     target_accept: float = 0.9
-    nuts_seed: int = 42
+    #: ``None`` inherits from top-level ``random_seed`` at resolve time.
+    nuts_seed: int | None = None
     media_coef_sigma: float = 0.8
     control_coef_sigma: float = 2.0
     #: ``half_normal_nonneg`` encodes a positivity prior on **media** channels (default). ``normal_symmetric``
@@ -252,6 +255,11 @@ class MMMConfig(BaseModel):
     artifacts: ArtifactConfig = Field(default_factory=ArtifactConfig)
     extensions: ExtensionSuiteConfig = Field(default_factory=ExtensionSuiteConfig)
     random_seed: int = 42
+    #: Child seeds; ``None`` inherits per ``mmm.contracts.seed_resolution`` (see ``seed_resolution`` artifact).
+    bootstrap_seed: int | None = None
+    extension_seed: int | None = None
+    experiment_scheduler_seed: int | None = None
+    simulation_seed: int | None = None
     strict_schema: bool = True
     #: When ``False`` (default): Ridge BO does not use coefficient-vs-experiment calibration in the
     #: objective; governance never approves optimization; CLI ``optimize-budget`` is blocked unless
