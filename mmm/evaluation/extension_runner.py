@@ -13,6 +13,7 @@ from mmm.config.schema import Framework, MMMConfig, RunEnvironment
 from mmm.config.transform_policy import build_transform_policy_manifest
 from mmm.contracts.quantity_models import PosteriorExplorationQuantityResult, UncertaintyBucketsQuantityResult
 from mmm.contracts.run_manifest import build_run_manifest
+from mmm.contracts.seed_resolution import resolve_seed_contract
 from mmm.data.fingerprint import fingerprint_panel
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import run_panel_qa
@@ -24,18 +25,23 @@ from mmm.economics.canonical import (
 )
 from mmm.evaluation.baselines import media_shuffled_within_geo, run_baselines
 from mmm.evaluation.calibration_extension import compute_replay_calibration_metrics
+from mmm.evaluation.curve_decision_alignment import evaluate_curve_decision_alignment
+from mmm.evaluation.drift_monitor import build_drift_report
 from mmm.evaluation.experiment_scheduler import compute_experiment_scheduler_report
 from mmm.evaluation.feature_pipeline import build_extension_design_bundle
 from mmm.evaluation.feature_separability import compute_feature_separability_report
 from mmm.evaluation.post_fit_validation import compute_post_fit_validation_bundle
 from mmm.features.builder import build_extra_control_matrix
 from mmm.governance.decision_safety import decision_safety_artifact
+from mmm.governance.decision_uncertainty import build_decision_uncertainty
 from mmm.governance.model_release import infer_model_release_state
 from mmm.governance.operational_health import compute_operational_health
+from mmm.governance.split_channel_policy import apply_split_channel_governance
 from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
 from mmm.guidance.recommend import recommend_configuration
 from mmm.optimization.safety_gate import OptimizationSafetyGate
 from mmm.planning.context import ridge_fit_summary_from_artifacts
+from mmm.reporting.model_card import generate_model_card
 from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
 from mmm.services.calibration_service import run_calibration_extensions
 from mmm.services.curve_service import build_curve_diagnostics_bundle
@@ -54,11 +60,14 @@ def run_post_fit_extensions(
     store: ArtifactStoreBase | None,
 ) -> dict[str, Any]:
     ext = config.extensions
+    seed_resolution = resolve_seed_contract(config)
     out: dict[str, Any] = {
         "economics_contract": build_economics_contract(config),
         "transform_policy": build_transform_policy_manifest(config),
+        "seed_resolution": seed_resolution,
+        "decision_uncertainty": build_decision_uncertainty(config),
     }
-    rng = np.random.default_rng(config.random_seed)
+    rng = np.random.default_rng(int(config.extension_seed))
 
     panel_s = sort_panel_for_modeling(panel, schema)
     out["panel_qa"] = run_panel_qa(panel_s, schema, ext.panel_qa)
@@ -121,6 +130,11 @@ def run_post_fit_extensions(
         panel_s, schema, config, fit_out
     )
     cal_loss = float(replay_loss) if replay_loss is not None else None
+    out["calibration_summary"] = {
+        "replay_calibration_active": is_replay,
+        "replay_loss": cal_loss,
+        "replay_meta": replay_meta if is_replay else None,
+    }
     id_json = out.get("identifiability", {})
     bayesian_di: dict[str, Any] | None = None
     if config.framework == Framework.BAYESIAN:
@@ -140,6 +154,7 @@ def run_post_fit_extensions(
         calibration_raw=replay_meta if is_replay else None,
         bayesian_decision_inference=bayesian_di,
     )
+    apply_split_channel_governance(out)
 
     gov_js = out.get("governance") if isinstance(out.get("governance"), dict) else {}
     out["feature_separability_report"] = compute_feature_separability_report(
@@ -232,7 +247,6 @@ def run_post_fit_extensions(
         extension_report=out,
         optimization_gate_allowed=bool(gr.allowed),
     )
-
     ch_cols = list(schema.channel_columns)
     panel_media_total = (
         sum(float(panel_s[c].astype(float).clip(lower=0.0).sum()) for c in ch_cols if c in panel_s.columns)
@@ -251,11 +265,7 @@ def run_post_fit_extensions(
         target_column=schema.target_column,
         optimization_gate_allowed=bool(gr.allowed),
     )
-    cal_summary = {
-        "replay_calibration_active": is_replay,
-        "replay_loss": cal_loss,
-        "replay_meta": replay_meta if is_replay else None,
-    }
+    cal_summary = dict(out["calibration_summary"])
     if is_replay:
         cal_summary["economics_output_metadata_replay"] = economics_output_metadata(
             config,
@@ -281,15 +291,46 @@ def run_post_fit_extensions(
         "optimization_gate_allowed": gr.allowed,
         "decision_safety": decision_safety_artifact(allow_unsafe_decision_apis=config.allow_unsafe_decision_apis),
     }
-    fp = fingerprint_panel(panel_s, schema) if (
-        config.artifacts.write_data_fingerprint or config.run_environment == RunEnvironment.PROD
-    ) else None
+    fp = (
+        fingerprint_panel(panel_s, schema, config=config, seed_resolution=seed_resolution)
+        if (config.artifacts.write_data_fingerprint or config.run_environment == RunEnvironment.PROD)
+        else None
+    )
+    if fp is not None:
+        out["data_fingerprint"] = fp
+        out["drift_report"] = build_drift_report(
+            panel=panel_s,
+            schema=schema,
+            config=config,
+            reference_fingerprint=fp,
+            reference_panel=panel_s,
+            calibration_summary=out.get("calibration_summary"),
+            seed_resolution=seed_resolution,
+        )
+    if curve_bundle.get("curve_bundles"):
+        out["curve_decision_alignment"] = evaluate_curve_decision_alignment(
+            panel=panel_s,
+            schema=schema,
+            config=config,
+            fit_out=fit_out,
+            curve_bundles=curve_bundle["curve_bundles"],
+        )
     econ_surface = "replay_calibration" if is_replay else (
         "full_model_simulation" if out.get("ridge_fit_summary") else "other"
     )
     bundle_baseline_type = "replay_calibration" if is_replay else "extension_train_reference"
     gov_ok = bool(gr.allowed)
     opt_ok = bool(gov.get("approved_for_optimization"))
+    out["artifact_tier_disclosure"] = {
+        "extension_report_role": "training_diagnostics",
+        "nested_decision_bundle_artifact_tier": "research",
+        "cli_decision_bundle_artifact_tier": "decision",
+        "note": (
+            "Training extension_report and nested decision_bundle are research/diagnostic tier. "
+            "Production budgeting requires a fresh mmm decide simulate|optimize-budget JSON bundle "
+            "with artifact_tier=decision (see docs/planning_artifact_schema.md and prod safety checklist)."
+        ),
+    }
     out["decision_bundle"] = build_decision_bundle(
         config=config,
         schema=schema,
@@ -300,8 +341,10 @@ def run_post_fit_extensions(
             "source": "extension_train",
             "decision_simulate": "mmm.planning.decision_simulate.simulate",
             "curve_bundles_role": "diagnostic_only",
+            "curve_policy_note": "Curves explain; full-panel simulation decides.",
         },
         data_fingerprint=fp,
+        decision_uncertainty=out["decision_uncertainty"],
         uncertainty_mode="point",
         decision_safe=bool(gov_ok and opt_ok),
         governance_passed=gov_ok,
@@ -328,8 +371,13 @@ def run_post_fit_extensions(
             raise RuntimeError("PROD extension decision_bundle failed completeness audit: " + "; ".join(miss))
 
     out["run_manifest"] = build_run_manifest(out, run_id=config.run_id)
+    out["model_card_md"] = generate_model_card(
+        extension_report=out,
+        decision_bundle=out.get("decision_bundle"),
+    )
 
     if store:
         store.log_dict("extension_report", out)
+        (store.run_path / "model_card.md").write_text(out["model_card_md"], encoding="utf-8")
 
     return out

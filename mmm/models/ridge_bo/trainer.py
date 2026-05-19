@@ -19,7 +19,7 @@ from mmm.data.panel_qa import assert_panel_qa_allows_training
 from mmm.data.schema import PanelSchema, validate_panel
 from mmm.features.design_matrix import apply_masks_for_fit, build_design_matrix
 from mmm.models.base import RidgeBOMMMBase
-from mmm.models.ridge_bo.objective import build_composite
+from mmm.models.ridge_bo.objective import build_composite, intercept_only_predictive_baseline
 from mmm.models.ridge_bo.ridge import fit_ridge, predict_ridge
 from mmm.performance.cache import _df_fingerprint
 from mmm.validation.cv import auto_cv_mode
@@ -38,6 +38,9 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
     """Time-series CV + Optuna over adstock/saturation/ridge alpha."""
 
     def __init__(self, config: MMMConfig, schema: PanelSchema) -> None:
+        from mmm.contracts.seed_resolution import resolve_seed_contract
+
+        resolve_seed_contract(config)
         if config.framework != Framework.RIDGE_BO:
             raise ValueError("RidgeBOMMMTrainer requires framework=ridge_bo")
         self.config = config
@@ -160,6 +163,10 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             if parts:
                 parts["loss"] = float(cal)
                 cal_detail = parts
+            baseline_pred = intercept_only_predictive_baseline(
+                y_true_folds,
+                self.config.objective.primary_metric,
+            )
             total, raw, norm, norm_report = build_composite(
                 y_true_folds=y_true_folds,
                 y_pred_folds=y_pred_folds,
@@ -171,6 +178,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                 log_alpha=log_alpha,
                 calibration_details=cal_detail,
                 cfg=self.config.objective,
+                baseline_predictive=baseline_pred,
                 include_weight_sensitivity=True,
             )
             detail = {

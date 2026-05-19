@@ -15,6 +15,7 @@ import pandas as pd
 from mmm.artifacts.stores.local import LocalArtifactStore
 from mmm.config.load import dump_resolved_config, load_config, resolve_config
 from mmm.config.schema import Framework, MMMConfig
+from mmm.contracts.seed_resolution import resolve_seed_contract
 from mmm.data.fingerprint import fingerprint_panel
 from mmm.data.loader import DatasetBuilder
 from mmm.data.panel_order import sort_panel_for_modeling
@@ -66,7 +67,20 @@ class MMMTrainer:
         builder = DatasetBuilder(self.config.data, self.schema)
         panel = builder.build(df)
         panel_work = sort_panel_for_modeling(panel, self.schema)
-        store.log_dict("data_fingerprint", fingerprint_panel(panel_work, self.schema))
+        seed_resolution = resolve_seed_contract(self.config)
+        store.log_dict(
+            "seed_resolution",
+            seed_resolution,
+        )
+        store.log_dict(
+            "data_fingerprint",
+            fingerprint_panel(
+                panel_work,
+                self.schema,
+                config=self.config,
+                seed_resolution=seed_resolution,
+            ),
+        )
         store.log_dict(
             "data_validation_preview",
             {

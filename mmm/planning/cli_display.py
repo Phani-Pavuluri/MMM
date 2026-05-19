@@ -33,6 +33,14 @@ def emit_planning_summary_to_stderr(
         for line in pa.get("planning_disclosures") or []:
             secho(str(line), fg=typer.colors.YELLOW, err=True)
 
+    du = payload.get("decision_uncertainty")
+    if not isinstance(du, dict):
+        bundle = payload.get("decision_bundle")
+        if isinstance(bundle, dict):
+            du = bundle.get("decision_uncertainty")
+    if isinstance(du, dict) and du.get("disclosure_text"):
+        secho(f"Uncertainty: {du.get('disclosure_text')}", fg=typer.colors.YELLOW, err=True)
+
     pol = payload.get("control_scenario_policy")
     if not isinstance(pol, dict):
         pol = sim.get("control_scenario_policy") if isinstance(sim.get("control_scenario_policy"), dict) else None
