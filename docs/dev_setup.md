@@ -19,7 +19,7 @@ Open the repo in VS Code / Cursor and **Reopen in Container**. The image:
 - No Docker socket, privileged mode, or host networking
 - Workspace bind-mount: this repo → `/workspace/mmm`
 
-`postCreateCommand` runs `pip install -e ".[dev,tracking]"` (includes `pytest`, `ruff`, `mypy`, MLflow for tracking tests).
+`postCreateCommand` runs `pip install -e ".[dev,tracking]"` (includes `pytest`, `ruff`, `mypy`, MLflow for tracking tests). `remoteEnv.PATH` includes `/home/vscode/.local/bin` so CLI tools work under `remoteUser: vscode`.
 
 ## Local (without container)
 
@@ -28,7 +28,8 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -U pip
 pip install -e ".[dev,tracking]"
-ruff check mmm tests scripts
+ruff check mmm tests
+# include `scripts` if that directory exists on your branch
 pytest tests/ -q -m "not slow"
 ```
 

@@ -6,6 +6,9 @@
   "workspaceFolder": "/workspace/mmm",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/mmm,type=bind",
   "remoteUser": "vscode",
+  "remoteEnv": {
+    "PATH": "/home/vscode/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  },
   "postCreateCommand": "python -m pip install -U pip && pip install -e \".[dev,tracking]\"",
   "customizations": {
     "vscode": {
