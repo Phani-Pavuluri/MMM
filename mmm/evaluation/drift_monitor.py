@@ -10,9 +10,23 @@ import pandas as pd
 from mmm.config.schema import MMMConfig
 from mmm.data.fingerprint import fingerprint_panel
 from mmm.data.schema import PanelSchema
+from mmm.evaluation.drift_history import (
+    compare_distribution_snapshots,
+    compare_model_outputs,
+    panel_distribution_snapshot,
+)
 
 Severity = Literal["none", "low", "medium", "high"]
+DriftSeverity = Literal["informational", "warning", "critical"]
 RecommendedAction = Literal["monitor", "retrain_recommended", "experiment_refresh_recommended"]
+DriftTrend = Literal["stable", "gradual_drift", "sudden_drift"]
+
+_SEVERITY_TO_DRIFT: dict[Severity, DriftSeverity] = {
+    "none": "informational",
+    "low": "informational",
+    "medium": "warning",
+    "high": "critical",
+}
 
 
 def _channel_spend_shift(
@@ -63,6 +77,26 @@ def _control_shift(
     return drifts
 
 
+def infer_drift_trend(detected: list[dict[str, Any]]) -> DriftTrend:
+    """Classify drift pace for historical monitoring (diagnostic only)."""
+    if not detected:
+        return "stable"
+    if any(d.get("kind") == "panel_fingerprint_change" for d in detected):
+        return "sudden_drift"
+    dist_kinds = {
+        "channel_spend_distribution",
+        "control_drift",
+        "media_distribution_drift",
+        "control_distribution_drift",
+        "model_output_drift",
+    }
+    if sum(1 for d in detected if d.get("kind") in dist_kinds) >= 2:
+        return "gradual_drift"
+    if detected:
+        return "gradual_drift"
+    return "stable"
+
+
 def build_drift_report(
     *,
     panel: pd.DataFrame,
@@ -70,10 +104,13 @@ def build_drift_report(
     config: MMMConfig,
     reference_panel: pd.DataFrame | None = None,
     reference_fingerprint: dict[str, Any] | None = None,
+    historical_reference: dict[str, Any] | None = None,
+    current_model_outputs: dict[str, Any] | None = None,
     residuals: np.ndarray | None = None,
     reference_residuals: np.ndarray | None = None,
     calibration_summary: dict[str, Any] | None = None,
     seed_resolution: dict[str, Any] | None = None,
+    current_run_id: str | None = None,
 ) -> dict[str, Any]:
     """
     Compare current panel to a reference fingerprint/panel and emit ``drift_report``.
@@ -81,7 +118,28 @@ def build_drift_report(
     Does not trigger retraining or external monitoring.
     """
     current_fp = fingerprint_panel(panel, schema, config=config, seed_resolution=seed_resolution)
+    current_dist = panel_distribution_snapshot(panel, schema)
     detected: list[dict[str, Any]] = []
+
+    same_run_excluded = False
+    if historical_reference is not None:
+        hist_dir = historical_reference.get("source_run_dir")
+        if (current_run_id and historical_reference.get("registry_run_id") == current_run_id) or (
+            hist_dir and current_run_id and str(current_run_id) in str(hist_dir)
+        ):
+            historical_reference = None
+            same_run_excluded = True
+
+    if historical_reference is not None:
+        hist_fp = historical_reference.get("panel_fingerprint") or {}
+        if isinstance(hist_fp, dict) and hist_fp:
+            reference_fingerprint = reference_fingerprint or hist_fp
+        hist_dist = historical_reference.get("panel_distribution_snapshot") or {}
+        if isinstance(hist_dist, dict) and hist_dist:
+            detected.extend(compare_distribution_snapshots(current_dist, hist_dist))
+        hist_model = historical_reference.get("model_outputs") or {}
+        if isinstance(hist_model, dict) and current_model_outputs:
+            detected.extend(compare_model_outputs(current_model_outputs, hist_model))
 
     if reference_fingerprint is not None:
         ref_combined = reference_fingerprint.get("sha256_combined") or reference_fingerprint.get(
@@ -136,9 +194,24 @@ def build_drift_report(
             d.get("kind") == "calibration_staleness" for d in detected
         ) else "retrain_recommended"
 
+    trend = infer_drift_trend(detected) if historical_reference is not None else "stable"
+
     return {
         "severity": severity,
+        "drift_severity": _SEVERITY_TO_DRIFT[severity],
+        "drift_trend": trend,
         "detected_drifts": detected,
         "recommended_action": action,
+        "same_run_comparison_excluded": same_run_excluded,
         "current_panel_fingerprint": current_fp,
+        "current_panel_distribution_snapshot": current_dist,
+        "historical_reference": (
+            {
+                "loaded": True,
+                "source_run_dir": historical_reference.get("source_run_dir"),
+            }
+            if historical_reference
+            else {"loaded": False}
+        ),
+        "policy_note": "Drift is diagnostic only; no automatic retraining or experiment execution.",
     }

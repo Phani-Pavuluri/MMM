@@ -4,15 +4,13 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
 from mmm.calibration.replay_lift import aggregate_replay_calibration_loss
-from mmm.calibration.replay_prod_gate import assert_replay_production_ready
-from mmm.calibration.units_io import load_calibration_units_from_json
+from mmm.calibration.replay_units_resolve import resolve_replay_unit_sets
 from mmm.config.schema import Framework, MMMConfig, ModelForm, RunEnvironment
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import assert_panel_qa_allows_training
@@ -49,10 +47,14 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
         self._intercept: np.ndarray | None = None
         self._best_params: dict[str, float] = {}
         self._artifacts: RidgeBOArtifacts | None = None
-        self._replay_units: list = []
-        if config.calibration.use_replay_calibration and config.calibration.replay_units_path:
-            self._replay_units = load_calibration_units_from_json(Path(config.calibration.replay_units_path))
-            assert_replay_production_ready(config, self._replay_units, schema=self.schema)
+        self._replay_units_train: list = []
+        self._replay_units_holdout: list = []
+        self._replay_split_meta: dict[str, Any] = {}
+        if config.calibration.use_replay_calibration:
+            train_u, hold_u, split_meta = resolve_replay_unit_sets(config, schema)
+            self._replay_units_train = train_u
+            self._replay_units_holdout = hold_u
+            self._replay_split_meta = split_meta
 
     def fit(self, df: pd.DataFrame) -> dict[str, Any]:
         df = validate_panel(
@@ -71,7 +73,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
         if (
             self.config.run_environment == RunEnvironment.PROD
             and self.config.calibration.enabled
-            and not (self.config.calibration.use_replay_calibration and self._replay_units)
+            and not (self.config.calibration.use_replay_calibration and self._replay_units_train)
         ):
             raise ValueError(
                 "Production Ridge BO: calibration.enabled requires calibration.use_replay_calibration "
@@ -126,7 +128,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             cal_detail: dict[str, Any] | None = None
             cal = 0.0
             parts: dict[str, Any] = {}
-            if self._replay_units and coef_rows and intercept_rows:
+            if self._replay_units_train and coef_rows and intercept_rows:
                 # Replay calibration must use the same coefficient object as a shipped model for these
                 # hyperparameters: full-panel refit on all rows (not any single CV fold).
                 rkey = (dkey, round(float(alpha), 9))
@@ -146,7 +148,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                         return np.exp(ylog)
 
                     rloss, rmeta = aggregate_replay_calibration_loss(
-                        self._replay_units,
+                        self._replay_units_train,
                         predict_level,
                         schema=self.schema,
                         target_col=self.schema.target_column,
@@ -294,6 +296,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             "used_optuna": used_optuna,
             "artifacts": self._artifacts,
             "ridge_bo_telemetry": telem,
+            "replay_split_meta": dict(self._replay_split_meta),
         }
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
@@ -315,6 +318,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             hill_slope=self._best_params["hill_slope"],
         )
         yhat_log = predict_ridge(bundle.X, self._coef, self._intercept)
-        if self.config.model_form == ModelForm.SEMI_LOG:
+        # Both forms model log(y); SEMI_LOG uses level media, LOG_LOG uses log(media) in design_matrix.
+        if self.config.model_form == ModelForm.LOG_LOG:
             return np.exp(yhat_log)
         return np.exp(yhat_log)

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -26,18 +25,20 @@ def compute_replay_calibration_metrics(
     ``loss`` is mean standardized squared error in replay units; ``None`` if not configured
     or not Ridge / missing artifacts / no units.
     """
-    if not config.calibration.use_replay_calibration or not config.calibration.replay_units_path:
+    cal = config.calibration
+    if not cal.use_replay_calibration:
+        return None, {}, False
+    if not (cal.replay_units_path or cal.train_replay_units_path):
         return None, {}, False
     if config.framework != Framework.RIDGE_BO or not fit_out.get("artifacts"):
         return None, {}, False
     from mmm.calibration.replay_lift import aggregate_replay_calibration_loss
-    from mmm.calibration.replay_prod_gate import assert_replay_production_ready
-    from mmm.calibration.units_io import load_calibration_units_from_json
+    from mmm.calibration.replay_units_resolve import resolve_replay_unit_sets
 
-    units = load_calibration_units_from_json(Path(config.calibration.replay_units_path))
-    assert_replay_production_ready(config, units, schema=schema)
+    train_units, holdout_units, split_meta = resolve_replay_unit_sets(config, schema)
+    units = train_units
     if not units:
-        return None, {"reason": "no_units_loaded"}, False
+        return None, {"reason": "no_units_loaded", "split_meta": split_meta}, False
     art = fit_out["artifacts"]
 
     def predict_level(dfp: pd.DataFrame) -> np.ndarray:
@@ -59,4 +60,6 @@ def compute_replay_calibration_metrics(
         target_col=schema.target_column,
         config=config,
     )
+    if isinstance(meta, dict):
+        meta = {**meta, "split_meta": split_meta, "n_holdout_replay_units": len(holdout_units)}
     return float(loss), meta, True

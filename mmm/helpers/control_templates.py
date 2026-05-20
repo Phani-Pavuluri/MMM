@@ -86,6 +86,11 @@ _DOMAIN_CONTROL_COLUMNS: dict[ControlDomain, list[str]] = {
 }
 
 
+def list_template_controls(domain: ControlDomain) -> list[str]:
+    """Return illustrative control column names for a domain pack (onboarding only)."""
+    return list(_DOMAIN_CONTROL_COLUMNS[domain])
+
+
 def template_metadata(
     *,
     domain: ControlDomain,

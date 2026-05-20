@@ -67,19 +67,20 @@ def build_scorecard(
         ok_false = n_false <= int(cfg.falsification_max_allowed_flags_for_optimization)
     else:
         ok_false = True
-    appr_rep = bool(ok_fit and ok_id and beats_baselines)
+    beats_ok = beats_baselines or not cfg.require_beats_baselines_for_approval
+    if not beats_baselines and not cfg.require_beats_baselines_for_approval:
+        notes.append("governance: require_beats_baselines_for_approval=false; baseline beat check waived")
+    appr_rep = bool(ok_fit and ok_id and beats_ok)
+    appr_opt = bool(appr_rep and ok_cal and ok_false and ok_id)
     if decision_api_freeze:
-        appr_opt = False
         notes.append(
-            "decision_safety_freeze: approved_for_optimization is false while "
-            "allow_unsafe_decision_apis is false (analysis-only)."
+            "decision_safety_freeze: allow_unsafe_decision_apis is false; legacy unsafe decision APIs "
+            "are disabled (canonical ``mmm decide`` paths still use governance scorecard flags)."
         )
         notes.append(
             "calibration_governance: experiment-facing calibration scoring is not decision-safe yet; "
             "do not treat calibration_loss as experiment-aligned lift validation."
         )
-    else:
-        appr_opt = bool(appr_rep and ok_cal and ok_false and ok_id)
     if not beats_baselines:
         notes.append("main model does not beat baselines by configured margin")
     if not ok_id:

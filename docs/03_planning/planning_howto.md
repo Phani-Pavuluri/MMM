@@ -92,7 +92,7 @@ Rules:
 - The library does **not** invent future macro/promo calendars — only overwrites values on columns you already modeled.
 - Legacy flat keys (`candidate_spend`, `control_overlay_plan`, …) still work and are normalized to `PlanningScenario`.
 
-Example file in-repo: [examples/planning_scenario_promo.yaml](../examples/planning_scenario_promo.yaml).
+Example file in-repo: [examples/planning_scenario_promo.yaml](../../examples/planning_scenario_promo.yaml).
 
 ---
 

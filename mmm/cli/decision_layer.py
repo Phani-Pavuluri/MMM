@@ -13,6 +13,7 @@ from typing import Any
 
 import typer
 
+from mmm.artifacts.decision_inputs import load_training_extension_report
 from mmm.config.load import load_config
 from mmm.config.schema import MMMConfig, RunEnvironment
 from mmm.decision.extension_gate import optimization_gate_result
@@ -41,7 +42,7 @@ def _optimization_gate_and_extension(
     er_data: dict | None = None
     ext_present = extension_report is not None and extension_report.exists()
     if ext_present and extension_report is not None:
-        er_data = json.loads(extension_report.read_text(encoding="utf-8"))
+        er_data = load_training_extension_report(extension_report)
     gov = er_data.get("governance", {}) if isinstance(er_data, dict) else {}
     gr = optimization_gate_result(cfg, er_data, extension_report_present=ext_present)
     return er_data, gov, ext_present, gr
@@ -59,7 +60,7 @@ def run_decision_simulate(
     if not extension_report.exists():
         typer.secho("--extension-report must exist and include ridge_fit_summary.", fg=typer.colors.RED, err=True)
         return 1
-    er = json.loads(extension_report.read_text(encoding="utf-8"))
+    er = load_training_extension_report(extension_report)
     rs = er.get("ridge_fit_summary")
     if not isinstance(rs, dict) or not rs.get("coef"):
         typer.secho("extension_report must contain ridge_fit_summary.coef", fg=typer.colors.RED, err=True)

@@ -7,6 +7,10 @@ import os
 import pytest
 
 
+def pytest_configure(config: pytest.Config) -> None:
+    config.addinivalue_line("markers", "release_gate: release-gate tests (train→decide, compatibility)")
+
+
 @pytest.fixture(autouse=True)
 def _decision_bundle_git_sha_for_tests(monkeypatch: pytest.MonkeyPatch) -> None:
     """Prod CLI decision bundles require ``git_sha``; CI / sdist trees may lack ``.git``."""

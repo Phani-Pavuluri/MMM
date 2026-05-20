@@ -60,6 +60,7 @@ markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
   "pymc: requires pymc",
   "optuna: requires optuna",
+  "tracking: requires mlflow (tracking extra)",
 ]
 
 [tool.ruff]

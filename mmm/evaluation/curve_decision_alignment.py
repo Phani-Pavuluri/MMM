@@ -108,3 +108,69 @@ def evaluate_curve_decision_alignment(
             "spend_delta_frac": spend_delta_frac,
         },
     }
+
+
+DivergenceCategory = Literal["expected_divergence", "suspicious_divergence", "aligned"]
+
+
+def categorize_alignment(report: dict[str, Any]) -> DivergenceCategory:
+    """Label diagnostic divergence — not a gate."""
+    if report.get("expected_alignment") and report.get("warning_level") in ("none", "info"):
+        return "aligned"
+    rel = report.get("relative_abs_difference")
+    if rel is None or (isinstance(rel, float) and not np.isfinite(rel)):
+        return "suspicious_divergence"
+    if report.get("expected_alignment"):
+        return "expected_divergence"
+    if report.get("warning_level") == "critical":
+        return "suspicious_divergence"
+    return "expected_divergence"
+
+
+def evaluate_alignment_scenarios(
+    *,
+    panel: pd.DataFrame,
+    schema: PanelSchema,
+    config: MMMConfig,
+    fit_out: dict[str, Any],
+    curve_bundles: list[dict[str, Any]],
+    scenarios: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """
+    Run multiple curve-vs-Δμ probes (diagnostic matrix).
+
+    Each scenario may set ``channel``, ``spend_delta_frac``, and optional ``label``.
+    """
+    default = [{"label": "default", "spend_delta_frac": 0.05}]
+    rows: list[dict[str, Any]] = []
+    for spec in scenarios or default:
+        rep = evaluate_curve_decision_alignment(
+            panel=panel,
+            schema=schema,
+            config=config,
+            fit_out=fit_out,
+            curve_bundles=curve_bundles,
+            channel=spec.get("channel"),
+            spend_delta_frac=float(spec.get("spend_delta_frac", 0.05)),
+        )
+        cat = categorize_alignment(rep)
+        rows.append(
+            {
+                "label": spec.get("label") or spec.get("channel") or "default",
+                "divergence_category": cat,
+                "report": rep,
+            }
+        )
+    suspicious = sum(1 for r in rows if r["divergence_category"] == "suspicious_divergence")
+    return {
+        "policy_note": CURVE_DECISION_DOC,
+        "diagnostic_only": True,
+        "scenarios": rows,
+        "summary": {
+            "n_scenarios": len(rows),
+            "n_suspicious": suspicious,
+            "n_expected_divergence": sum(
+                1 for r in rows if r["divergence_category"] == "expected_divergence"
+            ),
+        },
+    }

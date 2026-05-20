@@ -141,11 +141,26 @@ def train(config: Path) -> None:
 
     Does not run ``decide`` gates or emit a decision bundle.
     """
+    from mmm.config.load import load_config
+    from mmm.config.schema import RunEnvironment
+    from mmm.governance.baseline_beat_waiver import BASELINE_BEAT_WAIVER_MESSAGE, baseline_beat_waiver_active
+
+    cfg = load_config(config)
+    if baseline_beat_waiver_active(cfg.extensions.governance):
+        msg = BASELINE_BEAT_WAIVER_MESSAGE
+        if cfg.run_environment == RunEnvironment.PROD:
+            typer.secho(msg, fg=typer.colors.RED, err=True)
+        else:
+            typer.secho(msg, fg=typer.colors.YELLOW, err=True)
     trainer = MMMTrainer.from_yaml(config)
     out = trainer.run()
     typer.echo(f"Finished run: {out['run_id']} artifacts at {out['store']}")
     for w in out.get("warnings") or []:
         typer.secho(w, fg=typer.colors.YELLOW, err=True)
+    ext = out.get("extensions") or {}
+    gov = ext.get("governance") if isinstance(ext, dict) else {}
+    if isinstance(gov, dict) and gov.get("baseline_beat_waiver_active"):
+        typer.secho(BASELINE_BEAT_WAIVER_MESSAGE, fg=typer.colors.RED, err=True)
 
 
 @app.command()

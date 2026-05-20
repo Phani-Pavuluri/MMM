@@ -53,6 +53,8 @@ class GovernanceConfig(BaseModel):
     """Scorecard thresholds; approvals are advisory unless CLI enforces."""
 
     max_mae_ratio_vs_baseline: float = 1.15
+    #: When False, ``approved_for_reporting`` / optimization scorecard paths ignore baseline beat checks.
+    require_beats_baselines_for_approval: bool = True
     max_identifiability_risk: float = 0.65
     max_high_vif_channels: int = 2
     require_falsification_pass: bool = False
@@ -187,6 +189,29 @@ class FeatureSeparabilityConfig(BaseModel):
     bootstrap_rounds: int = Field(default=12, ge=0, le=64)
 
 
+class RidgeUncertaintyResearchConfig(BaseModel):
+    """Optional Ridge interval research (never enables production decision CIs)."""
+
+    enabled: bool = False
+    bootstrap_rounds: int = Field(default=8, ge=4, le=32)
+
+
+class PerformanceAuditConfig(BaseModel):
+    """Extension runtime telemetry (diagnostic only)."""
+
+    enabled: bool = True
+
+
+class DriftHistoricalConfig(BaseModel):
+    """Historical drift context (diagnostic only — no auto-retrain)."""
+
+    prior_run_dir: str | None = None
+    #: Directory holding ``accepted_runs.jsonl`` for cross-run comparisons.
+    registry_dir: str | None = None
+    #: When True, compare against latest registry entry (excluding current run).
+    use_registry: bool = False
+
+
 class PanelQAConfig(BaseModel):
     """Data QA above ``validate_panel`` — extension artifacts + optional PROD training blocks."""
 
@@ -215,5 +240,10 @@ class ExtensionSuiteConfig(BaseModel):
     falsification: FalsificationConfig = Field(default_factory=FalsificationConfig)
     curves: CurveResponseConfig = Field(default_factory=CurveResponseConfig)
     panel_qa: PanelQAConfig = Field(default_factory=PanelQAConfig)
+    drift_historical: DriftHistoricalConfig = Field(default_factory=DriftHistoricalConfig)
+    ridge_uncertainty_research: RidgeUncertaintyResearchConfig = Field(
+        default_factory=RidgeUncertaintyResearchConfig
+    )
+    performance_audit: PerformanceAuditConfig = Field(default_factory=PerformanceAuditConfig)
 
     model_config = {"extra": "forbid"}

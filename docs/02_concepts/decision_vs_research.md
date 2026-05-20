@@ -3,7 +3,7 @@
 ## Decision-grade (production-oriented)
 
 - **Full-panel `simulate()`** with BAU baseline, `run_environment=prod`, governance flags satisfied, and `extension_report` + panel aligned to training.
-- **Budget optimization** only with `allow_unsafe_decision_apis` + CLI flags where required, optimization safety gate passed, and **ridge_fit_summary** present for full-model scoring.
+- **Budget optimization** via ``mmm decide optimize-budget`` with `allow_unsafe_decision_apis=false` (default), optimization safety gate passed (including `governance.approved_for_optimization`), replay calibration evidence, `model_release.state=planning_allowed`, and **ridge_fit_summary** for full-panel Δμ scoring. Legacy curve-only optimizers require `allow_unsafe_decision_apis` and are non-prod.
 - **Posterior P10/P50/P90 on Δμ** only when `bayesian_fit_meta` reports `posterior_diagnostics_ok` and `posterior_predictive_ok`, `linear_coef_draws` are supplied, and in **prod** `extensions.product.posterior_planning_mode=draws`.
 - **Risk-aware optimization** (`optimize_budget_risk_aware`) uses the same gates as posterior simulation.
 

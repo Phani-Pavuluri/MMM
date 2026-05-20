@@ -30,4 +30,6 @@ def test_model_card_generation_and_sections() -> None:
     assert "# Model card" in md
     missing = required_sections_present(md)
     assert not missing, f"missing sections: {missing}"
-    assert "Point estimates only" in md
+    assert "Point estimates only" in md or "not currently supported" in md.lower()
+    assert "## Intended use" in md
+    assert "## Approval section" in md

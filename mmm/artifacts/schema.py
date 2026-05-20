@@ -55,10 +55,19 @@ class SimulationDecisionResult(BaseModel):
         governance_refs: dict,
         lineage_refs: dict,
     ) -> SimulationDecisionResult:
+        ds = bool(sim.get("decision_safe", False))
+        tier = ArtifactTier.DECISION if ds else ArtifactTier.RESEARCH
         return cls(
+            tier=tier,
             baseline_mu=float(sim["baseline_mu"]),
             candidate_mu=float(sim["plan_mu"]),
             delta_mu=float(sim["delta_mu"]),
+            safety=SafetyFlags(
+                decision_safe=ds,
+                prod_safe=ds,
+                approximate=str(sim.get("uncertainty_mode", "point")) != "point",
+                unsupported_for=list(sim.get("unsupported_questions") or []),
+            ),
             governance_refs=governance_refs,
             lineage_refs=lineage_refs,
         )

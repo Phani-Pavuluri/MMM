@@ -1,0 +1,66 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  slow-and-research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          python -m pip install -U pip
+          python -m pip install -e ".[dev,tracking,bayesian,bo]"
+      - name: Slow tests
+        id: slow
+        continue-on-error: true
+        run: pytest tests/ -q -m slow 2>&1 | tee nightly_slow.log
+      - name: Bayesian tests
+        id: bayesian
+        continue-on-error: true
+        run: pytest tests/ -q -k bayesian 2>&1 | tee nightly_bayesian.log
+      - name: Optuna / ridge BO extended
+        id: ridge_bo
+        continue-on-error: true
+        run: |
+          pytest tests/test_ridge_bo_smoke.py tests/test_ridge_bo_perf_budget.py \
+            tests/test_synthetic_recovery_strengthened.py tests/test_synthetic_dgp_recovery.py \
+            tests/test_replay_holdout_split.py -q 2>&1 | tee nightly_ridge_bo.log
+      - name: Uncertainty research
+        id: uncertainty
+        continue-on-error: true
+        run: pytest tests/test_ridge_uncertainty_research.py -q 2>&1 | tee nightly_uncertainty.log
+      - name: Large-panel synthetic
+        id: large_panel
+        continue-on-error: true
+        run: pytest tests/test_synthetic_correlated_channels.py -q 2>&1 | tee nightly_large_panel.log
+      - name: Upload nightly logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-test-logs
+          path: nightly_*.log
+      - name: Nightly summary
+        if: always()
+        run: |
+          {
+            echo "## Nightly test summary"
+            echo ""
+            for step in slow bayesian ridge_bo uncertainty large_panel; do
+              echo "- **${step}**: $([ -f nightly_${step}.log ] && tail -1 nightly_${step}.log || 'no log')"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Fail if any nightly step failed
+        if: always()
+        run: |
+          test "${{ steps.slow.outcome }}" = success
+          test "${{ steps.bayesian.outcome }}" = success
+          test "${{ steps.ridge_bo.outcome }}" = success
+          test "${{ steps.uncertainty.outcome }}" = success
+          test "${{ steps.large_panel.outcome }}" = success

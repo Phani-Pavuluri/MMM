@@ -12,6 +12,17 @@ RIDGE_DISCLOSURE = (
 )
 
 
+_METHODS_INVESTIGATED = {
+    "bootstrap_intervals": "not_implemented",
+    "conformal_intervals": "not_implemented",
+    "calibration_coverage_checks": "disclosure_only",
+    "note": (
+        "Bootstrap and conformal monetary intervals were evaluated for Ridge production "
+        "and deferred — point estimates with explicit disclosure remain the contract."
+    ),
+}
+
+
 def build_decision_uncertainty(
     config: MMMConfig,
     *,
@@ -21,18 +32,23 @@ def build_decision_uncertainty(
     if config.framework == Framework.RIDGE_BO:
         return {
             "uncertainty_available": False,
+            "uncertainty_unavailable": True,
             "uncertainty_method": "point_estimate",
             "confidence_supported": False,
             "disclosure_text": RIDGE_DISCLOSURE,
             "ridge_production_forbids_precise_monetary_ci": ridge_forbids_precise_monetary_ci(config),
+            "methods_investigated": _METHODS_INVESTIGATED,
         }
     if config.framework == Framework.BAYESIAN:
         intervals_ok = bayesian_intervals_allowed(fit_meta)
         prod_blocked = config.run_environment == RunEnvironment.PROD
+        avail = bool(intervals_ok and not prod_blocked)
         return {
-            "uncertainty_available": bool(intervals_ok and not prod_blocked),
+            "uncertainty_available": avail,
+            "uncertainty_unavailable": not avail,
             "uncertainty_method": "posterior_draws" if intervals_ok else "diagnostic_only",
-            "confidence_supported": bool(intervals_ok and not prod_blocked),
+            "confidence_supported": avail,
+            "methods_investigated": _METHODS_INVESTIGATED,
             "disclosure_text": (
                 "Bayesian posterior intervals are research/diagnostic only; "
                 "production decision surfaces require Ridge full-panel Δμ."
@@ -43,7 +59,9 @@ def build_decision_uncertainty(
         }
     return {
         "uncertainty_available": False,
+        "uncertainty_unavailable": True,
         "uncertainty_method": "unknown_framework",
         "confidence_supported": False,
         "disclosure_text": RIDGE_DISCLOSURE,
+        "methods_investigated": _METHODS_INVESTIGATED,
     }

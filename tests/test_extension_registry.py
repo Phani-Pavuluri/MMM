@@ -6,7 +6,7 @@ import json
 
 import pytest
 
-from mmm.config.schema import CVConfig, Framework, MMMConfig, ModelForm
+from mmm.config.schema import CVConfig, Framework, MMMConfig, ModelForm, RunEnvironment
 from mmm.evaluation.extension_runner import run_post_fit_extensions
 from mmm.evaluation.extensions.context import ExtensionContext
 from mmm.evaluation.extensions.registry import (
@@ -49,6 +49,41 @@ def _ridge_extension_report() -> dict:
     )
 
 
+def test_optimization_gate_always_runs_when_gates_disabled_non_prod() -> None:
+    """Registry must not skip optimization_gate; disabled is handled inside OptimizationSafetyGate."""
+    df, schema = generate_geo_panel(SyntheticGeoPanelSpec(n_geos=3, n_weeks=50))
+    cfg = MMMConfig(
+        framework=Framework.RIDGE_BO,
+        model_form=ModelForm.SEMI_LOG,
+        run_environment=RunEnvironment.RESEARCH,
+        data={
+            "path": None,
+            "geo_column": schema.geo_column,
+            "week_column": schema.week_column,
+            "target_column": schema.target_column,
+            "channel_columns": list(schema.channel_columns),
+        },
+        cv=CVConfig(mode="rolling", n_splits=2, min_train_weeks=12, horizon_weeks=3),
+        ridge_bo={"n_trials": 2},
+        extensions={"optimization_gates": {"enabled": False}},
+    )
+    tr = RidgeBOMMMTrainer(cfg, schema)
+    fit = tr.fit(df)
+    rep = run_post_fit_extensions(
+        panel=df,
+        schema=schema,
+        config=cfg,
+        fit_out=fit,
+        yhat=tr.predict(df),
+        store=None,
+    )
+    og = rep["decision_bundle"]["optimization_gate"]
+    assert og["allowed"] is True
+    assert "gates_disabled" in og["reasons"]
+    assert rep["decision_bundle"]["decision_safety_flags"]["optimization_gate_allowed"] is True
+    assert rep["operational_health"]["inputs"]["optimization_gate_allowed"] is True
+
+
 def test_extension_report_keys_stable_across_two_runs() -> None:
     a = _ridge_extension_report()
     b = _ridge_extension_report()
@@ -60,12 +95,17 @@ def test_extension_report_top_level_keys_regression() -> None:
     keys = frozenset(rep.keys())
     expected = frozenset(
         {
-            "artifact_tier_disclosure",
+                "artifact_backend",
+                "artifact_tier_disclosure",
+                "control_governance",
             "baselines",
             "calibration_summary",
+            "replay_calibration_sensitivity",
+            "replay_holdout_validation",
             "curve_bundle",
             "curve_bundles",
-            "curve_decision_alignment",
+                "curve_decision_alignment",
+                "curve_decision_alignment_matrix",
             "curve_safe_for_optimization",
             "curve_stress",
             "data_fingerprint",
@@ -86,6 +126,7 @@ def test_extension_report_top_level_keys_regression() -> None:
             "model_card_md",
             "model_release",
             "operational_health",
+            "performance_report",
             "panel_qa",
             "post_fit_validation",
             "response_diagnostics",

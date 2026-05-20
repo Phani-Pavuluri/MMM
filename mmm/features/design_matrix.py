@@ -98,6 +98,9 @@ def build_design_matrix(
     Build X on **full** sorted panel so adstock carryover is causal within each geo.
 
     Rows are sorted by (geo, week). Callers must use the returned ``df_aligned`` for y/masks.
+
+    **Ridge BO training** builds X on the full sorted panel (causal adstock state), then subsets rows per
+    CV fold via :func:`apply_masks_for_fit` so validation targets are not in the ridge fit loss.
     """
     df_aligned = sort_panel_for_modeling(df, schema)
     n = len(df_aligned)

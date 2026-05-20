@@ -128,6 +128,9 @@ class SimulationResult:
             "baseline_definition": self.baseline_definition,
             "uncertainty_mode": self.uncertainty_mode,
             "decision_safe": self.decision_safe,
+            "scenario_suitable_for_decisioning": bool(
+                self.extra.get("baseline_suitable_for_decisioning", self.decision_safe)
+            ),
             "economics_version": self.economics_version,
             "planner_mode": self.planner_mode,
             "canonical_quantity": self.canonical_quantity,
@@ -330,9 +333,16 @@ def simulate(
             "for decision-grade posterior planning APIs."
         ).strip()
 
-    decision_safe = bool(base.suitable_for_decisioning and base.baseline_type == BaselineType.BAU)
-    if base.baseline_type != BaselineType.BAU:
-        decision_safe = False
+    from mmm.governance.decision_safe_contract import compute_decision_safe
+
+    scenario_suitable = bool(base.suitable_for_decisioning)
+    baseline_is_bau = base.baseline_type == BaselineType.BAU
+    decision_safe = compute_decision_safe(
+        governance_gate_allowed=True,
+        scenario_suitable_for_decisioning=scenario_suitable,
+        baseline_is_bau=baseline_is_bau,
+        run_environment=ctx.config.run_environment,
+    )
 
     p10 = p50 = p90 = None
     post_gate: dict[str, Any] | None = None

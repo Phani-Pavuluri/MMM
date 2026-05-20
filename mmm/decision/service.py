@@ -32,6 +32,7 @@ from mmm.decision.optimize_enrichment import (
     apply_simulation_at_recommendation_allowlist,
     apply_simulation_at_recommendation_allowlist_post_enrich,
 )
+from mmm.governance.decision_safe_contract import compute_decision_safe
 from mmm.governance.policy import (
     PolicyError,
     cv_mode_key_from_config,
@@ -289,7 +290,14 @@ def simulate_decision(
         },
         data_fingerprint=fp,
         uncertainty_mode="point",
-        decision_safe=bool(gr.allowed),
+        decision_safe=compute_decision_safe(
+            governance_gate_allowed=bool(gr.allowed),
+            scenario_suitable_for_decisioning=bool(
+                sim_js.get("scenario_suitable_for_decisioning", sim_js.get("baseline_suitable_for_decisioning", False))
+            ),
+            baseline_is_bau=str(sim_js.get("baseline_type") or "bau").lower() == "bau",
+            run_environment=cfg.run_environment,
+        ),
         governance_passed=bool(gr.allowed),
         optimizer_success=None,
         baseline_type=str(sim_js.get("baseline_definition") or "bau"),
