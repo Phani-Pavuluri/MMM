@@ -9,7 +9,6 @@ from mmm.config.schema import Framework, RunEnvironment
 from mmm.config.transform_policy import build_transform_policy_manifest
 from mmm.contracts.quantity_models import PosteriorExplorationQuantityResult, UncertaintyBucketsQuantityResult
 from mmm.contracts.run_manifest import build_run_manifest
-from mmm.data.fingerprint import fingerprint_panel
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import run_panel_qa
 from mmm.economics.canonical import (
@@ -19,8 +18,6 @@ from mmm.economics.canonical import (
 )
 from mmm.evaluation.baselines import media_shuffled_within_geo, run_baselines
 from mmm.evaluation.calibration_extension import compute_replay_calibration_metrics
-from mmm.evaluation.curve_decision_alignment import evaluate_curve_decision_alignment
-from mmm.evaluation.drift_monitor import build_drift_report
 from mmm.evaluation.experiment_scheduler import compute_experiment_scheduler_report
 from mmm.evaluation.extensions.context import ExtensionContext
 from mmm.evaluation.feature_pipeline import build_extension_design_bundle
@@ -36,7 +33,6 @@ from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
 from mmm.guidance.recommend import recommend_configuration
 from mmm.optimization.safety_gate import OptimizationSafetyGate
 from mmm.planning.context import ridge_fit_summary_from_artifacts
-from mmm.reporting.model_card import generate_model_card
 from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
 from mmm.services.calibration_service import run_calibration_extensions
 from mmm.services.curve_service import build_curve_diagnostics_bundle
@@ -143,6 +139,16 @@ def _run_replay_calibration(ctx: ExtensionContext) -> None:
         "replay_loss": ctx.cal_loss,
         "replay_meta": replay_meta if is_replay else None,
     }
+    from mmm.evaluation.replay_calibration_sensitivity import build_replay_calibration_sensitivity
+
+    ctx.out["replay_calibration_sensitivity"] = build_replay_calibration_sensitivity(
+        ctx.panel_s, ctx.schema, ctx.config, ctx.fit_out
+    )
+    from mmm.evaluation.replay_holdout_validation import build_replay_holdout_validation
+
+    ctx.out["replay_holdout_validation"] = build_replay_holdout_validation(
+        ctx.panel_s, ctx.schema, ctx.config, ctx.fit_out
+    )
 
 
 def _run_governance(ctx: ExtensionContext) -> None:
@@ -327,42 +333,6 @@ def _run_experiment_scheduler(ctx: ExtensionContext) -> None:
     )
 
 
-def _run_fingerprint_and_drift(ctx: ExtensionContext) -> None:
-    if not (
-        ctx.config.artifacts.write_data_fingerprint
-        or ctx.config.run_environment == RunEnvironment.PROD
-    ):
-        return
-    ctx.fingerprint = fingerprint_panel(
-        ctx.panel_s,
-        ctx.schema,
-        config=ctx.config,
-        seed_resolution=ctx.seed_resolution,
-    )
-    ctx.out["data_fingerprint"] = ctx.fingerprint
-    ctx.out["drift_report"] = build_drift_report(
-        panel=ctx.panel_s,
-        schema=ctx.schema,
-        config=ctx.config,
-        reference_fingerprint=ctx.fingerprint,
-        reference_panel=ctx.panel_s,
-        calibration_summary=ctx.out.get("calibration_summary"),
-        seed_resolution=ctx.seed_resolution,
-    )
-
-
-def _run_curve_decision_alignment(ctx: ExtensionContext) -> None:
-    if not ctx.curve_bundle.get("curve_bundles"):
-        return
-    ctx.out["curve_decision_alignment"] = evaluate_curve_decision_alignment(
-        panel=ctx.panel_s,
-        schema=ctx.schema,
-        config=ctx.config,
-        fit_out=ctx.fit_out,
-        curve_bundles=ctx.curve_bundle["curve_bundles"],
-    )
-
-
 def _run_decision_bundle(ctx: ExtensionContext) -> None:
     assert ctx.gate_result is not None
     gov = ctx.out.get("governance") or {}
@@ -450,16 +420,11 @@ def _run_decision_bundle(ctx: ExtensionContext) -> None:
         )
         if miss:
             raise RuntimeError("PROD extension decision_bundle failed completeness audit: " + "; ".join(miss))
+    if ctx.store and isinstance(ctx.out.get("decision_bundle"), dict):
+        ctx.store.log_dict("decision_bundle", ctx.out["decision_bundle"])
 
 
 def _run_run_manifest(ctx: ExtensionContext) -> None:
     ctx.out["run_manifest"] = build_run_manifest(ctx.out, run_id=ctx.config.run_id)
 
 
-def _run_model_card(ctx: ExtensionContext) -> None:
-    ctx.out["model_card_md"] = generate_model_card(
-        extension_report=ctx.out,
-        decision_bundle=ctx.out.get("decision_bundle"),
-    )
-    if ctx.store:
-        (ctx.store.run_path / "model_card.md").write_text(ctx.out["model_card_md"], encoding="utf-8")

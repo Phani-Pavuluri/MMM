@@ -10,6 +10,6 @@ Layers and responsibilities:
 - **calibration**: experiment schema, multi-level matching, BO loss, Bayesian likelihood hooks.
 - **decomposition / curves**: contributions and marginal ROI grids on the transformed spend path.
 - **optimization**: budget SQP-style optimizer with channel bounds.
-- **artifacts**: `ArtifactStoreBase` with `LocalArtifactStore` default and lazy `MLflowArtifactStore`.
+- **artifacts**: `resolve_artifact_store()` in `mmm/artifacts/factory.py` — `LocalArtifactStore` (supported) or experimental `MLflowArtifactStore`.
 - **reporting**: JSON-first `ReportBuilder`.
 - **api / cli**: aligned entrypoints for YAML-driven and programmatic use.

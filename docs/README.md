@@ -52,6 +52,12 @@ Governance, safety checks, and operations:
 | Prod safety checklist | [04_governance/prod_safety_checklist.md](04_governance/prod_safety_checklist.md) |
 | Artifact & bundle fields | [04_governance/artifact_schema.md](04_governance/artifact_schema.md) |
 
+## Documentation maintenance
+
+- [DOCUMENTATION_INVENTORY.md](DOCUMENTATION_INVENTORY.md) — canonical paths and deprecated redirects
+- [documentation_truth_audit.md](documentation_truth_audit.md) — docs vs code audit
+- Validate links: `python scripts/validate_docs.py`
+
 ## Archive
 
 Historical / roadmap notes (not current operator guidance):

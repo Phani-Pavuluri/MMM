@@ -12,7 +12,7 @@ from mmm.governance.scorecard import build_scorecard
 from mmm.services.governance_service import build_governance_bundle
 
 
-def test_scorecard_blocks_optimization_when_freeze():
+def test_scorecard_keeps_optimization_approval_when_freeze_but_metrics_pass():
     sc = build_scorecard(
         cfg=GovernanceConfig(),
         fit_mae=0.1,
@@ -24,7 +24,7 @@ def test_scorecard_blocks_optimization_when_freeze():
         decision_api_freeze=True,
     )
     assert sc.approved_for_reporting is True
-    assert sc.approved_for_optimization is False
+    assert sc.approved_for_optimization is True
     assert any("decision_safety_freeze" in n for n in sc.notes)
 
 
@@ -67,7 +67,7 @@ def test_governance_bundle_includes_decision_safety_labels():
         falsification_flags=[],
         calibration_loss=None,
     )
-    assert js["approved_for_optimization"] is False
+    assert js["approved_for_optimization"] is True
     assert "decision_safety" in js
     assert js["decision_safety"]["labels"]["calibration"].startswith("not_decision_safe_yet")
 

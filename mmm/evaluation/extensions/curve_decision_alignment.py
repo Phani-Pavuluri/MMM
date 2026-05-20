@@ -1,6 +1,6 @@
 """Curve vs decision alignment extension registration."""
 
-from mmm.evaluation.extensions.builtin import _run_curve_decision_alignment
+from mmm.evaluation.extensions.handlers.reporting_governance import _run_curve_decision_alignment
 from mmm.evaluation.extensions.registry import ExtensionSpec, register_extension
 
 

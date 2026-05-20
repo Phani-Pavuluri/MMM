@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from mmm.artifacts.decision_inputs import load_training_extension_report
 from mmm.config.load import load_config
 from mmm.config.schema import RunEnvironment
 from mmm.contracts.runtime_validation import SemanticContractError
@@ -24,7 +25,7 @@ def run_decision_simulation(
 ) -> dict[str, Any]:
     """Run full-panel simulate via ``simulate_decision`` (same policy gates as ``mmm decide simulate``)."""
     cfg = load_config(config)
-    er = json.loads(extension_report.read_text(encoding="utf-8"))
+    er = load_training_extension_report(extension_report)
     try:
         raw = load_scenario_yaml(scenario)
         payload = simulate_decision(
@@ -69,7 +70,7 @@ def run_decision_optimization(
             )
         raise SemanticContractError("extension_report path is required and must exist.")
 
-    er = json.loads(extension_report.read_text(encoding="utf-8"))
+    er = load_training_extension_report(extension_report)
     ridge = er.get("ridge_fit_summary")
     full_model_ready = bool(cfg.data.path and isinstance(ridge, dict) and ridge.get("coef"))
 

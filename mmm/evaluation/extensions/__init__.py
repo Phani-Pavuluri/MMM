@@ -24,18 +24,22 @@ def ensure_extensions_registered(*, force: bool = False) -> None:
         return
     from mmm.evaluation.extensions import (
         bootstrap_ext,
+        control_governance,
         curve_decision_alignment,
         drift_monitor,
         feature_separability,
         governance,
         model_card,
         panel_qa,
+        performance_audit_ext,
+        ridge_uncertainty_research_ext,
         standard_extensions,
     )
     from mmm.evaluation.extensions import experiment_scheduler as experiment_scheduler_plugin
 
     bootstrap_ext.register()
     panel_qa.register()
+    control_governance.register()
     standard_extensions.register_standard_extensions()
     governance.register()
     feature_separability.register()
@@ -43,6 +47,8 @@ def ensure_extensions_registered(*, force: bool = False) -> None:
     drift_monitor.register()
     curve_decision_alignment.register()
     model_card.register()
+    performance_audit_ext.register()
+    ridge_uncertainty_research_ext.register()
     _PLUGINS_LOADED = True
 
 

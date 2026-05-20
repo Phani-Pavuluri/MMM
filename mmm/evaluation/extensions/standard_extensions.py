@@ -153,7 +153,6 @@ _SPECS = (
         run=builtin._run_optimization_gate,
         report_keys=(),
         artifact_tier="internal",
-        config_key="extensions.optimization_gates.enabled",
     ),
     ExtensionSpec(
         name="operational_health",

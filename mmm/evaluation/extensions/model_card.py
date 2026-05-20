@@ -1,6 +1,6 @@
 """Model card extension registration."""
 
-from mmm.evaluation.extensions.builtin import _run_model_card
+from mmm.evaluation.extensions.handlers.reporting_governance import _run_model_card
 from mmm.evaluation.extensions.registry import ExtensionSpec, register_extension
 
 

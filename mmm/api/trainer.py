@@ -12,7 +12,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from mmm.artifacts.stores.local import LocalArtifactStore
+from mmm.artifacts.factory import artifact_backend_disclosure, resolve_artifact_store
+from mmm.artifacts.lifecycle import persist_training_artifacts
 from mmm.config.load import dump_resolved_config, load_config, resolve_config
 from mmm.config.schema import Framework, MMMConfig
 from mmm.contracts.seed_resolution import resolve_seed_contract
@@ -42,8 +43,14 @@ class MMMTrainer:
 
     def run(self, df: pd.DataFrame | None = None) -> dict[str, Any]:
         run_id = self.config.run_id or str(uuid.uuid4())
-        store = LocalArtifactStore(self.config.artifacts.run_dir)
-        store.start_run(run_id, metadata={"framework": self.config.framework.value})
+        store = resolve_artifact_store(self.config)
+        store.start_run(
+            run_id,
+            metadata={
+                "framework": self.config.framework.value,
+                "artifact_backend": artifact_backend_disclosure(self.config),
+            },
+        )
         dump_resolved_config(self.config, store.run_path / "resolved_config.yaml")
         cfg_blob = json.dumps(self.config.model_dump_resolved(), sort_keys=True, default=str)
         store.log_dict(
@@ -143,6 +150,11 @@ class MMMTrainer:
             fit_out=fit_out,
             yhat=yhat,
             store=store,
+        )
+        persist_training_artifacts(
+            store,
+            extension_report=ext_report,
+            model_card_md=ext_report.get("model_card_md") if isinstance(ext_report.get("model_card_md"), str) else None,
         )
         store.end_run()
         return {

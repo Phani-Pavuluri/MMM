@@ -1,6 +1,6 @@
 """Data fingerprint and drift monitor extension registration."""
 
-from mmm.evaluation.extensions.builtin import _run_fingerprint_and_drift
+from mmm.evaluation.extensions.handlers.reporting_governance import _run_fingerprint_and_drift
 from mmm.evaluation.extensions.registry import ExtensionSpec, register_extension
 
 

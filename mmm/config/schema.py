@@ -175,7 +175,15 @@ class CalibrationConfig(BaseModel):
     #: JSON list of :class:`mmm.calibration.contracts.CalibrationUnit`-compatible dicts with
     #: ``observed_spend_frame`` / ``counterfactual_spend_frame`` for replay (decision-safe path).
     replay_units_path: str | None = None
+    #: Optional explicit train/holdout JSON lists; when both set, auto-split from ``replay_units_path`` is skipped.
+    train_replay_units_path: str | None = None
+    holdout_replay_units_path: str | None = None
     use_replay_calibration: bool = False
+    #: When true, BO replay objective uses train units only; holdout units are diagnostic (extension artifact).
+    use_replay_holdout_split: bool = False
+    replay_holdout_fraction: float = Field(default=0.25, gt=0.0, lt=1.0)
+    replay_holdout_min_train_units: int = Field(default=1, ge=1)
+    replay_holdout_min_holdout_units: int = Field(default=1, ge=1)
     lift_column: str = "lift"
     lift_se_column: str | None = "lift_se"
     match_levels: list[str] = Field(

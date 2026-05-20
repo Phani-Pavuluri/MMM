@@ -7,6 +7,7 @@ from typing import Any
 from mmm.config.schema import MMMConfig, RunEnvironment
 from mmm.contracts.artifact_tier import DECISION_TIER_VALUE
 from mmm.economics.canonical import ECONOMICS_CONTRACT_VERSION
+from mmm.governance.decision_safe_contract import compute_decision_safe
 
 
 class BusinessSurfaceMetadataError(ValueError):
@@ -86,8 +87,16 @@ def enrich_decision_simulation_json(
     tier = DECISION_TIER_VALUE if prod and governance_gate_allowed else "research"
     approx = str(out.get("uncertainty_mode", "point")) != "point"
     out["artifact_tier"] = tier
-    # CLI prod path: ``decision_safe`` on persisted JSON follows the optimization safety gate, not only BAU flags.
-    out["decision_safe"] = bool(governance_gate_allowed)
+    suitable = bool(
+        out.get("scenario_suitable_for_decisioning", out.get("baseline_suitable_for_decisioning", False))
+    )
+    baseline_is_bau = str(out.get("baseline_type") or out.get("baseline_definition") or "bau").lower() == "bau"
+    out["decision_safe"] = compute_decision_safe(
+        governance_gate_allowed=governance_gate_allowed,
+        scenario_suitable_for_decisioning=suitable,
+        baseline_is_bau=baseline_is_bau,
+        run_environment=cfg.run_environment,
+    )
     out["approximate"] = approx
     out["not_for_budgeting"] = tier != DECISION_TIER_VALUE
     out["economics_contract_version"] = str(out.get("economics_version") or ECONOMICS_CONTRACT_VERSION)
