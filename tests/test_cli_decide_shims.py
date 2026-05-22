@@ -10,6 +10,8 @@ import pandas as pd
 import pytest
 from typer.testing import CliRunner
 
+from tests.prod_extension_fixtures import prod_replay_evidence_block
+
 
 def _strip_volatile_decision_payload(d: dict) -> dict:
     from tests.decision_payload_scrub import strip_volatile_decision_payload
@@ -48,7 +50,7 @@ def _prod_panel_extension_and_yaml(tmp_path: Path) -> tuple[Path, Path, Path]:
                 "identifiability": {"identifiability_score": 0.5},
                 "panel_qa": {"max_severity": "info", "issues": []},
                 "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-                "experiment_matching": {"replay_ok": True},
+                **prod_replay_evidence_block(),
             }
         ),
         encoding="utf-8",

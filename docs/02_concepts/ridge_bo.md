@@ -1,6 +1,6 @@
 # Ridge + BO framework
 
-Inner loop: **ridge regression** on the modeling scale (`log` revenue for `semi_log`; `log` spend for `log_log`) with explicit media transforms.
+Inner loop: **ridge regression** on the modeling scale (`log` revenue for `semi_log`; `log` revenue and `log` media for `log_log`) with explicit media transforms. Level predictions use `exp(linear_predictor)` for both forms (inverse link on `log(y)`).
 
 Outer loop: **Optuna** TPE search over adstock decay, Hill parameters, and `log10(alpha)` ridge strength. If Optuna is absent, a seeded random grid preserves functionality.
 

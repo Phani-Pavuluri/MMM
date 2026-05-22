@@ -8,6 +8,11 @@ import pandas as pd
 from mmm.config.schema import Framework, MMMConfig, RunEnvironment
 from mmm.data.schema import PanelSchema
 from mmm.evaluation.baselines import BaselineComparisonReport
+from mmm.governance.baseline_beat_waiver import (
+    baseline_beat_waiver_active,
+    baseline_beat_waiver_warnings,
+    governance_summary_with_baseline_waiver,
+)
 from mmm.governance.decision_safety import report_decision_safety_section
 from mmm.governance.policy import approved_for_optimization_with_policy, policy_for_environment
 from mmm.governance.scorecard import GovernanceScorecard, build_scorecard
@@ -65,6 +70,9 @@ def build_governance_bundle(
         appr_opt = False
     if baselines.signal_may_be_spurious_timing:
         notes.append("signal_may_be_spurious_timing_vs_shuffled_media")
+    waiver = baseline_beat_waiver_active(config.extensions.governance)
+    if waiver:
+        notes.extend(baseline_beat_waiver_warnings())
     enriched = GovernanceScorecard(
         fit_mae=sc.fit_mae,
         baseline_mae=sc.baseline_mae,
@@ -102,4 +110,9 @@ def build_governance_bundle(
     )
     if bayesian_decision_inference is not None:
         js["bayesian_decision_inference"] = bayesian_decision_inference
+    js["baseline_beat_waiver_active"] = waiver
+    js["governance_summary"] = governance_summary_with_baseline_waiver(
+        js.get("governance_summary") if isinstance(js.get("governance_summary"), dict) else None,
+        waiver_active=waiver,
+    )
     return js

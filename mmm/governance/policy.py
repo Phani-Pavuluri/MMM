@@ -183,20 +183,18 @@ def require_replay_calibration(
     evidence_weighted_replay_summary: dict[str, Any] | None = None,
 ) -> None:
     """Require replay calibration evidence on extension (prod)."""
+    from mmm.governance.replay_evidence import prod_replay_evidence_failure_message, prod_replay_evidence_ok
+
     if not policy.prod or not policy.require_replay_calibration:
         return
     if isinstance(evidence_weighted_replay_summary, dict) and evidence_weighted_replay_summary.get(
         "n_evidence_units_used", 0
     ):
         return
-    if isinstance(calibration_summary, dict) and bool(calibration_summary):
+    ok, _ = prod_replay_evidence_ok(calibration_summary, experiment_matching)
+    if ok:
         return
-    if isinstance(experiment_matching, dict) and bool(experiment_matching):
-        return
-    raise PolicyError(
-        "prod requires extension_report.evidence_weighted_replay_summary (evidence-registry replay), "
-        "calibration_summary, or experiment_matching (non-empty) for replay gate"
-    )
+    raise PolicyError(prod_replay_evidence_failure_message(calibration_summary, experiment_matching))
 
 
 def require_bayesian_block(model_family: Framework, policy: RuntimePolicy) -> None:

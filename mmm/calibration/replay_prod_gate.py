@@ -14,6 +14,7 @@ from mmm.data.schema import PanelSchema
 from mmm.economics.canonical import REPLAY_LIFT_SCALES_KPI_LEVEL
 from mmm.evaluation.experiment_evidence_extension import load_evidence_from_path
 from mmm.experiments.durable_registry import get_experiment_from_registry, load_experiment_registry
+from mmm.experiments.readiness import experiment_readiness
 from mmm.experiments.registry import ApprovalState
 
 _ACCEPTABLE_QUALITY_TIERS = frozenset({"high", "medium"})
@@ -322,4 +323,10 @@ def _assert_replay_experiment_registry_gate(config: MMMConfig, units: list[Calib
             raise PermissionError(
                 f"replay unit {u.unit_id!r}: experiment_id {eid!r} has approval={rec.approval.value!r}; "
                 "expected approved in prod registry gate"
+            )
+        ready = experiment_readiness(rec)
+        if not ready.get("ready"):
+            raise PermissionError(
+                f"replay unit {u.unit_id!r}: experiment_id {eid!r} failed experiment_readiness: "
+                f"{ready.get('reasons')}; prod requires approved + payload_signature + calibration_artifact_ref"
             )

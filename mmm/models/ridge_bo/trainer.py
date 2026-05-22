@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -15,7 +14,6 @@ from mmm.calibration.evidence_replay import (
     build_evidence_weighted_replay_summary,
     prepare_evidence_replay,
     uses_evidence_registry_replay,
-    uses_legacy_replay,
     uses_weighted_evidence_replay,
     validate_evidence_registry_replay_config,
 )
@@ -23,7 +21,7 @@ from mmm.calibration.replay_frames import normalize_replay_units_to_full_panel
 from mmm.calibration.replay_generalization import build_replay_calibration_metadata
 from mmm.calibration.replay_lift import aggregate_replay_calibration_loss
 from mmm.calibration.replay_prod_gate import assert_replay_production_ready
-from mmm.calibration.units_io import load_calibration_units_from_json
+from mmm.calibration.replay_units_resolve import resolve_replay_unit_sets
 from mmm.config.schema import Framework, MMMConfig, ModelForm, RunEnvironment
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import assert_panel_qa_allows_training
@@ -33,7 +31,7 @@ from mmm.hierarchy.diagnostics import hierarchy_enabled
 from mmm.hierarchy.hierarchy_extension import load_and_validate_hierarchy
 from mmm.hierarchy.penalty import hierarchical_penalty
 from mmm.models.base import RidgeBOMMMBase
-from mmm.models.ridge_bo.objective import build_composite
+from mmm.models.ridge_bo.objective import build_composite, intercept_only_predictive_baseline
 from mmm.models.ridge_bo.ridge import fit_ridge, predict_ridge
 from mmm.performance.cache import _df_fingerprint
 from mmm.validation.cv import auto_cv_mode
@@ -52,6 +50,9 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
     """Time-series CV + Optuna over adstock/saturation/ridge alpha."""
 
     def __init__(self, config: MMMConfig, schema: PanelSchema) -> None:
+        from mmm.contracts.seed_resolution import resolve_seed_contract
+
+        resolve_seed_contract(config)
         if config.framework != Framework.RIDGE_BO:
             raise ValueError("RidgeBOMMMTrainer requires framework=ridge_bo")
         self.config = config
@@ -61,7 +62,9 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
         self._best_params: dict[str, float] = {}
         self._artifacts: RidgeBOArtifacts | None = None
         self._replay_units: list = []
+        self._replay_units_holdout: list = []
         self._legacy_replay_warnings: list[str] = []
+        self._replay_split_meta: dict[str, Any] = {}
         self._evidence_replay_prepared = None
         self._hierarchy_pairs: list = []
         self._hierarchy_penalty_warnings: list[str] = []
@@ -70,9 +73,16 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             raise ValueError("hierarchy.enabled requires hierarchy.hierarchy_definition_path")
         if uses_weighted_evidence_replay(config):
             pass
-        elif uses_legacy_replay(config):
-            self._replay_units = load_calibration_units_from_json(Path(config.calibration.replay_units_path))
-            assert_replay_production_ready(config, self._replay_units, schema=self.schema)
+        elif config.calibration.use_replay_calibration:
+            train_u, hold_u, split_meta = resolve_replay_unit_sets(config, schema)
+            self._replay_units = train_u
+            self._replay_units_holdout = hold_u
+            self._replay_split_meta = split_meta
+
+    @property
+    def _replay_units_train(self) -> list:
+        """Alias for train replay units (main holdout-split API)."""
+        return self._replay_units
 
     def fit(self, df: pd.DataFrame) -> dict[str, Any]:
         df = validate_panel(
@@ -87,6 +97,11 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             self._replay_units, self._legacy_replay_warnings = normalize_replay_units_to_full_panel(
                 df, self.schema, self._replay_units
             )
+        if self._replay_units_holdout:
+            self._replay_units_holdout, hold_warn = normalize_replay_units_to_full_panel(
+                df, self.schema, self._replay_units_holdout
+            )
+            self._legacy_replay_warnings.extend(hold_warn)
         cv = auto_cv_mode(df, self.schema, self.config.cv)
         splits = cv.split(df, self.schema)
         if not splits:
@@ -260,6 +275,8 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                         ),
                         legacy_warnings=self._legacy_replay_warnings,
                     )
+                    if self._replay_split_meta:
+                        disclosure["replay_split_meta"] = dict(self._replay_split_meta)
                     merged = dict(rmeta) if isinstance(rmeta, dict) else {}
                     merged.update(disclosure)
                     if uses_weighted_evidence_replay(self.config):
@@ -328,6 +345,10 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                     cal_detail = {}
                 cal_detail["hierarchy_enabled"] = True
                 cal_detail["hierarchical_penalty"] = 0.0
+            baseline_pred = intercept_only_predictive_baseline(
+                y_true_folds,
+                self.config.objective.primary_metric,
+            )
             total, raw, norm, norm_report = build_composite(
                 y_true_folds=y_true_folds,
                 y_pred_folds=y_pred_folds,
@@ -339,6 +360,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                 log_alpha=log_alpha,
                 calibration_details=cal_detail,
                 cfg=self.config.objective,
+                baseline_predictive=baseline_pred,
                 include_weight_sensitivity=True,
             )
             detail = {
@@ -476,6 +498,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             "used_optuna": used_optuna,
             "artifacts": self._artifacts,
             "ridge_bo_telemetry": telem,
+            "replay_split_meta": dict(self._replay_split_meta),
         }
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
@@ -497,6 +520,7 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             hill_slope=self._best_params["hill_slope"],
         )
         yhat_log = predict_ridge(bundle.X, self._coef, self._intercept)
-        if self.config.model_form == ModelForm.SEMI_LOG:
+        # Both forms model log(y); SEMI_LOG uses level media, LOG_LOG uses log(media) in design_matrix.
+        if self.config.model_form == ModelForm.LOG_LOG:
             return np.exp(yhat_log)
         return np.exp(yhat_log)

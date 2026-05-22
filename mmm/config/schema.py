@@ -106,13 +106,15 @@ class CVConfig(BaseModel):
         default=CVSplitAxis.CALENDAR_WEEK,
         description="Use calendar_week for weekly panels; geo_rank is legacy within-geo dense rank.",
     )
-    geo_blocked_seed: int = 42
+    #: ``None`` inherits from top-level ``random_seed`` at resolve time.
+    geo_blocked_seed: int | None = None
 
 
 class RidgeBOConfig(BaseModel):
     n_trials: int = 32
     timeout_sec: float | None = None
-    sampler_seed: int = 42
+    #: ``None`` inherits from top-level ``random_seed`` at resolve time.
+    sampler_seed: int | None = None
     alpha_ridge_bounds: tuple[float, float] = (1e-4, 1e3)
     use_pruner: bool = True
 
@@ -123,7 +125,8 @@ class BayesianConfig(BaseModel):
     tune: int = 1000
     chains: int = 4
     target_accept: float = 0.9
-    nuts_seed: int = 42
+    #: ``None`` inherits from top-level ``random_seed`` at resolve time.
+    nuts_seed: int | None = None
     media_coef_sigma: float = 0.8
     control_coef_sigma: float = 2.0
     #: ``half_normal_nonneg`` encodes a positivity prior on **media** channels (default). ``normal_symmetric``
@@ -235,7 +238,15 @@ class CalibrationConfig(BaseModel):
     #: JSON list of :class:`mmm.calibration.contracts.CalibrationUnit`-compatible dicts with
     #: ``observed_spend_frame`` / ``counterfactual_spend_frame`` for replay (decision-safe path).
     replay_units_path: str | None = None
+    #: Optional explicit train/holdout JSON lists; when both set, auto-split from ``replay_units_path`` is skipped.
+    train_replay_units_path: str | None = None
+    holdout_replay_units_path: str | None = None
     use_replay_calibration: bool = False
+    #: When true, BO replay objective uses train units only; holdout units are diagnostic (extension artifact).
+    use_replay_holdout_split: bool = False
+    replay_holdout_fraction: float = Field(default=0.25, gt=0.0, lt=1.0)
+    replay_holdout_min_train_units: int = Field(default=1, ge=1)
+    replay_holdout_min_holdout_units: int = Field(default=1, ge=1)
     lift_column: str = "lift"
     lift_se_column: str | None = "lift_se"
     match_levels: list[str] = Field(
@@ -337,6 +348,8 @@ class MMMConfig(BaseModel):
     run_id: str | None = None
     run_environment: RunEnvironment = RunEnvironment.RESEARCH
     override_unsafe: bool = False
+    #: Required in prod when ``override_unsafe=True`` — JSON waiver artifact (see ``unsafe_override_waiver``).
+    override_unsafe_waiver_path: str | None = None
     framework: Framework = Framework.RIDGE_BO
     model_form: ModelForm = ModelForm.SEMI_LOG
     pooling: PoolingMode = PoolingMode.PARTIAL
@@ -352,6 +365,11 @@ class MMMConfig(BaseModel):
     artifacts: ArtifactConfig = Field(default_factory=ArtifactConfig)
     extensions: ExtensionSuiteConfig = Field(default_factory=ExtensionSuiteConfig)
     random_seed: int = 42
+    #: Child seeds; ``None`` inherits per ``mmm.contracts.seed_resolution`` (see ``seed_resolution`` artifact).
+    bootstrap_seed: int | None = None
+    extension_seed: int | None = None
+    experiment_scheduler_seed: int | None = None
+    simulation_seed: int | None = None
     strict_schema: bool = True
     #: When ``False`` (default): Ridge BO does not use coefficient-vs-experiment calibration in the
     #: objective; governance never approves optimization; CLI ``optimize-budget`` is blocked unless
@@ -407,6 +425,16 @@ class MMMConfig(BaseModel):
                 )
             if self.allow_unsafe_decision_apis:
                 raise ValueError("run_environment=prod requires allow_unsafe_decision_apis=False")
+            if self.override_unsafe:
+                wpath = str(self.override_unsafe_waiver_path or "").strip()
+                if not wpath:
+                    raise ValueError(
+                        "run_environment=prod forbids override_unsafe=True without "
+                        "override_unsafe_waiver_path (signed waiver JSON)"
+                    )
+                from mmm.governance.unsafe_override_waiver import load_unsafe_override_waiver
+
+                load_unsafe_override_waiver(wpath)
             if not self.extensions.optimization_gates.enabled:
                 raise ValueError("run_environment=prod requires extensions.optimization_gates.enabled=True")
             if self.framework == Framework.BAYESIAN:

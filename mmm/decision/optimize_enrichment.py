@@ -46,6 +46,7 @@ SIMULATION_AT_RECOMMENDATION_ALLOWED_TOP_LEVEL_KEYS: frozenset[str] = frozenset(
         "kpi_column",
         "baseline_plan_source",
         "baseline_suitable_for_decisioning",
+        "scenario_suitable_for_decisioning",
         "controls_path_semantics",
         "scenario_overlay_summary",
         "scenario_lineage",

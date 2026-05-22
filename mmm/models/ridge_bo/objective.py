@@ -52,6 +52,25 @@ def normalize_components(raw: ObjectiveComponents) -> ObjectiveComponents:
     return ObjectiveComponents(*t)
 
 
+def intercept_only_predictive_baseline(
+    y_true_log: list[np.ndarray],
+    metric: FitMetric,
+) -> float:
+    """Mean-intercept baseline on each validation fold (same metric units as ``predictive_loss``)."""
+    vals: list[float] = []
+    for yt in y_true_log:
+        if yt.size == 0:
+            continue
+        mu = float(np.mean(yt))
+        yhat = np.full_like(yt, mu, dtype=float)
+        if metric in {FitMetric.WMAPE, FitMetric.MAPE}:
+            yt_, yp_ = np.exp(yt), np.exp(yhat)
+        else:
+            yt_, yp_ = yt, yhat
+        vals.append(fit_metric(metric, yt_, yp_))
+    return float(np.mean(vals)) if vals else 1.0
+
+
 def predictive_loss(
     y_true_log: list[np.ndarray],
     y_pred_log: list[np.ndarray],

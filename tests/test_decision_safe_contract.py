@@ -6,9 +6,7 @@ import pytest
 
 from mmm.artifacts.schema import SimulationDecisionResult
 from mmm.config.schema import Framework, MMMConfig, RunEnvironment
-from mmm.contracts.business_surface import (
-    enrich_decision_simulation_json,
-)
+from mmm.contracts.business_surface import enrich_decision_simulation_json
 from mmm.governance.decision_safe_contract import (
     canonical_decision_safe,
     scenario_decision_safe_from_simulation,
@@ -113,3 +111,17 @@ def test_canonical_helper_optimizer_failure() -> None:
         )
         is False
     )
+
+
+def test_non_bau_blocks_decision_safe() -> None:
+    sim = _sim_base(decision_safe=True, baseline_type="locked_plan")
+    sim["baseline_suitable_for_decisioning"] = False
+    cfg = MMMConfig(
+        run_environment=RunEnvironment.RESEARCH,
+        data={"channel_columns": ["c1"], "control_columns": []},
+    )
+    out = enrich_decision_simulation_json(
+        sim, cfg=cfg, unsupported_questions=[], governance_gate_allowed=True
+    )
+    assert out["decision_safe"] is False
+    assert scenario_decision_safe_from_simulation(sim) is False

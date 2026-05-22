@@ -47,6 +47,23 @@ def validate_prod_cv_configuration(config: MMMConfig) -> None:
         )
 
 
+def apply_prod_runtime_defaults(config: MMMConfig) -> MMMConfig:
+    """
+    Prod-only config coercion after parse (panel QA block default, etc.).
+
+    Keeps ``MMMConfig`` model validators returning ``self`` (pydantic init-safe).
+    """
+    if config.run_environment != RunEnvironment.PROD:
+        return config
+    pq = config.extensions.panel_qa
+    if pq.prod_block_severity == "off" and not pq.prod_block_waiver:
+        ext = config.extensions.model_copy(
+            update={"panel_qa": pq.model_copy(update={"prod_block_severity": "block"})}
+        )
+        return config.model_copy(update={"extensions": ext})
+    return config
+
+
 def validate_geo_budget_planning_consistency(config: MMMConfig) -> None:
     """
     Per-geo budget optimization must use geo-aware Δμ pooling; otherwise optimizer objectives

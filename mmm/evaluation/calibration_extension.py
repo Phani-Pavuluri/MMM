@@ -26,7 +26,8 @@ def compute_replay_calibration_metrics(
     ``loss`` is mean standardized squared error in replay units; ``None`` if not configured
     or not Ridge / missing artifacts / no units.
     """
-    if not config.calibration.use_replay_calibration:
+    cal = config.calibration
+    if not cal.use_replay_calibration:
         return None, {}, False
     if config.framework != Framework.RIDGE_BO or not fit_out.get("artifacts"):
         return None, {}, False
@@ -38,8 +39,10 @@ def compute_replay_calibration_metrics(
         uses_legacy_replay,
         uses_weighted_evidence_replay,
     )
+    from mmm.calibration.replay_frames import normalize_replay_units_to_full_panel
     from mmm.calibration.replay_lift import aggregate_replay_calibration_loss
     from mmm.calibration.replay_prod_gate import assert_replay_production_ready
+    from mmm.calibration.replay_units_resolve import resolve_replay_unit_sets
     from mmm.calibration.units_io import load_calibration_units_from_json
 
     art = fit_out["artifacts"]
@@ -77,17 +80,18 @@ def compute_replay_calibration_metrics(
         )
         return float(loss), meta, True
 
-    if not uses_legacy_replay(config):
+    if not uses_legacy_replay(config) and not (cal.replay_units_path or cal.train_replay_units_path):
         return None, {"reason": "replay_not_configured"}, False
 
-    from mmm.calibration.replay_frames import normalize_replay_units_to_full_panel
+    train_units, holdout_units, split_meta = resolve_replay_unit_sets(config, schema)
+    units = train_units
+    if not units and cal.replay_units_path:
+        units = load_calibration_units_from_json(Path(cal.replay_units_path))
+    if not units:
+        return None, {"reason": "no_units_loaded", "split_meta": split_meta}, False
 
-    units = load_calibration_units_from_json(Path(config.calibration.replay_units_path))
     units, legacy_warnings = normalize_replay_units_to_full_panel(panel_sorted, schema, units)
     assert_replay_production_ready(config, units, schema=schema)
-    if not units:
-        return None, {"reason": "no_units_loaded"}, False
-
     loss, meta = aggregate_replay_calibration_loss(
         units,
         predict_level,
@@ -98,4 +102,6 @@ def compute_replay_calibration_metrics(
     meta["replay_mode_used"] = "legacy"
     if legacy_warnings:
         meta["legacy_replay_upgrade_warnings"] = legacy_warnings
+    if isinstance(meta, dict):
+        meta = {**meta, "split_meta": split_meta, "n_holdout_replay_units": len(holdout_units)}
     return float(loss), meta, True

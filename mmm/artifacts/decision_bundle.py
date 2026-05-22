@@ -23,6 +23,7 @@ from mmm.economics.canonical import (
     economics_output_metadata,
     validate_business_economics_metadata,
 )
+from mmm.governance.decision_uncertainty import build_decision_uncertainty
 from mmm.governance.model_form_policy import (
     detect_log_log_in_extension_report,
     log_log_unsupported_questions,
@@ -264,6 +265,7 @@ def build_decision_bundle(
     not_for_budgeting: bool | None = None,
     runtime_policy_hash: str | None = None,
     model_release_id: str | None = None,
+    decision_uncertainty: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Assemble required metadata for optimize-budget / canonical simulate / decision reports."""
     econ = build_economics_contract(config)
@@ -456,4 +458,6 @@ def build_decision_bundle(
         out["scenario_lineage"] = scenario_lineage
     if control_scenario_policy is not None:
         out["control_scenario_policy"] = control_scenario_policy
+    du = decision_uncertainty if isinstance(decision_uncertainty, dict) else build_decision_uncertainty(config)
+    out["decision_uncertainty"] = du
     return out

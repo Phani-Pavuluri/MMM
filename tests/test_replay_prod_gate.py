@@ -176,7 +176,12 @@ def test_prod_replay_registry_gate_ok(tmp_path: Path) -> None:
     reg_path = tmp_path / "reg.json"
     upsert_experiment_record(
         reg_path,
-        ExperimentRecord(experiment_id="exp-approved", approval=ApprovalState.APPROVED),
+        ExperimentRecord(
+            experiment_id="exp-approved",
+            approval=ApprovalState.APPROVED,
+            payload_signature="sig-abc",
+            calibration_artifact_ref="s3://cal/exp-approved",
+        ),
     )
     cfg, schema = _prod_schema_cfg(reg_path)
     assert_replay_production_ready(
@@ -206,6 +211,19 @@ def test_prod_replay_registry_not_approved(tmp_path: Path) -> None:
     cfg, schema = _prod_schema_cfg(reg_path)
     with pytest.raises(PermissionError, match="approval"):
         assert_replay_production_ready(cfg, [_minimal_unit(experiment_id="exp-draft")], schema=schema)
+
+
+def test_prod_replay_registry_not_ready_missing_signature(tmp_path: Path) -> None:
+    reg_path = tmp_path / "reg.json"
+    upsert_experiment_record(
+        reg_path,
+        ExperimentRecord(experiment_id="exp-approved", approval=ApprovalState.APPROVED),
+    )
+    cfg, schema = _prod_schema_cfg(reg_path)
+    with pytest.raises(PermissionError, match="experiment_readiness"):
+        assert_replay_production_ready(
+            cfg, [_minimal_unit(experiment_id="exp-approved")], schema=schema
+        )
 
 
 def test_prod_replay_registry_missing_experiment_id_on_unit(tmp_path: Path) -> None:

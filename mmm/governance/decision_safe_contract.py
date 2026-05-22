@@ -44,6 +44,25 @@ def canonical_decision_safe(
     return not (optimizer_internal_safe is not None and not optimizer_internal_safe)
 
 
+def compute_decision_safe(
+    *,
+    governance_gate_allowed: bool,
+    scenario_suitable_for_decisioning: bool,
+    baseline_is_bau: bool,
+    run_environment: Any = None,
+) -> bool:
+    """
+    Backward-compatible helper for ``decision_simulate`` and tests.
+
+    Delegates to :func:`canonical_decision_safe` (scenario ∧ governance ∧ BAU baseline).
+    """
+    _ = run_environment
+    return canonical_decision_safe(
+        scenario_safe=bool(scenario_suitable_for_decisioning and baseline_is_bau),
+        governance_gate_allowed=governance_gate_allowed,
+    )
+
+
 def require_bool_decision_safe(sim_js: dict[str, Any], *, context: str) -> bool:
     """Fail closed when ``decision_safe`` is missing or non-bool after enrichment."""
     v = sim_js.get("decision_safe")

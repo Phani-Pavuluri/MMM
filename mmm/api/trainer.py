@@ -12,9 +12,11 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from mmm.artifacts.stores.local import LocalArtifactStore
+from mmm.artifacts.factory import artifact_backend_disclosure, resolve_artifact_store
+from mmm.artifacts.lifecycle import persist_training_artifacts
 from mmm.config.load import dump_resolved_config, load_config, resolve_config
 from mmm.config.schema import Framework, MMMConfig
+from mmm.contracts.seed_resolution import resolve_seed_contract
 from mmm.data.fingerprint import fingerprint_panel
 from mmm.data.loader import DatasetBuilder
 from mmm.data.panel_order import sort_panel_for_modeling
@@ -41,8 +43,14 @@ class MMMTrainer:
 
     def run(self, df: pd.DataFrame | None = None) -> dict[str, Any]:
         run_id = self.config.run_id or str(uuid.uuid4())
-        store = LocalArtifactStore(self.config.artifacts.run_dir)
-        store.start_run(run_id, metadata={"framework": self.config.framework.value})
+        store = resolve_artifact_store(self.config)
+        store.start_run(
+            run_id,
+            metadata={
+                "framework": self.config.framework.value,
+                "artifact_backend": artifact_backend_disclosure(self.config),
+            },
+        )
         dump_resolved_config(self.config, store.run_path / "resolved_config.yaml")
         cfg_blob = json.dumps(self.config.model_dump_resolved(), sort_keys=True, default=str)
         store.log_dict(
@@ -66,7 +74,20 @@ class MMMTrainer:
         builder = DatasetBuilder(self.config.data, self.schema)
         panel = builder.build(df)
         panel_work = sort_panel_for_modeling(panel, self.schema)
-        store.log_dict("data_fingerprint", fingerprint_panel(panel_work, self.schema))
+        seed_resolution = resolve_seed_contract(self.config)
+        store.log_dict(
+            "seed_resolution",
+            seed_resolution,
+        )
+        store.log_dict(
+            "data_fingerprint",
+            fingerprint_panel(
+                panel_work,
+                self.schema,
+                config=self.config,
+                seed_resolution=seed_resolution,
+            ),
+        )
         store.log_dict(
             "data_validation_preview",
             {
@@ -129,6 +150,11 @@ class MMMTrainer:
             fit_out=fit_out,
             yhat=yhat,
             store=store,
+        )
+        persist_training_artifacts(
+            store,
+            extension_report=ext_report,
+            model_card_md=ext_report.get("model_card_md") if isinstance(ext_report.get("model_card_md"), str) else None,
         )
         store.end_run()
         return {

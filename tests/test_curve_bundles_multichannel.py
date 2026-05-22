@@ -16,6 +16,7 @@ from mmm.evaluation.extension_runner import run_post_fit_extensions
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.optimization.budget.curve_bundles_io import gather_curve_bundles_from_dict
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
+from tests.prod_extension_fixtures import prod_replay_evidence_block
 
 
 def _curve_bundle_record(
@@ -460,7 +461,7 @@ def test_cli_prod_optimize_budget_full_model_smoke(tmp_path):
                 "identifiability": {"identifiability_score": 0.5},
                 "panel_qa": {"max_severity": "info", "issues": []},
                 "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-                "experiment_matching": {"replay_ok": True},
+                **prod_replay_evidence_block(),
             }
         ),
         encoding="utf-8",

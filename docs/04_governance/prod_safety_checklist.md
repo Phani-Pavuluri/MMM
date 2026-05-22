@@ -47,7 +47,8 @@ Use this before enabling automated spend recommendations or publishing model-bas
 ## Experiments & replay
 
 - [ ] `experiment_id` is UUID and immutable in downstream stores.
-- [ ] `experiment_readiness` returns `ready: true` before replay (approved, signed, calibration ref present).
+- [ ] `experiment_readiness` returns `ready: true` before replay (approved, signed, calibration ref present) — **enforced in code** when `calibration.require_approved_experiment_registry` is true.
+- [ ] Prod decide paths: `extension_report.calibration_summary.replay_calibration_active=true` **or** `experiment_matching.n_matched >= 1` (not `skipped`).
 - [ ] Calibration artifact version pinned and traceable in metadata.
 - [ ] **Legacy replay:** `replay_mode: legacy` + `replay_units_path` passes `assert_replay_production_ready` on units.
 - [ ] **Evidence-registry replay:** `replay_mode: evidence_registry` + `extension_report.evidence_weighted_replay_summary` passes prod evidence gate (`n_evidence_units_used >= 1`, high/medium quality, no false subgeo claims).
@@ -59,6 +60,15 @@ Use this before enabling automated spend recommendations or publishing model-bas
 - [ ] Aggregate national/user experiments do not claim DMA lift; allocated shocks documented as `computational_bridge_only` only.
 - [ ] **Bayesian experiment likelihood:** if `bayesian.use_experiment_likelihood`, treat as **research-only**; confirm `bayesian_experiment_likelihood_report.prod_decisioning_allowed` is false and prod decision APIs remain blocked.
 - [ ] **Bayesian hierarchy:** if `bayesian.use_hierarchy`, treat as **research-only**; confirm `bayesian_hierarchy_report.prod_decisioning_allowed` is false. Do not use for prod budget optimization.
+
+## Artifact tiers
+
+- [ ] Training `extension_report` / nested bundle: **research** tier (diagnostics only).
+- [ ] Budget decisions: fresh `mmm decide` JSON with `artifact_tier=decision` (see `extension_report.artifact_tier_disclosure` after train).
+
+## Panel QA (training)
+
+- [ ] In prod, `extensions.panel_qa.prod_block_severity` defaults to **block** unless `prod_block_waiver: true`.
 
 ## Economics metadata
 
