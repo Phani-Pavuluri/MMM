@@ -32,6 +32,7 @@ from mmm.decision.optimize_enrichment import (
     apply_simulation_at_recommendation_allowlist,
     apply_simulation_at_recommendation_allowlist_post_enrich,
 )
+from mmm.governance.model_form_policy import assert_prod_decision_not_log_log
 from mmm.governance.policy import (
     PolicyError,
     cv_mode_key_from_config,
@@ -73,6 +74,7 @@ def _prod_extension_gate(cfg: MMMConfig, er: dict[str, Any]) -> Any:
 def _apply_runtime_policy_prechecks(cfg: MMMConfig, er: dict[str, Any], policy: Any) -> None:
     if cfg.framework in (Framework.RIDGE_BO, Framework.BAYESIAN):
         assert_canonical_media_stack_for_modeling(cfg)
+    assert_prod_decision_not_log_log(cfg, er)
     require_allow_unsafe(policy)
     require_bayesian_block(cfg.framework, policy)
     require_safe_cv(cv_mode_key_from_config(cfg), policy)
@@ -84,6 +86,9 @@ def _apply_runtime_policy_prechecks(cfg: MMMConfig, er: dict[str, Any], policy: 
         er.get("calibration_summary") if isinstance(er, dict) else None,
         er.get("experiment_matching") if isinstance(er, dict) else None,
         policy,
+        evidence_weighted_replay_summary=(
+            er.get("evidence_weighted_replay_summary") if isinstance(er, dict) else None
+        ),
     )
     require_identifiability_for_prod_decision(cfg, er, policy)
 
@@ -240,7 +245,11 @@ def simulate_decision(
     )
     _gate_sim = bool(gr_prod.allowed) if cfg.run_environment == RunEnvironment.PROD and gr_prod is not None else True
     sim_js = enrich_decision_simulation_json(
-        sim_js_pre, cfg=cfg, unsupported_questions=_uq_sim, governance_gate_allowed=_gate_sim
+        sim_js_pre,
+        cfg=cfg,
+        unsupported_questions=_uq_sim,
+        governance_gate_allowed=_gate_sim,
+        gates_enabled=bool(cfg.extensions.optimization_gates.enabled),
     )
     apply_simulation_at_recommendation_allowlist_post_enrich(
         sim_js, context="simulate_decision.simulation_json.post_enrich"
@@ -286,7 +295,7 @@ def simulate_decision(
         },
         data_fingerprint=fp,
         uncertainty_mode="point",
-        decision_safe=bool(gr.allowed),
+        decision_safe=bool(sim_js["decision_safe"]),
         governance_passed=bool(gr.allowed),
         optimizer_success=None,
         baseline_type=str(sim_js.get("baseline_definition") or "bau"),
@@ -398,6 +407,7 @@ def optimize_budget_decision(
     optimizer_internal_safe = bool(res.get("decision_safe", False))
     stability_score = float(res.get("stability_score", 0.0))
     extrapolation_ok = True
+    gates_enabled = bool(cfg.extensions.optimization_gates.enabled)
     sim_at: dict[str, Any] = dict(res.get("simulation_at_recommendation") or {})
     if sim_at:
         sim_at_pre, allow_audit = apply_simulation_at_recommendation_allowlist(
@@ -408,11 +418,27 @@ def optimize_budget_decision(
             er_data if isinstance(er_data, dict) else None,
             controls_assumption=str(planning_assumptions.get("controls_assumption", "observed")),
         )
+        em_pre = sim_at_pre.get("economics_metadata")
+        if not isinstance(em_pre, dict):
+            extra = sim_at_pre.get("extra") if isinstance(sim_at_pre.get("extra"), dict) else {}
+            em_pre = extra.get("economics_output_metadata") if isinstance(extra, dict) else None
+        extrapolation_ok_pre = (
+            not bool(em_pre.get("extrapolation_flag", False)) if isinstance(em_pre, dict) else True
+        )
+        opt_safe = bool(
+            optimizer_internal_safe
+            and optimizer_success
+            and allocation_stable
+            and extrapolation_ok_pre
+        )
         sim_at = enrich_decision_simulation_json(
             sim_at_pre,
             cfg=cfg,
             unsupported_questions=_uq_opt,
             governance_gate_allowed=bool(gr.allowed),
+            optimizer_internal_safe=opt_safe,
+            optimizer_success=optimizer_success,
+            gates_enabled=gates_enabled,
         )
         apply_simulation_at_recommendation_allowlist_post_enrich(
             sim_at, context="optimize_budget_decision.simulation_at_recommendation.post_enrich"
@@ -429,15 +455,7 @@ def optimize_budget_decision(
     em = sim_at.get("economics_metadata") if sim_at else None
     if isinstance(em, dict):
         extrapolation_ok = not bool(em.get("extrapolation_flag", False))
-    gates_enabled = bool(cfg.extensions.optimization_gates.enabled)
-    decision_safe = bool(
-        governance_passed
-        and optimizer_success
-        and allocation_stable
-        and optimizer_internal_safe
-        and extrapolation_ok
-        and gates_enabled
-    )
+    decision_safe = bool(sim_at.get("decision_safe")) if sim_at else False
     pq_b = er_data.get("panel_qa") if isinstance(er_data, dict) else None
     em_b = er_data.get("experiment_matching") if isinstance(er_data, dict) else None
     mr_b = er_data.get("model_release") if isinstance(er_data, dict) else None

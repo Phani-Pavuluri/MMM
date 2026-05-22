@@ -1,6 +1,9 @@
-"""Fail-closed production checks for replay calibration units."""
+"""Fail-closed production checks for replay calibration (legacy units and evidence registry)."""
 
 from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -9,8 +12,19 @@ from mmm.calibration.replay_estimand import ReplayEstimandSpec
 from mmm.config.schema import MMMConfig, RunEnvironment
 from mmm.data.schema import PanelSchema
 from mmm.economics.canonical import REPLAY_LIFT_SCALES_KPI_LEVEL
+from mmm.evaluation.experiment_evidence_extension import load_evidence_from_path
 from mmm.experiments.durable_registry import get_experiment_from_registry, load_experiment_registry
 from mmm.experiments.registry import ApprovalState
+
+_ACCEPTABLE_QUALITY_TIERS = frozenset({"high", "medium"})
+_FORBIDDEN_COMPAT_FOR_OBJECTIVE = frozenset({"rejected", "diagnostic_only"})
+_AGGREGATE_COMPAT_STATUSES = frozenset({"aggregate_only", "allocation_required"})
+_BRIDGE_ROLE = "computational_bridge_only"
+
+
+def _uses_evidence_registry_replay(config: MMMConfig) -> bool:
+    cal = config.calibration
+    return bool(cal.use_replay_calibration and cal.replay_mode == "evidence_registry")
 
 
 def validate_replay_units_economics_alignment(
@@ -64,14 +78,27 @@ def assert_replay_production_ready(
     units: list[CalibrationUnit],
     *,
     schema: PanelSchema | None = None,
+    evidence_summary: dict[str, Any] | None = None,
 ) -> None:
     """
-    In ``run_environment=prod``, replay units must carry estimand, lift scale, positive SE, frames,
-    and **economics-aligned** replay_estimand (requires ``schema`` when units are non-empty).
+    In ``run_environment=prod``, validate replay readiness.
+
+    - ``replay_mode=legacy``: per-unit replay contract (existing rules).
+    - ``replay_mode=evidence_registry``: requires ``evidence_weighted_replay_summary`` + evidence rules.
     """
     if config.run_environment != RunEnvironment.PROD:
         return
-    if not config.calibration.use_replay_calibration or not units:
+    if not config.calibration.use_replay_calibration:
+        return
+    if _uses_evidence_registry_replay(config):
+        assert_evidence_registry_replay_production_ready(
+            config,
+            evidence_summary,
+            schema=schema,
+            units=units,
+        )
+        return
+    if not units:
         return
     if schema is None:
         raise ValueError(
@@ -97,6 +124,156 @@ def assert_replay_production_ready(
     validate_replay_units_economics_alignment(config, schema, units)
     _assert_replay_inverse_se_concentration(config, units)
     _assert_replay_experiment_registry_gate(config, units)
+
+
+def assert_evidence_registry_replay_production_ready(
+    config: MMMConfig,
+    evidence_summary: dict[str, Any] | None,
+    *,
+    schema: PanelSchema | None,
+    units: list[CalibrationUnit] | None = None,
+) -> None:
+    """
+    Prod fail-closed gate for evidence-registry replay (calibration evidence, not causal proof).
+
+    Requires ``evidence_weighted_replay_summary`` on the extension report or an equivalent dict
+    passed at train time after ``prepare_evidence_replay``.
+    """
+    if config.run_environment != RunEnvironment.PROD:
+        return
+    if not _uses_evidence_registry_replay(config):
+        return
+    if schema is None:
+        raise ValueError(
+            "schema is required for prod evidence-registry replay validation "
+            "(KPI / channel alignment vs economics contract)"
+        )
+    if not isinstance(evidence_summary, dict) or not evidence_summary:
+        raise ValueError(
+            "prod evidence-registry replay requires non-empty evidence_weighted_replay_summary "
+            "on extension_report (or evidence_summary argument at train time)"
+        )
+    n_used = int(evidence_summary.get("n_evidence_units_used") or 0)
+    if n_used < 1:
+        raise ValueError(
+            "prod evidence-registry replay requires n_evidence_units_used >= 1; "
+            f"got {n_used} (rejected={evidence_summary.get('rejected_evidence_reasons')!r})"
+        )
+    if str(evidence_summary.get("replay_mode_used", "")) != "evidence_registry":
+        raise ValueError(
+            "evidence_weighted_replay_summary.replay_mode_used must be 'evidence_registry' in prod; "
+            f"got {evidence_summary.get('replay_mode_used')!r}"
+        )
+
+    unit_rows: list[dict[str, Any]] = list(evidence_summary.get("unit_governance") or [])
+    if not unit_rows and units:
+        unit_rows = [
+            {
+                "experiment_id": u.experiment_id or u.unit_id,
+                "channel": (u.treated_channel_names or [""])[0],
+                "quality_tier": "unknown",
+                "compatibility_status": "unknown",
+                "supports_subgeo_claims": True,
+                "allocation_role": "",
+                "allocation_required": False,
+                "lift_se": u.lift_se,
+            }
+            for u in units
+        ]
+
+    has_acceptable_quality = False
+    for row in unit_rows:
+        eid = str(row.get("experiment_id", ""))
+        tier = str(row.get("quality_tier", "")).lower()
+        compat = str(row.get("compatibility_status", "")).lower()
+        if tier in _ACCEPTABLE_QUALITY_TIERS:
+            has_acceptable_quality = True
+        if compat in _FORBIDDEN_COMPAT_FOR_OBJECTIVE:
+            raise ValueError(
+                f"prod evidence-registry replay: unit {eid!r} has forbidden compatibility_status={compat!r} "
+                "for objective-eligible evidence"
+            )
+        if compat in _AGGREGATE_COMPAT_STATUSES and bool(row.get("supports_subgeo_claims")):
+            raise ValueError(
+                f"prod evidence-registry replay: aggregate-only unit {eid!r} must declare "
+                "supports_subgeo_claims=false (no DMA/subgeo claims from national or allocated evidence)"
+            )
+        if bool(row.get("allocation_required")) or (
+            compat == "allocation_required"
+            and str(row.get("allocation_method", "none")) not in {"", "none"}
+        ):
+            role = str(row.get("allocation_role", ""))
+            if role != _BRIDGE_ROLE:
+                raise ValueError(
+                    f"prod evidence-registry replay: allocated shock for {eid!r} must declare "
+                    f"allocation_role={_BRIDGE_ROLE!r}; got {role!r}"
+                )
+        lift_se = row.get("lift_se")
+        allow_missing = bool(config.calibration.allow_missing_se_in_prod_evidence_replay)
+        if not allow_missing and (lift_se is None or float(lift_se) <= 0):
+            raise ValueError(
+                f"prod evidence-registry replay: unit {eid!r} requires positive lift_se "
+                "(set calibration.allow_missing_se_in_prod_evidence_replay=true to override)"
+            )
+
+    if not has_acceptable_quality:
+        raise ValueError(
+            "prod evidence-registry replay requires at least one used unit with quality_tier "
+            f"in {sorted(_ACCEPTABLE_QUALITY_TIERS)}; got unit_governance={unit_rows!r}"
+        )
+
+    _assert_required_channels_have_usable_evidence(config, schema, evidence_summary, unit_rows)
+    if units:
+        validate_replay_units_economics_alignment(config, schema, units)
+        _assert_replay_inverse_se_concentration(config, units)
+
+
+def _assert_required_channels_have_usable_evidence(
+    config: MMMConfig,
+    schema: PanelSchema,
+    summary: dict[str, Any],
+    unit_rows: list[dict[str, Any]],
+) -> None:
+    """Channels with loaded registry evidence must not be critically rejected without a used unit."""
+    path = (config.calibration.evidence_registry_path or "").strip()
+    if not path or not Path(path).exists():
+        return
+    ch_map = dict(config.calibration.channel_mapping or {})
+    loaded_by_channel: dict[str, list[str]] = {}
+    for ev in load_evidence_from_path(path):
+        raw = ev.channel
+        mapped = ch_map.get(raw, raw)
+        if mapped in schema.channel_columns:
+            loaded_by_channel.setdefault(mapped, []).append(ev.experiment_id)
+
+    used_channels = {str(r.get("channel", "")) for r in unit_rows}
+    rejected = summary.get("rejected_evidence_reasons") or []
+    critical_reasons = frozenset(
+        {
+            "channel_not_in_model",
+            "kpi_mismatch",
+            "geo_scope_no_overlap",
+            "time_window_no_overlap",
+            "missing_or_invalid_standard_error",
+            "quality_rejected",
+            "shock_plan_rejected",
+        }
+    )
+    for ch, eids in loaded_by_channel.items():
+        if ch in used_channels:
+            continue
+        critical = [
+            r
+            for r in rejected
+            if isinstance(r, dict)
+            and str(r.get("experiment_id", "")) in eids
+            and str(r.get("reason", "")) in critical_reasons
+        ]
+        if critical:
+            raise ValueError(
+                f"prod evidence-registry replay: channel {ch!r} has loaded evidence but no used unit "
+                f"and critical rejections {critical!r}"
+            )
 
 
 def _assert_replay_inverse_se_concentration(config: MMMConfig, units: list[CalibrationUnit]) -> None:

@@ -55,10 +55,22 @@ class SimulationDecisionResult(BaseModel):
         governance_refs: dict,
         lineage_refs: dict,
     ) -> SimulationDecisionResult:
+        ds = sim.get("decision_safe")
+        if not isinstance(ds, bool):
+            raise ValueError(
+                "simulation JSON must include bool decision_safe before building SimulationDecisionResult"
+            )
+        approx = bool(sim.get("approximate", False))
         return cls(
             baseline_mu=float(sim["baseline_mu"]),
             candidate_mu=float(sim["plan_mu"]),
             delta_mu=float(sim["delta_mu"]),
+            safety=SafetyFlags(
+                decision_safe=ds,
+                prod_safe=ds and not approx,
+                approximate=approx,
+                unsupported_for=[],
+            ),
             governance_refs=governance_refs,
             lineage_refs=lineage_refs,
         )

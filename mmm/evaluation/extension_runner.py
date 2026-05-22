@@ -34,14 +34,20 @@ from mmm.governance.model_release import infer_model_release_state
 from mmm.governance.operational_health import compute_operational_health
 from mmm.governance.uncertainty_policy import ridge_forbids_precise_monetary_ci
 from mmm.guidance.recommend import recommend_configuration
+from mmm.hierarchy.diagnostics import hierarchy_enabled
+from mmm.optimization.robust import build_robust_optimization_research
 from mmm.optimization.safety_gate import OptimizationSafetyGate
 from mmm.planning.context import ridge_fit_summary_from_artifacts
 from mmm.reporting.roi_sections import curve_bundles_to_roi_summary
-from mmm.services.calibration_service import run_calibration_extensions
+from mmm.services.calibration_service import run_calibration_extensions, run_hierarchy_post_fit_reports
 from mmm.services.curve_service import build_curve_diagnostics_bundle
 from mmm.services.diagnostics_service import run_core_diagnostics
 from mmm.services.governance_service import build_governance_bundle
-from mmm.uncertainty.decomposition import UncertaintyDecomposer
+from mmm.uncertainty.propagation_report import (
+    build_legacy_uncertainty_buckets,
+    build_uncertainty_propagation_report,
+)
+from mmm.validation import build_continuous_validation_report, build_decision_validation_report
 
 
 def run_post_fit_extensions(
@@ -117,9 +123,17 @@ def run_post_fit_extensions(
 
     out.update(run_calibration_extensions(config, panel=panel_s, schema=schema))
 
+    if hierarchy_enabled(config) and config.framework == Framework.RIDGE_BO and fit_out.get("artifacts"):
+        art = fit_out["artifacts"]
+        n_media = len(schema.channel_columns)
+        coef = np.asarray(art.coef, dtype=float).ravel()[:n_media]
+        out.update(run_hierarchy_post_fit_reports(config, panel=panel_s, schema=schema, coef=coef))
+
     replay_loss, replay_meta, is_replay = compute_replay_calibration_metrics(
         panel_s, schema, config, fit_out
     )
+    if isinstance(replay_meta, dict) and replay_meta.get("evidence_weighted_replay_summary"):
+        out["evidence_weighted_replay_summary"] = replay_meta["evidence_weighted_replay_summary"]
     cal_loss = float(replay_loss) if replay_loss is not None else None
     id_json = out.get("identifiability", {})
     bayesian_di: dict[str, Any] | None = None
@@ -157,6 +171,12 @@ def run_post_fit_extensions(
     )
 
     if config.framework == Framework.BAYESIAN:
+        exp_lr = fit_out.get("bayesian_experiment_likelihood_report")
+        if isinstance(exp_lr, dict):
+            out["bayesian_experiment_likelihood_report"] = exp_lr
+        hier_lr = fit_out.get("bayesian_hierarchy_report")
+        if isinstance(hier_lr, dict):
+            out["bayesian_hierarchy_report"] = hier_lr
         di_summary: dict[str, Any] = {"surface": "extension_train_diagnostic"}
         if isinstance(bayesian_di, dict):
             di_summary["decision_inference_keys"] = sorted(str(k) for k in bayesian_di)
@@ -165,9 +185,31 @@ def run_post_fit_extensions(
             validity_diagnostics={"framework": "bayesian", "prod_decisioning_allowed": False},
         ).section_dict()
 
-    ud_report = UncertaintyDecomposer.build_report(
-        bootstrap_width={"coef_dispersion_proxy": float(id_json.get("instability_score", 0.0))},
-        experiment_se_scale=1.0,
+    propagation_report = build_uncertainty_propagation_report(
+        config,
+        fit_out=fit_out,
+        extension_report=out,
+    )
+    out["uncertainty_propagation_report"] = propagation_report
+    out["robust_optimization_research"] = build_robust_optimization_research(
+        config,
+        panel=panel_s,
+        schema=schema,
+        fit_out=fit_out,
+        extension_report=out,
+        rng=rng,
+    )
+    if config.extensions.continuous_validation.enabled:
+        out["continuous_validation_report"] = build_continuous_validation_report(
+            config,
+            current_extension_report=out,
+        )
+    if config.extensions.decision_validation.enabled:
+        out["decision_validation_report"] = build_decision_validation_report(config)
+    ud_report = build_legacy_uncertainty_buckets(
+        config,
+        propagation_report,
+        ident=id_json if isinstance(id_json, dict) else {},
     )
     out["uncertainty_decomposition"] = UncertaintyBucketsQuantityResult(
         validity_diagnostics={"uncertainty_buckets": ud_report},
@@ -176,19 +218,31 @@ def run_post_fit_extensions(
     out["guidance"] = recommend_configuration(len(panel), len(schema.channel_columns), id_score)
 
     if config.framework == Framework.RIDGE_BO and fit_out.get("artifacts"):
-        out["ridge_fit_summary"] = ridge_fit_summary_from_artifacts(fit_out["artifacts"])
+        out["ridge_fit_summary"] = ridge_fit_summary_from_artifacts(
+            fit_out["artifacts"],
+            model_form=config.model_form.value,
+        )
     gov_js = out.get("governance") or {}
     pq_js = out.get("panel_qa") or {}
     post_fit_validation = out.get("post_fit_validation")
     post_fit_validation_js = post_fit_validation if isinstance(post_fit_validation, dict) else None
     operational_health = out.get("operational_health")
     operational_health_js = operational_health if isinstance(operational_health, dict) else None
+    replay_invalidation: list[str] = []
+    _bd_gap = fit_out.get("best_detail")
+    if (
+        config.calibration.block_on_severe_replay_gap
+        and isinstance(_bd_gap, dict)
+        and str(_bd_gap.get("replay_generalization_gap_severity", "")) == "severe"
+    ):
+        replay_invalidation.append("severe_replay_generalization_gap")
     out["model_release"] = infer_model_release_state(
         config=config,
         panel_qa_max_severity=str(pq_js.get("max_severity", "info")),
         governance_approved_for_optimization=bool(gov_js.get("approved_for_optimization")),
         governance_approved_for_reporting=bool(gov_js.get("approved_for_reporting")),
         ridge_fit_summary_present=bool(out.get("ridge_fit_summary")),
+        invalidation_reasons=replay_invalidation,
         post_fit_validation=post_fit_validation_js,
         operational_health=operational_health_js,
     )
@@ -256,6 +310,30 @@ def run_post_fit_extensions(
         "replay_loss": cal_loss,
         "replay_meta": replay_meta if is_replay else None,
     }
+    _replay_disclosure_keys = (
+        "calibration_refit_mode",
+        "replay_uses_full_panel_refit",
+        "replay_overfit_warning",
+        "replay_training_units",
+        "replay_holdout_units",
+        "replay_holdout_available",
+        "replay_train_loss",
+        "replay_holdout_loss",
+        "replay_generalization_gap",
+        "replay_generalization_gap_severity",
+        "replay_transform_mode",
+        "legacy_replay_upgrade_warnings",
+        "legacy_replay_warnings",
+    )
+    if isinstance(replay_meta, dict):
+        for key in _replay_disclosure_keys:
+            if key in replay_meta:
+                cal_summary[key] = replay_meta[key]
+    best_detail = fit_out.get("best_detail")
+    if isinstance(best_detail, dict):
+        for key in _replay_disclosure_keys:
+            if key in best_detail:
+                cal_summary[key] = best_detail[key]
     if is_replay:
         cal_summary["economics_output_metadata_replay"] = economics_output_metadata(
             config,

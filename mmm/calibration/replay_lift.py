@@ -9,7 +9,12 @@ import numpy as np
 import pandas as pd
 
 from mmm.calibration.contracts import CalibrationUnit
-from mmm.calibration.replay_estimand import ReplayEstimandSpec, aggregate_level_delta_masked
+from mmm.calibration.replay_estimand import (
+    REPLAY_TRANSFORM_MODE_FULL_PANEL,
+    ReplayEstimandSpec,
+    aggregate_level_delta_masked,
+)
+from mmm.calibration.replay_frames import LEGACY_REPLAY_DEPRECATED_WARNING
 from mmm.calibration.replay_prod_gate import validate_replay_units_economics_alignment
 from mmm.config.schema import MMMConfig
 from mmm.data.schema import PanelSchema
@@ -38,10 +43,15 @@ def implied_lift_from_counterfactual(
             f"{schema.target_column!r}"
         )
     implied, agg_meta = aggregate_level_delta_masked(yhat_obs, yhat_cf, panel_observed, schema, estimand)
+    est_json = estimand.to_json()
+    transform_mode = str(est_json.get("replay_transform_mode", REPLAY_TRANSFORM_MODE_FULL_PANEL))
     return {
         "implied_mean_delta": implied,
         "n_eval": int(agg_meta.get("n_eval_rows", 0)),
-        "estimand": estimand.to_json(),
+        "estimand": est_json,
+        "replay_transform_mode": transform_mode,
+        "replay_uses_full_panel_transform": True,
+        "lift_evaluated_on_estimand_mask_only": True,
     }
 
 
@@ -65,15 +75,17 @@ def aggregate_replay_calibration_loss(
         validate_replay_units_economics_alignment(config, schema, units)
     z2: list[float] = []
     meta_units: list[dict[str, Any]] = []
+    legacy_warnings: list[str] = []
     _ = config
     for u in units:
         if u.observed_spend_frame is None or u.counterfactual_spend_frame is None or u.observed_lift is None:
             continue
         if not u.replay_estimand:
-            raise ValueError(
-                f"replay unit {u.unit_id!r}: replay_estimand is required (explicit geo/time window + aggregation); "
-                "implicit full-panel mean is not supported"
+            legacy_warnings.append(
+                f"{u.unit_id}: {LEGACY_REPLAY_DEPRECATED_WARNING} (missing replay_estimand; "
+                "use evidence-registry replay or rebuild with full-panel estimand)"
             )
+            continue
         spec = ReplayEstimandSpec.from_dict(u.replay_estimand)
         r = implied_lift_from_counterfactual(
             panel_observed=u.observed_spend_frame,
@@ -95,14 +107,30 @@ def aggregate_replay_calibration_loss(
                 "replay_estimand": spec.to_json(),
             }
         )
+    for u in units:
+        re = u.replay_estimand or {}
+        if re.get("replay_transform_mode") != REPLAY_TRANSFORM_MODE_FULL_PANEL:
+            legacy_warnings.append(
+                f"{u.unit_id}: {LEGACY_REPLAY_DEPRECATED_WARNING} (set replay_transform_mode on unit or "
+                "rebuild via full-panel ETL)"
+            )
     if not z2:
-        return 0.0, {"n_units": 0, "units": meta_units}
+        return 0.0, {
+            "n_units": 0,
+            "units": meta_units,
+            "replay_transform_mode": REPLAY_TRANSFORM_MODE_FULL_PANEL,
+            "replay_uses_full_panel_transform": True,
+            "legacy_replay_warnings": legacy_warnings,
+        }
     arr = np.array(z2, dtype=float)
     return float(np.mean(arr)), {
         "n_units": len(z2),
         "mean_standardized_sq_error": float(np.mean(arr)),
         "units": meta_units,
         "mean_lift_se": float(np.mean([u.lift_se for u in units if u.lift_se and u.lift_se > 0] or [1.0])),
+        "replay_transform_mode": REPLAY_TRANSFORM_MODE_FULL_PANEL,
+        "replay_uses_full_panel_transform": True,
+        "legacy_replay_warnings": legacy_warnings,
     }
 
 

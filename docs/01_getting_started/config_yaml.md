@@ -3,15 +3,78 @@
 Canonical keys mirror `MMMConfig` in `mmm/config/schema.py`. Important sections:
 
 - `framework`: `ridge_bo` | `bayesian`
-- `model_form`: `semi_log` (default) | `log_log`
+- `model_form`: `semi_log` (default, **prod canonical**) | `log_log` (**research-only**; forbidden when `run_environment=prod`)
 - `pooling`: `none` | `full` | `partial`
 - `data`: paths, column names, channel list (see [../02_concepts/control_templates.md](../02_concepts/control_templates.md) for illustrative control CSV scaffolds)
-- `transforms`: `adstock` (`geometric`|`weibull`), `saturation` (`hill`|`log`|`logistic`), optional param dicts
+- `transforms`: production Ridge+BO / decide paths accept **`adstock: geometric`** and **`saturation: hill`** only (enforced by `canonical_transforms` + config validators). Other kinds (`weibull`, `log`, `logistic`) are registry stubs — not supported for training or full-panel simulation without a validated implementation.
 - `cv`: `mode` (`auto`|`rolling`|`expanding`), `n_splits`, `min_train_weeks`, `horizon_weeks`, `gap_weeks`
 - `ridge_bo` / `bayesian`: backend-specific knobs
 - `objective`: composite weights for Ridge+BO
-- `calibration`: optional experiments path + match levels
+- `calibration`: experiments path, replay units, or evidence registry (see below)
 - `artifacts`: `local` store root or `mlflow` experiment name
+
+### Calibration / replay (`calibration:`)
+
+**Legacy (default)** — unchanged prod path:
+
+```yaml
+calibration:
+  use_replay_calibration: true
+  replay_mode: legacy
+  replay_units_path: path/to/replay_units.json
+```
+
+**Evidence-registry weighted replay (opt-in, Ridge only):**
+
+```yaml
+calibration:
+  use_replay_calibration: true
+  replay_mode: evidence_registry
+  evidence_weighting_enabled: true
+  compatibility_resolver_enabled: true
+  evidence_registry_path: path/to/evidence.json
+  model_geo_granularity: dma   # national | region | dma | geo | user
+  channel_mapping: { platform_tv: tv }
+```
+
+`replay_mode: evidence_registry` requires `evidence_registry_path` and `compatibility_resolver_enabled: true`. Missing registry path or disabled resolver fails at config load.
+
+Weighted BO loss: `sum(w_i * ((mmm_lift_i - lift_i)/se_i)^2) / sum(w_i)`. See [../02_concepts/experiment_evidence.md](../02_concepts/experiment_evidence.md).
+
+**Prod gate:** evidence-registry replay requires `evidence_weighted_replay_summary` with `n_evidence_units_used >= 1`, acceptable quality tiers, and governance fields (`supports_subgeo_claims`, `allocation_role`). Optional `allow_missing_se_in_prod_evidence_replay: false` (default).
+
+**Replay transform (legacy + evidence-registry):**
+
+Both paths build **full-panel** observed/counterfactual spend frames, apply transforms on the sorted panel (preserving pre-window adstock), and evaluate implied lift only on the experiment **estimand mask**. Serialized units should set:
+
+```yaml
+replay_estimand:
+  replay_transform_mode: full_panel_transform_estimand_mask
+```
+
+Window-slice frames in `replay_units.json` are upgraded at train time when `replay_estimand` is present. Units **without** `replay_estimand` emit warning `legacy_replay_deprecated_use_evidence_registry` and are skipped from replay loss (prefer evidence-registry replay for new work).
+
+**BO replay generalization disclosure (advisory; objective unchanged):**
+
+Ridge+BO trials record train replay loss (full-panel refit coef) vs holdout replay loss (last CV-fold coef). Extension artifacts and `best_detail` expose `replay_train_loss`, `replay_holdout_loss`, `replay_generalization_gap`, and `replay_generalization_gap_severity` (`none` &lt; 0.1, `moderate` 0.1–0.25, `severe` ≥ threshold).
+
+```yaml
+calibration:
+  replay_generalization_gap_threshold: 0.25   # severe severity cutoff
+  block_on_severe_replay_gap: false           # default: warn only; true invalidates model_release
+```
+
+Replay calibration does **not** prove causal validity — it checks internal consistency under stated estimands. See [../02_concepts/calibration.md](../02_concepts/calibration.md).
+
+**Bayesian experiment likelihood (research-only):**
+
+```yaml
+bayesian:
+  use_experiment_likelihood: true
+  experiment_registry_path: path/to/evidence.json
+  experiment_likelihood_weight: 1.0
+  exp_likelihood_research_only: true   # required; does not enable prod decisioning
+```
 
 Every training run should persist `resolved_config.yaml` next to metrics and diagnostics.
 
@@ -64,6 +127,23 @@ extensions:
 ```
 
 Output: `extension_report.experiment_scheduler_report`. See [../02_concepts/experiment_scheduler.md](../02_concepts/experiment_scheduler.md).
+
+### Continuous / decision validation (diagnostic, default off)
+
+```yaml
+extensions:
+  continuous_validation:
+    enabled: false
+    registry_dir: path/to/accepted_runs/
+    lookback_days: 365
+    require_experiment_se: false
+  decision_validation:
+    enabled: false
+    decision_registry_dir: path/to/decisions/
+    lookback_days: 180
+```
+
+See [../02_concepts/continuous_validation.md](../02_concepts/continuous_validation.md) and [../02_concepts/decision_validation.md](../02_concepts/decision_validation.md). Reports are omitted from `extension_report` unless `enabled: true`.
 
 ### PlanningScenario YAML (`mmm decide` `--scenario`)
 

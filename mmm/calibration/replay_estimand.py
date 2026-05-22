@@ -18,6 +18,8 @@ from mmm.data.schema import PanelSchema
 GeoScope = Literal["all", "listed"]
 AggregationRule = Literal["mean", "sum", "geo_mean_then_global_mean"]
 
+REPLAY_TRANSFORM_MODE_FULL_PANEL = "full_panel_transform_estimand_mask"
+
 
 @dataclass(frozen=True)
 class ReplayEstimandSpec:

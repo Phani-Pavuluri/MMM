@@ -10,6 +10,9 @@ from mmm.calibration.matching import compute_experiment_weight_audit
 from mmm.causal.estimand import EstimandValidator
 from mmm.config.schema import MMMConfig
 from mmm.data.schema import PanelSchema
+from mmm.evaluation.experiment_evidence_extension import build_experiment_evidence_reports
+from mmm.hierarchy.diagnostics import hierarchy_enabled
+from mmm.hierarchy.hierarchy_extension import build_hierarchy_reports_for_fit
 
 
 def run_calibration_extensions(
@@ -77,4 +80,22 @@ def run_calibration_extensions(
                 "skipped": True,
                 "reason": "panel_and_schema_required_for_matching_trace",
             }
+
+    ev_reports = build_experiment_evidence_reports(config, panel=panel, schema=schema)
+    if not ev_reports.get("skipped"):
+        out.update(ev_reports)
+
     return out
+
+
+def run_hierarchy_post_fit_reports(
+    config: MMMConfig,
+    *,
+    panel: pd.DataFrame,
+    schema: PanelSchema,
+    coef: Any,
+) -> dict[str, Any]:
+    """Post-fit hierarchy diagnostics (Ridge media coefficients)."""
+    if not hierarchy_enabled(config):
+        return {"skipped": True, "reason": "hierarchy_disabled"}
+    return build_hierarchy_reports_for_fit(config, schema, panel, coef)

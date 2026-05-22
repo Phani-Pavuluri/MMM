@@ -10,6 +10,17 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from mmm.calibration.evidence_replay import (
+    aggregate_weighted_evidence_replay_loss,
+    build_evidence_weighted_replay_summary,
+    prepare_evidence_replay,
+    uses_evidence_registry_replay,
+    uses_legacy_replay,
+    uses_weighted_evidence_replay,
+    validate_evidence_registry_replay_config,
+)
+from mmm.calibration.replay_frames import normalize_replay_units_to_full_panel
+from mmm.calibration.replay_generalization import build_replay_calibration_metadata
 from mmm.calibration.replay_lift import aggregate_replay_calibration_loss
 from mmm.calibration.replay_prod_gate import assert_replay_production_ready
 from mmm.calibration.units_io import load_calibration_units_from_json
@@ -18,6 +29,9 @@ from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import assert_panel_qa_allows_training
 from mmm.data.schema import PanelSchema, validate_panel
 from mmm.features.design_matrix import apply_masks_for_fit, build_design_matrix
+from mmm.hierarchy.diagnostics import hierarchy_enabled
+from mmm.hierarchy.hierarchy_extension import load_and_validate_hierarchy
+from mmm.hierarchy.penalty import hierarchical_penalty
 from mmm.models.base import RidgeBOMMMBase
 from mmm.models.ridge_bo.objective import build_composite
 from mmm.models.ridge_bo.ridge import fit_ridge, predict_ridge
@@ -47,7 +61,16 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
         self._best_params: dict[str, float] = {}
         self._artifacts: RidgeBOArtifacts | None = None
         self._replay_units: list = []
-        if config.calibration.use_replay_calibration and config.calibration.replay_units_path:
+        self._legacy_replay_warnings: list[str] = []
+        self._evidence_replay_prepared = None
+        self._hierarchy_pairs: list = []
+        self._hierarchy_penalty_warnings: list[str] = []
+        validate_evidence_registry_replay_config(config)
+        if hierarchy_enabled(config) and not config.hierarchy.hierarchy_definition_path:
+            raise ValueError("hierarchy.enabled requires hierarchy.hierarchy_definition_path")
+        if uses_weighted_evidence_replay(config):
+            pass
+        elif uses_legacy_replay(config):
             self._replay_units = load_calibration_units_from_json(Path(config.calibration.replay_units_path))
             assert_replay_production_ready(config, self._replay_units, schema=self.schema)
 
@@ -60,25 +83,53 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
         )
         df = sort_panel_for_modeling(df, self.schema)
         assert_panel_qa_allows_training(df, self.schema, self.config)
+        if self._replay_units:
+            self._replay_units, self._legacy_replay_warnings = normalize_replay_units_to_full_panel(
+                df, self.schema, self._replay_units
+            )
         cv = auto_cv_mode(df, self.schema, self.config.cv)
         splits = cv.split(df, self.schema)
         if not splits:
             raise RuntimeError("CV produced no splits; adjust min_train_weeks/horizon")
 
+        has_replay = uses_weighted_evidence_replay(self.config) or bool(self._replay_units)
         if (
             self.config.run_environment == RunEnvironment.PROD
             and self.config.calibration.enabled
-            and not (self.config.calibration.use_replay_calibration and self._replay_units)
+            and not (self.config.calibration.use_replay_calibration and has_replay)
         ):
             raise ValueError(
                 "Production Ridge BO: calibration.enabled requires calibration.use_replay_calibration "
-                "and calibration.replay_units_path with explicit replay_estimand on each replay unit."
+                "with replay_units_path (legacy) or evidence_registry weighted replay configured."
             )
 
         objective_history: list[dict[str, Any]] = []
         leaderboard: list[dict[str, Any]] = []
         design_bundle_cache: dict[tuple[Any, ...], Any] = {}
         replay_loss_cache: dict[tuple[Any, ...], tuple[float, dict[str, Any]]] = {}
+        if hierarchy_enabled(self.config):
+            _def, _rep, self._hierarchy_pairs, self._hierarchy_penalty_warnings = load_and_validate_hierarchy(
+                self.config, self.schema, df
+            )
+
+        if uses_weighted_evidence_replay(self.config):
+            self._evidence_replay_prepared = prepare_evidence_replay(self.config, df, self.schema)
+            if not self._evidence_replay_prepared.used:
+                raise ValueError(
+                    "evidence_registry weighted replay: no compatible evidence units after filtering; "
+                    f"rejected={self._evidence_replay_prepared.rejected!r}"
+                )
+            if uses_evidence_registry_replay(self.config):
+                summary = build_evidence_weighted_replay_summary(
+                    self._evidence_replay_prepared,
+                    {"replay_mode_used": "evidence_registry"},
+                )
+                assert_replay_production_ready(
+                    self.config,
+                    [e.unit for e in self._evidence_replay_prepared.used],
+                    schema=self.schema,
+                    evidence_summary=summary,
+                )
 
         def evaluate_trial(params: dict[str, float]) -> tuple[float, dict[str, Any]]:
             t_wall0 = time.perf_counter()
@@ -123,7 +174,12 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             cal_detail: dict[str, Any] | None = None
             cal = 0.0
             parts: dict[str, Any] = {}
-            if self._replay_units and coef_rows and intercept_rows:
+            use_replay = (
+                (self._replay_units or self._evidence_replay_prepared is not None)
+                and coef_rows
+                and intercept_rows
+            )
+            if use_replay:
                 # Replay calibration must use the same coefficient object as a shipped model for these
                 # hyperparameters: full-panel refit on all rows (not any single CV fold).
                 rkey = (dkey, round(float(alpha), 9))
@@ -142,24 +198,136 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                         ylog = predict_ridge(b.X, coef_full, intercept_full)
                         return np.exp(ylog)
 
-                    rloss, rmeta = aggregate_replay_calibration_loss(
-                        self._replay_units,
-                        predict_level,
-                        schema=self.schema,
-                        target_col=self.schema.target_column,
-                        config=self.config,
+                    if uses_weighted_evidence_replay(self.config):
+                        assert self._evidence_replay_prepared is not None
+                        rloss, rmeta = aggregate_weighted_evidence_replay_loss(
+                            self._evidence_replay_prepared.used,
+                            predict_level,
+                            schema=self.schema,
+                            target_col=self.schema.target_column,
+                            config=self.config,
+                        )
+                        replay_mode = "evidence_registry"
+                    else:
+                        rloss, rmeta = aggregate_replay_calibration_loss(
+                            self._replay_units,
+                            predict_level,
+                            schema=self.schema,
+                            target_col=self.schema.target_column,
+                            config=self.config,
+                        )
+                        replay_mode = "legacy"
+                    holdout_loss = None
+                    if coef_rows:
+
+                        def predict_holdout(dfp: pd.DataFrame) -> np.ndarray:
+                            b = build_design_matrix(
+                                dfp,
+                                self.schema,
+                                self.config,
+                                decay=decay,
+                                hill_half=hill_half,
+                                hill_slope=hill_slope,
+                            )
+                            ylog = predict_ridge(b.X, coef_rows[-1], intercept_rows[-1])
+                            return np.exp(ylog)
+
+                        if uses_weighted_evidence_replay(self.config):
+                            assert self._evidence_replay_prepared is not None
+                            holdout_loss, _ = aggregate_weighted_evidence_replay_loss(
+                                self._evidence_replay_prepared.used,
+                                predict_holdout,
+                                schema=self.schema,
+                                target_col=self.schema.target_column,
+                                config=self.config,
+                            )
+                        else:
+                            holdout_loss, _ = aggregate_replay_calibration_loss(
+                                self._replay_units,
+                                predict_holdout,
+                                schema=self.schema,
+                                target_col=self.schema.target_column,
+                                config=self.config,
+                            )
+                    disclosure = build_replay_calibration_metadata(
+                        train_loss=float(rloss),
+                        holdout_loss=float(holdout_loss) if holdout_loss is not None else None,
+                        n_units=int(rmeta.get("n_units", 0)),
+                        replay_mode_used=replay_mode,
+                        replay_transform_mode=rmeta.get("replay_transform_mode"),
+                        gap_severe_threshold=float(
+                            self.config.calibration.replay_generalization_gap_threshold
+                        ),
+                        legacy_warnings=self._legacy_replay_warnings,
                     )
-                    replay_loss_cache[rkey] = (float(rloss), dict(rmeta) if isinstance(rmeta, dict) else {})
+                    merged = dict(rmeta) if isinstance(rmeta, dict) else {}
+                    merged.update(disclosure)
+                    if uses_weighted_evidence_replay(self.config):
+                        merged["calibration_score_source"] = "evidence_registry_weighted_replay"
+                        merged["weighted_replay_loss"] = rmeta.get("weighted_replay_loss", rloss)
+                    else:
+                        merged["calibration_score_source"] = (
+                            "full_data_refit_same_hyperparameters_as_shipped_model"
+                        )
+                    merged["calibration_refit_n_rows"] = int(bundle.X.shape[0])
+                    merged["train_vs_holdout_replay_loss"] = {
+                        "replay_loss_in_objective": float(rloss),
+                        "replay_holdout_loss": holdout_loss,
+                        "replay_generalization_gap": merged.get("replay_generalization_gap"),
+                        "predictive_score_source": "time_series_cv_folds",
+                    }
+                    replay_loss_cache[rkey] = (float(rloss), merged)
                 rloss, rmeta = replay_loss_cache[rkey]
                 cal = float(rloss)
                 parts["replay"] = rmeta
                 parts["mean_lift_se"] = rmeta.get("mean_lift_se", 1.0)
-                parts["calibration_score_source"] = "full_data_refit_same_hyperparameters_as_shipped_model"
-                parts["predictive_score_source"] = "time_series_cv_folds"
-                parts["calibration_refit_n_rows"] = int(bundle.X.shape[0])
+                for key in (
+                    "calibration_refit_mode",
+                    "replay_uses_full_panel_refit",
+                    "replay_overfit_warning",
+                    "replay_training_units",
+                    "replay_holdout_units",
+                    "replay_holdout_available",
+                    "replay_train_loss",
+                    "replay_holdout_loss",
+                    "replay_generalization_gap",
+                    "replay_generalization_gap_severity",
+                    "replay_transform_mode",
+                    "replay_mode_used",
+                    "predictive_score_source",
+                    "calibration_score_source",
+                    "weighted_replay_loss",
+                    "calibration_refit_n_rows",
+                    "train_vs_holdout_replay_loss",
+                    "legacy_replay_upgrade_warnings",
+                ):
+                    if key in rmeta:
+                        parts[key] = rmeta[key]
             if parts:
                 parts["loss"] = float(cal)
                 cal_detail = parts
+            hier_pen = 0.0
+            if self._hierarchy_pairs and coef_rows:
+                n_media = len(self.schema.channel_columns)
+                coef_last = coef_mat[-1, :n_media]
+                hier_pen, hier_meta = hierarchical_penalty(
+                    coef_last,
+                    self._hierarchy_pairs,
+                    regularization_strength=self.config.hierarchy.regularization_strength,
+                )
+                if cal_detail is None:
+                    cal_detail = {}
+                cal_detail["hierarchical_penalty"] = float(hier_pen)
+                cal_detail["hierarchy_penalty_meta"] = hier_meta
+                cal_detail["loss"] = float(cal_detail.get("loss", 0.0)) + float(hier_pen)
+                cal_detail["hierarchy_enabled"] = True
+                if self._hierarchy_penalty_warnings:
+                    cal_detail["hierarchy_penalty_warnings"] = list(self._hierarchy_penalty_warnings)
+            elif hierarchy_enabled(self.config) and not self._hierarchy_pairs:
+                if cal_detail is None:
+                    cal_detail = {}
+                cal_detail["hierarchy_enabled"] = True
+                cal_detail["hierarchical_penalty"] = 0.0
             total, raw, norm, norm_report = build_composite(
                 y_true_folds=y_true_folds,
                 y_pred_folds=y_pred_folds,
@@ -182,6 +350,28 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                 "params": params,
                 "evaluate_wall_time_ms": float((time.perf_counter() - t_wall0) * 1000.0),
             }
+            if isinstance(cal_detail, dict):
+                for key in (
+                    "calibration_refit_mode",
+                    "replay_uses_full_panel_refit",
+                    "replay_overfit_warning",
+                    "replay_training_units",
+                    "replay_holdout_units",
+                    "replay_holdout_available",
+                    "replay_train_loss",
+                    "replay_holdout_loss",
+                    "replay_generalization_gap",
+                    "replay_generalization_gap_severity",
+                    "train_vs_holdout_replay_loss",
+                    "predictive_score_source",
+                    "calibration_score_source",
+                    "replay_mode_used",
+                    "replay_transform_mode",
+                    "legacy_replay_upgrade_warnings",
+                    "legacy_replay_warnings",
+                ):
+                    if key in cal_detail:
+                        detail[key] = cal_detail[key]
             objective_history.append(detail)
             leaderboard.append(detail)
             return total, detail

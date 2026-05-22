@@ -23,6 +23,10 @@ from mmm.economics.canonical import (
     economics_output_metadata,
     validate_business_economics_metadata,
 )
+from mmm.governance.model_form_policy import (
+    detect_log_log_in_extension_report,
+    log_log_unsupported_questions,
+)
 from mmm.governance.semantics import DecisionSemantics, SafetyFlags
 from mmm.planning.assumption_contract import validate_planning_assumptions_semantics
 
@@ -123,6 +127,19 @@ def compute_unsupported_questions(
         sev = str(er["panel_qa"].get("max_severity", "")).lower()
         if sev == "warn":
             qs.append("Strict planning under panel_qa warn severity (prod may downgrade release state).")
+    if isinstance(er.get("experiment_compatibility_report"), dict):
+        qs.append("Subgeo lift claims from aggregate or user-level national experiments (blocked).")
+    if isinstance(er.get("counterfactual_shock_plan"), dict):
+        qs.append("Experiment-level DMA claims from nationally allocated spend shocks (not supported).")
+    if er.get("governance_unsupported_claims"):
+        for item in er.get("governance_unsupported_claims") or []:
+            qs.append(f"Governance: {item} (diagnostic evidence path).")
+    if isinstance(er.get("hierarchy_diagnostics"), dict) and er["hierarchy_diagnostics"].get("hierarchy_enabled"):
+        qs.append("Hierarchical borrowing was enabled; local causal claims require child-level evidence.")
+        for item in er.get("hierarchy_governance_warnings") or []:
+            qs.append(f"Hierarchy governance: {item}")
+    for item in log_log_unsupported_questions(cfg, er):
+        qs.append(item)
     return qs
 
 
@@ -193,6 +210,11 @@ def validate_prod_decision_bundle(
                 strict=True,
             )
         )
+    snap = bundle.get("resolved_config_snapshot")
+    if isinstance(snap, dict) and detect_log_log_in_extension_report(
+        {"resolved_config_snapshot": snap, "economics_contract": bundle.get("economics_contract")}
+    ):
+        missing.append("model_form_log_log_blocked_in_prod")
     return missing
 
 

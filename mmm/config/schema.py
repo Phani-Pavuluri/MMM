@@ -131,6 +131,45 @@ class BayesianConfig(BaseModel):
     media_channel_prior: Literal["half_normal_nonneg", "normal_symmetric"] = "half_normal_nonneg"
     prior_predictive_draws: int = 0
     posterior_predictive_draws: int = 0
+    #: Research-only experiment lift likelihood (PR 3); does not enable prod decisioning.
+    use_experiment_likelihood: bool = False
+    experiment_registry_path: str | None = None
+    experiment_likelihood_weight: float = 1.0
+    min_experiment_quality_tier: Literal["high", "medium", "low"] = "medium"
+    allow_aggregate_only_evidence: bool = True
+    allow_allocated_shocks: bool = True
+    allow_conservative_missing_se: bool = False
+    allow_level_lift_mismatch_research: bool = False
+    exp_likelihood_research_only: bool = True
+    #: Research-only hierarchical media priors: child ~ Normal(parent, hier_sigma_group).
+    use_hierarchy: bool = False
+    hierarchy_research_only: bool = True
+    #: Prior scale for ``hier_sigma_group`` HalfNormal.
+    hierarchy_group_sigma_prior: float = 0.5
+
+    @model_validator(mode="after")
+    def _validate_experiment_likelihood(self) -> BayesianConfig:
+        if self.use_experiment_likelihood:
+            if not self.experiment_registry_path:
+                raise ValueError(
+                    "bayesian.use_experiment_likelihood requires bayesian.experiment_registry_path"
+                )
+            if not self.exp_likelihood_research_only:
+                raise ValueError(
+                    "bayesian.exp_likelihood_research_only must remain true "
+                    "(experiment likelihood cannot enable prod decisioning)"
+                )
+            if float(self.experiment_likelihood_weight) <= 0:
+                raise ValueError("bayesian.experiment_likelihood_weight must be positive")
+        if self.use_hierarchy:
+            if not self.hierarchy_research_only:
+                raise ValueError(
+                    "bayesian.hierarchy_research_only must remain true "
+                    "(Bayesian hierarchy cannot enable prod decisioning)"
+                )
+            if self.hierarchy_group_sigma_prior <= 0:
+                raise ValueError("bayesian.hierarchy_group_sigma_prior must be positive")
+        return self
 
 
 class ObjectiveWeights(BaseModel):
@@ -166,6 +205,30 @@ class CompositeObjectiveConfig(BaseModel):
     )
 
 
+class HierarchyConfig(BaseModel):
+    """Explicit hierarchical borrowing for Ridge BO (opt-in; never inferred from data)."""
+
+    enabled: bool = False
+    hierarchy_definition_path: str | None = None
+    hierarchy_type: Literal["geography", "channel", "campaign"] = "geography"
+    regularization_strength: float = 0.1
+    min_children_per_parent: int = 2
+    allow_cross_branch_pooling: bool = False
+
+    @model_validator(mode="after")
+    def _validate_hierarchy_config(self) -> HierarchyConfig:
+        if self.enabled and not self.hierarchy_definition_path:
+            raise ValueError(
+                "hierarchy.enabled=true requires hierarchy.hierarchy_definition_path "
+                "(explicit HierarchyDefinition JSON)"
+            )
+        if self.regularization_strength < 0:
+            raise ValueError("hierarchy.regularization_strength must be >= 0")
+        if self.min_children_per_parent < 1:
+            raise ValueError("hierarchy.min_children_per_parent must be >= 1")
+        return self
+
+
 class CalibrationConfig(BaseModel):
     enabled: bool = False
     experiments_path: str | None = None
@@ -185,6 +248,26 @@ class CalibrationConfig(BaseModel):
     #: When ``True`` in PROD, every replay unit must carry a non-empty ``experiment_id`` that is
     #: ``approved`` in the registry.
     require_approved_experiment_registry: bool = False
+    #: Phase 1+ experiment evidence registry (JSON list or ``mmm_experiment_evidence_registry_v1``).
+    evidence_registry_path: str | None = None
+    #: Opt-in weighted replay loss (Ridge BO); default legacy unweighted path.
+    evidence_weighting_enabled: bool = False
+    #: Emit experiment_compatibility_report and related diagnostics.
+    compatibility_resolver_enabled: bool = False
+    #: ``legacy`` keeps existing replay calibration; ``evidence_registry`` is diagnostic-first.
+    replay_mode: Literal["legacy", "evidence_registry"] = "legacy"
+    #: Ridge hierarchical penalty between parent/child geo or channel groups (research).
+    hierarchical_regularization_enabled: bool = False
+    #: Declared model geo granularity for compatibility resolver.
+    model_geo_granularity: Literal["national", "region", "dma", "geo", "user"] = "geo"
+    #: Map experiment platform channel names to panel channel_columns.
+    channel_mapping: dict[str, str] = Field(default_factory=dict)
+    #: Prod evidence-registry replay: allow units without SE (discouraged; default fail-closed).
+    allow_missing_se_in_prod_evidence_replay: bool = False
+    #: Advisory threshold for ``replay_generalization_gap`` severity (holdout − train replay loss).
+    replay_generalization_gap_threshold: float = Field(default=0.25, ge=0.0)
+    #: When ``True``, severe replay gap may invalidate model release (default advisory warning only).
+    block_on_severe_replay_gap: bool = False
 
     @model_validator(mode="after")
     def _validate_calibration_match_levels(self) -> CalibrationConfig:
@@ -195,6 +278,24 @@ class CalibrationConfig(BaseModel):
             raise ValueError(
                 "calibration.enabled with experiments_path requires 'channel' in calibration.match_levels "
                 "(experiment rows are always filtered by channel against panel channel_columns)."
+            )
+        if self.replay_mode == "evidence_registry":
+            if not self.evidence_registry_path:
+                raise ValueError(
+                    "calibration.replay_mode='evidence_registry' requires calibration.evidence_registry_path"
+                )
+            if not self.compatibility_resolver_enabled:
+                raise ValueError(
+                    "calibration.replay_mode='evidence_registry' requires "
+                    "calibration.compatibility_resolver_enabled=true"
+                )
+        if self.evidence_weighting_enabled and self.replay_mode != "evidence_registry":
+            raise ValueError(
+                "calibration.evidence_weighting_enabled requires calibration.replay_mode='evidence_registry'"
+            )
+        if self.evidence_weighting_enabled and not self.use_replay_calibration:
+            raise ValueError(
+                "calibration.evidence_weighting_enabled requires calibration.use_replay_calibration=true"
             )
         return self
 
@@ -246,6 +347,7 @@ class MMMConfig(BaseModel):
     bayesian: BayesianConfig = Field(default_factory=BayesianConfig)
     objective: CompositeObjectiveConfig = Field(default_factory=CompositeObjectiveConfig)
     calibration: CalibrationConfig = Field(default_factory=CalibrationConfig)
+    hierarchy: HierarchyConfig = Field(default_factory=HierarchyConfig)
     budget: BudgetConfig = Field(default_factory=BudgetConfig)
     artifacts: ArtifactConfig = Field(default_factory=ArtifactConfig)
     extensions: ExtensionSuiteConfig = Field(default_factory=ExtensionSuiteConfig)
@@ -256,8 +358,8 @@ class MMMConfig(BaseModel):
     #: YAML sets this ``True`` **and** ``--allow-unsafe-decision-apis`` is passed.
     allow_unsafe_decision_apis: bool = False
     #: Prod **Ridge+BO** only: explicit acknowledgement that ``model_form`` / link matches a supported contract.
-    #: Must be ``ridge_bo_semi_log_calendar_cv_v1`` when ``model_form=semi_log``, or
-    #: ``ridge_bo_log_log_calendar_cv_v1`` when ``model_form=log_log``.
+    #: Must be ``ridge_bo_semi_log_calendar_cv_v1`` when ``model_form=semi_log`` in prod.
+    #: ``log_log`` is research-only and cannot be used with ``run_environment=prod``.
     prod_canonical_modeling_contract_id: str | None = Field(default=None)
 
     model_config = {"extra": "forbid"}
@@ -280,6 +382,19 @@ class MMMConfig(BaseModel):
             raise ValueError("data.channel_columns must be non-empty")
         validate_transform_stack_for_framework(self)
         validate_geo_budget_planning_consistency(self)
+        if self.calibration.hierarchical_regularization_enabled and not self.hierarchy.enabled:
+            raise ValueError(
+                "calibration.hierarchical_regularization_enabled is deprecated; set hierarchy.enabled=true "
+                "and hierarchy.hierarchy_definition_path instead"
+            )
+        if self.hierarchy.enabled and self.framework != Framework.RIDGE_BO:
+            raise ValueError("hierarchy.enabled is supported only for framework=ridge_bo")
+        from mmm.governance.model_form_policy import assert_log_log_hierarchy_blocked
+
+        assert_log_log_hierarchy_blocked(self)
+        from mmm.hierarchy.bayesian_hierarchy import validate_bayesian_hierarchy_config
+
+        validate_bayesian_hierarchy_config(self)
         if self.run_environment == RunEnvironment.PROD:
             validate_prod_cv_configuration(self)
             validate_prod_explicit_modeling_policy(self)

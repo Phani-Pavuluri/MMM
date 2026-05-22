@@ -179,16 +179,23 @@ def require_replay_calibration(
     calibration_summary: dict[str, Any] | None,
     experiment_matching: dict[str, Any] | None,
     policy: RuntimePolicy,
+    *,
+    evidence_weighted_replay_summary: dict[str, Any] | None = None,
 ) -> None:
     """Require replay calibration evidence on extension (prod)."""
     if not policy.prod or not policy.require_replay_calibration:
+        return
+    if isinstance(evidence_weighted_replay_summary, dict) and evidence_weighted_replay_summary.get(
+        "n_evidence_units_used", 0
+    ):
         return
     if isinstance(calibration_summary, dict) and bool(calibration_summary):
         return
     if isinstance(experiment_matching, dict) and bool(experiment_matching):
         return
     raise PolicyError(
-        "prod requires extension_report.calibration_summary or experiment_matching (non-empty) for replay gate"
+        "prod requires extension_report.evidence_weighted_replay_summary (evidence-registry replay), "
+        "calibration_summary, or experiment_matching (non-empty) for replay gate"
     )
 
 

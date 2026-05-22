@@ -9,6 +9,7 @@
 
 ## Research / exploratory
 
+- **`model_form=log_log`** Ridge runs (blocked in prod config and prod decision paths).
 - Legacy **curve-local** optimizers, diagnostic-only scenarios, and **Ridge** runs without full governance artifacts.
 - **Posterior draws** in non-prod without `posterior_planning_mode=draws` may still compute quantiles when diagnostics pass, but disclosures will flag configuration gaps.
 - **Experiment registry** entries in `draft` are not replay-ready; use `experiment_readiness()` before wiring to services.
