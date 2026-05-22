@@ -23,19 +23,20 @@ def test_prod_ridge_missing_model_contract_fails() -> None:
         )
 
 
-def test_prod_ridge_wrong_contract_for_model_form_fails() -> None:
-    with pytest.raises(PolicyError, match="ridge_bo_log_log_calendar_cv_v1"):
+def test_prod_ridge_log_log_blocked_regardless_of_contract() -> None:
+    with pytest.raises(PolicyError, match="research-only"):
         MMMConfig(
             run_environment=RunEnvironment.PROD,
             framework=Framework.RIDGE_BO,
             model_form=ModelForm.LOG_LOG,
-            prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
-            data={"channel_columns": ["c1"], "control_columns": []},
+            prod_canonical_modeling_contract_id="ridge_bo_log_log_calendar_cv_v1",
+            data={"channel_columns": ["c1"], "control_columns": [], "data_version_id": "dv1"},
             cv={"mode": "rolling"},
             objective={
                 "normalization_profile": "strict_prod",
                 "named_profile": "ridge_bo_standard_v1",
             },
+            extensions={"optimization_gates": {"enabled": True}},
         )
 
 

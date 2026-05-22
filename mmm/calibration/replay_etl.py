@@ -10,7 +10,7 @@ import pandas as pd
 import yaml
 
 from mmm.calibration.contracts import CalibrationUnit
-from mmm.calibration.replay_estimand import ReplayEstimandSpec
+from mmm.calibration.replay_frames import build_calibration_unit_from_shift
 from mmm.data.schema import PanelSchema
 
 
@@ -63,15 +63,6 @@ def load_spend_shift_specs(path: str | Path) -> list[SpendShiftSpec]:
     return out
 
 
-def _panel_time_mask(series: pd.Series, start: Any, end: Any) -> pd.Series:
-    if pd.api.types.is_numeric_dtype(series):
-        return (series >= float(start)) & (series <= float(end))
-    s = pd.to_datetime(series, errors="coerce")
-    a = pd.to_datetime(start, errors="coerce")
-    b = pd.to_datetime(end, errors="coerce")
-    return (s >= a) & (s <= b)
-
-
 def _build_one_replay_unit(
     panel: pd.DataFrame,
     schema: PanelSchema,
@@ -79,39 +70,24 @@ def _build_one_replay_unit(
     *,
     target_kpi: str,
 ) -> CalibrationUnit | None:
-    gcol, wcol = schema.geo_column, schema.week_column
-    m = panel[gcol].isin(sp.geo_ids) & _panel_time_mask(panel[wcol], sp.week_start, sp.week_end)
-    obs = panel.loc[m].copy()
-    if obs.empty:
-        return None
-    if sp.channel not in obs.columns:
+    if sp.channel not in panel.columns:
         raise ValueError(f"channel {sp.channel!r} not in panel columns")
-    cf = obs.copy()
-    cf[sp.channel] = cf[sp.channel].astype(float) * float(sp.spend_multiplier)
     tk = sp.target_kpi or target_kpi
-    re_dict = sp.replay_estimand or {
-        "geo_scope": "listed",
-        "geo_ids": list(sp.geo_ids),
-        "week_start": sp.week_start,
-        "week_end": sp.week_end,
-        "aggregation": "mean",
-        "target_kpi_column": tk,
-        "lift_scale": sp.lift_scale or "mean_kpi_level_delta",
-        "notes": "derived_from_spend_shift_window",
-    }
-    ReplayEstimandSpec.from_dict(re_dict)
-    return CalibrationUnit(
+    return build_calibration_unit_from_shift(
+        panel,
+        schema,
         unit_id=sp.unit_id,
-        treated_channel_names=[sp.channel],
-        observed_spend_frame=obs.reset_index(drop=True),
-        counterfactual_spend_frame=cf.reset_index(drop=True),
+        channel=sp.channel,
+        geo_ids=list(sp.geo_ids),
+        week_start=sp.week_start,
+        week_end=sp.week_end,
+        spend_multiplier=float(sp.spend_multiplier),
         observed_lift=sp.observed_lift,
         lift_se=sp.lift_se,
         target_kpi=tk,
-        geo_ids=list(sp.geo_ids),
         estimand=sp.estimand,
         lift_scale=sp.lift_scale,
-        replay_estimand=re_dict,
+        replay_estimand=sp.replay_estimand,
     )
 
 

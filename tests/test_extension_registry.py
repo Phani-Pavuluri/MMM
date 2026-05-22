@@ -136,6 +136,9 @@ def test_extension_report_top_level_keys_regression() -> None:
             "seed_resolution",
             "transform_policy",
             "uncertainty_decomposition",
+            "uncertainty_decomposition_legacy",
+            "uncertainty_propagation_report",
+            "robust_optimization_research",
             "data_quality",
         }
     )

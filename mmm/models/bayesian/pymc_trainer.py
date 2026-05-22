@@ -8,6 +8,13 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from mmm.calibration.bayesian_experiment_likelihood import (
+    build_bayesian_experiment_likelihood_report,
+    prepare_bayesian_experiment_likelihood_terms,
+    register_pymc_experiment_likelihoods,
+    uses_bayesian_experiment_likelihood,
+    validate_bayesian_experiment_likelihood_config,
+)
 from mmm.config.schema import BayesianBackend, Framework, MMMConfig, ModelForm, PoolingMode, RunEnvironment
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.panel_qa import assert_panel_qa_allows_training
@@ -17,6 +24,13 @@ from mmm.diagnostics.bayesian_draw_export import (
     linear_coef_draws_from_pymc_idata,
 )
 from mmm.diagnostics.bayesian_inference_report import compute_bayesian_decision_diagnostics
+from mmm.hierarchy.bayesian_hierarchy import (
+    build_bayesian_hierarchy_report,
+    prepare_bayesian_hierarchy,
+    register_bayesian_hierarchical_media_coefs,
+    uses_bayesian_hierarchy,
+    validate_bayesian_hierarchy_config,
+)
 from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.models.base import BayesianMMMBase
 from mmm.transforms.stack import build_channel_features_from_params
@@ -41,6 +55,7 @@ class BayesianMMMTrainer(BayesianMMMBase):
         self._idata: Any = None
         self._summary: BayesianPosteriorSummary | None = None
         self._X_cols: int = 0
+        validate_bayesian_hierarchy_config(config)
 
     def fit(self, df: pd.DataFrame) -> dict[str, Any]:
         try:
@@ -97,13 +112,39 @@ class BayesianMMMTrainer(BayesianMMMBase):
         n_pr = int(getattr(self.config.bayesian, "prior_predictive_draws", 0) or 0)
         n_pp = int(getattr(self.config.bayesian, "posterior_predictive_draws", 0) or 0)
         idata_prior = None
+        exp_prepared = None
+        exp_pymc_vars: list[str] = []
+        hier_prepared = None
+        hier_pymc_vars: list[str] = []
+        if uses_bayesian_hierarchy(self.config):
+            hier_prepared = prepare_bayesian_hierarchy(self.config, df, self.schema)
+        if uses_bayesian_experiment_likelihood(self.config):
+            validate_bayesian_experiment_likelihood_config(self.config)
+            exp_prepared = prepare_bayesian_experiment_likelihood_terms(self.config, df, self.schema)
+            if not exp_prepared.used:
+                raise ValueError(
+                    "bayesian.use_experiment_likelihood: no compatible experiment units; "
+                    f"rejected={exp_prepared.rejected!r}"
+                )
         with pm.Model() as model:
             alpha_geo = pm.Normal("alpha_geo", mu=0.0, sigma=1.0, shape=n_geo)
             sigma = pm.HalfNormal("sigma", sigma=1.0)
             if self.config.pooling == PoolingMode.PARTIAL:
                 parts_mu = []
                 if n_m > 0:
-                    if media_prior == "normal_symmetric":
+                    if hier_prepared and hier_prepared.pairs:
+                        beta_m, hvars = register_bayesian_hierarchical_media_coefs(
+                            pm,
+                            n_media=n_m,
+                            media_prior=media_prior,
+                            media_sigma=s_m,
+                            pairs=hier_prepared.pairs,
+                            group_sigma_prior=float(self.config.bayesian.hierarchy_group_sigma_prior),
+                            deterministic_name="beta_mu_media",
+                        )
+                        parts_mu.append(beta_m)
+                        hier_pymc_vars.extend(hvars)
+                    elif media_prior == "normal_symmetric":
                         parts_mu.append(pm.Normal("beta_mu_media", mu=0.0, sigma=s_m, shape=n_m))
                     else:
                         parts_mu.append(pm.HalfNormal("beta_mu_media", sigma=s_m, shape=n_m))
@@ -117,7 +158,19 @@ class BayesianMMMTrainer(BayesianMMMBase):
             elif self.config.pooling == PoolingMode.FULL:
                 parts_b = []
                 if n_m > 0:
-                    if media_prior == "normal_symmetric":
+                    if hier_prepared and hier_prepared.pairs:
+                        beta_m, hvars = register_bayesian_hierarchical_media_coefs(
+                            pm,
+                            n_media=n_m,
+                            media_prior=media_prior,
+                            media_sigma=s_m,
+                            pairs=hier_prepared.pairs,
+                            group_sigma_prior=float(self.config.bayesian.hierarchy_group_sigma_prior),
+                            deterministic_name="beta_media",
+                        )
+                        parts_b.append(beta_m)
+                        hier_pymc_vars.extend(hvars)
+                    elif media_prior == "normal_symmetric":
                         parts_b.append(pm.Normal("beta_media", mu=0.0, sigma=s_m, shape=n_m))
                     else:
                         parts_b.append(pm.HalfNormal("beta_media", sigma=s_m, shape=n_m))
@@ -129,6 +182,16 @@ class BayesianMMMTrainer(BayesianMMMBase):
                 beta = pm.HalfNormal("beta", sigma=s_m, shape=(n_geo, p))
                 mu = alpha_geo[geo_idx] + (X * beta[geo_idx]).sum(axis=-1)
             pm.Normal("obs", mu=mu, sigma=sigma, observed=y_obs)
+            if exp_prepared is not None and exp_prepared.used:
+                beta_for_exp = beta
+                exp_pymc_vars = register_pymc_experiment_likelihoods(
+                    pm,
+                    pooling=self.config.pooling,
+                    alpha_geo=alpha_geo,
+                    beta=beta_for_exp,
+                    terms=exp_prepared.used,
+                    likelihood_weight=float(self.config.bayesian.experiment_likelihood_weight),
+                )
             if n_pr > 0:
                 idata_prior = pm.sample_prior_predictive(
                     draws=min(n_pr, 512),
@@ -224,10 +287,28 @@ class BayesianMMMTrainer(BayesianMMMBase):
             }
         else:
             ppc["hierarchical_draw_pack_export"] = {"shapes": None, "meta": hmeta}
+        exp_report: dict[str, Any] = {"enabled": False}
+        if exp_prepared is not None:
+            exp_report = build_bayesian_experiment_likelihood_report(
+                self.config,
+                idata_out,
+                exp_prepared,
+                pymc_var_names=exp_pymc_vars,
+            )
+        hier_report: dict[str, Any] = {"enabled": False}
+        if hier_prepared is not None:
+            hier_report = build_bayesian_hierarchy_report(
+                self.config,
+                hier_prepared,
+                idata_out,
+                pymc_var_names=hier_pymc_vars,
+            )
         return {
             "idata": idata_out,
             "summary": self._summary,
             "ppc": ppc,
+            "bayesian_experiment_likelihood_report": exp_report,
+            "bayesian_hierarchy_report": hier_report,
             "linear_coef_draws": draws,
             "linear_coef_draws_meta": draw_meta,
             "hierarchical_draw_pack": hpack,

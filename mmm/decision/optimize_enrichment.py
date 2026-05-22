@@ -73,6 +73,7 @@ SIMULATION_AT_RECOMMENDATION_ENRICHMENT_KEYS: frozenset[str] = frozenset(
     {
         "artifact_tier",
         "decision_safe",
+        "scenario_decision_safe",
         "approximate",
         "not_for_budgeting",
         "economics_contract_version",

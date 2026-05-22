@@ -189,6 +189,46 @@ class FeatureSeparabilityConfig(BaseModel):
     bootstrap_rounds: int = Field(default=12, ge=0, le=64)
 
 
+class ContinuousValidationConfig(BaseModel):
+    """Diagnostic comparison of prior model predictions vs new experiment evidence."""
+
+    enabled: bool = False
+    registry_dir: str | None = None
+    lookback_days: int = Field(default=365, ge=1)
+    require_experiment_se: bool = False
+    experiment_registry_path: str | None = None
+
+
+class DecisionValidationConfig(BaseModel):
+    """Diagnostic comparison of prior decisions vs subsequent experiment evidence."""
+
+    enabled: bool = False
+    decision_registry_dir: str | None = None
+    experiment_registry_path: str | None = None
+    lookback_days: int = Field(default=180, ge=1)
+
+
+class RobustOptimizationResearchConfig(BaseModel):
+    """PR 5B: research-only robust optimization diagnostics (not prod optimize-budget)."""
+
+    enabled: bool = False
+    risk_lambda: float = Field(default=1.0, ge=0.0)
+    lcb_z_score: float = Field(default=1.0, ge=0.0)
+    n_candidates: int = Field(default=6, ge=2, le=32)
+    n_stability_scenarios: int = Field(default=6, ge=2, le=32)
+    budget_perturbation_pct: float = Field(default=0.05, ge=0.0, le=0.25)
+    frontier_lambda_grid: list[float] = Field(default_factory=lambda: [0.0, 0.5, 1.0, 2.0, 5.0])
+
+
+class UncertaintyPropagationConfig(BaseModel):
+    """PR 5A: research-only uncertainty propagation reports (no optimizer / prod monetary CIs)."""
+
+    enabled: bool = False
+    ridge_summarize_bootstrap: bool = True
+    #: Reserved; conformal summarization not implemented in this package version.
+    ridge_summarize_conformal: bool = False
+
+
 class RidgeUncertaintyResearchConfig(BaseModel):
     """Optional Ridge interval research (never enables production decision CIs)."""
 
@@ -228,6 +268,14 @@ class PanelQAConfig(BaseModel):
 
 
 class ExtensionSuiteConfig(BaseModel):
+    continuous_validation: ContinuousValidationConfig = Field(default_factory=ContinuousValidationConfig)
+    decision_validation: DecisionValidationConfig = Field(default_factory=DecisionValidationConfig)
+    robust_optimization_research: RobustOptimizationResearchConfig = Field(
+        default_factory=RobustOptimizationResearchConfig
+    )
+    uncertainty_propagation: UncertaintyPropagationConfig = Field(
+        default_factory=UncertaintyPropagationConfig
+    )
     identifiability: IdentifiabilityRunConfig = Field(default_factory=IdentifiabilityRunConfig)
     feature_separability: FeatureSeparabilityConfig = Field(default_factory=FeatureSeparabilityConfig)
     experiment_scheduler: ExperimentSchedulerConfig = Field(default_factory=ExperimentSchedulerConfig)

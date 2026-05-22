@@ -7,7 +7,7 @@ from typing import Any
 from mmm.config.schema import MMMConfig, RunEnvironment
 from mmm.contracts.artifact_tier import DECISION_TIER_VALUE
 from mmm.economics.canonical import ECONOMICS_CONTRACT_VERSION
-from mmm.governance.decision_safe_contract import compute_decision_safe
+from mmm.governance.decision_safe_contract import canonical_decision_safe, scenario_decision_safe_from_simulation
 
 
 class BusinessSurfaceMetadataError(ValueError):
@@ -76,6 +76,9 @@ def enrich_decision_simulation_json(
     cfg: MMMConfig,
     unsupported_questions: list[str],
     governance_gate_allowed: bool,
+    optimizer_internal_safe: bool | None = None,
+    optimizer_success: bool | None = None,
+    gates_enabled: bool | None = None,
 ) -> dict[str, Any]:
     """
     Attach stable business-surface fields to ``decision_simulate`` JSON (machine inspection).
@@ -83,20 +86,25 @@ def enrich_decision_simulation_json(
     Tier is ``decision`` only when prod gate passed and environment is prod; otherwise ``research``.
     """
     out = dict(sim_js)
+    scenario_safe = scenario_decision_safe_from_simulation(out)
+    out["scenario_decision_safe"] = scenario_safe
     prod = cfg.run_environment == RunEnvironment.PROD
-    tier = DECISION_TIER_VALUE if prod and governance_gate_allowed else "research"
+    gates_on = (
+        bool(gates_enabled)
+        if gates_enabled is not None
+        else bool(cfg.extensions.optimization_gates.enabled)
+    )
+    decision_safe = canonical_decision_safe(
+        scenario_safe=scenario_safe,
+        governance_gate_allowed=governance_gate_allowed,
+        optimizer_internal_safe=optimizer_internal_safe,
+        optimizer_success=optimizer_success,
+        gates_enabled=gates_on,
+    )
+    tier = DECISION_TIER_VALUE if prod and decision_safe else "research"
     approx = str(out.get("uncertainty_mode", "point")) != "point"
     out["artifact_tier"] = tier
-    suitable = bool(
-        out.get("scenario_suitable_for_decisioning", out.get("baseline_suitable_for_decisioning", False))
-    )
-    baseline_is_bau = str(out.get("baseline_type") or out.get("baseline_definition") or "bau").lower() == "bau"
-    out["decision_safe"] = compute_decision_safe(
-        governance_gate_allowed=governance_gate_allowed,
-        scenario_suitable_for_decisioning=suitable,
-        baseline_is_bau=baseline_is_bau,
-        run_environment=cfg.run_environment,
-    )
+    out["decision_safe"] = decision_safe
     out["approximate"] = approx
     out["not_for_budgeting"] = tier != DECISION_TIER_VALUE
     out["economics_contract_version"] = str(out.get("economics_version") or ECONOMICS_CONTRACT_VERSION)
@@ -116,9 +124,10 @@ def optimization_response_business_metadata(
     """Top-level metadata block mirroring the decision bundle for optimization JSON consumers."""
     prod = cfg.run_environment == RunEnvironment.PROD
     tier = bundle.get("artifact_tier", "research")
+    bundle_safe = bool(bundle.get("decision_safe"))
     return {
         "artifact_tier": tier,
-        "decision_safe": bool(bundle.get("decision_safe")) and governance_gate_allowed,
+        "decision_safe": bool(bundle_safe and governance_gate_allowed),
         "approximate": bool(bundle.get("approximate")),
         "not_for_budgeting": bool(bundle.get("not_for_budgeting")),
         "economics_contract_version": str(bundle.get("economics_version") or ECONOMICS_CONTRACT_VERSION),

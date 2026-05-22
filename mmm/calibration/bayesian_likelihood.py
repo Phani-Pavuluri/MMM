@@ -1,6 +1,19 @@
-"""Bayesian experiment likelihood helpers (extend with PyMC symbolic ops as needed)."""
+"""Bayesian experiment likelihood — see ``mmm.calibration.bayesian_experiment_likelihood``."""
 
-from __future__ import annotations
+from mmm.calibration.bayesian_experiment_likelihood import (
+    BayesianExperimentLikelihoodTerm,
+    BayesianExperimentPrepareResult,
+    build_bayesian_experiment_likelihood_report,
+    prepare_bayesian_experiment_likelihood_terms,
+    register_pymc_experiment_likelihoods,
+    uses_bayesian_experiment_likelihood,
+)
 
-# Intentionally lightweight: PyMC-specific likelihood wiring lives next to the
-# generative model in `pymc_trainer` to keep tensors in-model scope.
+__all__ = [
+    "BayesianExperimentLikelihoodTerm",
+    "BayesianExperimentPrepareResult",
+    "build_bayesian_experiment_likelihood_report",
+    "prepare_bayesian_experiment_likelihood_terms",
+    "register_pymc_experiment_likelihoods",
+    "uses_bayesian_experiment_likelihood",
+]

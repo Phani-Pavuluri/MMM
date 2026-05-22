@@ -45,13 +45,16 @@ def ridge_context_from_fit(
     )
 
 
-def ridge_fit_summary_from_artifacts(art: Any) -> dict[str, Any]:
+def ridge_fit_summary_from_artifacts(art: Any, *, model_form: str | None = None) -> dict[str, Any]:
     """JSON-serializable ridge fit blob for extension reports / CLI."""
-    return {
+    out: dict[str, Any] = {
         "best_params": dict(art.best_params),
         "coef": np.asarray(art.coef, dtype=float).tolist(),
         "intercept": np.asarray(art.intercept, dtype=float).tolist(),
     }
+    if model_form is not None:
+        out["model_form"] = str(model_form)
+    return out
 
 
 def ridge_context_from_summary(

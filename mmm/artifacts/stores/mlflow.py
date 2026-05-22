@@ -52,10 +52,13 @@ class MLflowArtifactStore(ArtifactStoreBase):
         import json
         import tempfile
 
+        text = json.dumps(payload, indent=2, default=str)
         with tempfile.TemporaryDirectory() as td:
             p = Path(td) / f"{name}.json"
-            p.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
-            self._mlflow.log_artifact(str(p), artifact_path="json")
+            p.write_text(text, encoding="utf-8")
+            self._mlflow.log_artifact(str(p))
+        if self._run_path.exists():
+            (self._run_path / f"{name}.json").write_text(text, encoding="utf-8")
 
     def end_run(self, status: str = "FINISHED") -> None:
         if self._active:

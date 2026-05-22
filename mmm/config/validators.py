@@ -12,6 +12,7 @@ from mmm.config.schema import (
     RunEnvironment,
 )
 from mmm.contracts.canonical_transforms import assert_canonical_media_stack_for_modeling
+from mmm.governance.model_form_policy import assert_log_log_not_in_prod_config
 from mmm.governance.policy import PolicyError
 
 # Prod Ridge+BO: explicit named objective profiles (weights still in YAML; name is the governance anchor).
@@ -83,6 +84,7 @@ def validate_prod_model_form_contract(config: MMMConfig) -> None:
     """Prod Ridge+BO: require explicit YAML contract id aligned to ``model_form`` (no silent default link)."""
     if config.run_environment != RunEnvironment.PROD or config.framework != Framework.RIDGE_BO:
         return
+    assert_log_log_not_in_prod_config(config)
     expected = PROD_RIDGE_BO_MODEL_FORM_CONTRACTS.get(config.model_form)
     if not expected:
         return

@@ -64,7 +64,7 @@ Train → Validate → Calibrate → Diagnostics → Simulate scenarios → Opti
 
 - Ridge + Bayesian optimization (composite objective, documented penalties)  
 - Bayesian MMM (PyMC; optional Stan path)  
-- Geometric / Weibull adstock; Hill / log / logistic saturation  
+- **Production Ridge+BO path:** geometric adstock + Hill saturation only (`canonical_transforms`); Weibull / log / logistic kinds exist in the transform registry for research stubs but are **not** wired into train/simulate/decide unless explicitly validated  
 - Pooling: none, full, or partial (hierarchical)  
 
 ### Diagnostics

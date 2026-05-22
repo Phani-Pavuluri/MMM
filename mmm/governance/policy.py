@@ -179,11 +179,17 @@ def require_replay_calibration(
     calibration_summary: dict[str, Any] | None,
     experiment_matching: dict[str, Any] | None,
     policy: RuntimePolicy,
+    *,
+    evidence_weighted_replay_summary: dict[str, Any] | None = None,
 ) -> None:
     """Require replay calibration evidence on extension (prod)."""
     from mmm.governance.replay_evidence import prod_replay_evidence_failure_message, prod_replay_evidence_ok
 
     if not policy.prod or not policy.require_replay_calibration:
+        return
+    if isinstance(evidence_weighted_replay_summary, dict) and evidence_weighted_replay_summary.get(
+        "n_evidence_units_used", 0
+    ):
         return
     ok, _ = prod_replay_evidence_ok(calibration_summary, experiment_matching)
     if ok:
