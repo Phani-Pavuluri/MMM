@@ -99,4 +99,36 @@ Present when a typed **`PlanningScenario`** is supplied, or (for optimize withou
 
 List of strings on the simulation payload when panel/scenario validation finds non-fatal issues. Surfaced on CLI as **SCENARIO VALIDATION WARNING**.
 
+## Extension report: calibration / replay disclosure
+
+Written to `extension_report.calibration_summary` (and mirrored on Ridge `ridge_fit_summary` / BO `best_detail` when replay calibration is active). **Diagnostic only** — does not change the optimization objective.
+
+### Per-unit replay lift (`implied_lift_from_counterfactual` / unit meta)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `replay_transform_mode` | string | Canonical: `full_panel_transform_estimand_mask` |
+| `replay_uses_full_panel_transform` | bool | `true` when transforms run on the full sorted panel |
+| `lift_evaluated_on_estimand_mask_only` | bool | `true` — lift aggregated only on experiment estimand rows |
+| `replay_estimand` | object | Serialized geo/time window + aggregation spec |
+
+### BO trial / extension aggregate (`build_replay_calibration_metadata`)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `calibration_refit_mode` | string | `full_panel_same_hyperparameters` for train replay path |
+| `replay_uses_full_panel_refit` | bool | Train replay uses full-panel refit coef |
+| `replay_train_loss` | float | Replay loss at full-panel refit |
+| `replay_holdout_loss` | float \| null | Replay loss at last CV-fold coef (if available) |
+| `replay_holdout_available` | bool | `false` when CV holdout replay was not computed |
+| `replay_generalization_gap` | float \| null | `replay_holdout_loss − replay_train_loss` |
+| `replay_generalization_gap_severity` | string | `none` \| `moderate` \| `severe` |
+| `replay_overfit_warning` | string | Advisory text when gap is moderate/severe |
+| `replay_training_units` | int | Unit count in train replay |
+| `replay_holdout_units` | int | Same count when holdout available; `0` otherwise |
+| `legacy_replay_warnings` | string[] | Deprecation / skip warnings (e.g. `legacy_replay_deprecated_use_evidence_registry`) |
+| `legacy_replay_upgrade_warnings` | string[] | Window-slice → full-panel upgrade notices |
+
+Replay gap fields measure **train vs CV-fold replay consistency**, not causal incrementality. See [../02_concepts/calibration.md](../02_concepts/calibration.md).
+
 See also: [../03_planning/decision_runbook.md](../03_planning/decision_runbook.md) §2e, [../03_planning/planning_execution.md](../03_planning/planning_execution.md), [../01_getting_started/config_yaml.md](../01_getting_started/config_yaml.md).

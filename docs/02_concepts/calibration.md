@@ -1,29 +1,56 @@
 # Experiment calibration
 
-## Legacy replay (default)
+Replay calibration checks **internal consistency** between observed experiment lifts and model-implied lifts under explicit estimands. It does **not** prove causal validity, incrementality, or that the MMM is well identified.
 
-Path-level **`CalibrationUnit`** JSON (`calibration.replay_units_path`) with observed/counterfactual spend frames and explicit `replay_estimand`.
+## Full-panel replay semantics (legacy + evidence-registry)
+
+Both replay modes share one transform path:
+
+1. **Full-panel frames** — observed and counterfactual spend cover the sorted modeling panel (not a pre-window slice).
+2. **Pre-window adstock** — geometric adstock/saturation run on the full panel so carryover before the experiment window is preserved.
+3. **Counterfactual spend** — multiplier applied only inside the experiment geo/time window.
+4. **Lift evaluation** — implied vs observed lift aggregated **only** on rows in the experiment estimand mask (`lift_evaluated_on_estimand_mask_only: true`).
+
+Canonical serialized mode:
+
+```yaml
+replay_estimand:
+  replay_transform_mode: full_panel_transform_estimand_mask
+```
+
+Artifact fields `replay_uses_full_panel_transform` and `replay_transform_mode` should match this mode before trusting replay metrics in release review.
+
+## Legacy replay (default, deprecated for new work)
+
+Path-level **`CalibrationUnit`** JSON (`calibration.replay_units_path`) with observed/counterfactual spend frames.
 
 - Enable with `use_replay_calibration: true` and `replay_mode: legacy` (default).
 - Ridge+BO loss: mean standardized squared error per unit (unweighted).
-- **Transform path:** legacy ETL and evidence-registry replay share `build_full_panel_replay_frames` — full-panel adstock/saturation, counterfactual spend only inside the estimand window, lift aggregated on the estimand mask only. Canonical mode: `replay_transform_mode: full_panel_transform_estimand_mask`.
-- **Deprecation:** window-slice units without `replay_estimand` cannot be upgraded; artifacts emit `legacy_replay_deprecated_use_evidence_registry`. Prefer `replay_mode: evidence_registry` for new calibration units.
+- **Upgrade:** window-slice JSON units **with** `replay_estimand` are rebuilt to full-panel frames at train time.
+- **Cannot upgrade safely:** units **without** `replay_estimand` — emit warning `legacy_replay_deprecated_use_evidence_registry`, skipped from replay loss. Do not assume window-slice-only units are comparable to evidence-registry replay.
+- **Deprecation:** new calibration should use `replay_mode: evidence_registry` and the experiment evidence registry (see below).
 
 ## BO replay generalization (Ridge+BO, advisory)
 
-Train replay loss in the BO objective uses a **full-panel refit** at the trial hyperparameters (unchanged). When time-series CV runs, a **holdout replay loss** is also computed using the **last CV-fold** coefficients (diagnostic only).
+Train replay loss in the BO objective uses a **full-panel refit** at the trial hyperparameters (**unchanged**). When time-series CV runs, a **holdout replay loss** is computed on the **same units** using the **last CV-fold** coefficients (diagnostic only — not a separate unit file or holdout fraction config).
 
 | Field | Meaning |
 |-------|---------|
+| `calibration_refit_mode` | `full_panel_same_hyperparameters` — replay train path matches shipped-model refit |
+| `replay_uses_full_panel_refit` | `true` — train replay uses full-panel coef |
 | `replay_train_loss` | Replay loss with full-panel refit coef |
-| `replay_holdout_loss` | Replay loss with last-fold coef (if CV ran) |
+| `replay_holdout_loss` | Replay loss with last-fold coef when `replay_holdout_available` |
+| `replay_holdout_available` | `false` when CV did not produce a holdout replay (must be disclosed in review) |
 | `replay_generalization_gap` | `holdout_loss − train_loss` when holdout exists |
 | `replay_generalization_gap_severity` | `none` (&lt;0.1), `moderate` (0.1–threshold), `severe` (≥ threshold) |
 | `replay_overfit_warning` | Human-readable advisory when gap is moderate/severe |
 
-Config: `calibration.replay_generalization_gap_threshold` (default `0.25`), `calibration.block_on_severe_replay_gap` (default `false` — warn only; set `true` to invalidate `model_release` on severe gap).
+Config (see [config_yaml.md](../01_getting_started/config_yaml.md)):
 
-**Replay does not establish causal lift** — only consistency between observed experiment lifts and model-implied lifts under explicit estimands.
+- `calibration.replay_generalization_gap_threshold` (default `0.25`)
+- `calibration.block_on_severe_replay_gap` (default `false` — **warning only**; set `true` only when the org wants severe gap to invalidate `model_release`)
+
+**Not implemented:** `use_replay_holdout_split`, `replay_holdout_fraction`, `train_replay_units_path`, `holdout_replay_units_path`. Fold-aligned replay refit is planned as a follow-on design PR.
 
 ## Evidence-registry replay (opt-in, PR 2)
 

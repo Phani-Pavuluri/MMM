@@ -51,6 +51,11 @@ Use this before enabling automated spend recommendations or publishing model-bas
 - [ ] Calibration artifact version pinned and traceable in metadata.
 - [ ] **Legacy replay:** `replay_mode: legacy` + `replay_units_path` passes `assert_replay_production_ready` on units.
 - [ ] **Evidence-registry replay:** `replay_mode: evidence_registry` + `extension_report.evidence_weighted_replay_summary` passes prod evidence gate (`n_evidence_units_used >= 1`, high/medium quality, no false subgeo claims).
+- [ ] **Full-panel replay transform:** `replay_transform_mode` is `full_panel_transform_estimand_mask` (or `replay_uses_full_panel_transform: true`) on replay units and extension `calibration_summary` / `ridge_fit_summary` — not window-slice-only semantics.
+- [ ] **Replay holdout disclosed:** `replay_holdout_available` is `true` when CV ran, or absence of `replay_holdout_loss` / gap fields is explicitly accepted (do not treat missing holdout as “no overfit”).
+- [ ] **Severe replay generalization gap reviewed:** when `replay_generalization_gap_severity` is `severe`, read `replay_overfit_warning` and compare to predictive CV score before release.
+- [ ] **`block_on_severe_replay_gap`:** enabled only when the org wants hard fail on severe gap (default `false` = advisory warning only).
+- [ ] **Legacy replay deprecation:** review `legacy_replay_warnings` / `legacy_replay_upgrade_warnings` for `legacy_replay_deprecated_use_evidence_registry`; migrate new work to evidence-registry replay.
 - [ ] Aggregate national/user experiments do not claim DMA lift; allocated shocks documented as `computational_bridge_only` only.
 - [ ] **Bayesian experiment likelihood:** if `bayesian.use_experiment_likelihood`, treat as **research-only**; confirm `bayesian_experiment_likelihood_report.prod_decisioning_allowed` is false and prod decision APIs remain blocked.
 - [ ] **Bayesian hierarchy:** if `bayesian.use_hierarchy`, treat as **research-only**; confirm `bayesian_hierarchy_report.prod_decisioning_allowed` is false. Do not use for prod budget optimization.

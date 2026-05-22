@@ -56,15 +56,24 @@ Window-slice frames in `replay_units.json` are upgraded at train time when `repl
 
 **BO replay generalization disclosure (advisory; objective unchanged):**
 
-Ridge+BO trials record train replay loss (full-panel refit coef) vs holdout replay loss (last CV-fold coef). Extension artifacts and `best_detail` expose `replay_train_loss`, `replay_holdout_loss`, `replay_generalization_gap`, and `replay_generalization_gap_severity` (`none` &lt; 0.1, `moderate` 0.1–0.25, `severe` ≥ threshold).
+Ridge+BO trials record **train** replay loss (full-panel refit coef — this is what enters the BO objective) vs **holdout** replay loss (last time-series CV-fold coef, diagnostic only). The gap is **not** causal evidence; it flags possible optimism when replay fits better than out-of-fold prediction.
+
+| Key | Default | Meaning |
+|-----|---------|---------|
+| `replay_generalization_gap_threshold` | `0.25` | `replay_generalization_gap_severity` becomes `severe` when `holdout_loss − train_loss` ≥ this value |
+| `block_on_severe_replay_gap` | `false` | **`false` (default):** emit `replay_overfit_warning` only; `model_release` unchanged. **`true`:** severe gap adds `severe_replay_generalization_gap` to release invalidation (opt-in hard fail) |
 
 ```yaml
 calibration:
-  replay_generalization_gap_threshold: 0.25   # severe severity cutoff
-  block_on_severe_replay_gap: false           # default: warn only; true invalidates model_release
+  replay_generalization_gap_threshold: 0.25   # severe severity cutoff (moderate band: 0.1–threshold)
+  block_on_severe_replay_gap: false           # default: warning only; true = opt-in hard fail on severe gap
 ```
 
-Replay calibration does **not** prove causal validity — it checks internal consistency under stated estimands. See [../02_concepts/calibration.md](../02_concepts/calibration.md).
+Severity bands on `replay_generalization_gap` (`holdout_loss − train_loss`): `none` &lt; 0.1, `moderate` 0.1–threshold, `severe` ≥ threshold. When CV does not run or produces no folds, `replay_holdout_available: false` and gap fields are absent — **absence must be reviewed**, not treated as “no overfit.”
+
+**Holdout replay (built-in; no separate unit paths):** Holdout replay uses the **last CV-fold** coefficients on the **same** replay units as train replay. There is **no** `use_replay_holdout_split`, `replay_holdout_fraction`, `train_replay_units_path`, or `holdout_replay_units_path` in `CalibrationConfig` today — do not add these keys expecting behavior. Unit lists come from `replay_units_path` (legacy) or `evidence_registry_path` (evidence-registry). Fold-aligned replay refit is a **future** design PR.
+
+Replay calibration does **not** prove causal validity — it checks internal consistency under stated estimands. See [../02_concepts/calibration.md](../02_concepts/calibration.md) and [../04_governance/artifact_schema.md](../04_governance/artifact_schema.md#extension-report-calibration--replay-disclosure).
 
 **Bayesian experiment likelihood (research-only):**
 
