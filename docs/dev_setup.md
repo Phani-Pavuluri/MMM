@@ -1,5 +1,7 @@
 # Development environment setup
 
+**Python:** 3.11+ required (`requires-python` in `pyproject.toml`). Use **Python 3.11 or 3.12** for local development and CI parity. The dev container ships Python 3.11.
+
 ## Dependency system
 
 MMM uses **PEP 621 + setuptools** (`pyproject.toml`, `[project.optional-dependencies]`). CI installs with:

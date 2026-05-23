@@ -14,6 +14,10 @@ Use this before enabling automated spend recommendations or publishing model-bas
 
 - [ ] `extension_report` governance / response diagnostics meet org thresholds (see `OptimizationSafetyGate`).
 - [ ] Non-BAU baselines documented in optimization disclosure strings.
+- [ ] **Reproducibility:** when enabled, `reproducibility_certification_report.identical_output` is true for certified reruns (same data/config/seeds/promotion).
+- [ ] **Decision trace:** prod `mmm decide --out` includes `decision_trace.json` beside decision JSON; trace fingerprints match bundle.
+- [ ] **Calibration readiness:** review `calibration_readiness_report` (`stale_calibration_warning`, `coefficient_shift_score`, `replay_miss_rate`); when `governance.require_review_on_drift: true`, confirm `model_release.state` is not `planning_allowed` until reviewed.
+- [ ] **Performance limits:** review `performance_certification_report` before batch jobs on wide panels (opt-in extension).
 - [ ] **Promotion (optional):** when `governance.require_promoted_model_for_prod_decision: true`, prod decide supplies a valid `promoted_model_id` / promotion record; fingerprints match; record not expired; surface allowed. See [promotion_workflow.md](promotion_workflow.md).
 - [ ] **No auto-promotion** — `promote_run` is explicit human review only; registry is append-only JSONL.
 

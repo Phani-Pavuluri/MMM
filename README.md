@@ -90,6 +90,8 @@ Train → Validate → Calibrate → Diagnostics → Simulate scenarios → Opti
 
 ## Quickstart
 
+Requires **Python 3.11+** (3.11 or 3.12 recommended).
+
 ```bash
 pip install -e ".[bayesian,bo,dev]"
 mmm train --config examples/minimal_train.yaml

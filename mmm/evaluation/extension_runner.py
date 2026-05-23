@@ -14,6 +14,15 @@ from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.schema import PanelSchema
 from mmm.evaluation.extensions.context import ExtensionContext
 from mmm.evaluation.extensions.registry import get_extension_registry
+from mmm.evaluation.performance_certification import build_performance_certification_report
+from mmm.governance.calibration_readiness import (
+    apply_calibration_readiness_to_model_release,
+    build_calibration_readiness_report,
+)
+from mmm.governance.reproducibility_certification import (
+    build_reproducibility_certification_report,
+    extract_reproducibility_snapshot,
+)
 from mmm.hierarchy.diagnostics import hierarchy_enabled
 from mmm.optimization.robust import build_robust_optimization_research
 from mmm.services.calibration_service import run_hierarchy_post_fit_reports
@@ -141,6 +150,18 @@ def _run_research_extension_reports(ctx: ExtensionContext) -> None:
         )
     if config.extensions.decision_validation.enabled:
         out["decision_validation_report"] = build_decision_validation_report(config)
+    readiness = build_calibration_readiness_report(config, out)
+    out["calibration_readiness_report"] = readiness
+    patched_mr = apply_calibration_readiness_to_model_release(config, out, readiness)
+    if patched_mr is not None:
+        out["model_release"] = patched_mr
+    if config.extensions.reproducibility_certification.enabled:
+        snap = extract_reproducibility_snapshot(fit_out=fit_out, extension_report=out)
+        out["reproducibility_certification_report"] = build_reproducibility_certification_report(
+            reference=snap
+        )
+    if config.extensions.performance_certification.enabled:
+        out["performance_certification_report"] = build_performance_certification_report(config)
     id_json = out.get("identifiability", {})
     out["uncertainty_decomposition_legacy"] = build_legacy_uncertainty_buckets(
         config,

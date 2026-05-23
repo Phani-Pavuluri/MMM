@@ -242,6 +242,22 @@ class PerformanceAuditConfig(BaseModel):
     enabled: bool = True
 
 
+class ReproducibilityCertificationConfig(BaseModel):
+    """Post-fit reproducibility snapshot and self-certification (diagnostic only)."""
+
+    enabled: bool = False
+
+
+class PerformanceCertificationConfig(BaseModel):
+    """Synthetic scaling performance certification (diagnostic only; can be slow)."""
+
+    enabled: bool = False
+    include_medium_scenario: bool = False
+    include_large_scenario: bool = False
+    n_trials_per_scenario: int = Field(default=1, ge=1, le=5)
+    seed: int = 42
+
+
 class DriftHistoricalConfig(BaseModel):
     """Historical drift context (diagnostic only — no auto-retrain)."""
 
@@ -293,5 +309,11 @@ class ExtensionSuiteConfig(BaseModel):
         default_factory=RidgeUncertaintyResearchConfig
     )
     performance_audit: PerformanceAuditConfig = Field(default_factory=PerformanceAuditConfig)
+    reproducibility_certification: ReproducibilityCertificationConfig = Field(
+        default_factory=ReproducibilityCertificationConfig
+    )
+    performance_certification: PerformanceCertificationConfig = Field(
+        default_factory=PerformanceCertificationConfig
+    )
 
     model_config = {"extra": "forbid"}

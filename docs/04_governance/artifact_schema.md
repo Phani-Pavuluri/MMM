@@ -185,4 +185,16 @@ When a promotion record is supplied to prod decide paths, `decision_bundle` may 
 
 See [promotion_workflow.md](promotion_workflow.md).
 
+## Extension report: operational trust (diagnostic)
+
+| Key | Tier | Description |
+|-----|------|-------------|
+| `reproducibility_certification_report` | diagnostic | Component hashes; `identical_output`, `mismatched_components` |
+| `calibration_readiness_report` | diagnostic / readiness | Freshness, coef drift, replay miss trend; may block planning when configured |
+| `performance_certification_report` | diagnostic | Synthetic scaling timings and memory estimates |
+
+## Decision artifact: `decision_trace.json`
+
+Written beside prod decision JSON. Fields include `identity`, `lineage`, `calibration`, `decision`, `governance` — see [decision_trace.md](decision_trace.md).
+
 See also: [../03_planning/decision_runbook.md](../03_planning/decision_runbook.md) §2e, [../03_planning/planning_execution.md](../03_planning/planning_execution.md), [../01_getting_started/config_yaml.md](../01_getting_started/config_yaml.md).

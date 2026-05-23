@@ -34,4 +34,11 @@ def strip_volatile_decision_payload(d: dict[str, Any]) -> dict[str, Any]:
             _scrub_lineage_metadata(
                 lr.get("scenario_lineage") if isinstance(lr.get("scenario_lineage"), dict) else None
             )
+    trace = out.get("decision_trace")
+    if isinstance(trace, dict):
+        trace.pop("generated_at", None)
+        ident = trace.get("identity")
+        if isinstance(ident, dict):
+            ident.pop("decision_id", None)
+        trace.pop("decision_id", None)
     return out

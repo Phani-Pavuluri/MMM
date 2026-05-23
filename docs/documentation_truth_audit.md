@@ -18,7 +18,7 @@ Audit date: 2026-05-18 (updated). Scope: canonical `docs/` journey tree vs packa
 | Ridge uncertainty research | `mmm/governance/ridge_uncertainty_research.py`, `docs/04_governance/ridge_uncertainty_research.md` |
 | Performance audit artifact | `mmm/evaluation/performance_audit.py`, `performance_report` extension |
 | Control policy packs | `mmm/governance/control_policy_packs.py` (guidance only) |
-| CI release gates | `.github/workflows/ci.yml` — Python 3.10–3.12, docs + artifact + reproducibility jobs |
+| CI release gates | `.github/workflows/ci.yml` — Python 3.11–3.12, docs + artifact + reproducibility jobs |
 | Documentation inventory | `docs/DOCUMENTATION_INVENTORY.md` |
 | Doc link validation | `scripts/validate_docs.py` + `tests/test_docs_validation.py` |
 | Seed contract + `seed_resolution` artifact | `mmm/contracts/seed_resolution.py`, `load_config` / `resolve_config` |
