@@ -92,6 +92,30 @@ governance:
 
 See [../04_governance/promotion_workflow.md](../04_governance/promotion_workflow.md).
 
+**Calibration freshness / drift readiness (warnings by default):**
+
+```yaml
+governance:
+  calibration_max_age_days: 180
+  coefficient_shift_threshold: 0.30
+  replay_miss_threshold: 0.25
+  require_review_on_drift: false   # true → blocks planning_allowed when drift thresholds exceeded
+```
+
+See [../04_governance/calibration_freshness.md](../04_governance/calibration_freshness.md).
+
+**Operational trust extensions (diagnostic):**
+
+```yaml
+extensions:
+  reproducibility_certification:
+    enabled: false
+  performance_certification:
+    enabled: false
+    include_medium_scenario: false
+    include_large_scenario: false
+```
+
 **Bayesian experiment likelihood (research-only):**
 
 ```yaml

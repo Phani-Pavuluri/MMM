@@ -323,6 +323,14 @@ class GovernanceWorkflowConfig(BaseModel):
 
     require_promoted_model_for_prod_decision: bool = False
     promotion_registry_path: str | None = None
+    #: Warn when experiment evidence is older than this many days (continuous validation / registry).
+    calibration_max_age_days: int = Field(default=180, ge=1)
+    #: Relative max coef shift vs accepted/promoted reference before review action.
+    coefficient_shift_threshold: float = Field(default=0.30, gt=0.0, le=5.0)
+    #: Fraction of evaluated replay comparisons classified as miss before review action.
+    replay_miss_threshold: float = Field(default=0.25, ge=0.0, le=1.0)
+    #: When true, severe drift downgrades model_release to invalidated (no auto-retrain).
+    require_review_on_drift: bool = False
 
     model_config = {"extra": "forbid"}
 

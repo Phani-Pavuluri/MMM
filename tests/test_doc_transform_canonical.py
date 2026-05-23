@@ -70,3 +70,19 @@ def test_prod_checklist_promotion_and_replay_refit() -> None:
     text = (ROOT / "docs/04_governance/prod_safety_checklist.md").read_text(encoding="utf-8")
     assert "require_promoted_model_for_prod_decision" in text
     assert "replay_refit_mode" in text
+
+
+def test_operational_trust_docs_present() -> None:
+    for name in (
+        "reproducibility_certification.md",
+        "decision_trace.md",
+        "calibration_freshness.md",
+        "performance_certification.md",
+    ):
+        assert (ROOT / "docs/04_governance" / name).is_file()
+    cfg = (ROOT / "docs/01_getting_started/config_yaml.md").read_text(encoding="utf-8")
+    assert "calibration_max_age_days" in cfg
+    assert "reproducibility_certification" in cfg
+    schema = (ROOT / "docs/04_governance/artifact_schema.md").read_text(encoding="utf-8")
+    assert "calibration_readiness_report" in schema
+    assert "decision_trace.json" in schema

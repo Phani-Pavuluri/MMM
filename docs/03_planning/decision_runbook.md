@@ -58,6 +58,7 @@ Successful PROD **`mmm decide … --out`** JSON includes a **`decision_bundle`**
 - **`economics_contract_version`** / economics metadata on the bundle and on enriched **`simulation`** objects
 - **`data_version_id`** when `data.data_version_id` is set in config
 - **Promotion lineage** (when configured): `promotion_id`, `promoted_model_id`, `promotion_fingerprint_match`, `rollback_lineage` — see [../04_governance/promotion_workflow.md](../04_governance/promotion_workflow.md)
+- **`decision_trace.json`** (prod `--out`): single-file audit trail — see [../04_governance/decision_trace.md](../04_governance/decision_trace.md)
 
 ## 2c. Artifact tiers (machine + operator)
 

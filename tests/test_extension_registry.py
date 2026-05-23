@@ -100,6 +100,7 @@ def test_extension_report_top_level_keys_regression() -> None:
                 "control_governance",
             "baselines",
             "calibration_summary",
+            "calibration_readiness_report",
             "replay_calibration_sensitivity",
             "replay_holdout_validation",
             "curve_bundle",

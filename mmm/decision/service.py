@@ -32,6 +32,7 @@ from mmm.decision.optimize_enrichment import (
     apply_simulation_at_recommendation_allowlist,
     apply_simulation_at_recommendation_allowlist_post_enrich,
 )
+from mmm.governance.decision_trace import build_decision_trace
 from mmm.governance.model_form_policy import assert_prod_decision_not_log_log
 from mmm.governance.policy import (
     PolicyError,
@@ -92,6 +93,17 @@ def _apply_runtime_policy_prechecks(cfg: MMMConfig, er: dict[str, Any], policy: 
         ),
     )
     require_identifiability_for_prod_decision(cfg, er, policy)
+    readiness = er.get("calibration_readiness_report") if isinstance(er, dict) else None
+    if (
+        policy.prod
+        and isinstance(readiness, dict)
+        and readiness.get("blocks_planning_allowed")
+    ):
+        action = readiness.get("recommended_action", "model_review_required")
+        raise PolicyError(
+            f"calibration drift review required (recommended_action={action!r}); "
+            "governance.require_review_on_drift blocks planning"
+        )
 
 
 def _resolve_promotion_for_decision(
@@ -399,10 +411,30 @@ def simulate_decision(
         lineage_refs={"bundle_keys": list(bundle.keys()), "scenario_lineage": scenario_lineage},
     )
     require_decision_safe_result(canon.as_result_dict(), policy)
+    policy_checks = [
+        {"check": "runtime_policy", "passed": True},
+        {"check": "optimization_gate", "passed": bool(gr.allowed)},
+        {"check": "decision_safe", "passed": bool(sim_js.get("decision_safe"))},
+    ]
+    trace = build_decision_trace(
+        config=cfg,
+        extension_report=er if isinstance(er, dict) else None,
+        simulation_json=sim_js,
+        decision_bundle=bundle,
+        promotion_lineage=promo_lineage,
+        policy_checks=policy_checks,
+        surface="simulate",
+    )
+    if out is not None:
+        from mmm.governance.decision_trace import write_decision_trace_json
+
+        trace_path = out.parent / "decision_trace.json" if out.suffix == ".json" else out / "decision_trace.json"
+        write_decision_trace_json(trace, str(trace_path))
     return {
         "simulation": sim_js,
         "decision_bundle": bundle,
         "decision_result": canon.model_dump(mode="json"),
+        "decision_trace": trace,
         "planning_assumptions": planning_assumptions,
         "scenario_lineage": scenario_lineage,
     }
@@ -611,9 +643,27 @@ def optimize_budget_decision(
             lineage_refs={"bundle_keys": list(bundle.keys())},
         )
         require_decision_safe_result(canon.as_result_dict(), policy)
+    trace = build_decision_trace(
+        config=cfg,
+        extension_report=er_data if isinstance(er_data, dict) else None,
+        simulation_json=sim_at if sim_at else None,
+        decision_bundle=bundle,
+        optimizer_result=res,
+        policy_checks=[
+            {"check": "optimization_gate", "passed": bool(gr.allowed)},
+            {"check": "optimizer_success", "passed": optimizer_success},
+        ],
+        surface="optimize_budget",
+    )
+    if out is not None:
+        from mmm.governance.decision_trace import write_decision_trace_json
+
+        trace_path = out.parent / "decision_trace.json" if out.suffix == ".json" else out / "decision_trace.json"
+        write_decision_trace_json(trace, str(trace_path))
     return {
         "optimization": res,
         "decision_bundle": bundle,
+        "decision_trace": trace,
         "business_surface": bs,
         "planning_assumptions": planning_assumptions,
         "scenario_lineage": scenario_lineage,
