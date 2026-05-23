@@ -115,12 +115,24 @@ governance:
 
 See [../04_governance/calibration_freshness.md](../04_governance/calibration_freshness.md).
 
+**Production readiness gate (optional prod decide fail-closed):**
+
+```yaml
+governance:
+  require_production_certification: false   # true → prod decide fails closed when approved_for_prod=false; false → severe warning only
+```
+
+See [../04_governance/production_readiness.md](../04_governance/production_readiness.md).
+
 **Operational trust extensions (diagnostic):**
 
 ```yaml
 extensions:
   reproducibility_certification:
     enabled: false
+    reference_run_path: null   # optional path to prior run for independent evidence
+  optimizer_certification:
+    enabled: false   # true for prod-bound trains; auto-enabled when run_environment: prod
   performance_certification:
     enabled: false
     include_medium_scenario: false

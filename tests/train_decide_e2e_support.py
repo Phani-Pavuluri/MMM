@@ -114,6 +114,7 @@ def write_train_decide_fixture(root: Path) -> dict[str, Path]:
                 "artifacts": {"backend": "local", "run_dir": str(run_dir.resolve())},
                 "extensions": {
                     "optimization_gates": {"enabled": True},
+                    "optimizer_certification": {"enabled": True},
                     "governance": {
                         "max_replay_calibration_chi2": 50.0,
                         "require_falsification_pass": False,

@@ -2,17 +2,31 @@
 
 Controlled DGP fixtures prove **internal numerical consistency** of the Ridge + BO + full-panel Δμ path. They do **not** prove causal validity, external validity, or that real-world experiments were well designed.
 
-## Certified cases
+## Runtime vs CI
 
-| Fixture | What is proven | Typical tolerance |
-|---------|----------------|-----------------|
-| Linear semi-log, no adstock | `simulate()` Δμ matches analytic level-scale expectation from fixed coef | 5% relative or 1.0 absolute |
-| Geometric adstock | Design matrix preserves carryover across zero-spend weeks | monotonicity vs zero-spend baseline |
-| Hill saturation | Transformed spend is monotone in raw spend | non-decreasing feature path |
-| Two-channel optimizer | Budget shifts toward higher-β channel under `optimize_budget_via_simulation` | directional (high ≥ low) |
-| Collinear media | Identifiability / separability diagnostics fire on near-duplicate channels | score < 0.99 or separability report |
+`run_synthetic_certification_suite(mode="exact")` (emitted on every `extension_report`) runs the **same checks** as `tests/test_synthetic_certification_exact.py`:
 
-Tests live in `tests/test_synthetic_certification_exact.py` and related DGP modules.
+| Check | What is proven |
+|-------|----------------|
+| `semi_log_delta_mu_exact` | `simulate()` Δμ consistency on fixed coef |
+| `geometric_adstock_carryover` | Week-1 carryover on impulse spend |
+| `hill_saturation_analytic` | Hill formula matches implementation |
+| `geometric_adstock_design_matrix` | Carryover preserved in design matrix |
+| `hill_saturation_monotone_design_matrix` | Monotone feature path in design matrix |
+| `two_channel_optimizer_direction` | Optimizer prefers higher-β channel |
+| `transform_policy_consistency` | Prod decide rejects bad transform_policy |
+
+## certification_level
+
+| Level | Meaning |
+|-------|---------|
+| `exact` | All exact-tier checks passed |
+| `smoke` | Smoke subset only (3 micro checks) |
+| `incomplete` | One or more exact checks failed |
+
+Failed **exact** certification blocks `production_readiness_report.approved_for_prod`. `incomplete` lowers `readiness_score`.
+
+**Single source of truth:** `run_synthetic_certification_suite(mode="exact")` and `run_exact_check(name)` in `mmm/governance/synthetic_certification.py`. CI tests call the same `CHECK_REGISTRY` — no duplicated DGP logic in `tests/`.
 
 ## Assumptions
 

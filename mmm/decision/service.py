@@ -96,6 +96,9 @@ def _apply_runtime_policy_prechecks(cfg: MMMConfig, er: dict[str, Any], policy: 
         ),
     )
     require_identifiability_for_prod_decision(cfg, er, policy)
+    from mmm.governance.production_readiness import require_production_readiness_for_prod_decide
+
+    require_production_readiness_for_prod_decide(cfg, er if isinstance(er, dict) else {})
     readiness = er.get("calibration_readiness_report") if isinstance(er, dict) else None
     if (
         policy.prod
@@ -107,6 +110,29 @@ def _apply_runtime_policy_prechecks(cfg: MMMConfig, er: dict[str, Any], policy: 
             f"calibration drift review required (recommended_action={action!r}); "
             "governance.require_review_on_drift blocks planning"
         )
+
+
+def _attach_prod_decide_warnings(
+    payload: dict[str, Any],
+    *,
+    fingerprint: dict[str, Any],
+    readiness: dict[str, Any] | None,
+) -> None:
+    """Merge fingerprint and production-readiness warnings into decide payloads."""
+    ordered: list[str] = []
+    for surf in (readiness or {}, fingerprint):
+        sw = surf.get("severe_warning")
+        if sw:
+            ordered.append(str(sw))
+        ordered.extend(str(w) for w in (surf.get("warnings") or []) if w)
+    seen: set[str] = set()
+    deduped: list[str] = []
+    for w in ordered:
+        if w not in seen:
+            seen.add(w)
+            deduped.append(w)
+    if deduped:
+        payload["decision_fingerprint_warnings"] = deduped
 
 
 def _resolve_promotion_for_decision(
@@ -305,10 +331,15 @@ def simulate_decision(
     sim, sim_js, scenario_lineage, planning_assumptions = _scenario_simulate(
         cfg, extension_report, scenario, scenario_source_path=scenario_source_path
     )
-    if fp_match.get("severe_warning"):
-        sim_js["decision_fingerprint_warnings"] = [fp_match["severe_warning"], *fp_match.get("warnings", [])]
-    elif fp_match.get("warnings"):
-        sim_js["decision_fingerprint_warnings"] = list(fp_match.get("warnings") or [])
+    from mmm.governance.production_readiness import production_readiness_decide_surface
+
+    pr_surface = (
+        production_readiness_decide_surface(cfg, extension_report)
+        if cfg.run_environment == RunEnvironment.PROD
+        else None
+    )
+    decide_warnings: dict[str, Any] = {}
+    _attach_prod_decide_warnings(decide_warnings, fingerprint=fp_match, readiness=pr_surface)
     er = extension_report
     sim_js_pre, _sim_audit = apply_simulation_at_recommendation_allowlist(
         dict(sim_js), cfg=cfg, context="simulate_decision.simulation_json.pre_enrich"
@@ -444,7 +475,7 @@ def simulate_decision(
 
         trace_path = out.parent / "decision_trace.json" if out.suffix == ".json" else out / "decision_trace.json"
         write_decision_trace_json(trace, str(trace_path))
-    return {
+    payload: dict[str, Any] = {
         "simulation": sim_js,
         "decision_bundle": bundle,
         "decision_result": canon.model_dump(mode="json"),
@@ -452,6 +483,9 @@ def simulate_decision(
         "planning_assumptions": planning_assumptions,
         "scenario_lineage": scenario_lineage,
     }
+    if decide_warnings.get("decision_fingerprint_warnings"):
+        payload["decision_fingerprint_warnings"] = decide_warnings["decision_fingerprint_warnings"]
+    return payload
 
 
 def optimize_budget_decision(
@@ -642,10 +676,14 @@ def optimize_budget_decision(
         "scenario_lineage": scenario_lineage,
         "control_scenario_policy": policy_js,
     }
-    if fp_match.get("severe_warning"):
-        res["decision_fingerprint_warnings"] = [fp_match["severe_warning"], *fp_match.get("warnings", [])]
-    elif fp_match.get("warnings"):
-        res["decision_fingerprint_warnings"] = list(fp_match.get("warnings") or [])
+    from mmm.governance.production_readiness import production_readiness_decide_surface
+
+    pr_surface = (
+        production_readiness_decide_surface(cfg, er_data if isinstance(er_data, dict) else {})
+        if cfg.run_environment == RunEnvironment.PROD
+        else None
+    )
+    _attach_prod_decide_warnings(res, fingerprint=fp_match, readiness=pr_surface)
     _sim_for_val = sim_at if sim_at else None
     try:
         finalize_and_validate_cli_decision_bundle(bundle, cfg, simulation_json=_sim_for_val)
