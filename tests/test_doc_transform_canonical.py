@@ -28,6 +28,8 @@ def test_config_yaml_documents_replay_gap_controls() -> None:
     assert "block_on_severe_replay_gap" in text
     assert "full_panel_transform_estimand_mask" in text
     assert "legacy_replay_deprecated_use_evidence_registry" in text
+    assert "replay_refit_mode" in text
+    assert "require_promoted_model_for_prod_decision" in text
     assert "not" in text.lower() and "causal" in text.lower()
 
 
@@ -55,7 +57,16 @@ def test_artifact_schema_replay_disclosure_fields() -> None:
         "replay_uses_full_panel_transform",
         "lift_evaluated_on_estimand_mask_only",
         "calibration_refit_mode",
+        "replay_refit_mode",
         "replay_generalization_gap",
         "replay_overfit_warning",
+        "promotion_id",
+        "promotion_fingerprint_match",
     ):
         assert field in text
+
+
+def test_prod_checklist_promotion_and_replay_refit() -> None:
+    text = (ROOT / "docs/04_governance/prod_safety_checklist.md").read_text(encoding="utf-8")
+    assert "require_promoted_model_for_prod_decision" in text
+    assert "replay_refit_mode" in text

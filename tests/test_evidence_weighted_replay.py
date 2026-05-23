@@ -391,7 +391,7 @@ def test_bo_objective_uses_weighted_replay(tmp_path: Path) -> None:
             ),
         ),
         patch(
-            "mmm.models.ridge_bo.trainer.aggregate_weighted_evidence_replay_loss",
+            "mmm.calibration.replay_bo_objective.aggregate_weighted_evidence_replay_loss",
             return_value=(0.42, {"weighted_replay_loss": 0.42, "replay_mode_used": "evidence_registry"}),
         ) as mock_loss,
     ):

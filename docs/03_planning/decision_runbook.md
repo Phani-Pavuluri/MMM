@@ -41,6 +41,7 @@ These rules are **enforced in code** (config load, CLI, `mmm.decision.api`, and 
 | **Bayesian optimize** | **`mmm decide optimize-budget`** is **blocked** for `framework=bayesian` in prod (exit **2**). |
 | **Bayesian training in prod** | **`posterior_predictive_draws > 0`** and **`extensions.governance.bayesian_max_mean_abs_ppc_gap`** set (finite). That **does not** enable prod budget optimization for Bayesian. |
 | **Posterior planning** | Draw-based / posterior planning helpers **fail closed in prod** via `posterior_planning_gate` until explicitly re-certified. |
+| **Promotion (optional)** | When `governance.require_promoted_model_for_prod_decision: true`, prod decide must pass `promoted_model_id` or promotion JSON; fingerprints and expiration validated. Default `false` preserves backward compatibility. |
 
 Additional YAML / training rules (transforms, Ridge BO leaderboard refit, replay-only calibration approval, replay concentration) remain as configured in `MMMConfig` and extension governance—see checklist in §12.
 
@@ -56,6 +57,7 @@ Successful PROD **`mmm decide … --out`** JSON includes a **`decision_bundle`**
 - **`artifact_tier`** = **`decision`**
 - **`economics_contract_version`** / economics metadata on the bundle and on enriched **`simulation`** objects
 - **`data_version_id`** when `data.data_version_id` is set in config
+- **Promotion lineage** (when configured): `promotion_id`, `promoted_model_id`, `promotion_fingerprint_match`, `rollback_lineage` — see [../04_governance/promotion_workflow.md](../04_governance/promotion_workflow.md)
 
 ## 2c. Artifact tiers (machine + operator)
 

@@ -100,7 +100,7 @@ def test_bo_uses_train_replay_only_when_split_enabled(tmp_path: Path) -> None:
         captured.append(list(units))
         return 0.1, {"n_units": len(units)}
 
-    with patch("mmm.models.ridge_bo.trainer.aggregate_replay_calibration_loss", side_effect=_capture):
+    with patch("mmm.calibration.replay_bo_objective.aggregate_replay_calibration_loss", side_effect=_capture):
         tr.fit(df)
     assert captured
     assert {u.unit_id for u in captured[0]} == train_ids

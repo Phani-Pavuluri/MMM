@@ -266,6 +266,7 @@ def build_decision_bundle(
     runtime_policy_hash: str | None = None,
     model_release_id: str | None = None,
     decision_uncertainty: dict[str, Any] | None = None,
+    promotion_lineage: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Assemble required metadata for optimize-budget / canonical simulate / decision reports."""
     econ = build_economics_contract(config)
@@ -460,4 +461,6 @@ def build_decision_bundle(
         out["control_scenario_policy"] = control_scenario_policy
     du = decision_uncertainty if isinstance(decision_uncertainty, dict) else build_decision_uncertainty(config)
     out["decision_uncertainty"] = du
+    if isinstance(promotion_lineage, dict) and promotion_lineage:
+        out.update(promotion_lineage)
     return out

@@ -42,6 +42,7 @@ from mmm.governance.policy import (
     require_identifiability_for_prod_decision,
     require_panel_qa_pass,
     require_planning_allowed,
+    require_promoted_model_for_prod_decision,
     require_replay_calibration,
     require_safe_cv,
     runtime_policy_from_config,
@@ -91,6 +92,32 @@ def _apply_runtime_policy_prechecks(cfg: MMMConfig, er: dict[str, Any], policy: 
         ),
     )
     require_identifiability_for_prod_decision(cfg, er, policy)
+
+
+def _resolve_promotion_for_decision(
+    cfg: MMMConfig,
+    *,
+    promoted_model_id: str | None,
+    promotion_record_path: str | None,
+) -> dict[str, Any] | None:
+    if not promoted_model_id and not promotion_record_path:
+        return None
+    import json
+    from pathlib import Path
+
+    from mmm.governance.promotion import PromotionRecord
+    from mmm.governance.promotion_registry import get_promotion_by_id
+
+    if promotion_record_path:
+        raw = json.loads(Path(promotion_record_path).read_text(encoding="utf-8"))
+        return PromotionRecord.from_dict(raw).to_dict()
+    if promoted_model_id and cfg.governance.promotion_registry_path:
+        rec = get_promotion_by_id(cfg.governance.promotion_registry_path, promoted_model_id)
+        if rec is not None:
+            return rec.to_dict()
+    if promoted_model_id:
+        return {"promotion_id": promoted_model_id}
+    return None
 
 
 def _load_planning_scenario(raw: dict[str, Any], *, source_path: str | None = None) -> PlanningScenario:
@@ -209,6 +236,8 @@ def simulate_decision(
     extension_report: dict[str, Any],
     out: Path | None,
     scenario_source_path: str | None = None,
+    promoted_model_id: str | None = None,
+    promotion_record_path: str | None = None,
 ) -> dict[str, Any]:
     """
     Full-panel Δμ simulate with centralized runtime policy.
@@ -224,6 +253,23 @@ def simulate_decision(
     if not cfg.data.path:
         raise ValueError("simulate requires config.data.path to the training panel")
     _apply_runtime_policy_prechecks(cfg, extension_report, policy)
+    promo = _resolve_promotion_for_decision(
+        cfg,
+        promoted_model_id=promoted_model_id,
+        promotion_record_path=promotion_record_path,
+    )
+    fp_for_promo = None
+    if cfg.governance.require_promoted_model_for_prod_decision and cfg.run_environment == RunEnvironment.PROD:
+        builder = DatasetBuilder(cfg.data)
+        schema = builder.schema()
+        panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
+        fp_for_promo = fingerprint_panel(panel, schema, config=cfg)
+    require_promoted_model_for_prod_decision(
+        cfg,
+        promotion_record=promo,
+        surface="simulate",
+        data_fingerprint=fp_for_promo,
+    )
 
     gr_prod = None
     if cfg.run_environment == RunEnvironment.PROD:
@@ -284,6 +330,33 @@ def simulate_decision(
     if isinstance(mr, dict):
         mr_id = str(hash(tuple(sorted((str(k), str(v)) for k, v in mr.items()))))
 
+    promo_lineage: dict[str, Any] = {}
+    if isinstance(promo, dict) and promo.get("promotion_id"):
+        from mmm.governance.promotion import PromotionRecord, assert_promotion_valid_for_decision
+
+        prec = PromotionRecord.from_dict(promo)
+        match = True
+        try:
+            assert_promotion_valid_for_decision(
+                prec,
+                surface="simulate",
+                data_fingerprint=fp,
+                config_fingerprint=str(fp.get("config_fingerprint_sha256", "")) if isinstance(fp, dict) else None,
+            )
+        except PolicyError:
+            match = False
+        promo_lineage = {
+            "promoted_model_id": prec.model_id,
+            "promotion_id": prec.promotion_id,
+            "promotion_registry_ref": cfg.governance.promotion_registry_path,
+            "promotion_fingerprint_match": match,
+            "promotion_expiration_date": prec.expiration_date,
+            "rollback_lineage": {
+                "rollback_of": prec.rollback_of,
+                "parent_promotion_id": prec.parent_promotion_id,
+            },
+        }
+
     bundle = build_decision_bundle(
         config=cfg,
         schema=schema,
@@ -298,6 +371,7 @@ def simulate_decision(
         },
         data_fingerprint=fp,
         uncertainty_mode="point",
+        promotion_lineage=promo_lineage,
         decision_safe=bool(sim_js["decision_safe"]),
         governance_passed=bool(gr.allowed),
         optimizer_success=None,
