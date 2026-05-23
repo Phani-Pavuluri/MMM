@@ -4,7 +4,10 @@ Use this before enabling automated spend recommendations or publishing model-bas
 
 ## Data & fit
 
-- [ ] Panel fingerprint matches training artifact (or documented exception).
+- [ ] **Train↔decide fingerprint:** `extension_report.data_fingerprint.sha256_combined` matches the panel loaded at decide time (enforced in code unless `governance.allow_decision_fingerprint_mismatch` + waiver).
+- [ ] **`ridge_fit_summary` complete:** `coef`, `intercept`, `best_params` (`decay`, `hill_half`, `hill_slope`), `model_form: semi_log`, `transform_policy`, and training `data_fingerprint`.
+- [ ] **Prod replay refit:** training uses `replay_refit_mode: fold_aligned` or `holdout_only_diagnostic`, not `full_panel_refit` without `calibration.full_panel_replay_refit_prod_waiver_path`.
+- [ ] **Prod transforms:** YAML `transforms.adstock: geometric` and `transforms.saturation: hill` (Weibull/log/logistic rejected at parse for prod Ridge).
 - [ ] `run_environment: prod` set explicitly in config.
 - [ ] **`model_form: semi_log`** for Ridge prod training and decisions (`log_log` is research-only until formally validated).
 - [ ] Extension report / decision bundle do not indicate stale `model_form=log_log` lineage.

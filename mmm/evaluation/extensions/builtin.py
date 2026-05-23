@@ -234,7 +234,17 @@ def _run_guidance(ctx: ExtensionContext) -> None:
 
 def _run_ridge_fit_summary(ctx: ExtensionContext) -> None:
     if ctx.config.framework == Framework.RIDGE_BO and ctx.fit_out.get("artifacts"):
-        ctx.out["ridge_fit_summary"] = ridge_fit_summary_from_artifacts(ctx.fit_out["artifacts"])
+        summary = ridge_fit_summary_from_artifacts(
+            ctx.fit_out["artifacts"],
+            model_form=ctx.config.model_form.value,
+        )
+        tp = ctx.out.get("transform_policy")
+        if isinstance(tp, dict):
+            summary["transform_policy"] = tp
+        fp = ctx.out.get("data_fingerprint")
+        if isinstance(fp, dict):
+            summary["data_fingerprint"] = fp
+        ctx.out["ridge_fit_summary"] = summary
 
 
 def _run_model_release(ctx: ExtensionContext) -> None:

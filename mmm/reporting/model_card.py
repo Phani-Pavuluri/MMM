@@ -93,6 +93,12 @@ def generate_model_card(
         f"- Replay loss: {cal.get('replay_loss')}\n"
         f"- Coverage note: calibration evidence is **evidence**, not an automatic approval gate.\n"
     )
+    replay_note = er.get("replay_refit_prod_governance") or {}
+    if isinstance(replay_note, dict) and replay_note.get("prod_full_panel_refit_waiver"):
+        cal_body += (
+            f"\n- **WARNING:** {replay_note.get('message', 'full_panel_refit prod waiver in effect')}\n"
+            f"- Waiver id: {replay_note.get('waiver_id')}\n"
+        )
 
     gov = bundle.get("governance") or er.get("governance") or {}
     gov_body = (

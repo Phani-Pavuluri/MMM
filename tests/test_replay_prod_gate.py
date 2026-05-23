@@ -10,10 +10,11 @@ import pytest
 
 from mmm.calibration.contracts import CalibrationUnit
 from mmm.calibration.replay_prod_gate import assert_replay_production_ready
-from mmm.config.schema import CalibrationConfig, DataConfig, Framework, MMMConfig, ModelForm, RunEnvironment
+from mmm.config.schema import DataConfig, Framework, MMMConfig, ModelForm, RunEnvironment
 from mmm.data.schema import PanelSchema
 from mmm.experiments.durable_registry import upsert_experiment_record
 from mmm.experiments.registry import ApprovalState, ExperimentRecord
+from tests.prod_extension_fixtures import prod_replay_calibration_config
 
 _OBS = pd.DataFrame({"g": [1], "w": [1], "y": [1.0], "c1": [1.0]})
 _BASE_UNIT = CalibrationUnit(
@@ -53,6 +54,7 @@ def test_prod_replay_gate_ok_complete_unit() -> None:
             week_column="w",
             channel_columns=["c1"],
             target_column="y",
+            data_version_id="replay-gate-test-v1",
         ),
         run_environment=RunEnvironment.PROD,
         prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
@@ -61,7 +63,7 @@ def test_prod_replay_gate_ok_complete_unit() -> None:
             "normalization_profile": "strict_prod",
             "named_profile": "ridge_bo_standard_v1",
         },
-        calibration=CalibrationConfig(use_replay_calibration=True, replay_units_path="x.json"),
+        calibration=prod_replay_calibration_config(replay_units_path="x.json"),
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
     assert_replay_production_ready(cfg, [_minimal_unit()], schema=schema)
@@ -77,6 +79,7 @@ def test_prod_replay_gate_missing_estimand() -> None:
             week_column="w",
             channel_columns=["c1"],
             target_column="y",
+            data_version_id="replay-gate-test-v1",
         ),
         run_environment=RunEnvironment.PROD,
         prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
@@ -85,7 +88,7 @@ def test_prod_replay_gate_missing_estimand() -> None:
             "normalization_profile": "strict_prod",
             "named_profile": "ridge_bo_standard_v1",
         },
-        calibration=CalibrationConfig(use_replay_calibration=True, replay_units_path="x.json"),
+        calibration=prod_replay_calibration_config(replay_units_path="x.json"),
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
     with pytest.raises(ValueError, match="estimand"):
@@ -102,6 +105,7 @@ def test_prod_replay_gate_rejects_unknown_lift_scale() -> None:
             week_column="w",
             channel_columns=["c1"],
             target_column="y",
+            data_version_id="replay-gate-test-v1",
         ),
         run_environment=RunEnvironment.PROD,
         prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
@@ -110,7 +114,7 @@ def test_prod_replay_gate_rejects_unknown_lift_scale() -> None:
             "normalization_profile": "strict_prod",
             "named_profile": "ridge_bo_standard_v1",
         },
-        calibration=CalibrationConfig(use_replay_calibration=True, replay_units_path="x.json"),
+        calibration=prod_replay_calibration_config(replay_units_path="x.json"),
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
     re = dict(_BASE_UNIT.replay_estimand or {})
@@ -126,13 +130,17 @@ def test_prod_replay_gate_non_prod_skips() -> None:
         model_form=ModelForm.SEMI_LOG,
         data=DataConfig(path=None, channel_columns=["c1"], target_column="y"),
         run_environment=RunEnvironment.RESEARCH,
-        calibration=CalibrationConfig(use_replay_calibration=True, replay_units_path="x.json"),
+        calibration=prod_replay_calibration_config(replay_units_path="x.json"),
     )
     assert_replay_production_ready(cfg, [_minimal_unit(estimand="")])
 
 
 def _prod_schema_cfg(tmp_reg: Path | None) -> tuple[MMMConfig, PanelSchema]:
-    cal_kw: dict = dict(use_replay_calibration=True, replay_units_path="x.json")
+    cal_kw: dict = dict(
+        use_replay_calibration=True,
+        replay_refit_mode="fold_aligned",
+        replay_units_path="x.json",
+    )
     if tmp_reg is not None:
         cal_kw["require_approved_experiment_registry"] = True
         cal_kw["experiment_registry_path"] = str(tmp_reg)
@@ -145,6 +153,7 @@ def _prod_schema_cfg(tmp_reg: Path | None) -> tuple[MMMConfig, PanelSchema]:
             week_column="w",
             channel_columns=["c1"],
             target_column="y",
+            data_version_id="replay-gate-test-v1",
         ),
         run_environment=RunEnvironment.PROD,
         prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
@@ -153,7 +162,7 @@ def _prod_schema_cfg(tmp_reg: Path | None) -> tuple[MMMConfig, PanelSchema]:
             "normalization_profile": "strict_prod",
             "named_profile": "ridge_bo_standard_v1",
         },
-        calibration=CalibrationConfig(**cal_kw),
+        calibration=prod_replay_calibration_config(**cal_kw),
     )
     schema = PanelSchema("g", "w", "y", ("c1",))
     return cfg, schema

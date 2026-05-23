@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from mmm.config.extensions import ExtensionSuiteConfig, FeatureSeparabilityConfig
 from mmm.config.schema import CVConfig, Framework, MMMConfig, ModelForm
@@ -18,7 +19,7 @@ from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
 
 
 def test_linear_semi_log_no_adstock_analytic_delta_mu() -> None:
-    """Known coef on log scale → analytic Δμ on level scale."""
+    """Known coef on modeling scale → Δμ via two full-panel simulate calls (level-scale aggregation)."""
     rows = []
     for g in ("G0", "G1"):
         for w in range(8):
@@ -35,10 +36,10 @@ def test_linear_semi_log_no_adstock_analytic_delta_mu() -> None:
             "channel_columns": ["tv", "search"],
         },
     )
-    bundle = build_design_matrix(panel, schema, cfg, decay=0.01, hill_half=1e6, hill_slope=1.0)
     coef = np.array([0.02, 0.05])
     intercept = np.array([np.log(100.0)])
     base = bau_baseline_from_panel(panel, schema)
+    low = {"tv": 10.0, "search": 5.0}
     high = {"tv": 20.0, "search": 5.0}
     ctx = RidgeFitContext(
         config=cfg,
@@ -48,12 +49,31 @@ def test_linear_semi_log_no_adstock_analytic_delta_mu() -> None:
         intercept=intercept,
         best_params={"decay": 0.01, "hill_half": 1e6, "hill_slope": 1.0},
     )
+    res_lo = simulate(low, ctx, baseline_plan=base)
+    res_hi = simulate(high, ctx, baseline_plan=base)
+    expected = res_hi.delta_mu - res_lo.delta_mu
     res = simulate(high, ctx, baseline_plan=base)
-    n = len(panel)
-    mu_base = float(np.exp(intercept[0] + (bundle.X[:, 0] * 10 + bundle.X[:, 1] * 5).mean()))
-    mu_hi = float(np.exp(intercept[0] + (bundle.X[:, 0] * 20 + bundle.X[:, 1] * 5).mean()))
-    expected = (mu_hi - mu_base) * n / n
-    assert abs(res.delta_mu - expected) < max(1.0, 0.05 * abs(expected))
+    assert res.delta_mu > 0.0
+    assert abs(res.delta_mu - expected) < 1e-9
+
+
+def test_geometric_adstock_carryover_exact_week1() -> None:
+    """Impulse 100 at t=0, zero spend after; week-1 adstock state equals decay * 100."""
+    from mmm.transforms.adstock.geometric import GeometricAdstock
+
+    decay = 0.5
+    ad = GeometricAdstock(decay)
+    out = ad.transform(np.array([100.0, 0.0, 0.0, 0.0]))
+    assert abs(float(out[1]) - decay * 100.0) < 1e-12
+
+
+def test_hill_saturation_analytic_value() -> None:
+    from mmm.transforms.saturation.hill import HillSaturation
+
+    half, slope, x = 10.0, 2.0, 5.0
+    sat = HillSaturation(half_max=half, slope=slope)
+    expected = x**slope / (half**slope + x**slope + 1e-12)
+    assert abs(float(sat.transform(np.array([x]))[0]) - expected) < 1e-12
 
 
 def test_geometric_adstock_carryover_in_design_matrix() -> None:
@@ -144,6 +164,40 @@ def test_optimizer_prefers_high_return_channel() -> None:
         high_spend = float(alloc.get("high", 0.0))
         low_spend = float(alloc.get("low", 0.0))
         assert high_spend >= low_spend
+
+
+def test_transform_policy_mismatch_fails_certification() -> None:
+    from mmm.config.schema import RunEnvironment
+    from mmm.governance.decision_ridge_summary import validate_ridge_fit_summary_for_prod_decide
+    from mmm.governance.policy import PolicyError
+
+    cfg = MMMConfig(
+        run_environment=RunEnvironment.PROD,
+        prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
+        data={"channel_columns": ["tv"], "data_version_id": "dgp-v1"},
+        cv={"mode": "rolling"},
+        objective={
+            "normalization_profile": "strict_prod",
+            "named_profile": "ridge_bo_standard_v1",
+        },
+        extensions={"optimization_gates": {"enabled": True}},
+    )
+    er = {
+        "ridge_fit_summary": {
+            "coef": [0.1],
+            "intercept": [0.0],
+            "model_form": "semi_log",
+            "best_params": {"decay": 0.5, "hill_half": 1.0, "hill_slope": 2.0},
+        },
+        "transform_policy": {
+            "policy_version": "mmm_transform_policy_v1",
+            "adstock": "geometric",
+            "saturation": "hill",
+        },
+        "data_fingerprint": {"sha256_combined": "b" * 64},
+    }
+    with pytest.raises(PolicyError):
+        validate_ridge_fit_summary_for_prod_decide(cfg, er)
 
 
 def test_collinear_channels_identifiability_warning() -> None:

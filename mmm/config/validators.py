@@ -23,6 +23,31 @@ PROD_RIDGE_BO_MODEL_FORM_CONTRACTS: dict[ModelForm, str] = {
 }
 
 
+def validate_prod_ridge_decision_transform_stack(config: MMMConfig) -> None:
+    """
+    Prod Ridge+BO decision path: parse-time rejection of non-canonical transform stacks.
+
+    Geometric adstock + Hill saturation + semi_log only (Weibull/log/logistic remain research-only).
+    """
+    if config.run_environment != RunEnvironment.PROD:
+        return
+    if config.framework != Framework.RIDGE_BO:
+        return
+    if config.model_form != ModelForm.SEMI_LOG:
+        return
+    t = config.transforms
+    if t.adstock != "geometric":
+        raise PolicyError(
+            f"run_environment=prod with framework=ridge_bo requires transforms.adstock=geometric "
+            f"(got {t.adstock!r}). Weibull adstock is research-only."
+        )
+    if t.saturation != "hill":
+        raise PolicyError(
+            f"run_environment=prod with framework=ridge_bo requires transforms.saturation=hill "
+            f"(got {t.saturation!r}). log/logistic saturation are research-only."
+        )
+
+
 def validate_transform_stack_for_framework(config: MMMConfig) -> None:
     """Single allowlist for modeling stacks (see ``mmm.contracts.canonical_transforms``)."""
     if config.framework not in (Framework.RIDGE_BO, Framework.BAYESIAN):

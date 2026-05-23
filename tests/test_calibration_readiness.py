@@ -94,12 +94,23 @@ def test_prod_decide_blocked_when_drift_requires_review() -> None:
         prod_canonical_modeling_contract_id="ridge_bo_semi_log_calendar_cv_v1",
         governance=GovernanceWorkflowConfig(require_review_on_drift=True),
     )
+    from mmm.config.transform_policy import build_transform_policy_manifest
+
+    tp = build_transform_policy_manifest(cfg)
     er = {
         "model_release": {"state": ModelReleaseState.PLANNING_ALLOWED.value},
         "panel_qa": {"max_severity": "info"},
         "calibration_summary": {"replay_calibration_active": True, "n_units": 1},
         "experiment_matching": {"n_matched": 1},
-        "ridge_fit_summary": {"coef": [0.1], "model_form": "semi_log"},
+        "ridge_fit_summary": {
+            "coef": [0.1],
+            "intercept": [0.0],
+            "model_form": "semi_log",
+            "best_params": {"decay": 0.5, "hill_half": 1.0, "hill_slope": 2.0},
+            "transform_policy": tp,
+        },
+        "transform_policy": tp,
+        "data_fingerprint": {"sha256_combined": "a" * 64},
         "calibration_readiness_report": {
             "blocks_planning_allowed": True,
             "recommended_action": "model_review_required",

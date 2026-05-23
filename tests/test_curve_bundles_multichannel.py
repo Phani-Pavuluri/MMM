@@ -8,15 +8,19 @@ import numpy as np
 import pytest
 from typer.testing import CliRunner
 
+from mmm.config.load import load_config
 from mmm.config.schema import CVConfig, DataConfig, Framework, MMMConfig, ModelForm, RunEnvironment
 from mmm.contracts.quantity_models import parse_legacy_curve_bundle_dict
+from mmm.data.loader import DatasetBuilder
+from mmm.data.panel_order import sort_panel_for_modeling
+from mmm.data.schema import validate_panel
 from mmm.diagnostics.curve_optimizer import optimize_budget_from_curve_bundles
 from mmm.economics.canonical import build_economics_contract
 from mmm.evaluation.extension_runner import run_post_fit_extensions
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.optimization.budget.curve_bundles_io import gather_curve_bundles_from_dict
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
-from tests.prod_extension_fixtures import prod_replay_evidence_block
+from tests.prod_extension_fixtures import enrich_prod_ridge_decide_extension
 
 
 def _curve_bundle_record(
@@ -447,25 +451,6 @@ def test_cli_prod_optimize_budget_full_model_smoke(tmp_path):
 
     pd.DataFrame(rows).to_csv(csv_path, index=False)
 
-    ext = tmp_path / "ext.json"
-    ext.write_text(
-        json.dumps(
-            {
-                "ridge_fit_summary": {
-                    "best_params": {"decay": 0.5, "hill_half": 1.0, "hill_slope": 2.0},
-                    "coef": [0.05, 0.04],
-                    "intercept": [3.0],
-                },
-                "governance": {"approved_for_optimization": True},
-                "response_diagnostics": {"safe_for_optimization": True},
-                "identifiability": {"identifiability_score": 0.5},
-                "panel_qa": {"max_severity": "info", "issues": []},
-                "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-                **prod_replay_evidence_block(),
-            }
-        ),
-        encoding="utf-8",
-    )
     yaml = tmp_path / "c.yaml"
     yaml.write_text(
         f"""
@@ -491,6 +476,34 @@ extensions:
   optimization_gates:
     enabled: true
 """,
+        encoding="utf-8",
+    )
+    cfg_loaded = load_config(yaml)
+    builder = DatasetBuilder(cfg_loaded.data)
+    schema = builder.schema()
+    panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
+    ext = tmp_path / "ext.json"
+    ext.write_text(
+        json.dumps(
+            enrich_prod_ridge_decide_extension(
+                {
+                    "ridge_fit_summary": {
+                        "best_params": {"decay": 0.5, "hill_half": 1.0, "hill_slope": 2.0},
+                        "coef": [0.05, 0.04],
+                        "intercept": [3.0],
+                    },
+                    "governance": {"approved_for_optimization": True},
+                    "response_diagnostics": {"safe_for_optimization": True},
+                    "identifiability": {"identifiability_score": 0.5},
+                    "panel_qa": {"max_severity": "info", "issues": []},
+                    "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
+                },
+                cfg=cfg_loaded,
+                panel=panel,
+                schema=schema,
+            ),
+            default=str,
+        ),
         encoding="utf-8",
     )
     out_bundle = tmp_path / "prod_opt_bundle.json"
