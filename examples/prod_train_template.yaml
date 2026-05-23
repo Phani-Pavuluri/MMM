@@ -1,0 +1,39 @@
+# Production-bound train template (v1). Copy and set data.path / artifacts.run_dir.
+run_environment: prod
+allow_unsafe_decision_apis: false
+framework: ridge_bo
+model_form: semi_log
+prod_canonical_modeling_contract_id: ridge_bo_semi_log_calendar_cv_v1
+random_seed: 42
+governance:
+  require_production_certification: true
+data:
+  path: examples/sample_panel.csv
+  geo_column: geo_id
+  week_column: week_start_date
+  target_column: revenue
+  channel_columns: [search, social, tv]
+  control_columns: []
+  data_version_id: prod-template-v1
+cv:
+  mode: rolling
+  n_splits: 3
+  min_train_weeks: 20
+  horizon_weeks: 4
+objective:
+  normalization_profile: strict_prod
+  named_profile: ridge_bo_standard_v1
+transforms:
+  adstock: geometric
+  saturation: hill
+ridge_bo:
+  n_trials: 12
+  sampler_seed: 42
+artifacts:
+  backend: local
+  run_dir: ./mmm_runs
+extensions:
+  optimization_gates:
+    enabled: true
+  optimizer_certification:
+    enabled: true

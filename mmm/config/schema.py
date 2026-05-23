@@ -335,6 +335,8 @@ class GovernanceWorkflowConfig(BaseModel):
         return self
 
     require_promoted_model_for_prod_decision: bool = False
+    #: When true, prod decide fails closed unless ``production_readiness_report.approved_for_prod``.
+    require_production_certification: bool = False
     promotion_registry_path: str | None = None
     #: Warn when experiment evidence is older than this many days (continuous validation / registry).
     calibration_max_age_days: int = Field(default=180, ge=1)

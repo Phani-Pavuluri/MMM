@@ -40,19 +40,37 @@ jobs:
         id: large_panel
         continue-on-error: true
         run: pytest tests/test_synthetic_correlated_channels.py -q 2>&1 | tee nightly_large_panel.log
+      - name: Certification suite
+        id: certification
+        continue-on-error: true
+        run: |
+          pytest tests/test_nightly_certification.py tests/test_production_readiness.py \
+            tests/test_optimizer_certification.py tests/test_decision_stress.py \
+            tests/test_synthetic_certification_exact.py tests/test_reproducibility_certification.py \
+            tests/test_replay_holdout_split.py -q -m "not slow" 2>&1 | tee nightly_certification.log
+          python -c "
+          from pathlib import Path
+          from mmm.evaluation.nightly_certification import run_nightly_certification_suite, write_nightly_certification_artifacts
+          s = run_nightly_certification_suite()
+          write_nightly_certification_artifacts(s, Path('nightly_certification_artifacts'))
+          print('overall_status', s['overall_status'])
+          print('failures', s['failures'])
+          " 2>&1 | tee -a nightly_certification.log
       - name: Upload nightly logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nightly-test-logs
-          path: nightly_*.log
+          path: |
+            nightly_*.log
+            nightly_certification_artifacts/**
       - name: Nightly summary
         if: always()
         run: |
           {
             echo "## Nightly test summary"
             echo ""
-            for step in slow bayesian ridge_bo uncertainty large_panel; do
+            for step in slow bayesian ridge_bo uncertainty large_panel certification; do
               echo "- **${step}**: $([ -f nightly_${step}.log ] && tail -1 nightly_${step}.log || 'no log')"
             done
           } >> "$GITHUB_STEP_SUMMARY"
@@ -64,3 +82,4 @@ jobs:
           test "${{ steps.ridge_bo.outcome }}" = success
           test "${{ steps.uncertainty.outcome }}" = success
           test "${{ steps.large_panel.outcome }}" = success
+          test "${{ steps.certification.outcome }}" = success

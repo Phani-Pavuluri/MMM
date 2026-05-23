@@ -189,9 +189,15 @@ See [promotion_workflow.md](promotion_workflow.md).
 
 | Key | Tier | Description |
 |-----|------|-------------|
-| `reproducibility_certification_report` | diagnostic | Component hashes; `identical_output`, `mismatched_components` |
+| `reproducibility_certification_report` | diagnostic | `self_certification`, `identical_output` (null if self), `reproducibility_evidence`, match flags |
 | `calibration_readiness_report` | diagnostic / readiness | Freshness, coef drift, replay miss trend; may block planning when configured |
 | `performance_certification_report` | diagnostic | Synthetic scaling timings and memory estimates |
+| `synthetic_certification_report` | diagnostic | Programmatic Δμ / transform math checks; `certification_status` |
+| `optimizer_certification_report` | diagnostic | Deterministic optimizer surfaces (opt-in on train; always in nightly) |
+| `production_readiness_report` | diagnostic / readiness | Rollup `approved_for_prod`, `blocked_reasons`, `readiness_score` |
+| `decision_stress_report` | diagnostic | Stress severity and `recommended_action` (no auto budget change) |
+
+Certification reports prove internal consistency and optimizer behavior on synthetic surfaces — **not** causal incrementality.
 
 ## Decision artifact: `decision_trace.json`
 

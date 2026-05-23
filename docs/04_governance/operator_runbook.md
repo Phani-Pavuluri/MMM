@@ -5,7 +5,8 @@
 1. Confirm YAML `data.path` points at the **same** panel schema used in training.
 2. Attach `extension_report.json` with **`ridge_fit_summary`** (coef, intercept, best_params).
 3. Run optimization safety gate expectations: governance section populated if your org requires it.
-4. For **geo budgets**: set `budget.geo_budget_enabled` and validate `geo_*` constraints against feasible totals.
+4. Review **`production_readiness_report`** and **`decision_stress_report`** on the training extension report; when `governance.require_production_certification: true`, prod decide requires `approved_for_prod: true`.
+5. For **geo budgets**: set `budget.geo_budget_enabled` and validate `geo_*` constraints against feasible totals.
 
 ## Before `simulate` (CLI)
 

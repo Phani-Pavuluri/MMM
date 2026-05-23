@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from mmm.artifacts.base import ArtifactStoreBase
-from mmm.config.schema import Framework, MMMConfig
+from mmm.config.schema import Framework, MMMConfig, RunEnvironment
 from mmm.contracts.seed_resolution import resolve_seed_contract
 from mmm.data.panel_order import sort_panel_for_modeling
 from mmm.data.schema import PanelSchema
@@ -19,11 +19,15 @@ from mmm.governance.calibration_readiness import (
     apply_calibration_readiness_to_model_release,
     build_calibration_readiness_report,
 )
+from mmm.governance.decision_stress import build_decision_stress_report
+from mmm.governance.production_readiness import build_production_readiness_report
 from mmm.governance.reproducibility_certification import (
     build_reproducibility_certification_report,
     extract_reproducibility_snapshot,
 )
+from mmm.governance.synthetic_certification import run_synthetic_certification_suite
 from mmm.hierarchy.diagnostics import hierarchy_enabled
+from mmm.optimization.optimizer_certification import build_optimizer_certification_report
 from mmm.optimization.robust import build_robust_optimization_research
 from mmm.services.calibration_service import run_hierarchy_post_fit_reports
 from mmm.uncertainty.propagation_report import (
@@ -158,7 +162,8 @@ def _run_research_extension_reports(ctx: ExtensionContext) -> None:
     if config.extensions.reproducibility_certification.enabled:
         snap = extract_reproducibility_snapshot(fit_out=fit_out, extension_report=out)
         out["reproducibility_certification_report"] = build_reproducibility_certification_report(
-            reference=snap
+            reference=snap,
+            reference_run_path=config.extensions.reproducibility_certification.reference_run_path,
         )
     if config.extensions.performance_certification.enabled:
         out["performance_certification_report"] = build_performance_certification_report(config)
@@ -167,6 +172,31 @@ def _run_research_extension_reports(ctx: ExtensionContext) -> None:
         config,
         propagation_report,
         ident=id_json if isinstance(id_json, dict) else {},
+    )
+    _run_certification_extension_reports(ctx)
+
+
+def _run_certification_extension_reports(ctx: ExtensionContext) -> None:
+    """Production certification rollups (warnings by default; no auto budget actions)."""
+    config = ctx.config
+    out = ctx.out
+    out["synthetic_certification_report"] = run_synthetic_certification_suite()
+    opt_report = None
+    run_optimizer_cert = (
+        config.extensions.optimizer_certification.enabled
+        or config.run_environment == RunEnvironment.PROD
+    )
+    if run_optimizer_cert:
+        opt_report = build_optimizer_certification_report(seed=int(config.random_seed))
+        out["optimizer_certification_report"] = opt_report
+    out["decision_stress_report"] = build_decision_stress_report(
+        config, out, panel=ctx.panel_s, schema=ctx.schema
+    )
+    out["production_readiness_report"] = build_production_readiness_report(
+        config,
+        out,
+        synthetic_certification=out["synthetic_certification_report"],
+        optimizer_certification=opt_report,
     )
 
 

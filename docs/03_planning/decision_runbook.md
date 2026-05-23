@@ -42,6 +42,9 @@ These rules are **enforced in code** (config load, CLI, `mmm.decision.api`, and 
 | **Bayesian training in prod** | **`posterior_predictive_draws > 0`** and **`extensions.governance.bayesian_max_mean_abs_ppc_gap`** set (finite). That **does not** enable prod budget optimization for Bayesian. |
 | **Posterior planning** | Draw-based / posterior planning helpers **fail closed in prod** via `posterior_planning_gate` until explicitly re-certified. |
 | **Promotion (optional)** | When `governance.require_promoted_model_for_prod_decision: true`, prod decide must pass `promoted_model_id` or promotion JSON; fingerprints and expiration validated. Default `false` preserves backward compatibility. |
+| **Production certification** | When `approved_for_prod=false`, prod decide **always** emits a severe warning on the decision payload. When `governance.require_production_certification: true`, prod decide **fails closed** unless `approved_for_prod` is true. Default `false` for the strict gate only — warnings are not silent. |
+| **Certification artifacts** | Every train emits `synthetic_certification_report`, `decision_stress_report`, `production_readiness_report`; `optimizer_certification_report` when `extensions.optimizer_certification.enabled` or `run_environment: prod`. Certification does **not** prove causal incrementality. |
+| **Decision stress** | `decision_stress_report.stress_scope` is `train_time` or `train_time_signal_only`. Stress is **not** recomputed at decide time — it reflects train-time extension_report signals and optional behavioral probes on the training panel. |
 
 Additional YAML / training rules (transforms, Ridge BO leaderboard refit, replay-only calibration approval, replay concentration) remain as configured in `MMMConfig` and extension governance—see checklist in §12.
 

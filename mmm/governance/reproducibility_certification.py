@@ -1,18 +1,19 @@
-"""Deterministic replay / decision reproducibility certification (no auto-actions)."""
+"""Deterministic replay / decision reproducibility certification (no self-pass)."""
 
 from __future__ import annotations
 
 import hashlib
 import json
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 
-REPORT_VERSION = "mmm_reproducibility_certification_v1"
+REPORT_VERSION = "mmm_reproducibility_certification_v2"
 
 GOVERNANCE_WARNINGS: tuple[str, ...] = (
     "Reproducibility certification checks artifact equivalence only — not causal validity.",
-    "Identical hashes require identical data, config, seeds, fingerprints, and promoted model lineage.",
+    "Self-certification records a snapshot only; identical_output requires an independent reference run.",
 )
 
 _COMPONENT_KEYS = (
@@ -54,9 +55,12 @@ def _transform_snapshot(fit_out: dict[str, Any] | None, extension_report: dict[s
             return dict(bp)
     rfs = (extension_report or {}).get("ridge_fit_summary") or {}
     if isinstance(rfs, dict):
-        for key in ("decay", "hill_half", "hill_slope", "log_alpha"):
-            if key in rfs:
-                return {k: rfs[k] for k in ("decay", "hill_half", "hill_slope", "log_alpha") if k in rfs}
+        bp = rfs.get("best_params")
+        if isinstance(bp, dict):
+            return dict(bp)
+    tp = (extension_report or {}).get("transform_policy")
+    if isinstance(tp, dict):
+        return {k: tp[k] for k in ("decay", "hill_half", "hill_slope", "adstock", "saturation") if k in tp}
     return {}
 
 
@@ -112,9 +116,7 @@ def _optimizer_snapshot(optimizer_result: dict[str, Any] | None) -> dict[str, An
         return {}
     alloc = optimizer_result.get("allocation") or optimizer_result.get("recommended_allocation")
     sim_at = optimizer_result.get("simulation_at_recommendation") or {}
-    delta = None
-    if isinstance(sim_at, dict):
-        delta = sim_at.get("delta_mu")
+    delta = sim_at.get("delta_mu") if isinstance(sim_at, dict) else None
     return {
         "allocation": alloc,
         "delta_mu": delta,
@@ -141,6 +143,14 @@ def _decision_safe_snapshot(
         return bool(decision_bundle["decision_safe"])
     if isinstance(simulation_json, dict) and "decision_safe" in simulation_json:
         return bool(simulation_json["decision_safe"])
+    return None
+
+
+def _fingerprint_token(extension_report: dict[str, Any] | None) -> str | None:
+    er = extension_report or {}
+    fp = er.get("data_fingerprint") or er.get("panel_fingerprint")
+    if isinstance(fp, dict):
+        return str(fp.get("sha256_combined") or fp.get("sha256_panel_keycols_sorted_csv") or "") or None
     return None
 
 
@@ -174,6 +184,7 @@ def extract_reproducibility_snapshot(
         else None,
         "decision_safe": _decision_safe_snapshot(decision_bundle, simulation_json),
         "seed_resolution": seed_resolution,
+        "panel_fingerprint_sha": _fingerprint_token(er),
         "raw": {
             "coefficients": coef,
             "transform_parameters": transform,
@@ -185,6 +196,19 @@ def extract_reproducibility_snapshot(
     return components
 
 
+def load_reference_run_snapshot(reference_run_path: str | Path) -> dict[str, Any]:
+    """Load ``extension_report.json`` from an independent training run directory."""
+    path = Path(reference_run_path)
+    if path.is_dir():
+        path = path / "extension_report.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"reference run extension report not found: {path}")
+    er = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(er, dict):
+        raise ValueError("reference extension report must be a JSON object")
+    return extract_reproducibility_snapshot(extension_report=er)
+
+
 def compare_reproducibility_snapshots(
     reference: dict[str, Any],
     candidate: dict[str, Any],
@@ -192,7 +216,7 @@ def compare_reproducibility_snapshots(
     atol: float = 1e-9,
     rtol: float = 1e-6,
 ) -> dict[str, Any]:
-    """Compare two snapshots; return certification report."""
+    """Compare two snapshots; return match flags per component."""
     mismatched: list[str] = []
     coef_deltas: dict[str, Any] = {}
     optimizer_deltas: dict[str, Any] = {}
@@ -215,28 +239,49 @@ def compare_reproducibility_snapshots(
 
     ref_coef = ref_raw.get("coefficients") or {}
     cand_coef = cand_raw.get("coefficients") or {}
+    coefficients_match = True
     if ref_coef and cand_coef:
         rc = np.asarray(ref_coef.get("coef", []), dtype=float)
         cc = np.asarray(cand_coef.get("coef", []), dtype=float)
         if rc.shape == cc.shape:
-            delta = cc - rc
             if not np.allclose(rc, cc, atol=atol, rtol=rtol):
+                coefficients_match = False
                 mismatched.append("coefficients_numeric")
+                delta = cc - rc
                 coef_deltas = {
                     "max_abs_delta": float(np.max(np.abs(delta))) if delta.size else 0.0,
                     "mean_abs_delta": float(np.mean(np.abs(delta))) if delta.size else 0.0,
                 }
         else:
+            coefficients_match = False
             mismatched.append("coefficients_shape")
             coef_deltas = {"reference_len": int(rc.size), "candidate_len": int(cc.size)}
 
+    design_matrix_match = reference.get("design_matrix_fingerprint") == candidate.get("design_matrix_fingerprint")
+    if not design_matrix_match and "design_matrix_fingerprint" not in mismatched:
+        mismatched.append("design_matrix_fingerprint")
+
+    ref_fp = reference.get("panel_fingerprint_sha")
+    cand_fp = candidate.get("panel_fingerprint_sha")
+    fingerprint_match = ref_fp == cand_fp if ref_fp and cand_fp else ref_fp == cand_fp
+    if ref_fp and cand_fp and ref_fp != cand_fp:
+        mismatched.append("panel_fingerprint")
+
+    decision_output_match = True
     ref_opt = ref_raw.get("optimizer_output") or {}
     cand_opt = cand_raw.get("optimizer_output") or {}
     if ref_opt and cand_opt:
         rd = ref_opt.get("delta_mu")
         cd = cand_opt.get("delta_mu")
         if rd is not None and cd is not None and not np.isclose(float(rd), float(cd), atol=atol, rtol=rtol):
+            decision_output_match = False
             optimizer_deltas["delta_mu_delta"] = float(cd) - float(rd)
+            if "optimizer_output" not in mismatched:
+                mismatched.append("optimizer_output")
+        ref_alloc = ref_opt.get("allocation")
+        cand_alloc = cand_opt.get("allocation")
+        if ref_alloc != cand_alloc:
+            decision_output_match = False
             if "optimizer_output" not in mismatched:
                 mismatched.append("optimizer_output")
 
@@ -246,11 +291,17 @@ def compare_reproducibility_snapshots(
         else None
     )
     identical = len(mismatched) == 0
+    certification_status = "pass" if identical else "fail"
     return {
         "report_version": REPORT_VERSION,
         "diagnostic_only": True,
         "reproducibility_status": "certified" if identical else "mismatch",
-        "identical_output": identical,
+        "certification_status": certification_status,
+        "identical_output": identical if identical else False,
+        "coefficients_match": coefficients_match,
+        "design_matrix_match": design_matrix_match,
+        "decision_output_match": decision_output_match,
+        "fingerprint_match": fingerprint_match,
         "mismatched_components": mismatched,
         "coefficient_deltas": coef_deltas,
         "optimizer_output_deltas": optimizer_deltas,
@@ -265,9 +316,52 @@ def build_reproducibility_certification_report(
     *,
     reference: dict[str, Any],
     candidate: dict[str, Any] | None = None,
+    reference_run_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Build report comparing reference vs candidate (self-compare when candidate omitted)."""
-    cand = candidate if candidate is not None else reference
-    report = compare_reproducibility_snapshots(reference, cand)
-    report["self_certification"] = candidate is None
-    return report
+    """
+    Build reproducibility certification.
+
+    - No ``reference_run_path``: self-certification snapshot only (``identical_output=null``).
+    - With ``reference_run_path``: compare current snapshot to an independent run artifact.
+    """
+    if reference_run_path is not None:
+        ref_snap = load_reference_run_snapshot(reference_run_path)
+        cand_snap = candidate if candidate is not None else reference
+        report = compare_reproducibility_snapshots(ref_snap, cand_snap)
+        report["self_certification"] = False
+        report["reference_run_path"] = str(reference_run_path)
+        report["reproducibility_evidence"] = report.get("certification_status") == "pass"
+        return report
+
+    if candidate is not None:
+        report = compare_reproducibility_snapshots(reference, candidate)
+        report["self_certification"] = False
+        report["reproducibility_evidence"] = report.get("certification_status") == "pass"
+        return report
+
+    return {
+        "report_version": REPORT_VERSION,
+        "diagnostic_only": True,
+        "self_certification": True,
+        "identical_output": None,
+        "reproducibility_status": "snapshot_only",
+        "certification_status": "incomplete",
+        "reproducibility_evidence": False,
+        "coefficients_match": None,
+        "design_matrix_match": None,
+        "decision_output_match": None,
+        "fingerprint_match": None,
+        "mismatched_components": [],
+        "certification_warnings": list(GOVERNANCE_WARNINGS)
+        + ["Self-certification alone is not reproducibility evidence; supply reference_run_path."],
+        "reference_component_hashes": {k: reference.get(k) for k in _COMPONENT_KEYS},
+    }
+
+
+# Backward-compatible alias for tests comparing two explicit snapshots
+def build_independent_reproducibility_report(
+    *,
+    reference: dict[str, Any],
+    candidate: dict[str, Any],
+) -> dict[str, Any]:
+    return build_reproducibility_certification_report(reference=reference, candidate=candidate)

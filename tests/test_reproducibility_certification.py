@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import copy
+import json
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -48,12 +50,22 @@ def _base_snap() -> dict[str, Any]:
     )
 
 
-def test_identical_rerun_exact_match() -> None:
+def test_self_certification_does_not_self_pass() -> None:
     ref = _base_snap()
     rep = build_reproducibility_certification_report(reference=ref)
+    assert rep["self_certification"] is True
+    assert rep["identical_output"] is None
+    assert rep["reproducibility_evidence"] is False
+    assert rep["certification_status"] == "incomplete"
+
+
+def test_independent_snapshots_match() -> None:
+    ref = _base_snap()
+    rep = build_reproducibility_certification_report(reference=ref, candidate=ref)
+    assert rep["self_certification"] is False
     assert rep["identical_output"] is True
-    assert rep["reproducibility_status"] == "certified"
-    assert rep["mismatched_components"] == []
+    assert rep["certification_status"] == "pass"
+    assert rep["reproducibility_evidence"] is True
 
 
 def test_changed_seed_mismatch() -> None:
@@ -63,31 +75,30 @@ def test_changed_seed_mismatch() -> None:
     cand["design_matrix_fingerprint"] = "different"
     rep = compare_reproducibility_snapshots(ref, cand)
     assert rep["identical_output"] is False
-    assert "design_matrix_fingerprint" in rep["mismatched_components"] or rep["mismatched_components"]
+    assert rep["design_matrix_match"] is False
 
 
-def test_changed_transform_params_mismatch() -> None:
-    ref = _base_snap()
-    cand = copy.deepcopy(ref)
-    cand["raw"]["transform_parameters"] = {"decay": 0.9}
-    cand["transform_parameters"] = "other"
-    rep = compare_reproducibility_snapshots(ref, cand)
-    assert rep["identical_output"] is False
+def test_reference_run_path_comparison(tmp_path: Path) -> None:
+    ref_er = {
+        "ridge_fit_summary": {"coef": [0.1, 0.2], "intercept": [1.0]},
+        "data_fingerprint": {"sha256_combined": "abc"},
+        "calibration_summary": {"replay_train_loss": 0.1},
+    }
+    (tmp_path / "extension_report.json").write_text(json.dumps(ref_er), encoding="utf-8")
+    cand = _base_snap()
+    rep = build_reproducibility_certification_report(reference=cand, reference_run_path=tmp_path)
+    assert rep["self_certification"] is False
+    assert rep["reference_run_path"] == str(tmp_path)
+    assert rep["coefficients_match"] is True
 
 
-def test_changed_promotion_mismatch() -> None:
-    ref = _base_snap()
-    cand = copy.deepcopy(ref)
-    cand["raw"]["promotion_lineage"] = {"promotion_id": "p2"}
-    cand["promotion_lineage"] = "other_hash"
-    rep = compare_reproducibility_snapshots(ref, cand)
-    assert rep["identical_output"] is False
-
-
-def test_changed_config_mismatch() -> None:
-    ref = _base_snap()
-    cand = copy.deepcopy(ref)
-    cand["decision_bundle"] = "other_bundle_hash"
-    rep = compare_reproducibility_snapshots(ref, cand)
-    assert rep["identical_output"] is False
-    assert "decision_bundle" in rep["mismatched_components"]
+def test_reference_run_path_mismatch(tmp_path: Path) -> None:
+    ref_er = {
+        "ridge_fit_summary": {"coef": [0.9, 0.1], "intercept": [1.0]},
+        "data_fingerprint": {"sha256_combined": "other"},
+    }
+    (tmp_path / "extension_report.json").write_text(json.dumps(ref_er), encoding="utf-8")
+    cand = _base_snap()
+    rep = build_reproducibility_certification_report(reference=cand, reference_run_path=tmp_path)
+    assert rep["certification_status"] == "fail"
+    assert rep["fingerprint_match"] is False

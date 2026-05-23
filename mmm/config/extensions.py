@@ -243,7 +243,15 @@ class PerformanceAuditConfig(BaseModel):
 
 
 class ReproducibilityCertificationConfig(BaseModel):
-    """Post-fit reproducibility snapshot and self-certification (diagnostic only)."""
+    """Post-fit reproducibility snapshot; independent run comparison when reference_run_path set."""
+
+    enabled: bool = False
+    #: Path to another run dir or extension_report.json for independent reproducibility evidence.
+    reference_run_path: str | None = None
+
+
+class OptimizerCertificationConfig(BaseModel):
+    """Deterministic optimizer surface certification (diagnostic; run post-fit or nightly)."""
 
     enabled: bool = False
 
@@ -311,6 +319,9 @@ class ExtensionSuiteConfig(BaseModel):
     performance_audit: PerformanceAuditConfig = Field(default_factory=PerformanceAuditConfig)
     reproducibility_certification: ReproducibilityCertificationConfig = Field(
         default_factory=ReproducibilityCertificationConfig
+    )
+    optimizer_certification: OptimizerCertificationConfig = Field(
+        default_factory=OptimizerCertificationConfig
     )
     performance_certification: PerformanceCertificationConfig = Field(
         default_factory=PerformanceCertificationConfig
