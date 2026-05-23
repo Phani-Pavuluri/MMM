@@ -47,7 +47,7 @@ The CLI prints assumptions, disclosures, and **PLANNING POLICY WARNING** lines o
    - **`--out`** on every `mmm decide …` command
    - Panel path in config matching the trained panel
 
-3. **Python 3.10+** for CLI and API.
+3. **Python 3.11+** required for CLI and API (3.11 or 3.12 recommended).
 
 ---
 

@@ -1,7 +1,9 @@
 # Quickstart
 
+Requires **Python 3.11+** (3.11 or 3.12 recommended).
+
 ```bash
-python -m venv .venv && source .venv/bin/activate
+python3.11 -m venv .venv && source .venv/bin/activate
 pip install -e ".[bayesian,bo,dev]"
 mmm train --config examples/minimal_train.yaml
 ```
