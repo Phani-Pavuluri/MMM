@@ -31,7 +31,7 @@ from mmm.planning.optimize_context import OptimizeNonMediaContext
 from mmm.planning.policy import evaluate_control_scenario_policy
 from mmm.planning.scenario import planning_scenario_from_dict
 from mmm.utils.synthetic import SyntheticGeoPanelSpec, generate_geo_panel
-from tests.prod_extension_fixtures import prod_replay_evidence_block
+from tests.prod_extension_fixtures import enrich_prod_ridge_decide_extension
 
 _PROD_OBJECTIVE = {
     "normalization_profile": "strict_prod",
@@ -162,19 +162,24 @@ def test_strict_prod_blocks_observed_sensitive_controls(tmp_path: Path) -> None:
     ext = tmp_path / "ext.json"
     ext.write_text(
         json.dumps(
-            {
-                "ridge_fit_summary": {
-                    "best_params": dict(ctx.best_params),
-                    "coef": np.asarray(ctx.coef).tolist(),
-                    "intercept": np.asarray(ctx.intercept).tolist(),
+            enrich_prod_ridge_decide_extension(
+                {
+                    "ridge_fit_summary": {
+                        "best_params": dict(ctx.best_params),
+                        "coef": np.asarray(ctx.coef).tolist(),
+                        "intercept": np.asarray(ctx.intercept).tolist(),
+                    },
+                    "governance": {"approved_for_optimization": True},
+                    "response_diagnostics": {"safe_for_optimization": True},
+                    "identifiability": {"identifiability_score": 0.1},
+                    "panel_qa": {"max_severity": "info", "issues": []},
+                    "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
                 },
-                "governance": {"approved_for_optimization": True},
-                "response_diagnostics": {"safe_for_optimization": True},
-                "identifiability": {"identifiability_score": 0.1},
-                "panel_qa": {"max_severity": "info", "issues": []},
-                "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-                **prod_replay_evidence_block(),
-            }
+                cfg=cfg_prod,
+                panel=df,
+                schema=schema,
+            ),
+            default=str,
         ),
         encoding="utf-8",
     )

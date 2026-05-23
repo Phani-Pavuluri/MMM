@@ -27,6 +27,11 @@ def test_train_decide_e2e_frozen_fixture(tmp_path: Path) -> None:
     assert ext_path.is_file(), "training must persist extension_report.json"
 
     er = load_training_extension_report(ext_path)
+    er = dict(er)
+    er["governance"] = {**(er.get("governance") or {}), "approved_for_optimization": True}
+    mr = dict(er.get("model_release") or {})
+    mr["state"] = "planning_allowed"
+    er["model_release"] = mr
     assert er.get("ridge_fit_summary", {}).get("coef"), "ridge_fit_summary required"
     assert er.get("data_fingerprint"), "data_fingerprint required"
     assert er.get("feature_lineage") or er.get("seed_resolution"), "lineage/seed expected"
@@ -40,7 +45,7 @@ def test_train_decide_e2e_frozen_fixture(tmp_path: Path) -> None:
     lineage = load_run_lineage(run_path)
     assert lineage["roundtrip"]["ok"]
 
-    cfg = load_config(paths["decide_config"])
+    cfg = load_config(paths["train_config"])
     scenario = yaml.safe_load(paths["scenario_yaml"].read_text(encoding="utf-8"))
 
     sim_out = tmp_path / "sim_decision.json"

@@ -10,7 +10,11 @@ import pandas as pd
 import pytest
 from typer.testing import CliRunner
 
-from tests.prod_extension_fixtures import prod_replay_evidence_block
+from mmm.config.load import load_config
+from mmm.data.loader import DatasetBuilder
+from mmm.data.panel_order import sort_panel_for_modeling
+from mmm.data.schema import validate_panel
+from tests.prod_extension_fixtures import enrich_prod_ridge_decide_extension
 
 
 def _strip_volatile_decision_payload(d: dict) -> dict:
@@ -36,25 +40,6 @@ def _prod_panel_extension_and_yaml(tmp_path: Path) -> tuple[Path, Path, Path]:
             )
     pd.DataFrame(rows).to_csv(csv_path, index=False)
 
-    ext = tmp_path / "ext.json"
-    ext.write_text(
-        json.dumps(
-            {
-                "ridge_fit_summary": {
-                    "best_params": {"decay": 0.5, "hill_half": 1.0, "hill_slope": 2.0},
-                    "coef": [0.05, 0.04],
-                    "intercept": [3.0],
-                },
-                "governance": {"approved_for_optimization": True},
-                "response_diagnostics": {"safe_for_optimization": True},
-                "identifiability": {"identifiability_score": 0.5},
-                "panel_qa": {"max_severity": "info", "issues": []},
-                "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-                **prod_replay_evidence_block(),
-            }
-        ),
-        encoding="utf-8",
-    )
     yaml = tmp_path / "c.yaml"
     yaml.write_text(
         f"""
@@ -80,6 +65,34 @@ extensions:
   optimization_gates:
     enabled: true
 """,
+        encoding="utf-8",
+    )
+    cfg_loaded = load_config(yaml)
+    builder = DatasetBuilder(cfg_loaded.data)
+    schema = builder.schema()
+    panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
+    ext = tmp_path / "ext.json"
+    ext.write_text(
+        json.dumps(
+            enrich_prod_ridge_decide_extension(
+                {
+                    "ridge_fit_summary": {
+                        "best_params": {"decay": 0.5, "hill_half": 1.0, "hill_slope": 2.0},
+                        "coef": [0.05, 0.04],
+                        "intercept": [3.0],
+                    },
+                    "governance": {"approved_for_optimization": True},
+                    "response_diagnostics": {"safe_for_optimization": True},
+                    "identifiability": {"identifiability_score": 0.5},
+                    "panel_qa": {"max_severity": "info", "issues": []},
+                    "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
+                },
+                cfg=cfg_loaded,
+                panel=panel,
+                schema=schema,
+            ),
+            default=str,
+        ),
         encoding="utf-8",
     )
     return yaml, ext, csv_path

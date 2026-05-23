@@ -283,6 +283,8 @@ class CalibrationConfig(BaseModel):
     replay_refit_mode: Literal["full_panel_refit", "fold_aligned", "holdout_only_diagnostic"] = (
         "full_panel_refit"
     )
+    #: Prod only: required when ``replay_refit_mode=full_panel_refit`` with replay calibration enabled.
+    full_panel_replay_refit_prod_waiver_path: str | None = None
 
     @model_validator(mode="after")
     def _validate_calibration_match_levels(self) -> CalibrationConfig:
@@ -321,6 +323,17 @@ class CalibrationConfig(BaseModel):
 class GovernanceWorkflowConfig(BaseModel):
     """Explicit promotion workflow for prod decision surfaces (no auto-promotion)."""
 
+    @model_validator(mode="after")
+    def _fingerprint_override_requires_waiver(self) -> GovernanceWorkflowConfig:
+        if self.allow_decision_fingerprint_mismatch and not (
+            self.decision_fingerprint_mismatch_waiver_path or ""
+        ).strip():
+            raise ValueError(
+                "governance.allow_decision_fingerprint_mismatch=True requires "
+                "governance.decision_fingerprint_mismatch_waiver_path"
+            )
+        return self
+
     require_promoted_model_for_prod_decision: bool = False
     promotion_registry_path: str | None = None
     #: Warn when experiment evidence is older than this many days (continuous validation / registry).
@@ -331,6 +344,10 @@ class GovernanceWorkflowConfig(BaseModel):
     replay_miss_threshold: float = Field(default=0.25, ge=0.0, le=1.0)
     #: When true, severe drift downgrades model_release to invalidated (no auto-retrain).
     require_review_on_drift: bool = False
+    #: Prod decide: allow train↔decide fingerprint mismatch only with signed waiver (default fail-closed).
+    allow_decision_fingerprint_mismatch: bool = False
+    #: Required when ``allow_decision_fingerprint_mismatch=True`` (see ``decision_fingerprint`` governance).
+    decision_fingerprint_mismatch_waiver_path: str | None = None
 
     model_config = {"extra": "forbid"}
 
@@ -417,13 +434,17 @@ class MMMConfig(BaseModel):
             validate_prod_cv_configuration,
             validate_prod_explicit_modeling_policy,
             validate_prod_model_form_contract,
+            validate_prod_ridge_decision_transform_stack,
             validate_transform_stack_for_framework,
         )
+        from mmm.governance.replay_refit_prod_policy import validate_prod_replay_refit_mode
 
         apply_environment_objective_profile_inplace(self)
         if not self.data.channel_columns:
             raise ValueError("data.channel_columns must be non-empty")
         validate_transform_stack_for_framework(self)
+        validate_prod_ridge_decision_transform_stack(self)
+        validate_prod_replay_refit_mode(self)
         validate_geo_budget_planning_consistency(self)
         if self.calibration.hierarchical_regularization_enabled and not self.hierarchy.enabled:
             raise ValueError(

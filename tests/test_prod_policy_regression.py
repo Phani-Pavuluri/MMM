@@ -10,11 +10,15 @@ from typer.testing import CliRunner
 
 from mmm.artifacts.decision_bundle import build_decision_bundle
 from mmm.cli import main as cli_main
+from mmm.config.load import load_config
 from mmm.config.schema import CVSplitAxis, Framework, MMMConfig, RunEnvironment
 from mmm.contracts.runtime_validation import SemanticContractError, assert_decision_artifact_tier
-from mmm.data.schema import PanelSchema
+from mmm.data.loader import DatasetBuilder
+from mmm.data.panel_order import sort_panel_for_modeling
+from mmm.data.schema import PanelSchema, validate_panel
 from mmm.decision.core import finalize_and_validate_cli_decision_bundle
 from mmm.governance.policy import PolicyError
+from tests.prod_extension_fixtures import enrich_prod_ridge_decide_extension
 
 
 def _prod_ext_planning_allowed() -> dict:
@@ -70,14 +74,26 @@ def _tiny_panel(tmp_path: Path) -> Path:
     return p
 
 
+def _write_enriched_ext(tmp_path: Path, yaml: Path, er: dict) -> Path:
+    cfg = load_config(yaml)
+    builder = DatasetBuilder(cfg.data)
+    schema = builder.schema()
+    panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
+    ext = tmp_path / "ext.json"
+    ext.write_text(
+        json.dumps(enrich_prod_ridge_decide_extension(er, cfg=cfg, panel=panel, schema=schema), default=str),
+        encoding="utf-8",
+    )
+    return ext
+
+
 def test_prod_simulate_rejects_reporting_allowed_model_release(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("MMM_GIT_SHA", "regtestsha")
     csv = _tiny_panel(tmp_path)
-    ext = tmp_path / "ext.json"
     er = _prod_ext_planning_allowed()
     er["model_release"] = {"state": "reporting_allowed", "reasons": [], "triggers": {}}
-    ext.write_text(json.dumps(er), encoding="utf-8")
     yaml = _prod_yaml(tmp_path, csv)
+    ext = _write_enriched_ext(tmp_path, yaml, er)
     scen = tmp_path / "scen.yaml"
     scen.write_text("candidate_spend:\n  c1: 12.0\n  c2: 10.0\n", encoding="utf-8")
     out = tmp_path / "out.json"
@@ -92,11 +108,10 @@ def test_prod_simulate_rejects_reporting_allowed_model_release(tmp_path: Path, m
 def test_prod_optimize_rejects_reporting_allowed_model_release(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("MMM_GIT_SHA", "regtestsha")
     csv = _tiny_panel(tmp_path)
-    ext = tmp_path / "ext.json"
     er = _prod_ext_planning_allowed()
     er["model_release"] = {"state": "reporting_allowed", "reasons": [], "triggers": {}}
-    ext.write_text(json.dumps(er), encoding="utf-8")
     yaml = _prod_yaml(tmp_path, csv)
+    ext = _write_enriched_ext(tmp_path, yaml, er)
     out = tmp_path / "opt.json"
     r = CliRunner().invoke(
         cli_main.app,

@@ -32,6 +32,8 @@ from mmm.decision.optimize_enrichment import (
     apply_simulation_at_recommendation_allowlist,
     apply_simulation_at_recommendation_allowlist_post_enrich,
 )
+from mmm.governance.decision_fingerprint import require_decision_fingerprint_match
+from mmm.governance.decision_ridge_summary import validate_ridge_fit_summary_for_prod_decide
 from mmm.governance.decision_trace import build_decision_trace
 from mmm.governance.model_form_policy import assert_prod_decision_not_log_log
 from mmm.governance.policy import (
@@ -76,6 +78,7 @@ def _prod_extension_gate(cfg: MMMConfig, er: dict[str, Any]) -> Any:
 def _apply_runtime_policy_prechecks(cfg: MMMConfig, er: dict[str, Any], policy: Any) -> None:
     if cfg.framework in (Framework.RIDGE_BO, Framework.BAYESIAN):
         assert_canonical_media_stack_for_modeling(cfg)
+    validate_ridge_fit_summary_for_prod_decide(cfg, er)
     assert_prod_decision_not_log_log(cfg, er)
     require_allow_unsafe(policy)
     require_bayesian_block(cfg.framework, policy)
@@ -265,6 +268,19 @@ def simulate_decision(
     if not cfg.data.path:
         raise ValueError("simulate requires config.data.path to the training panel")
     _apply_runtime_policy_prechecks(cfg, extension_report, policy)
+    builder_pre = DatasetBuilder(cfg.data)
+    schema_pre = builder_pre.schema()
+    panel_pre = sort_panel_for_modeling(validate_panel(builder_pre.build(), schema_pre), schema_pre)
+    from mmm.contracts.seed_resolution import resolve_seed_contract
+
+    seed_pre = resolve_seed_contract(cfg)
+    fp_match = require_decision_fingerprint_match(
+        cfg,
+        extension_report,
+        panel=panel_pre,
+        schema=schema_pre,
+        seed_resolution=seed_pre,
+    )
     promo = _resolve_promotion_for_decision(
         cfg,
         promoted_model_id=promoted_model_id,
@@ -272,10 +288,7 @@ def simulate_decision(
     )
     fp_for_promo = None
     if cfg.governance.require_promoted_model_for_prod_decision and cfg.run_environment == RunEnvironment.PROD:
-        builder = DatasetBuilder(cfg.data)
-        schema = builder.schema()
-        panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
-        fp_for_promo = fingerprint_panel(panel, schema, config=cfg)
+        fp_for_promo = fingerprint_panel(panel_pre, schema_pre, config=cfg, seed_resolution=seed_pre)
     require_promoted_model_for_prod_decision(
         cfg,
         promotion_record=promo,
@@ -292,6 +305,10 @@ def simulate_decision(
     sim, sim_js, scenario_lineage, planning_assumptions = _scenario_simulate(
         cfg, extension_report, scenario, scenario_source_path=scenario_source_path
     )
+    if fp_match.get("severe_warning"):
+        sim_js["decision_fingerprint_warnings"] = [fp_match["severe_warning"], *fp_match.get("warnings", [])]
+    elif fp_match.get("warnings"):
+        sim_js["decision_fingerprint_warnings"] = list(fp_match.get("warnings") or [])
     er = extension_report
     sim_js_pre, _sim_audit = apply_simulation_at_recommendation_allowlist(
         dict(sim_js), cfg=cfg, context="simulate_decision.simulation_json.pre_enrich"
@@ -328,12 +345,9 @@ def simulate_decision(
     gov = er.get("governance") if isinstance(er, dict) else {}
     pq = er.get("panel_qa") if isinstance(er, dict) else {}
     gr = gr_prod
-    builder = DatasetBuilder(cfg.data)
-    schema = builder.schema()
-    panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
-    from mmm.contracts.seed_resolution import resolve_seed_contract
-
-    seed_resolution = resolve_seed_contract(cfg)
+    schema = schema_pre
+    panel = panel_pre
+    seed_resolution = seed_pre
     fp = fingerprint_panel(panel, schema, config=cfg, seed_resolution=seed_resolution)
     em = er.get("experiment_matching") if isinstance(er, dict) else None
     mr = er.get("model_release") if isinstance(er, dict) else None
@@ -453,6 +467,19 @@ def optimize_budget_decision(
     if cfg.run_environment == RunEnvironment.PROD and out is None:
         raise PolicyError("Production optimize-budget requires --out PATH to persist the decision artifact")
     _apply_runtime_policy_prechecks(cfg, extension_report, policy)
+    builder = DatasetBuilder(cfg.data)
+    schema = builder.schema()
+    panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
+    from mmm.contracts.seed_resolution import resolve_seed_contract
+
+    seed_resolution_opt = resolve_seed_contract(cfg)
+    fp_match = require_decision_fingerprint_match(
+        cfg,
+        extension_report,
+        panel=panel,
+        schema=schema,
+        seed_resolution=seed_resolution_opt,
+    )
 
     er_data = extension_report
     gov = er_data.get("governance", {}) if isinstance(er_data, dict) else {}
@@ -468,9 +495,6 @@ def optimize_budget_decision(
     if not full_model_ready:
         raise PolicyError("full_model_ready inputs required for optimize_budget_decision service path")
 
-    builder = DatasetBuilder(cfg.data)
-    schema = builder.schema()
-    panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
     ctx = ridge_context_from_summary(panel, schema, cfg, ridge_summary)  # type: ignore[arg-type]
     names = list(cfg.data.channel_columns)
     n = len(names)
@@ -572,9 +596,6 @@ def optimize_budget_decision(
     mr_id = None
     if isinstance(mr_b, dict):
         mr_id = str(hash(tuple(sorted((str(k), str(v)) for k, v in mr_b.items()))))
-    from mmm.contracts.seed_resolution import resolve_seed_contract
-
-    seed_resolution_opt = resolve_seed_contract(cfg)
     bundle = build_decision_bundle(
         config=cfg,
         schema=schema,
@@ -621,6 +642,10 @@ def optimize_budget_decision(
         "scenario_lineage": scenario_lineage,
         "control_scenario_policy": policy_js,
     }
+    if fp_match.get("severe_warning"):
+        res["decision_fingerprint_warnings"] = [fp_match["severe_warning"], *fp_match.get("warnings", [])]
+    elif fp_match.get("warnings"):
+        res["decision_fingerprint_warnings"] = list(fp_match.get("warnings") or [])
     _sim_for_val = sim_at if sim_at else None
     try:
         finalize_and_validate_cli_decision_bundle(bundle, cfg, simulation_json=_sim_for_val)

@@ -81,6 +81,17 @@ Replay calibration does **not** prove causal validity — it checks internal con
 |-----|---------|---------|
 | `replay_refit_mode` | `full_panel_refit` | `full_panel_refit` (backward compatible), `fold_aligned`, or `holdout_only_diagnostic` |
 | | | `full_panel_refit` emits optimism warning; `fold_aligned` fits train folds only; `holdout_only_diagnostic` excludes replay from BO objective |
+| `full_panel_replay_refit_prod_waiver_path` | — | **Prod only:** required when `replay_refit_mode=full_panel_refit` and replay calibration is enabled. Prefer `fold_aligned` for production training. |
+
+**Prod train ↔ decide fingerprint (fail-closed):**
+
+```yaml
+governance:
+  allow_decision_fingerprint_mismatch: false
+  decision_fingerprint_mismatch_waiver_path: null
+```
+
+Prod `mmm decide simulate|optimize-budget` compares `extension_report.data_fingerprint.sha256_combined` to the live panel fingerprint. Legacy artifacts fall back to `sha256_panel_keycols_sorted_csv` with warnings. Overrides require `allow_decision_fingerprint_mismatch: true` and a signed waiver JSON.
 
 **Promotion workflow (optional prod gate):**
 

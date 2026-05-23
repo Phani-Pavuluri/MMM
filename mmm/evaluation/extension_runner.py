@@ -197,6 +197,11 @@ def run_post_fit_extensions(
     )
     get_extension_registry().run_all(ctx)
     _enrich_calibration_summary(ctx)
+    from mmm.governance.replay_refit_prod_policy import replay_refit_prod_governance_note
+
+    replay_note = replay_refit_prod_governance_note(ctx.config)
+    if replay_note:
+        ctx.out["replay_refit_prod_governance"] = replay_note
     _patch_model_release_replay_gap(ctx)
     _run_research_extension_reports(ctx)
     if store:

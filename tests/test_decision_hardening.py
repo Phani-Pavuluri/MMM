@@ -14,7 +14,7 @@ from mmm.contracts.runtime_validation import SemanticContractError, validate_sem
 from mmm.data.schema import PanelSchema
 from mmm.governance.policy import PolicyError
 from mmm.reporting.safe_language import assert_safe_reporting_language
-from tests.prod_extension_fixtures import prod_replay_evidence_block
+from tests.prod_extension_fixtures import enrich_prod_ridge_decide_extension
 
 
 def test_prod_config_rejects_geo_rank_cv() -> None:
@@ -118,24 +118,23 @@ def test_cli_decide_simulate_matches_api_json(tmp_path: Path, monkeypatch: pytes
     csv_path = tmp_path / "panel.csv"
     csv_path.write_text("geo,week,c1,c2,revenue\nG1,1,10,8,100\n", encoding="utf-8")
     ext = tmp_path / "ext.json"
-    ext.write_text(
-        json.dumps(
-            {
-                "ridge_fit_summary": {
-                    "best_params": {"decay": 0.5, "hill_half": 1.0, "hill_slope": 2.0},
-                    "coef": [0.05, 0.04],
-                    "intercept": [3.0],
-                },
-                "governance": {"approved_for_optimization": True},
-                "response_diagnostics": {"safe_for_optimization": True},
-                "identifiability": {"identifiability_score": 0.5},
-                "panel_qa": {"max_severity": "info", "issues": []},
-                "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
-                **prod_replay_evidence_block(),
-            }
-        ),
-        encoding="utf-8",
-    )
+    from mmm.config.load import load_config
+    from mmm.data.loader import DatasetBuilder
+    from mmm.data.panel_order import sort_panel_for_modeling
+    from mmm.data.schema import validate_panel
+
+    ext_payload = {
+        "ridge_fit_summary": {
+            "best_params": {"decay": 0.5, "hill_half": 1.0, "hill_slope": 2.0},
+            "coef": [0.05, 0.04],
+            "intercept": [3.0],
+        },
+        "governance": {"approved_for_optimization": True},
+        "response_diagnostics": {"safe_for_optimization": True},
+        "identifiability": {"identifiability_score": 0.5},
+        "panel_qa": {"max_severity": "info", "issues": []},
+        "model_release": {"state": "planning_allowed", "reasons": [], "triggers": {}},
+    }
     yaml = tmp_path / "c.yaml"
     yaml.write_text(
         f"""
@@ -165,6 +164,17 @@ extensions:
     )
     scen = tmp_path / "scen.yaml"
     scen.write_text("candidate_spend:\n  c1: 12.0\n  c2: 10.0\n", encoding="utf-8")
+    cfg_loaded = load_config(yaml)
+    builder = DatasetBuilder(cfg_loaded.data)
+    schema = builder.schema()
+    panel = sort_panel_for_modeling(validate_panel(builder.build(), schema), schema)
+    ext.write_text(
+        json.dumps(
+            enrich_prod_ridge_decide_extension(ext_payload, cfg=cfg_loaded, panel=panel, schema=schema),
+            default=str,
+        ),
+        encoding="utf-8",
+    )
     out_cli = tmp_path / "cli.json"
     out_api = tmp_path / "api.json"
     runner = CliRunner()

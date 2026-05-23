@@ -108,6 +108,7 @@ def write_train_decide_fixture(root: Path) -> dict[str, Path]:
                 "calibration": {
                     "use_replay_calibration": True,
                     "replay_units_path": str(replay_json.resolve()),
+                    "replay_refit_mode": "fold_aligned",
                 },
                 "budget": {"total_budget": 500.0},
                 "artifacts": {"backend": "local", "run_dir": str(run_dir.resolve())},
