@@ -14,6 +14,8 @@ Use this before enabling automated spend recommendations or publishing model-bas
 
 - [ ] `extension_report` governance / response diagnostics meet org thresholds (see `OptimizationSafetyGate`).
 - [ ] Non-BAU baselines documented in optimization disclosure strings.
+- [ ] **Promotion (optional):** when `governance.require_promoted_model_for_prod_decision: true`, prod decide supplies a valid `promoted_model_id` / promotion record; fingerprints match; record not expired; surface allowed. See [promotion_workflow.md](promotion_workflow.md).
+- [ ] **No auto-promotion** — `promote_run` is explicit human review only; registry is append-only JSONL.
 
 ## Uncertainty propagation (PR 5A)
 
@@ -56,6 +58,7 @@ Use this before enabling automated spend recommendations or publishing model-bas
 - [ ] **Replay holdout disclosed:** `replay_holdout_available` is `true` when CV ran, or absence of `replay_holdout_loss` / gap fields is explicitly accepted (do not treat missing holdout as “no overfit”).
 - [ ] **Severe replay generalization gap reviewed:** when `replay_generalization_gap_severity` is `severe`, read `replay_overfit_warning` and compare to predictive CV score before release.
 - [ ] **`block_on_severe_replay_gap`:** enabled only when the org wants hard fail on severe gap (default `false` = advisory warning only).
+- [ ] **`replay_refit_mode` reviewed:** default `full_panel_refit` is backward compatible but may be optimistic; use `fold_aligned` when BO objective should not refit on full panel; `holdout_only_diagnostic` excludes replay from the objective (holdout/gap diagnostic only).
 - [ ] **Legacy replay deprecation:** review `legacy_replay_warnings` / `legacy_replay_upgrade_warnings` for `legacy_replay_deprecated_use_evidence_registry`; migrate new work to evidence-registry replay.
 - [ ] Aggregate national/user experiments do not claim DMA lift; allocated shocks documented as `computational_bridge_only` only.
 - [ ] **Bayesian experiment likelihood:** if `bayesian.use_experiment_likelihood`, treat as **research-only**; confirm `bayesian_experiment_likelihood_report.prod_decisioning_allowed` is false and prod decision APIs remain blocked.

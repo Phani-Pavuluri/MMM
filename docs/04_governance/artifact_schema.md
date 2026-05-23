@@ -151,8 +151,12 @@ Written to `extension_report.calibration_summary` (and mirrored on Ridge `ridge_
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `calibration_refit_mode` | string | `full_panel_same_hyperparameters` for train replay path |
+| `calibration_refit_mode` | string | `full_panel_same_hyperparameters`, `fold_aligned_cv`, or `holdout_diagnostic_only` |
+| `replay_refit_mode` | string | Config mirror: `full_panel_refit` \| `fold_aligned` \| `holdout_only_diagnostic` |
 | `replay_uses_full_panel_refit` | bool | Train replay uses full-panel refit coef |
+| `fold_replay_losses` | float[] | Per-CV-fold replay losses when `replay_refit_mode=fold_aligned` |
+| `fold_replay_units_used` | int | Units scored in fold-aligned path |
+| `fold_replay_units_skipped` | int | Units skipped (estimand / validation overlap) |
 | `replay_train_loss` | float | Replay loss at full-panel refit |
 | `replay_holdout_loss` | float \| null | Replay loss at last CV-fold coef (if available) |
 | `replay_holdout_available` | bool | `false` when CV holdout replay was not computed |
@@ -165,5 +169,20 @@ Written to `extension_report.calibration_summary` (and mirrored on Ridge `ridge_
 | `legacy_replay_upgrade_warnings` | string[] | Window-slice → full-panel upgrade notices |
 
 Replay gap fields measure **train vs CV-fold replay consistency**, not causal incrementality. See [../02_concepts/calibration.md](../02_concepts/calibration.md).
+
+## Decision bundle: promotion lineage (optional)
+
+When a promotion record is supplied to prod decide paths, `decision_bundle` may include:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `promoted_model_id` | string | Model id from promotion record |
+| `promotion_id` | string | Immutable promotion record id |
+| `promotion_registry_ref` | string | Path to append-only JSONL registry |
+| `promotion_fingerprint_match` | bool | Data/config fingerprint match at decide time |
+| `promotion_expiration_date` | string \| null | ISO date when set |
+| `rollback_lineage` | object | `rollback_of`, `parent_promotion_id` when rolling back |
+
+See [promotion_workflow.md](promotion_workflow.md).
 
 See also: [../03_planning/decision_runbook.md](../03_planning/decision_runbook.md) §2e, [../03_planning/planning_execution.md](../03_planning/planning_execution.md), [../01_getting_started/config_yaml.md](../01_getting_started/config_yaml.md).

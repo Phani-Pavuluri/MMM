@@ -279,9 +279,16 @@ class CalibrationConfig(BaseModel):
     replay_generalization_gap_threshold: float = Field(default=0.25, ge=0.0)
     #: When ``True``, severe replay gap may invalidate model release (default advisory warning only).
     block_on_severe_replay_gap: bool = False
+    #: How replay calibration coefficients are fit for the BO objective (default backward compatible).
+    replay_refit_mode: Literal["full_panel_refit", "fold_aligned", "holdout_only_diagnostic"] = (
+        "full_panel_refit"
+    )
 
     @model_validator(mode="after")
     def _validate_calibration_match_levels(self) -> CalibrationConfig:
+        from mmm.calibration.replay_refit_mode import validate_replay_refit_mode
+
+        validate_replay_refit_mode(self.replay_refit_mode)
         from mmm.calibration.matching import validate_calibration_match_levels
 
         validate_calibration_match_levels(self.match_levels)
@@ -309,6 +316,15 @@ class CalibrationConfig(BaseModel):
                 "calibration.evidence_weighting_enabled requires calibration.use_replay_calibration=true"
             )
         return self
+
+
+class GovernanceWorkflowConfig(BaseModel):
+    """Explicit promotion workflow for prod decision surfaces (no auto-promotion)."""
+
+    require_promoted_model_for_prod_decision: bool = False
+    promotion_registry_path: str | None = None
+
+    model_config = {"extra": "forbid"}
 
 
 class BudgetConfig(BaseModel):
@@ -360,6 +376,7 @@ class MMMConfig(BaseModel):
     bayesian: BayesianConfig = Field(default_factory=BayesianConfig)
     objective: CompositeObjectiveConfig = Field(default_factory=CompositeObjectiveConfig)
     calibration: CalibrationConfig = Field(default_factory=CalibrationConfig)
+    governance: GovernanceWorkflowConfig = Field(default_factory=GovernanceWorkflowConfig)
     hierarchy: HierarchyConfig = Field(default_factory=HierarchyConfig)
     budget: BudgetConfig = Field(default_factory=BudgetConfig)
     artifacts: ArtifactConfig = Field(default_factory=ArtifactConfig)

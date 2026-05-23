@@ -10,17 +10,16 @@ import numpy as np
 import pandas as pd
 
 from mmm.calibration.evidence_replay import (
-    aggregate_weighted_evidence_replay_loss,
     build_evidence_weighted_replay_summary,
     prepare_evidence_replay,
     uses_evidence_registry_replay,
     uses_weighted_evidence_replay,
     validate_evidence_registry_replay_config,
 )
+from mmm.calibration.replay_bo_objective import evaluate_replay_calibration_for_trial
 from mmm.calibration.replay_frames import normalize_replay_units_to_full_panel
-from mmm.calibration.replay_generalization import build_replay_calibration_metadata
-from mmm.calibration.replay_lift import aggregate_replay_calibration_loss
 from mmm.calibration.replay_prod_gate import assert_replay_production_ready
+from mmm.calibration.replay_refit_mode import replay_refit_enters_objective, validate_replay_refit_mode
 from mmm.calibration.replay_units_resolve import resolve_replay_unit_sets
 from mmm.config.schema import Framework, MMMConfig, ModelForm, RunEnvironment
 from mmm.data.panel_order import sort_panel_for_modeling
@@ -107,7 +106,9 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
         if not splits:
             raise RuntimeError("CV produced no splits; adjust min_train_weeks/horizon")
 
-        has_replay = uses_weighted_evidence_replay(self.config) or bool(self._replay_units)
+        has_replay = self.config.calibration.use_replay_calibration and (
+            uses_weighted_evidence_replay(self.config) or bool(self._replay_units)
+        )
         if (
             self.config.run_environment == RunEnvironment.PROD
             and self.config.calibration.enabled
@@ -189,117 +190,46 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
             cal_detail: dict[str, Any] | None = None
             cal = 0.0
             parts: dict[str, Any] = {}
-            use_replay = (
-                (self._replay_units or self._evidence_replay_prepared is not None)
+            refit_mode = validate_replay_refit_mode(self.config.calibration.replay_refit_mode)
+            replay_active = (
+                self.config.calibration.use_replay_calibration
+                and (self._replay_units or self._evidence_replay_prepared is not None)
                 and coef_rows
                 and intercept_rows
             )
-            if use_replay:
-                # Replay calibration must use the same coefficient object as a shipped model for these
-                # hyperparameters: full-panel refit on all rows (not any single CV fold).
-                rkey = (dkey, round(float(alpha), 9))
+            if replay_active:
+                rkey = (dkey, round(float(alpha), 9), refit_mode)
                 if rkey not in replay_loss_cache:
-                    coef_full, intercept_full = fit_ridge(bundle.X, bundle.y_modeling, alpha)
-
-                    def predict_level(dfp: pd.DataFrame) -> np.ndarray:
-                        b = build_design_matrix(
-                            dfp,
-                            self.schema,
-                            self.config,
-                            decay=decay,
-                            hill_half=hill_half,
-                            hill_slope=hill_slope,
-                        )
-                        ylog = predict_ridge(b.X, coef_full, intercept_full)
-                        return np.exp(ylog)
-
-                    if uses_weighted_evidence_replay(self.config):
-                        assert self._evidence_replay_prepared is not None
-                        rloss, rmeta = aggregate_weighted_evidence_replay_loss(
-                            self._evidence_replay_prepared.used,
-                            predict_level,
-                            schema=self.schema,
-                            target_col=self.schema.target_column,
-                            config=self.config,
-                        )
-                        replay_mode = "evidence_registry"
-                    else:
-                        rloss, rmeta = aggregate_replay_calibration_loss(
-                            self._replay_units,
-                            predict_level,
-                            schema=self.schema,
-                            target_col=self.schema.target_column,
-                            config=self.config,
-                        )
-                        replay_mode = "legacy"
-                    holdout_loss = None
-                    if coef_rows:
-
-                        def predict_holdout(dfp: pd.DataFrame) -> np.ndarray:
-                            b = build_design_matrix(
-                                dfp,
-                                self.schema,
-                                self.config,
-                                decay=decay,
-                                hill_half=hill_half,
-                                hill_slope=hill_slope,
-                            )
-                            ylog = predict_ridge(b.X, coef_rows[-1], intercept_rows[-1])
-                            return np.exp(ylog)
-
-                        if uses_weighted_evidence_replay(self.config):
-                            assert self._evidence_replay_prepared is not None
-                            holdout_loss, _ = aggregate_weighted_evidence_replay_loss(
-                                self._evidence_replay_prepared.used,
-                                predict_holdout,
-                                schema=self.schema,
-                                target_col=self.schema.target_column,
-                                config=self.config,
-                            )
-                        else:
-                            holdout_loss, _ = aggregate_replay_calibration_loss(
-                                self._replay_units,
-                                predict_holdout,
-                                schema=self.schema,
-                                target_col=self.schema.target_column,
-                                config=self.config,
-                            )
-                    disclosure = build_replay_calibration_metadata(
-                        train_loss=float(rloss),
-                        holdout_loss=float(holdout_loss) if holdout_loss is not None else None,
-                        n_units=int(rmeta.get("n_units", 0)),
-                        replay_mode_used=replay_mode,
-                        replay_transform_mode=rmeta.get("replay_transform_mode"),
-                        gap_severe_threshold=float(
-                            self.config.calibration.replay_generalization_gap_threshold
-                        ),
+                    out = evaluate_replay_calibration_for_trial(
+                        panel_df=df,
+                        schema=self.schema,
+                        config=self.config,
+                        bundle=bundle,
+                        splits=splits,
+                        coef_rows=coef_rows,
+                        intercept_rows=intercept_rows,
+                        replay_units=self._replay_units,
+                        evidence_prepared=self._evidence_replay_prepared,
                         legacy_warnings=self._legacy_replay_warnings,
+                        replay_split_meta=self._replay_split_meta,
+                        refit_mode=refit_mode,
+                        decay=decay,
+                        hill_half=hill_half,
+                        hill_slope=hill_slope,
+                        alpha=alpha,
                     )
-                    if self._replay_split_meta:
-                        disclosure["replay_split_meta"] = dict(self._replay_split_meta)
-                    merged = dict(rmeta) if isinstance(rmeta, dict) else {}
-                    merged.update(disclosure)
-                    if uses_weighted_evidence_replay(self.config):
-                        merged["calibration_score_source"] = "evidence_registry_weighted_replay"
-                        merged["weighted_replay_loss"] = rmeta.get("weighted_replay_loss", rloss)
+                    if out is None:
+                        replay_loss_cache[rkey] = (0.0, {})
                     else:
-                        merged["calibration_score_source"] = (
-                            "full_data_refit_same_hyperparameters_as_shipped_model"
-                        )
-                    merged["calibration_refit_n_rows"] = int(bundle.X.shape[0])
-                    merged["train_vs_holdout_replay_loss"] = {
-                        "replay_loss_in_objective": float(rloss),
-                        "replay_holdout_loss": holdout_loss,
-                        "replay_generalization_gap": merged.get("replay_generalization_gap"),
-                        "predictive_score_source": "time_series_cv_folds",
-                    }
-                    replay_loss_cache[rkey] = (float(rloss), merged)
+                        obj_loss, merged, _ = out
+                        replay_loss_cache[rkey] = (float(obj_loss), merged)
                 rloss, rmeta = replay_loss_cache[rkey]
-                cal = float(rloss)
+                cal = float(rloss) if replay_refit_enters_objective(refit_mode, use_replay_calibration=True) else 0.0
                 parts["replay"] = rmeta
                 parts["mean_lift_se"] = rmeta.get("mean_lift_se", 1.0)
                 for key in (
                     "calibration_refit_mode",
+                    "replay_refit_mode",
                     "replay_uses_full_panel_refit",
                     "replay_overfit_warning",
                     "replay_training_units",
@@ -317,6 +247,10 @@ class RidgeBOMMMTrainer(RidgeBOMMMBase):
                     "calibration_refit_n_rows",
                     "train_vs_holdout_replay_loss",
                     "legacy_replay_upgrade_warnings",
+                    "fold_replay_losses",
+                    "fold_replay_units_used",
+                    "fold_replay_units_skipped",
+                    "replay_fold_alignment_warnings",
                 ):
                     if key in rmeta:
                         parts[key] = rmeta[key]

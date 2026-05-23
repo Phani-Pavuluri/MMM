@@ -71,9 +71,26 @@ calibration:
 
 Severity bands on `replay_generalization_gap` (`holdout_loss − train_loss`): `none` &lt; 0.1, `moderate` 0.1–threshold, `severe` ≥ threshold. When CV does not run or produces no folds, `replay_holdout_available: false` and gap fields are absent — **absence must be reviewed**, not treated as “no overfit.”
 
-**Holdout replay (built-in; no separate unit paths):** Holdout replay uses the **last CV-fold** coefficients on the **same** replay units as train replay. There is **no** `use_replay_holdout_split`, `replay_holdout_fraction`, `train_replay_units_path`, or `holdout_replay_units_path` in `CalibrationConfig` today — do not add these keys expecting behavior. Unit lists come from `replay_units_path` (legacy) or `evidence_registry_path` (evidence-registry). Fold-aligned replay refit is a **future** design PR.
+**Holdout replay (built-in):** Holdout replay uses the **last CV-fold** coefficients on the **same** replay units as train replay (diagnostic gap only). Optional **unit-list split** for BO train replay: `use_replay_holdout_split`, `replay_holdout_fraction`, `train_replay_units_path`, `holdout_replay_units_path` (see `CalibrationConfig`). Unit lists otherwise come from `replay_units_path` (legacy) or `evidence_registry_path` (evidence-registry).
 
 Replay calibration does **not** prove causal validity — it checks internal consistency under stated estimands. See [../02_concepts/calibration.md](../02_concepts/calibration.md) and [../04_governance/artifact_schema.md](../04_governance/artifact_schema.md#extension-report-calibration--replay-disclosure).
+
+**Replay refit mode (BO objective honesty):**
+
+| Key | Default | Meaning |
+|-----|---------|---------|
+| `replay_refit_mode` | `full_panel_refit` | `full_panel_refit` (backward compatible), `fold_aligned`, or `holdout_only_diagnostic` |
+| | | `full_panel_refit` emits optimism warning; `fold_aligned` fits train folds only; `holdout_only_diagnostic` excludes replay from BO objective |
+
+**Promotion workflow (optional prod gate):**
+
+```yaml
+governance:
+  require_promoted_model_for_prod_decision: false
+  promotion_registry_path: path/to/promotions.jsonl
+```
+
+See [../04_governance/promotion_workflow.md](../04_governance/promotion_workflow.md).
 
 **Bayesian experiment likelihood (research-only):**
 

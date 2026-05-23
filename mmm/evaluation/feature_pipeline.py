@@ -16,8 +16,13 @@ def transform_params_from_fit_or_defaults(
     config: MMMConfig, fit_out: dict[str, Any] | None
 ) -> dict[str, float]:
     if config.framework == Framework.RIDGE_BO and fit_out and fit_out.get("artifacts") is not None:
-        bp = fit_out["artifacts"].best_params
-        return {"decay": bp["decay"], "hill_half": bp["hill_half"], "hill_slope": bp["hill_slope"]}
+        bp = getattr(fit_out["artifacts"], "best_params", None) or {}
+        if isinstance(bp, dict) and "decay" in bp:
+            return {
+                "decay": float(bp["decay"]),
+                "hill_half": float(bp["hill_half"]),
+                "hill_slope": float(bp["hill_slope"]),
+            }
     return {
         "decay": float(config.transforms.adstock_params.get("decay", 0.5)),
         "hill_half": float(config.transforms.saturation_params.get("half_max", 1.0)),

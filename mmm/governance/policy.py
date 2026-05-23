@@ -175,6 +175,40 @@ def require_panel_qa_pass(panel_qa_summary: dict[str, Any] | None, policy: Runti
         raise PolicyError("prod blocks decision paths when panel_qa.max_severity=block")
 
 
+def require_promoted_model_for_prod_decision(
+    cfg: MMMConfig,
+    *,
+    promotion_record: dict[str, Any] | None,
+    surface: str,
+    data_fingerprint: dict[str, Any] | None = None,
+    config_fingerprint: str | None = None,
+) -> None:
+    """When enabled, prod decide must reference a valid promotion registry entry."""
+    if not cfg.governance.require_promoted_model_for_prod_decision:
+        return
+    if cfg.run_environment != RunEnvironment.PROD:
+        return
+    if not cfg.governance.promotion_registry_path:
+        raise PolicyError(
+            "governance.require_promoted_model_for_prod_decision requires governance.promotion_registry_path"
+        )
+    if not isinstance(promotion_record, dict) or not promotion_record.get("promotion_id"):
+        raise PolicyError("prod decision requires promoted_model_id or promotion record path")
+    from mmm.governance.promotion import PromotionRecord, assert_promotion_valid_for_decision
+    from mmm.governance.promotion_registry import get_promotion_by_id
+
+    pid = str(promotion_record.get("promotion_id"))
+    rec = get_promotion_by_id(cfg.governance.promotion_registry_path, pid)
+    if rec is None:
+        rec = PromotionRecord.from_dict(promotion_record)
+    assert_promotion_valid_for_decision(
+        rec,
+        surface=surface,
+        data_fingerprint=data_fingerprint,
+        config_fingerprint=config_fingerprint,
+    )
+
+
 def require_replay_calibration(
     calibration_summary: dict[str, Any] | None,
     experiment_matching: dict[str, Any] | None,

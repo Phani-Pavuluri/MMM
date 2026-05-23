@@ -29,9 +29,13 @@ def build_replay_calibration_metadata(
     n_units: int,
     replay_mode_used: str,
     replay_transform_mode: str | None,
+    calibration_refit_mode: str = "full_panel_same_hyperparameters",
+    replay_uses_full_panel_refit: bool = True,
+    replay_overfit_warning: str = "",
     gap_moderate_threshold: float = 0.1,
     gap_severe_threshold: float = 0.25,
     legacy_warnings: list[str] | None = None,
+    extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Explicit replay calibration disclosure for BO trial / extension artifacts."""
     gap = (
@@ -44,20 +48,20 @@ def build_replay_calibration_metadata(
         moderate_threshold=gap_moderate_threshold,
         severe_threshold=gap_severe_threshold,
     )
-    warning = ""
-    if severity == "severe":
+    warning = replay_overfit_warning
+    if severity == "severe" and not warning:
         warning = (
             f"Replay generalization gap {gap:.4f} >= {gap_severe_threshold} (train vs holdout coef): "
             "replay calibration may be optimistic vs CV holdout."
         )
-    elif severity == "moderate":
+    elif severity == "moderate" and not warning:
         warning = (
             f"Replay generalization gap {gap:.4f} in [{gap_moderate_threshold}, {gap_severe_threshold}): "
             "monitor replay vs predictive score."
         )
     meta: dict[str, Any] = {
-        "calibration_refit_mode": "full_panel_same_hyperparameters",
-        "replay_uses_full_panel_refit": True,
+        "calibration_refit_mode": calibration_refit_mode,
+        "replay_uses_full_panel_refit": replay_uses_full_panel_refit,
         "replay_training_units": int(n_units),
         "replay_holdout_units": int(n_units) if holdout_loss is not None else 0,
         "replay_holdout_available": holdout_loss is not None,
@@ -72,4 +76,6 @@ def build_replay_calibration_metadata(
     }
     if legacy_warnings:
         meta["legacy_replay_upgrade_warnings"] = list(legacy_warnings)
+    if extra:
+        meta.update(extra)
     return meta

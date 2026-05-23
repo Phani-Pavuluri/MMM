@@ -37,6 +37,11 @@ _REPLAY_DISCLOSURE_KEYS = (
     "replay_transform_mode",
     "legacy_replay_upgrade_warnings",
     "legacy_replay_warnings",
+    "replay_refit_mode",
+    "fold_replay_losses",
+    "fold_replay_units_used",
+    "fold_replay_units_skipped",
+    "replay_fold_alignment_warnings",
 )
 
 
