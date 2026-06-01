@@ -8,6 +8,15 @@ from pathlib import Path
 from typing import Any
 
 from mmm.research.bayes_h3_sandbox.h4c_recovery_worlds import H4C_WORLD_IDS
+from mmm.research.bayes_h3_sandbox.h5_validation_worlds import (
+    WORLD_BAYES_H5_ADSTOCK_ALIGNED,
+    WORLD_BAYES_H5_ADSTOCK_MISMATCH,
+    WORLD_BAYES_H5_CORRELATED_CHANNELS,
+    WORLD_BAYES_H5_SATURATION_ALIGNED,
+    WORLD_BAYES_H5_SATURATION_MISMATCH,
+    WORLD_BAYES_H5_SPARSE_RECOVERY,
+    WORLD_BAYES_H5_WEAK_SIGNAL,
+)
 from mmm.research.bayes_h3_sandbox.recovery_worlds import (
     H4_WORLD_IDS,
     WORLD_BAYES_H4_CONFLICTING_EVIDENCE,
@@ -39,6 +48,9 @@ RECOVERY_CANDIDATE_WORLDS: frozenset[str] = frozenset(
         "WORLD-BAYES-H4C-CLEAN-RECOVERY",
         "WORLD-BAYES-H4C-SPARSE-RECOVERY",
         "WORLD-BAYES-H4-SIMPLE-POOLING",
+        WORLD_BAYES_H5_ADSTOCK_ALIGNED,
+        WORLD_BAYES_H5_SATURATION_ALIGNED,
+        WORLD_BAYES_H5_SPARSE_RECOVERY,
     }
 )
 
@@ -52,6 +64,8 @@ WEAK_IDENTIFICATION_WORLDS: frozenset[str] = frozenset(
     {
         "WORLD-BAYES-H4C-CORRELATED-CHANNELS",
         "WORLD-BAYES-H4C-WEAK-SIGNAL",
+        WORLD_BAYES_H5_CORRELATED_CHANNELS,
+        WORLD_BAYES_H5_WEAK_SIGNAL,
     }
 )
 
@@ -59,6 +73,8 @@ TRANSFORM_MISMATCH_WORLDS: frozenset[str] = frozenset(
     {
         "WORLD-BAYES-H4C-ADSTOCKED-MEDIA",
         "WORLD-BAYES-H4C-SATURATION",
+        WORLD_BAYES_H5_ADSTOCK_MISMATCH,
+        WORLD_BAYES_H5_SATURATION_MISMATCH,
     }
 )
 

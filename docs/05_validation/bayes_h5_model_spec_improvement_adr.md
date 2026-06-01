@@ -22,6 +22,15 @@
 | **Does not authorize** | `model.py` changes, PyMC implementation, hard gates, DecisionSurface/optimizer/recommendations, `approved_for_prod`, Ridge replacement |
 | **Next authorized step** | H5 validation world catalog + gated sandbox implementation + `BAYES_H5_RECOVERY_PILOT_*` artifacts (research-only) |
 
+### Implementation pointer (H5a — research sandbox only)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **In progress (H5a)** — gated research implementation; **not** production acceptance |
+| **Code** | `mmm/research/bayes_h3_sandbox/h5_validation_worlds.py` · `h5_transforms.py` · `h5_pilot_runner.py`; H5 path in `model.py` / `entrypoint.py` / `fencing.py` (`model_spec_version=bayes_h5_sandbox_spec_v1`, `enable_h5_sandbox=True`) |
+| **Pilot artifact** | [archives/BAYES_H5_SANDBOX_PILOT_20260601.json](archives/BAYES_H5_SANDBOX_PILOT_20260601.json) |
+| **Still blocked** | Production Bayes; Ridge prod path; DecisionSurface; optimizer; recommendations; `approved_for_prod`; hard gates |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

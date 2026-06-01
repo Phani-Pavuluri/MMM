@@ -1,0 +1,553 @@
+{
+  "pilot_id": "BAYES_H5_SANDBOX_PILOT_20260601",
+  "pilot_version": "bayes_h5_sandbox_pilot_v1",
+  "model_spec_version": "bayes_h5_sandbox_spec_v1",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "research_only": true,
+  "transform_registry": {
+    "registry_id": "bayes_h5_media_transform_registry_v1",
+    "transform_ids": [
+      "identity",
+      "geometric_adstock",
+      "hill_saturation",
+      "adstock_then_saturation"
+    ],
+    "research_only": true,
+    "wired_to_production_feature_engineering": false
+  },
+  "world_catalog": [
+    {
+      "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
+      "role": "recovery_candidate",
+      "h5_classification": "recovery_candidate",
+      "generative_transform": "geometric_adstock",
+      "fitted_transform_expectation": "geometric_adstock",
+      "transform_mismatch_mode": "aligned",
+      "expected_diagnostic_behavior": {
+        "role": "recovery_candidate",
+        "h5_classification": "recovery_candidate",
+        "generative_transform": "geometric_adstock",
+        "generative_params": {
+          "decay": 0.7
+        },
+        "fitted_transform_id": "geometric_adstock",
+        "fitted_transform_expectation": "geometric_adstock",
+        "transform_mismatch_mode": "aligned",
+        "transform_mismatch_warning_expected": false,
+        "recovery_expectation": "improved_beta_recovery_vs_h4c_mismatch"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-SATURATION-ALIGNED",
+      "role": "recovery_candidate",
+      "h5_classification": "recovery_candidate",
+      "generative_transform": "hill_saturation",
+      "fitted_transform_expectation": "hill_saturation",
+      "transform_mismatch_mode": "aligned",
+      "expected_diagnostic_behavior": {
+        "role": "recovery_candidate",
+        "h5_classification": "recovery_candidate",
+        "generative_transform": "hill_saturation",
+        "generative_params": {
+          "half": 2.0,
+          "slope": 1.5
+        },
+        "fitted_transform_id": "hill_saturation",
+        "fitted_transform_expectation": "hill_saturation",
+        "transform_mismatch_mode": "aligned",
+        "transform_mismatch_warning_expected": false,
+        "recovery_expectation": "improved_beta_recovery_vs_h4c_mismatch"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
+      "role": "transform_mismatch",
+      "h5_classification": "transform_mismatch",
+      "generative_transform": "geometric_adstock",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "intentional_mismatch",
+      "expected_diagnostic_behavior": {
+        "role": "transform_mismatch",
+        "h5_classification": "transform_mismatch",
+        "generative_transform": "geometric_adstock",
+        "generative_params": {
+          "decay": 0.7
+        },
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "intentional_mismatch",
+        "transform_mismatch_warning_expected": true,
+        "model_mismatch": "Outcome adstocked; H5 fit uses identity on raw media"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-SATURATION-MISMATCH",
+      "role": "transform_mismatch",
+      "h5_classification": "transform_mismatch",
+      "generative_transform": "hill_saturation",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "intentional_mismatch",
+      "expected_diagnostic_behavior": {
+        "role": "transform_mismatch",
+        "h5_classification": "transform_mismatch",
+        "generative_transform": "hill_saturation",
+        "generative_params": {
+          "half": 2.0,
+          "slope": 1.5
+        },
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "intentional_mismatch",
+        "transform_mismatch_warning_expected": true,
+        "model_mismatch": "Outcome saturated; H5 fit uses identity on raw media"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
+      "role": "weak_identification",
+      "h5_classification": "weak_identification",
+      "generative_transform": "correlated",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "aligned",
+      "expected_diagnostic_behavior": {
+        "role": "weak_identification",
+        "h5_classification": "weak_identification",
+        "generative_transform": "correlated",
+        "generative_params": {
+          "rho": 0.92
+        },
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "aligned",
+        "collinearity_warning_expected": true
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
+      "role": "weak_identification",
+      "h5_classification": "weak_identification",
+      "generative_transform": "weak_signal",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "aligned",
+      "expected_diagnostic_behavior": {
+        "role": "weak_identification",
+        "h5_classification": "weak_identification",
+        "generative_transform": "weak_signal",
+        "generative_params": {
+          "media_scale": 0.2,
+          "noise_sigma": 0.45
+        },
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "aligned",
+        "recovery_expectation": "poor_beta_recovery"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
+      "role": "recovery_candidate",
+      "h5_classification": "recovery_candidate",
+      "generative_transform": "linear",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "aligned",
+      "expected_diagnostic_behavior": {
+        "role": "recovery_candidate",
+        "h5_classification": "recovery_candidate",
+        "generative_transform": "linear",
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "aligned",
+        "sparse_role": "recovery_not_stress"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false
+    }
+  ],
+  "sampler_settings": {
+    "fast_mcmc_profile": true,
+    "pilot_run_mode": "catalog_seed_pending_mcmc",
+    "model_spec_version": "bayes_h5_sandbox_spec_v1",
+    "note": "Per-world MCMC metrics to be filled by run_h5_pilot when PyMC available."
+  },
+  "per_world_metrics": [
+    {
+      "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
+      "role": "recovery_candidate",
+      "h5_classification": "recovery_candidate",
+      "generative_transform": "geometric_adstock",
+      "fitted_transform_expectation": "geometric_adstock",
+      "transform_mismatch_mode": "aligned",
+      "beta_gc_mae": null,
+      "mu_c_mae": null,
+      "h5_diagnostic_warnings": [],
+      "policy_outcomes": {
+        "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
+        "policy_role": "recovery_candidate",
+        "outcome": "warn",
+        "hard_gate": false,
+        "fail_for_claim": false,
+        "global_model_failure": false,
+        "production_promotion": false
+      },
+      "expected_diagnostic_behavior": {
+        "role": "recovery_candidate",
+        "h5_classification": "recovery_candidate",
+        "generative_transform": "geometric_adstock",
+        "generative_params": {
+          "decay": 0.7
+        },
+        "fitted_transform_id": "geometric_adstock",
+        "fitted_transform_expectation": "geometric_adstock",
+        "transform_mismatch_mode": "aligned",
+        "transform_mismatch_warning_expected": false,
+        "recovery_expectation": "improved_beta_recovery_vs_h4c_mismatch"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "decision_surface": null,
+      "optimizer_ready_curves": null,
+      "budget_recommendation": null,
+      "recommendation": null
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-SATURATION-ALIGNED",
+      "role": "recovery_candidate",
+      "h5_classification": "recovery_candidate",
+      "generative_transform": "hill_saturation",
+      "fitted_transform_expectation": "hill_saturation",
+      "transform_mismatch_mode": "aligned",
+      "beta_gc_mae": null,
+      "mu_c_mae": null,
+      "h5_diagnostic_warnings": [],
+      "policy_outcomes": {
+        "world_id": "WORLD-BAYES-H5-SATURATION-ALIGNED",
+        "policy_role": "recovery_candidate",
+        "outcome": "warn",
+        "hard_gate": false,
+        "fail_for_claim": false,
+        "global_model_failure": false,
+        "production_promotion": false
+      },
+      "expected_diagnostic_behavior": {
+        "role": "recovery_candidate",
+        "h5_classification": "recovery_candidate",
+        "generative_transform": "hill_saturation",
+        "generative_params": {
+          "half": 2.0,
+          "slope": 1.5
+        },
+        "fitted_transform_id": "hill_saturation",
+        "fitted_transform_expectation": "hill_saturation",
+        "transform_mismatch_mode": "aligned",
+        "transform_mismatch_warning_expected": false,
+        "recovery_expectation": "improved_beta_recovery_vs_h4c_mismatch"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "decision_surface": null,
+      "optimizer_ready_curves": null,
+      "budget_recommendation": null,
+      "recommendation": null
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
+      "role": "transform_mismatch",
+      "h5_classification": "transform_mismatch",
+      "generative_transform": "geometric_adstock",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "intentional_mismatch",
+      "beta_gc_mae": null,
+      "mu_c_mae": null,
+      "h5_diagnostic_warnings": [
+        "h5:transform_mismatch:WORLD-BAYES-H5-ADSTOCK-MISMATCH: generative=geometric_adstock fitted=identity"
+      ],
+      "policy_outcomes": {
+        "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
+        "policy_role": "transform_mismatch",
+        "outcome": "transform_mismatch_warning",
+        "hard_gate": false,
+        "fail_for_claim": false,
+        "global_model_failure": false,
+        "production_promotion": false
+      },
+      "expected_diagnostic_behavior": {
+        "role": "transform_mismatch",
+        "h5_classification": "transform_mismatch",
+        "generative_transform": "geometric_adstock",
+        "generative_params": {
+          "decay": 0.7
+        },
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "intentional_mismatch",
+        "transform_mismatch_warning_expected": true,
+        "model_mismatch": "Outcome adstocked; H5 fit uses identity on raw media"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "decision_surface": null,
+      "optimizer_ready_curves": null,
+      "budget_recommendation": null,
+      "recommendation": null
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-SATURATION-MISMATCH",
+      "role": "transform_mismatch",
+      "h5_classification": "transform_mismatch",
+      "generative_transform": "hill_saturation",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "intentional_mismatch",
+      "beta_gc_mae": null,
+      "mu_c_mae": null,
+      "h5_diagnostic_warnings": [
+        "h5:transform_mismatch:WORLD-BAYES-H5-SATURATION-MISMATCH: generative=hill_saturation fitted=identity"
+      ],
+      "policy_outcomes": {
+        "world_id": "WORLD-BAYES-H5-SATURATION-MISMATCH",
+        "policy_role": "transform_mismatch",
+        "outcome": "transform_mismatch_warning",
+        "hard_gate": false,
+        "fail_for_claim": false,
+        "global_model_failure": false,
+        "production_promotion": false
+      },
+      "expected_diagnostic_behavior": {
+        "role": "transform_mismatch",
+        "h5_classification": "transform_mismatch",
+        "generative_transform": "hill_saturation",
+        "generative_params": {
+          "half": 2.0,
+          "slope": 1.5
+        },
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "intentional_mismatch",
+        "transform_mismatch_warning_expected": true,
+        "model_mismatch": "Outcome saturated; H5 fit uses identity on raw media"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "decision_surface": null,
+      "optimizer_ready_curves": null,
+      "budget_recommendation": null,
+      "recommendation": null
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
+      "role": "weak_identification",
+      "h5_classification": "weak_identification",
+      "generative_transform": "correlated",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "aligned",
+      "beta_gc_mae": null,
+      "mu_c_mae": null,
+      "h5_diagnostic_warnings": [],
+      "policy_outcomes": {
+        "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
+        "policy_role": "weak_identification",
+        "outcome": "warning_or_restricted",
+        "hard_gate": false,
+        "fail_for_claim": false,
+        "global_model_failure": false,
+        "production_promotion": false
+      },
+      "expected_diagnostic_behavior": {
+        "role": "weak_identification",
+        "h5_classification": "weak_identification",
+        "generative_transform": "correlated",
+        "generative_params": {
+          "rho": 0.92
+        },
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "aligned",
+        "collinearity_warning_expected": true
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "decision_surface": null,
+      "optimizer_ready_curves": null,
+      "budget_recommendation": null,
+      "recommendation": null
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
+      "role": "weak_identification",
+      "h5_classification": "weak_identification",
+      "generative_transform": "weak_signal",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "aligned",
+      "beta_gc_mae": null,
+      "mu_c_mae": null,
+      "h5_diagnostic_warnings": [],
+      "policy_outcomes": {
+        "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
+        "policy_role": "weak_identification",
+        "outcome": "warning_or_restricted",
+        "hard_gate": false,
+        "fail_for_claim": false,
+        "global_model_failure": false,
+        "production_promotion": false
+      },
+      "expected_diagnostic_behavior": {
+        "role": "weak_identification",
+        "h5_classification": "weak_identification",
+        "generative_transform": "weak_signal",
+        "generative_params": {
+          "media_scale": 0.2,
+          "noise_sigma": 0.45
+        },
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "aligned",
+        "recovery_expectation": "poor_beta_recovery"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "decision_surface": null,
+      "optimizer_ready_curves": null,
+      "budget_recommendation": null,
+      "recommendation": null
+    },
+    {
+      "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
+      "role": "recovery_candidate",
+      "h5_classification": "recovery_candidate",
+      "generative_transform": "linear",
+      "fitted_transform_expectation": "identity",
+      "transform_mismatch_mode": "aligned",
+      "beta_gc_mae": null,
+      "mu_c_mae": null,
+      "h5_diagnostic_warnings": [],
+      "policy_outcomes": {
+        "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
+        "policy_role": "recovery_candidate",
+        "outcome": "warn",
+        "hard_gate": false,
+        "fail_for_claim": false,
+        "global_model_failure": false,
+        "production_promotion": false
+      },
+      "expected_diagnostic_behavior": {
+        "role": "recovery_candidate",
+        "h5_classification": "recovery_candidate",
+        "generative_transform": "linear",
+        "fitted_transform_id": "identity",
+        "fitted_transform_expectation": "identity",
+        "transform_mismatch_mode": "aligned",
+        "sparse_role": "recovery_not_stress"
+      },
+      "research_only": true,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "production_promotion": false,
+      "hard_gate": false,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "decision_surface": null,
+      "optimizer_ready_curves": null,
+      "budget_recommendation": null,
+      "recommendation": null
+    }
+  ],
+  "diagnostic_warnings": [
+    "h5:transform_mismatch:WORLD-BAYES-H5-ADSTOCK-MISMATCH: generative=geometric_adstock fitted=identity",
+    "h5:transform_mismatch:WORLD-BAYES-H5-SATURATION-MISMATCH: generative=hill_saturation fitted=identity"
+  ],
+  "mismatch_worlds": [
+    "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
+    "WORLD-BAYES-H5-SATURATION-MISMATCH"
+  ],
+  "aligned_worlds": [
+    "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
+    "WORLD-BAYES-H5-SATURATION-ALIGNED",
+    "WORLD-BAYES-H5-CORRELATED-CHANNELS",
+    "WORLD-BAYES-H5-WEAK-SIGNAL",
+    "WORLD-BAYES-H5-SPARSE-RECOVERY"
+  ],
+  "hard_gate": false,
+  "production_promotion": false,
+  "approved_for_prod": false,
+  "prod_decisioning_allowed": false,
+  "decision_grade": false,
+  "outputs_are_diagnostic_only": true,
+  "production_decision_surface": false,
+  "note": "H5 sandbox pilot \u2014 transform alignment probe only. INV-071 thresholds remain report-only; no optimizer or DecisionSurface."
+}

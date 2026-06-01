@@ -17,6 +17,8 @@ from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.utils.math import safe_log
 
 MODEL_KIND = "bayes_h3_hierarchical_mvp_v1"
+H5_MODEL_SPEC_VERSION = "bayes_h5_sandbox_spec_v1"
+H5_MODEL_KIND = "bayes_h5_hierarchical_sandbox_v1"
 
 
 def fit_h3_sandbox_hierarchical(
@@ -172,6 +174,118 @@ def _package_mvp_fit(
         "optimizer_ready_curves": None,
         "budget_recommendation": None,
     }
+
+
+def fit_h5_sandbox_hierarchical(
+    config: MMMConfig,
+    schema: PanelSchema,
+    df: pd.DataFrame,
+    *,
+    geo_hierarchy_mapping: dict[str, Any] | None = None,
+    calibration_signals_stub: list[dict[str, Any]] | None = None,
+    sandbox_model_overrides: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """
+    Bayes-H5 sandbox fit: H3 partial-pooling structure with per-channel media transforms.
+
+    Research only — requires explicit sandbox gating at entrypoint.
+    """
+    try:
+        import pymc as pm  # type: ignore
+    except ImportError as e:  # pragma: no cover
+        raise ImportError("Bayes-H5 sandbox requires pymc: pip install mmm[bayesian]") from e
+
+    from mmm.research.bayes_h3_sandbox.h5_transforms import (
+        TRANSFORM_REGISTRY_ID,
+        apply_media_transforms_matrix,
+        transforms_aligned,
+    )
+
+    df = validate_panel(df, schema, integrity_qa=False, calendar_strict=False)
+    df = sort_panel_for_modeling(df, schema)
+    beta_geo_index_order = df[schema.geo_column].unique().tolist()
+    geo_idx = partial_pooling_indices(df, schema)
+    n_geo = int(geo_idx.max() + 1)
+    channels = list(schema.channel_columns)
+    n_c = len(channels)
+    overrides = sandbox_model_overrides or {}
+    transforms_by_channel: dict[str, str] = dict(overrides.get("media_transforms_by_channel") or {})
+    if not transforms_by_channel:
+        transforms_by_channel = {ch: "identity" for ch in channels}
+    transform_params_by_channel: dict[str, dict[str, Any]] = dict(
+        overrides.get("transform_params_by_channel") or {}
+    )
+
+    raw_x = df[list(channels)].to_numpy(dtype=float)
+    x = apply_media_transforms_matrix(
+        raw_x,
+        channels,
+        transforms_by_channel,
+        transform_params_by_channel=transform_params_by_channel,
+    )
+
+    y = df[schema.target_column].to_numpy(dtype=float)
+    y_obs = safe_log(y) if config.model_form == ModelForm.SEMI_LOG else y.astype(float)
+
+    draws = int(config.bayesian.draws)
+    tune = int(config.bayesian.tune)
+    chains = int(config.bayesian.chains)
+    nuts_seed = int(config.bayesian.nuts_seed)
+    tau_prior_sigma = float(overrides.get("tau_channel_prior_sigma", 0.5))
+
+    gen_transform = str(overrides.get("h5_generative_transform", "linear"))
+    mismatch_mode = str(overrides.get("h5_transform_mismatch_mode", "aligned"))
+    fitted_uniform = {ch: transforms_by_channel.get(ch, "identity") for ch in channels}
+    fitted_id = next(iter(fitted_uniform.values()), "identity")
+    aligned = transforms_aligned(gen_transform, fitted_id)
+    transform_mismatch_detected = mismatch_mode == "intentional_mismatch" or not aligned
+
+    with pm.Model() as model:
+        alpha_geo = pm.Normal("alpha_geo", mu=0.0, sigma=1.0, shape=n_geo)
+        sigma = pm.HalfNormal("sigma", sigma=1.0)
+        mu_c = pm.Normal("mu_channel", mu=0.0, sigma=0.5, shape=n_c)
+        tau_c = pm.HalfNormal("tau_channel", sigma=tau_prior_sigma, shape=n_c)
+        z = pm.Normal("z_beta", mu=0.0, sigma=1.0, shape=(n_geo, n_c))
+        beta = pm.Deterministic("beta", mu_c + z * tau_c)
+        mu = alpha_geo[geo_idx] + (x * beta[geo_idx]).sum(axis=-1)
+        pm.Normal("y_obs", mu=mu, sigma=sigma, observed=y_obs)
+
+        idata = pm.sample(
+            draws=draws,
+            tune=tune,
+            chains=chains,
+            target_accept=float(config.bayesian.target_accept),
+            random_seed=nuts_seed,
+            progressbar=False,
+            return_inferencedata=True,
+        )
+
+    out = _package_mvp_fit(
+        idata,
+        model=model,
+        channels=channels,
+        geo_idx=geo_idx,
+        n_geo=n_geo,
+        n_obs=len(df),
+        geo_hierarchy_mapping=geo_hierarchy_mapping or {},
+        calibration_signals_stub=calibration_signals_stub or [],
+        beta_geo_index_order=beta_geo_index_order,
+        sandbox_model_overrides=overrides,
+    )
+    out["model_kind"] = H5_MODEL_KIND
+    out["model_spec_version"] = H5_MODEL_SPEC_VERSION
+    out["posterior_summary"]["model_kind"] = H5_MODEL_KIND
+    out["posterior_summary"]["model_spec_version"] = H5_MODEL_SPEC_VERSION
+    out["h5_transform_diagnostics"] = {
+        "transform_registry_id": TRANSFORM_REGISTRY_ID,
+        "media_transforms_by_channel": dict(transforms_by_channel),
+        "generative_transform_expected": gen_transform,
+        "transform_mismatch_mode": mismatch_mode,
+        "transform_mismatch_detected": transform_mismatch_detected,
+        "transforms_aligned": aligned,
+        "research_only": True,
+    }
+    return out
 
 
 def build_diagnostic_trust_from_fit(raw: dict[str, Any]) -> dict[str, Any]:

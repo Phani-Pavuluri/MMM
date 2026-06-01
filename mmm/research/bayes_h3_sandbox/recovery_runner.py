@@ -7,6 +7,8 @@ from typing import Any
 import numpy as np
 
 from mmm.research.bayes_h3_sandbox.entrypoint import run_sandbox_fit
+from mmm.research.bayes_h3_sandbox.fencing import H5_MODEL_SPEC_VERSION
+from mmm.research.bayes_h3_sandbox.h5_transforms import transforms_aligned
 from mmm.research.bayes_h3_sandbox.labels import validate_research_only_artifact
 from mmm.research.bayes_h3_sandbox.recovery_worlds import (
     H4_WORLD_IDS,
@@ -93,6 +95,46 @@ def compute_h4c_diagnostic_warnings(
     beta_mae = rec.get("beta_gc_mae")
     if exp.get("h4c_classification") == "weak_identification" and beta_mae is not None and float(beta_mae) > 0.35:
         warnings.append(f"h4c:weak_identification:{spec.world_id}: beta_gc_mae={float(beta_mae):.3f}")
+
+    return warnings
+
+
+def compute_h5_diagnostic_warnings(
+    artifact: dict[str, Any],
+    spec: RecoveryWorldSpec,
+    *,
+    panel_df: Any | None = None,
+) -> list[str]:
+    """H5 transform / weak-ID warnings (research only — not production gates)."""
+    warnings: list[str] = []
+    exp = spec.expected_diagnostic_behavior
+    h5_diag = artifact.get("h5_transform_diagnostics") or {}
+    gen = str(exp.get("generative_transform", "linear"))
+    fitted = str(exp.get("fitted_transform_id", "identity"))
+
+    if exp.get("transform_mismatch_warning_expected"):
+        if h5_diag.get("transform_mismatch_detected"):
+            warnings.append(
+                f"h5:transform_mismatch:{spec.world_id}: generative={gen} fitted={fitted}"
+            )
+        else:
+            warnings.append(f"h5:transform_mismatch_expected:{spec.world_id}: not detected in fit")
+    elif (
+        exp.get("transform_mismatch_mode") == "aligned"
+        and h5_diag.get("transform_mismatch_detected")
+        and not transforms_aligned(gen, fitted)
+    ):
+        warnings.append(f"h5:unexpected_transform_mismatch:{spec.world_id}")
+
+    if exp.get("collinearity_warning_expected") and panel_df is not None:
+        max_corr = _panel_max_channel_correlation(panel_df, spec.channels)
+        if max_corr is not None and max_corr > 0.85:
+            warnings.append(f"h5:collinearity:{spec.world_id}: max_channel_corr={max_corr:.3f}")
+
+    rec = artifact.get("h4_recovery") or artifact.get("h5_recovery") or {}
+    beta_mae = rec.get("beta_gc_mae")
+    if exp.get("h5_classification") == "weak_identification" and beta_mae is not None and float(beta_mae) > 0.35:
+        warnings.append(f"h5:weak_identification:{spec.world_id}: beta_gc_mae={float(beta_mae):.3f}")
 
     return warnings
 
@@ -267,6 +309,87 @@ def run_h4_recovery_world(
         ]
         report["h4_recovery"] = rec
     return report
+
+
+def run_h5_recovery_world(
+    world_id: str,
+    *,
+    fast_mcmc: bool = True,
+    sampler: dict[str, Any] | None = None,
+    nuts_seed: int | None = None,
+    panel_seed: int | None = None,
+    sandbox_model_overrides: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """
+    Materialize H5 world, run gated H5 sandbox fit, recovery metrics (research only).
+    """
+    from mmm.research.bayes_h3_sandbox.h5_validation_worlds import sandbox_overrides_for_h5_world
+
+    spec = get_recovery_world(world_id)
+    cfg, schema, df = materialize_recovery_bundle(
+        spec,
+        fast_mcmc=fast_mcmc,
+        sampler=sampler,
+        nuts_seed=nuts_seed,
+        panel_seed=panel_seed,
+    )
+    overrides = sandbox_overrides_for_h5_world(spec)
+    if sandbox_model_overrides:
+        overrides.update(sandbox_model_overrides)
+    artifact = run_sandbox_fit(
+        cfg,
+        schema,
+        df,
+        geo_hierarchy_mapping=spec.geo_hierarchy,
+        calibration_signals_stub=list(spec.calibration_signals),
+        sandbox_model_overrides=overrides,
+        model_spec_version=H5_MODEL_SPEC_VERSION,
+        enable_h5_sandbox=True,
+        research_only=True,
+    )
+    report = build_h4_recovery_report(spec, artifact)
+    h5_warn = compute_h5_diagnostic_warnings(report, spec, panel_df=df)
+    if h5_warn:
+        rec = dict(report.get("h4_recovery") or {})
+        existing = list(rec.get("h5_diagnostic_warnings") or [])
+        rec["h5_diagnostic_warnings"] = existing + [w for w in h5_warn if w not in existing]
+        report["h4_recovery"] = rec
+        report["h5_recovery"] = rec
+        dtr = dict(report.get("diagnostic_trust_report") or {})
+        dtr["h5_diagnostic_warnings"] = rec["h5_diagnostic_warnings"]
+        report["diagnostic_trust_report"] = dtr
+    report["model_spec_version"] = H5_MODEL_SPEC_VERSION
+    report["enable_h5_sandbox"] = True
+    return report
+
+
+def validate_h5_world_catalog() -> dict[str, Any]:
+    """Fast validation that all H5 worlds materialize deterministically."""
+    from mmm.research.bayes_h3_sandbox.h5_validation_worlds import H5_WORLD_IDS
+
+    results: list[dict[str, Any]] = []
+    for wid in H5_WORLD_IDS:
+        spec = get_recovery_world(wid)
+        df1 = materialize_recovery_bundle(spec)[2]
+        df2 = materialize_recovery_bundle(spec)[2]
+        exp = spec.expected_diagnostic_behavior
+        results.append(
+            {
+                "world_id": wid,
+                "rows": len(df1),
+                "deterministic": df1.equals(df2),
+                "has_known_truth": bool(spec.known_truth),
+                "h5_classification": exp.get("h5_classification"),
+                "transform_mismatch_mode": exp.get("transform_mismatch_mode"),
+                "approved_for_prod": False,
+                "prod_decisioning_allowed": False,
+                "hard_gate": False,
+            }
+        )
+    ok = all(
+        r["deterministic"] and r["has_known_truth"] and r["h5_classification"] for r in results
+    )
+    return {"status": "pass" if ok else "fail", "worlds": results}
 
 
 def validate_h4c_world_catalog() -> dict[str, Any]:

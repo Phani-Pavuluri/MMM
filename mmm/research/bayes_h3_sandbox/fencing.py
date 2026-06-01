@@ -14,6 +14,31 @@ class BayesSandboxGuardError(ValueError):
     """Bayes-H3 sandbox guard violated — production decisioning blocked."""
 
 
+H5_MODEL_SPEC_VERSION = "bayes_h5_sandbox_spec_v1"
+
+
+def assert_h5_sandbox_gates(
+    *,
+    model_spec_version: str | None,
+    enable_h5_sandbox: bool,
+    research_only: bool = True,
+) -> None:
+    """Fail closed unless H5 spec is explicitly requested inside the research sandbox."""
+    if model_spec_version == H5_MODEL_SPEC_VERSION:
+        if not enable_h5_sandbox:
+            raise BayesSandboxGuardError(
+                f"{H5_MODEL_SPEC_VERSION} requires enable_h5_sandbox=True (research-only gated path)"
+            )
+        if not research_only:
+            raise BayesSandboxGuardError("H5 sandbox path requires research_only=True")
+        return
+    if enable_h5_sandbox and model_spec_version != H5_MODEL_SPEC_VERSION:
+        raise BayesSandboxGuardError(
+            "enable_h5_sandbox=True requires model_spec_version="
+            f"{H5_MODEL_SPEC_VERSION!r}"
+        )
+
+
 def reject_if_prod_decisioning_flags(artifact: dict[str, Any]) -> None:
     """Reject artifacts that claim production approval or decisioning."""
     if artifact.get("approved_for_prod") is True:
