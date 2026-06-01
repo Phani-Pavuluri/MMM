@@ -1,0 +1,44 @@
+[
+  {
+    "signal_id": "SIG-CLS-NAT",
+    "source": "cls",
+    "scope_type": "national",
+    "scope_id": "US",
+    "parent_scope_ids": [],
+    "child_scope_ids": [
+      "west",
+      "east"
+    ],
+    "geo_ids": [
+      "sf",
+      "la",
+      "houston",
+      "dallas",
+      "phoenix",
+      "denver"
+    ],
+    "channel_ids": [
+      "search"
+    ],
+    "estimand": "national_incremental_lift_search",
+    "lift_scale": "mean_kpi_level_delta",
+    "observed_lift": 0.03,
+    "lift_se": 0.01,
+    "target_kpi": "revenue",
+    "time_window": {
+      "start": "2024-01-01",
+      "end": "2024-06-30"
+    },
+    "freshness": {
+      "age_days": 30,
+      "tier": "fresh"
+    },
+    "design_quality_tier": "A",
+    "coverage_ratio": 1.0,
+    "population_basis": "spend",
+    "spend_basis": "spend",
+    "kpi_basis": "revenue",
+    "experiment_id": "exp-sig-cls-nat",
+    "truth_ref": "SIG-CLS-NAT"
+  }
+]

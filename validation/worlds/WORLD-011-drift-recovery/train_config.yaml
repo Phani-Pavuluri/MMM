@@ -1,0 +1,25 @@
+# Phase 4B-5 drift recovery fixture
+framework: ridge_bo
+model_form: semi_log
+run_environment: research
+random_seed: 11011
+data:
+  path: panel.parquet
+  geo_column: geo_id
+  week_column: week_start_date
+  target_column: revenue
+  channel_columns:
+    - media
+  control_columns: []
+  data_version_id: WORLD-011-drift-recovery-recovery
+cv:
+  mode: rolling
+  n_splits: 2
+  min_train_weeks: 6
+  horizon_weeks: 2
+ridge_bo:
+  n_trials: 12
+  sampler_seed: 11011
+transforms:
+  adstock: geometric
+  saturation: hill

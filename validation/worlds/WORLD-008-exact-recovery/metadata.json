@@ -1,0 +1,28 @@
+{
+  "bundle_path": "/workspace/mmm/validation/worlds/WORLD-008-exact-recovery",
+  "catalog_ref": "WORLD-008-exact-recovery",
+  "checksum_version": "checksums_v1",
+  "creation_timestamp": "2026-05-22T12:00:00Z",
+  "derived_artifacts": [
+    "dgp_diagnostics.parquet",
+    "dgp_diagnostics_manifest.json"
+  ],
+  "dgp_materialization": true,
+  "materialization_version": "dgp_materialize_v1.0.0",
+  "materialized_files": [
+    "decision_truth.json",
+    "dgp_diagnostics.parquet",
+    "dgp_diagnostics_manifest.json",
+    "panel.parquet"
+  ],
+  "scenario_tags": [
+    "signal:high",
+    "noise:none",
+    "dgp:exact_recovery"
+  ],
+  "seed": 8008,
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "manual_dgp_v1.0.0",
+  "world_id": "WORLD-008-exact-recovery",
+  "world_version": "1.0.0"
+}

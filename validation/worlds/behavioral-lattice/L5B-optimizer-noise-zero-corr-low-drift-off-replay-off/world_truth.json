@@ -1,0 +1,201 @@
+{
+  "artifact_truth": {
+    "expected_certification_levels": {
+      "synthetic": "exact"
+    },
+    "expected_failures": [],
+    "expected_gates": [
+      {
+        "expected": "pass",
+        "gate_id": "production_readiness_approved"
+      }
+    ],
+    "expected_warnings": []
+  },
+  "coefficient_truth": {
+    "controls": {},
+    "interactions": [],
+    "intercept": 4.605170185988092,
+    "true_beta_by_channel": {
+      "high_return": 0.52,
+      "low_return": 0.06
+    }
+  },
+  "decision_truth": {
+    "budget_constraints": [
+      {
+        "channel_max": {
+          "high_return": 40.0,
+          "low_return": 40.0
+        },
+        "channel_min": {
+          "high_return": 0.0,
+          "low_return": 0.0
+        },
+        "constraint_id": "total_budget_fixed",
+        "total_budget": 40.0
+      }
+    ],
+    "expected_allocation_band": {
+      "high_return_channel": "high_return",
+      "high_return_min_budget_share": 0.62,
+      "high_return_must_exceed_low_return": true,
+      "low_return_channel": "low_return",
+      "low_return_max_budget_share": 0.38
+    },
+    "optimizer_truth_method": "truth_coef_full_panel_simulate",
+    "optimum_lift_over_bau": 0.15333434513242672,
+    "scenarios": [
+      {
+        "baseline_spend_by_channel": {
+          "high_return": 10.0,
+          "low_return": 10.0
+        },
+        "candidate_spend_by_channel": {
+          "high_return": 20.0,
+          "low_return": 20.0
+        },
+        "scenario_id": "bau_equal_split",
+        "true_delta_mu": 0.0
+      },
+      {
+        "baseline_spend_by_channel": {
+          "high_return": 10.0,
+          "low_return": 10.0
+        },
+        "candidate_spend_by_channel": {
+          "high_return": 28.0,
+          "low_return": 12.0
+        },
+        "scenario_id": "grid_optimum_plan",
+        "true_delta_mu": 0.15333434513242672
+      }
+    ],
+    "true_optimal_budget": {
+      "high_return": 28.0,
+      "low_return": 12.0
+    },
+    "true_optimal_delta_mu": 0.15333434513242672,
+    "true_regret_at_bau": 0.15333434513242672
+  },
+  "drift_truth": {
+    "changepoints": [],
+    "coefficient_drift": [],
+    "policy_changes": [],
+    "privacy_shifts": []
+  },
+  "experiment_truth": {
+    "units": []
+  },
+  "geo_truth": {
+    "geo_column_name": "geo_id",
+    "geos": [
+      "G0",
+      "G1"
+    ],
+    "hierarchy": null,
+    "n_geos": 2,
+    "weights": {
+      "G0": 0.5,
+      "G1": 0.5
+    }
+  },
+  "governance_truth": {
+    "approved_for_optimization": true,
+    "model_release_state": "planning_allowed",
+    "replay_calibration_active": false,
+    "require_production_certification": false,
+    "require_promoted_model": false
+  },
+  "media_truth": {
+    "baseline_spend_by_channel": {
+      "high_return": 10.0,
+      "low_return": 10.0
+    },
+    "channels": [
+      "high_return",
+      "low_return"
+    ],
+    "spend_process_spec": {
+      "by_channel": {
+        "high_return": {
+          "amplitude": 4.0,
+          "base": 10.0
+        },
+        "low_return": {
+          "amplitude": 0.5,
+          "base": 10.0
+        }
+      },
+      "correlation_level": "low",
+      "kind": "channel_modulated"
+    }
+  },
+  "metadata": {
+    "archetype_id": "optimizer_recovery_world",
+    "behavioral_mode": "behavioral",
+    "creation_timestamp": "2026-05-22T12:00:00Z",
+    "description": "Optimizer recovery world \u2014 high_return vs low_return, grid-recorded optimum",
+    "generation_seed": 67455,
+    "lattice_axes": {
+      "correlation_level": "low",
+      "drift": "false",
+      "noise_level": "zero",
+      "replay": "false",
+      "world_type": "optimizer"
+    },
+    "materialization_version": "dgp_materialize_v1.0.0",
+    "negative_world": false,
+    "scenario_tags": [
+      "dgp:optimizer_recovery",
+      "optimizer:known_optimum",
+      "noise:zero",
+      "lattice:behavioral_v1",
+      "dgp:optimizer_recovery"
+    ],
+    "world_contract_version": "groundtruth_world_v1",
+    "world_generator_version": "manual_optimizer_v1.0.0",
+    "world_id": "L5B-optimizer-noise-zero-corr-low-drift-off-replay-off",
+    "world_version": "1.0.0"
+  },
+  "outcome_truth": {
+    "base_level_mean": 100.0,
+    "model_form": "semi_log",
+    "observation_noise_level": "low",
+    "observation_noise_std": 0.0,
+    "target_column": "revenue",
+    "target_scale": "positive_level"
+  },
+  "time_truth": {
+    "date_frequency": "weekly",
+    "end_date": "2020-03-23",
+    "eval_window": {
+      "end_period_index": 11,
+      "start_period_index": 10
+    },
+    "n_periods": 12,
+    "seasonality_declared": false,
+    "start_date": "2020-01-06",
+    "train_window": {
+      "end_period_index": 9,
+      "start_period_index": 0
+    },
+    "week_column_name": "week_start_date"
+  },
+  "transform_truth": {
+    "adstock_decay_by_channel": {
+      "high_return": 0.5,
+      "low_return": 0.5
+    },
+    "adstock_family": "geometric",
+    "hill_half_max_by_channel": {
+      "high_return": 10.0,
+      "low_return": 10.0
+    },
+    "hill_slope_by_channel": {
+      "high_return": 2.0,
+      "low_return": 2.0
+    },
+    "saturation_family": "hill"
+  }
+}

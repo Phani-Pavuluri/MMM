@@ -1,0 +1,38 @@
+[
+  {
+    "signal_id": "SIG-GEOX-SF",
+    "source": "geox",
+    "scope_type": "dma",
+    "scope_id": "sf",
+    "parent_scope_ids": [
+      "CA"
+    ],
+    "child_scope_ids": [],
+    "geo_ids": [
+      "sf"
+    ],
+    "channel_ids": [
+      "search"
+    ],
+    "estimand": "ATT_dma_week_search",
+    "lift_scale": "mean_kpi_level_delta",
+    "observed_lift": 0.06,
+    "lift_se": 0.015,
+    "target_kpi": "revenue",
+    "time_window": {
+      "start": "2024-01-01",
+      "end": "2024-06-30"
+    },
+    "freshness": {
+      "age_days": 30,
+      "tier": "fresh"
+    },
+    "design_quality_tier": "A",
+    "coverage_ratio": 1.0,
+    "population_basis": "spend",
+    "spend_basis": "spend",
+    "kpi_basis": "revenue",
+    "experiment_id": "exp-sig-geox-sf",
+    "truth_ref": "SIG-GEOX-SF"
+  }
+]

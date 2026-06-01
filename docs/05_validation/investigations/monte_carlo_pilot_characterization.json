@@ -1,0 +1,728 @@
+{
+  "behavioral_pilot": {
+    "behavioral_score": 0.5652173913043478,
+    "behavioral_scorecard_reliability": 0.7859180035650624,
+    "capability_summary": {
+      "artifact_integrity": {
+        "failures": [],
+        "mean_score": 1.0,
+        "n_scored": 13
+      },
+      "coefficient_recovery": {
+        "failures": [
+          "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off:REC-4B2-001",
+          "L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off:REC-4B2-001",
+          "L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off:REC-4B2-001"
+        ],
+        "mean_score": 0.0,
+        "n_scored": 3
+      },
+      "delta_mu_recovery": {
+        "failures": [],
+        "mean_score": 1.0,
+        "n_scored": 3
+      },
+      "drift_behavior": {
+        "failures": [],
+        "mean_score": 0.5,
+        "n_scored": 2
+      },
+      "governance_reaction": {
+        "failures": [],
+        "mean_score": 1.0,
+        "n_scored": 3
+      },
+      "identifiability_behavior": {
+        "failures": [],
+        "mean_score": 1.0,
+        "n_scored": 1
+      },
+      "optimizer_recovery": {
+        "failures": [],
+        "mean_score": 1.0,
+        "n_scored": 4
+      },
+      "platform_contract_compatibility": {
+        "failures": [
+          "L5B-optimizer-noise-zero-corr-low-drift-off-replay-off:contract_compatibility",
+          "L5B-optimizer-noise-low-corr-low-drift-off-replay-off:contract_compatibility",
+          "L5B-replay-noise-zero-corr-low-drift-off-replay-on:contract_compatibility",
+          "L5B-replay-noise-low-corr-low-drift-off-replay-on:contract_compatibility",
+          "L5B-drift-noise-zero-corr-low-drift-on-replay-off:contract_compatibility",
+          "L5B-drift-noise-zero-corr-low-drift-on-replay-off:CERT-4A-013",
+          "L5B-drift-noise-low-corr-low-drift-on-replay-off:contract_compatibility",
+          "L5B-drift-noise-low-corr-low-drift-on-replay-off:CERT-4A-013",
+          "L5B-identifiability-noise-low-corr-severe-drift-off-replay-off:contract_compatibility",
+          "L5B-identifiability-noise-low-corr-severe-drift-off-replay-off:CERT-4A-013"
+        ],
+        "mean_score": 0.9117647058823529,
+        "n_scored": 34
+      },
+      "replay_recovery": {
+        "failures": [],
+        "mean_score": 1.0,
+        "n_scored": 8
+      },
+      "structural_integrity": {
+        "failures": [
+          "L5B-optimizer-noise-zero-corr-low-drift-off-replay-off:CERT-4A-001",
+          "L5B-optimizer-noise-zero-corr-low-drift-off-replay-off:CERT-4A-002",
+          "L5B-optimizer-noise-low-corr-low-drift-off-replay-off:CERT-4A-001",
+          "L5B-optimizer-noise-low-corr-low-drift-off-replay-off:CERT-4A-002",
+          "L5B-replay-noise-zero-corr-low-drift-off-replay-on:CERT-4A-001",
+          "L5B-replay-noise-zero-corr-low-drift-off-replay-on:CERT-4A-002",
+          "L5B-replay-noise-low-corr-low-drift-off-replay-on:CERT-4A-001",
+          "L5B-replay-noise-low-corr-low-drift-off-replay-on:CERT-4A-002"
+        ],
+        "mean_score": 0.7333333333333333,
+        "n_scored": 30
+      },
+      "transform_consistency": {
+        "failures": [
+          "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off:REC-4B2-002",
+          "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off:REC-4B2-003",
+          "L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off:REC-4B2-002",
+          "L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off:REC-4B2-003",
+          "L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off:REC-4B2-002",
+          "L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off:REC-4B2-003"
+        ],
+        "mean_score": 0.5,
+        "n_scored": 12
+      }
+    },
+    "n_worlds": 0,
+    "per_world": [],
+    "source": "behavioral_lattice_sweep_mvp_report.json",
+    "structural_score": 0.8882180942552459
+  },
+  "capability_distributions": [
+    {
+      "capability": "coefficient_recovery",
+      "failure_regions": [
+        "exact_recovery_world_type",
+        "multi_channel_shared_transform"
+      ],
+      "mean_score": 0.0,
+      "metric_class": "diagnostic_attribution",
+      "n_observations": 3,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 0.0
+    },
+    {
+      "capability": "transform_consistency",
+      "failure_regions": [],
+      "mean_score": 0.5,
+      "metric_class": "diagnostic_attribution",
+      "n_observations": 12,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 0.5
+    },
+    {
+      "capability": "delta_mu_recovery",
+      "failure_regions": [
+        "passes_despite_coef_fail_on_same_worlds"
+      ],
+      "mean_score": 1.0,
+      "metric_class": "decision_grade",
+      "n_observations": 3,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "optimizer_recovery",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "decision_grade",
+      "n_observations": 4,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "replay_recovery",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "decision_grade",
+      "n_observations": 8,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "drift_behavior",
+      "failure_regions": [],
+      "mean_score": 0.5,
+      "metric_class": "trust_modifier",
+      "n_observations": 2,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 0.5
+    },
+    {
+      "capability": "identifiability_behavior",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "trust_modifier",
+      "n_observations": 1,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "structural_integrity",
+      "failure_regions": [],
+      "mean_score": 0.7333333333333333,
+      "metric_class": "structural",
+      "n_observations": 30,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 0.7333333333333333
+    },
+    {
+      "capability": "platform_contract_compatibility",
+      "failure_regions": [],
+      "mean_score": 0.9117647058823529,
+      "metric_class": "structural",
+      "n_observations": 34,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 0.9117647058823529
+    },
+    {
+      "capability": "artifact_integrity",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "structural",
+      "n_observations": 13,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "governance_reaction",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "trust_modifier",
+      "n_observations": 3,
+      "notes": "Tier-0 pilot (n\u226410 scored per capability)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "anchor_worlds_coef_bo",
+      "failure_regions": [
+        "WORLD-008",
+        "L5B exact_recovery"
+      ],
+      "mean_score": 0.0,
+      "metric_class": "diagnostic_attribution",
+      "n_observations": 4,
+      "notes": "Anchor + lattice exact-recovery decomposition",
+      "pass_rate": 0.0
+    },
+    {
+      "capability": "anchor_worlds_delta_mu_bo",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "decision_grade",
+      "n_observations": 4,
+      "notes": "\u0394\u03bc pass rate on same worlds as coef failures",
+      "pass_rate": 1.0
+    }
+  ],
+  "coverage_axes": {
+    "calibration_freshness": [
+      "fresh",
+      "stale",
+      "missing"
+    ],
+    "correlation_level": [
+      "low",
+      "moderate",
+      "severe"
+    ],
+    "drift": [
+      "off",
+      "on"
+    ],
+    "missingness": [
+      "none",
+      "sparse_geo",
+      "sparse_period"
+    ],
+    "n_channels": [
+      "1",
+      "2",
+      "3"
+    ],
+    "n_geos": [
+      "1",
+      "2",
+      "4",
+      "8"
+    ],
+    "n_periods": [
+      "10",
+      "14",
+      "18",
+      "26",
+      "52"
+    ],
+    "noise_level": [
+      "zero",
+      "low",
+      "medium",
+      "high"
+    ],
+    "replay": [
+      "off",
+      "on"
+    ],
+    "signal_strength": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "world_family": [
+      "anchor_recovery",
+      "behavioral_lattice",
+      "structural_lattice",
+      "identifiability_mini",
+      "volume_sweep",
+      "negative_gate"
+    ]
+  },
+  "current_thresholds": {
+    "VAL-001_coef": {
+      "atol": 0.08,
+      "metric_class": "diagnostic_attribution",
+      "rtol": 0.2
+    },
+    "VAL-002_003_transform": {
+      "metric_class": "diagnostic_attribution",
+      "rtol": 0.05
+    },
+    "VAL-004_delta_mu": {
+      "atol": 0.15,
+      "metric_class": "decision_grade",
+      "rtol": 0.35
+    },
+    "VAL-005_optimizer": {
+      "allocation_l1_atol": 4.0,
+      "allocation_l1_rtol": 0.15,
+      "metric_class": "decision_grade"
+    },
+    "VAL-006_replay": {
+      "lift_atol": 0.02,
+      "lift_rtol": 0.25,
+      "metric_class": "decision_grade"
+    },
+    "VAL-012_drift": {
+      "metric_class": "trust_modifier",
+      "post_pre_mae_ratio_min": 1.15
+    }
+  },
+  "evidence_sources": [
+    "validation/reports/behavioral_lattice_sweep_mvp_report.json",
+    "docs/05_validation/investigations/exact_recovery_findings.json",
+    "validation/reports/lattice_sweep_mvp_report.json"
+  ],
+  "generated_at": "2026-05-29T18:01:57.112070+00:00",
+  "lattice_structural_score": null,
+  "program_version": "monte_carlo_reliability_v1.0.0",
+  "reliability_boundaries": {
+    "boundary_hypotheses": [
+      {
+        "coef_recovery": "fail expected",
+        "condition": "correlation_level=severe"
+      },
+      {
+        "coef_recovery": "fail expected",
+        "condition": "n_channels>=3 + shared transform"
+      },
+      {
+        "coef_recovery": "still fail on WORLD-008 (not noise-limited)",
+        "condition": "noise_std<=0.02"
+      },
+      {
+        "coef_recovery": "still fail on pinned WORLD-008 volume sweep",
+        "condition": "n_geos>=2, n_periods>=14"
+      },
+      {
+        "condition": "drift=on",
+        "drift_behavior": "pass/warning; trust_modifier caution+"
+      },
+      {
+        "coef_recovery": "pass on 1ch/2ch-orth mini worlds",
+        "condition": "truth_pinned_transforms"
+      }
+    ],
+    "coverage_table": {
+      "tier_0_observed": {
+        "anchor_worlds": 5,
+        "behavioral_lattice_cells": 10,
+        "inv_identifiability_variants": 3,
+        "inv_volume_points": 18
+      },
+      "tier_1_target": 100,
+      "tier_2_target": 1000
+    },
+    "failure_map": {
+      "expected_failures": [
+        {
+          "capabilities": [
+            "coefficient_recovery",
+            "transform_consistency"
+          ],
+          "driver": "shared_transform_across_channels",
+          "worlds": [
+            "WORLD-008-exact-recovery",
+            "L5B-exact_recovery-*"
+          ]
+        },
+        {
+          "capabilities": [
+            "transform_consistency"
+          ],
+          "driver": "bo_hyperparameter_search",
+          "worlds": [
+            "WORLD-008-exact-recovery"
+          ]
+        },
+        {
+          "capabilities": [
+            "coefficient_recovery"
+          ],
+          "driver": "identifiability_collinearity",
+          "worlds": [
+            "L5B-identifiability-*",
+            "correlation_level=severe"
+          ]
+        }
+      ],
+      "expected_passes": [
+        {
+          "capabilities": [
+            "delta_mu_recovery",
+            "optimizer_recovery",
+            "replay_recovery"
+          ],
+          "driver": "decision_surface_invariant",
+          "note": "Often passes TBD_v1_runtime despite coef fail"
+        },
+        {
+          "capabilities": [
+            "structural_integrity",
+            "platform_contract_compatibility"
+          ],
+          "driver": "structural_contracts"
+        }
+      ]
+    },
+    "reliability_envelopes": [
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.2033342384870167,
+        "n_geos": 1,
+        "n_periods": 10,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.2033342384870167,
+        "n_geos": 1,
+        "n_periods": 10,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333416547904895,
+        "n_geos": 1,
+        "n_periods": 14,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333416547904895,
+        "n_geos": 1,
+        "n_periods": 14,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333412969629044,
+        "n_geos": 1,
+        "n_periods": 18,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333412969629044,
+        "n_geos": 1,
+        "n_periods": 18,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333378587974754,
+        "n_geos": 2,
+        "n_periods": 10,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333378587974754,
+        "n_geos": 2,
+        "n_periods": 10,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.2033337498647379,
+        "n_geos": 2,
+        "n_periods": 14,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.2033337498647379,
+        "n_geos": 2,
+        "n_periods": 14,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333373117400327,
+        "n_geos": 2,
+        "n_periods": 18,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333373117400327,
+        "n_geos": 2,
+        "n_periods": 18,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333363498912593,
+        "n_geos": 3,
+        "n_periods": 10,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333363498912593,
+        "n_geos": 3,
+        "n_periods": 10,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333361054568488,
+        "n_geos": 3,
+        "n_periods": 14,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333361054568488,
+        "n_geos": 3,
+        "n_periods": 14,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333359854626498,
+        "n_geos": 3,
+        "n_periods": 18,
+        "noise_std": 0.0
+      },
+      {
+        "axis": "data_volume",
+        "coef_pass_pinned": false,
+        "interpretation": "Volume alone does not fix shared-transform homogenization on multi-channel WORLD-008 template",
+        "max_coef_err_pinned": 0.20333359854626498,
+        "n_geos": 3,
+        "n_periods": 18,
+        "noise_std": 0.02
+      },
+      {
+        "axis": "identifiability",
+        "coef_pass_pinned": true,
+        "interpretation": "Single-channel and orthogonal 2ch pass pinned coef; WORLD-008 fails due to collinear features not channel count alone",
+        "variant": "id-1ch"
+      },
+      {
+        "axis": "identifiability",
+        "coef_pass_pinned": true,
+        "interpretation": "Single-channel and orthogonal 2ch pass pinned coef; WORLD-008 fails due to collinear features not channel count alone",
+        "variant": "id-2ch-orth"
+      },
+      {
+        "axis": "identifiability",
+        "coef_pass_pinned": true,
+        "interpretation": "Single-channel and orthogonal 2ch pass pinned coef; WORLD-008 fails due to collinear features not channel count alone",
+        "variant": "id-2ch-severe"
+      }
+    ]
+  },
+  "sampling_strategy": "structured_coverage_not_uniform",
+  "threshold_recommendations": [
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "medium",
+      "current_threshold": {
+        "atol": 0.08,
+        "metric_class": "diagnostic_attribution",
+        "rtol": 0.2
+      },
+      "metric_class": "diagnostic_attribution",
+      "metric_key": "VAL-001_coef",
+      "observed_distribution_summary": "Pilot pass rate ~0 on exact_recovery; mini-worlds pass when pinned",
+      "suggested_action": "loosen_for_diagnostic_only; do not use as release gate",
+      "supporting_evidence": "Tier-0 pilot + INV-056",
+      "validation_id": "VAL-001"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "medium",
+      "current_threshold": {
+        "metric_class": "diagnostic_attribution",
+        "rtol": 0.05
+      },
+      "metric_class": "diagnostic_attribution",
+      "metric_key": "VAL-002_003_transform",
+      "observed_distribution_summary": "Pilot pass rate ~0 on exact_recovery; mini-worlds pass when pinned",
+      "suggested_action": "loosen_for_diagnostic_only; do not use as release gate",
+      "supporting_evidence": "Tier-0 pilot + INV-056",
+      "validation_id": "VAL-002"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "medium",
+      "current_threshold": {
+        "atol": 0.15,
+        "metric_class": "decision_grade",
+        "rtol": 0.35
+      },
+      "metric_class": "decision_grade",
+      "metric_key": "VAL-004_delta_mu",
+      "observed_distribution_summary": "Pilot pass rate ~1.0 on scored exact_recovery cells",
+      "suggested_action": "tighten_relative_error_cap_after tier-1 MC; keep as decision gate candidate",
+      "supporting_evidence": "Tier-0 pilot + INV-056",
+      "validation_id": "VAL-004"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "allocation_l1_atol": 4.0,
+        "allocation_l1_rtol": 0.15,
+        "metric_class": "decision_grade"
+      },
+      "metric_class": "decision_grade",
+      "metric_key": "VAL-005_optimizer",
+      "observed_distribution_summary": "Dedicated worlds pass at MVP; expand tier-1 corner cases",
+      "suggested_action": "retain until tier-1 n\u2265100",
+      "supporting_evidence": "Tier-0 pilot + INV-056",
+      "validation_id": "VAL-005"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "lift_atol": 0.02,
+        "lift_rtol": 0.25,
+        "metric_class": "decision_grade"
+      },
+      "metric_class": "decision_grade",
+      "metric_key": "VAL-006_replay",
+      "observed_distribution_summary": "Dedicated worlds pass at MVP; expand tier-1 corner cases",
+      "suggested_action": "retain until tier-1 n\u2265100",
+      "supporting_evidence": "Tier-0 pilot + INV-056",
+      "validation_id": "VAL-006"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "metric_class": "trust_modifier",
+        "post_pre_mae_ratio_min": 1.15
+      },
+      "metric_class": "trust_modifier",
+      "metric_key": "VAL-012_drift",
+      "observed_distribution_summary": "MAE ratio bands calibrated in drift_detection_runner; align to tier-1 percentiles",
+      "suggested_action": "calibrate severity bands from tier-1 post/pre ratio distribution",
+      "supporting_evidence": "Tier-0 pilot + INV-056",
+      "validation_id": "VAL-012"
+    }
+  ],
+  "tier": "tier_0_pilot",
+  "tier_targets": {
+    "tier_0_pilot": 25,
+    "tier_1_calibration": 100,
+    "tier_2_release_review": 1000,
+    "tier_3_full_monte_carlo": 10000
+  },
+  "trust_report_calibration": {
+    "empirical_basis": "Tier-0 pilot (10 behavioral cells + anchors)",
+    "green_criteria": {
+      "attribution_diagnostic": "informational_only",
+      "decision_reliability_score_gte": 0.85,
+      "note": "No pilot cell achieves green on full behavioral score due to coef diagnostic",
+      "observed_at_pilot": false,
+      "structural_reliability_score_gte": 0.9,
+      "trust_grade": "high",
+      "trust_modifier_status": "acceptable"
+    },
+    "mapping_version": "trust_report_mc_calibration_v1",
+    "pilot_observed_behavioral_score": 0.5652173913043478,
+    "pilot_observed_structural_score": 0.8882180942552459,
+    "recommendation": "Default prod TrustReport should mirror yellow for typical Ridge BO: decision-usable, attribution-unsafe, until tier-2 MC approves green bounds",
+    "red_criteria": {
+      "decision_reliability_score_lt": 0.75,
+      "optimization_blocked": true,
+      "structural_reliability_score_lt": 0.75,
+      "trust_grade": "low_or_insufficient",
+      "trust_modifier_status": "degraded"
+    },
+    "yellow_criteria": {
+      "attribution_safe": false,
+      "decision_usable": true,
+      "observed_at_pilot": true,
+      "trust_grade": "moderate",
+      "trust_modifier_status_in": [
+        "acceptable",
+        "caution"
+      ]
+    }
+  }
+}

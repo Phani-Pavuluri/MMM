@@ -1,0 +1,124 @@
+{
+  "fixture_version": "bayes_h2b_fixture_v1",
+  "world_id": "WORLD-BAYES-STALE",
+  "hierarchy_spec_ref": "hierarchy_spec.json",
+  "calibration_signals_ref": "calibration_signals.json",
+  "policy_overrides": {
+    "conflict_tolerance": 0.15,
+    "conflict_fail_closed": false,
+    "coverage_gate_state": 0.6,
+    "coverage_gate_region": 0.6,
+    "coverage_gate_national": 0.8,
+    "stale_precision_multiplier": 0.25,
+    "governance_max_omega": 100.0
+  },
+  "mandatory_assertions": [
+    "MA-STL-01",
+    "MA-STL-02",
+    "MA-STL-03",
+    "MA-STL-04"
+  ],
+  "expected_routing": [
+    {
+      "signal_id": "SIG-GEOX-LA",
+      "mechanism": "likelihood_term",
+      "rule_id": "R6",
+      "ingress": "calibration_signal"
+    },
+    {
+      "signal_id": "SIG-CLS-STALE",
+      "mechanism": "likelihood_term",
+      "rule_id": "R7",
+      "ingress": "calibration_signal"
+    }
+  ],
+  "expected_influence_class": [
+    {
+      "signal_id": "SIG-GEOX-LA",
+      "influence_class": "local_likelihood_style",
+      "target": {
+        "scope_type": "dma",
+        "scope_id": "la",
+        "channel_ids": [
+          "search"
+        ]
+      }
+    },
+    {
+      "signal_id": "SIG-CLS-STALE",
+      "influence_class": "national_calibration_evidence",
+      "target": {
+        "scope_type": "national",
+        "scope_id": "US",
+        "channel_ids": [
+          "search"
+        ]
+      },
+      "weight_tier": "low"
+    }
+  ],
+  "expected_propagation": [],
+  "expected_inclusion_exclusion": [
+    {
+      "signal_id": "SIG-GEOX-LA",
+      "included": true,
+      "decision_grade": true,
+      "exclusion_reason": null
+    },
+    {
+      "signal_id": "SIG-CLS-STALE",
+      "included": true,
+      "decision_grade": false,
+      "exclusion_reason": null,
+      "weight_multiplier": 0.25
+    }
+  ],
+  "expected_conflicts": [],
+  "expected_trust_report_fields": {
+    "included_signals": [
+      "SIG-GEOX-LA",
+      "SIG-CLS-STALE"
+    ],
+    "stale_signals": [
+      "SIG-CLS-STALE"
+    ],
+    "stale_hierarchy_signals": [
+      "SIG-CLS-STALE"
+    ],
+    "freshness_diagnostics": {
+      "SIG-GEOX-LA": {
+        "tier": "fresh",
+        "age_days": 30
+      },
+      "SIG-CLS-STALE": {
+        "tier": "stale",
+        "age_days": 200
+      }
+    },
+    "signal_weight_summary": {
+      "SIG-GEOX-LA": "high",
+      "SIG-CLS-STALE": "low"
+    }
+  },
+  "expected_release_gate_effect": {
+    "prod_decisioning_allowed": false,
+    "decision_safe": true,
+    "optimization_blocked": false,
+    "release_gate_recommendation": "warn",
+    "attribution_safe": true
+  },
+  "expected_failures": [
+    {
+      "forbidden_pattern": "stale_at_full_precision",
+      "signal_ids": [
+        "SIG-CLS-STALE"
+      ]
+    },
+    {
+      "forbidden_pattern": "stale_parent_refreshes_child",
+      "signal_ids": [
+        "SIG-CLS-STALE"
+      ]
+    }
+  ]
+}

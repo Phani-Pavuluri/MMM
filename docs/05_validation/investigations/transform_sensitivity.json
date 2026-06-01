@@ -1,0 +1,32 @@
+{
+  "comparison_summary": [
+    {
+      "coef_pass_bo": false,
+      "coef_pass_truth_pinned": false,
+      "delta_mu_pass_bo": true,
+      "transform_pass_bo": false,
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "coef_pass_bo": false,
+      "coef_pass_truth_pinned": false,
+      "delta_mu_pass_bo": true,
+      "transform_pass_bo": false,
+      "world_id": "L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off"
+    },
+    {
+      "coef_pass_bo": false,
+      "coef_pass_truth_pinned": true,
+      "delta_mu_pass_bo": true,
+      "transform_pass_bo": false,
+      "world_id": "L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off"
+    },
+    {
+      "coef_pass_bo": false,
+      "coef_pass_truth_pinned": false,
+      "delta_mu_pass_bo": true,
+      "transform_pass_bo": false,
+      "world_id": "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off"
+    }
+  ]
+}

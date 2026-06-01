@@ -1,0 +1,13 @@
+{
+  "materialization_version": "materialize_v1.0.0",
+  "scenario_index": [
+    {
+      "ref": "decision_truth.scenarios[0]",
+      "scenario_id": "baseline_shift_003"
+    }
+  ],
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "archetype_gen_v1.0.0",
+  "world_id": "WORLD-003-generated-baseline",
+  "world_version": "1.0.0"
+}

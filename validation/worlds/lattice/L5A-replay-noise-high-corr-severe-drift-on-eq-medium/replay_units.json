@@ -1,0 +1,47 @@
+[
+  {
+    "calibration_readiness": "approved",
+    "channel": "search",
+    "counterfactual_spend_frame": null,
+    "estimand": "geo_time_ATT",
+    "experiment_id": "exp-search-270",
+    "geo_ids": [
+      "G0",
+      "G1"
+    ],
+    "geo_scope": "listed",
+    "lift": 0.02,
+    "lift_scale": "mean_kpi_level_delta",
+    "lift_se": 0.08,
+    "observed_lift": 0.02,
+    "observed_spend_frame": null,
+    "payload_version": "synthetic_world_v1",
+    "post_window_weeks": null,
+    "replay_estimand": {
+      "aggregation": "mean",
+      "geo_ids": [
+        "G0",
+        "G1"
+      ],
+      "geo_scope": "listed",
+      "lift_scale": "mean_kpi_level_delta",
+      "notes": "materialized from L5A-replay-noise-high-corr-severe-drift-on-eq-medium experiment_truth",
+      "replay_transform_mode": "full_panel_transform_estimand_mask",
+      "target_kpi_column": "revenue",
+      "week_end": "2020-02-03",
+      "week_start": "2020-01-20"
+    },
+    "replay_transform_mode": "full_panel_transform_estimand_mask",
+    "standard_error": 0.08,
+    "target_kpi": "revenue",
+    "time_window": {
+      "week_end": "2020-02-03",
+      "week_start": "2020-01-20"
+    },
+    "treated_channel_names": [
+      "search"
+    ],
+    "unit_id": "replay_u_1270",
+    "world_id": "L5A-replay-noise-high-corr-severe-drift-on-eq-medium"
+  }
+]

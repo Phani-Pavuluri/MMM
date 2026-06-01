@@ -1,0 +1,24 @@
+{
+  "bundle_path": "validation/worlds/lattice/L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+  "catalog_ref": "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+  "checksum_version": "checksums_v1",
+  "creation_timestamp": "2026-01-01T15:26:12Z",
+  "materialization_version": "materialize_v1.0.0",
+  "materialized_files": [
+    "decision_truth.json",
+    "panel.parquet"
+  ],
+  "scenario_tags": [
+    "family:baseline",
+    "builder:scenario_builder_v1.0.0",
+    "noise:low",
+    "correlation:low",
+    "seasonality:none",
+    "missingness:none"
+  ],
+  "seed": 55572,
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "archetype_gen_v1.0.0",
+  "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+  "world_version": "1.0.0"
+}

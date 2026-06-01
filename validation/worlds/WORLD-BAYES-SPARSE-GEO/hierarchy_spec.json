@@ -1,0 +1,208 @@
+{
+  "scope_graph_version": "bayes_h2b_scope_graph_v1",
+  "nodes": [
+    {
+      "scope_type": "national",
+      "scope_id": "US",
+      "parent_scope_ids": [],
+      "child_scope_ids": [
+        "west",
+        "east"
+      ]
+    },
+    {
+      "scope_type": "region",
+      "scope_id": "west",
+      "parent_scope_ids": [
+        "US"
+      ],
+      "child_scope_ids": [
+        "CA",
+        "AZ",
+        "CO"
+      ]
+    },
+    {
+      "scope_type": "region",
+      "scope_id": "east",
+      "parent_scope_ids": [
+        "US"
+      ],
+      "child_scope_ids": [
+        "TX"
+      ]
+    },
+    {
+      "scope_type": "state",
+      "scope_id": "CA",
+      "parent_scope_ids": [
+        "west"
+      ],
+      "child_scope_ids": [
+        "sf",
+        "la"
+      ]
+    },
+    {
+      "scope_type": "state",
+      "scope_id": "TX",
+      "parent_scope_ids": [
+        "east"
+      ],
+      "child_scope_ids": [
+        "houston",
+        "dallas"
+      ]
+    },
+    {
+      "scope_type": "state",
+      "scope_id": "AZ",
+      "parent_scope_ids": [
+        "west"
+      ],
+      "child_scope_ids": [
+        "phoenix"
+      ]
+    },
+    {
+      "scope_type": "state",
+      "scope_id": "CO",
+      "parent_scope_ids": [
+        "west"
+      ],
+      "child_scope_ids": [
+        "denver"
+      ]
+    },
+    {
+      "scope_type": "dma",
+      "scope_id": "sf",
+      "parent_scope_ids": [
+        "CA"
+      ],
+      "child_scope_ids": []
+    },
+    {
+      "scope_type": "dma",
+      "scope_id": "la",
+      "parent_scope_ids": [
+        "CA"
+      ],
+      "child_scope_ids": []
+    },
+    {
+      "scope_type": "dma",
+      "scope_id": "houston",
+      "parent_scope_ids": [
+        "TX"
+      ],
+      "child_scope_ids": []
+    },
+    {
+      "scope_type": "dma",
+      "scope_id": "dallas",
+      "parent_scope_ids": [
+        "TX"
+      ],
+      "child_scope_ids": []
+    },
+    {
+      "scope_type": "dma",
+      "scope_id": "phoenix",
+      "parent_scope_ids": [
+        "AZ"
+      ],
+      "child_scope_ids": []
+    },
+    {
+      "scope_type": "dma",
+      "scope_id": "denver",
+      "parent_scope_ids": [
+        "CO"
+      ],
+      "child_scope_ids": []
+    }
+  ],
+  "edges": [
+    {
+      "parent": "US",
+      "child": "west",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "US",
+      "child": "east",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "west",
+      "child": "CA",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "west",
+      "child": "AZ",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "west",
+      "child": "CO",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "east",
+      "child": "TX",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "CA",
+      "child": "sf",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "CA",
+      "child": "la",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "TX",
+      "child": "houston",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "TX",
+      "child": "dallas",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "AZ",
+      "child": "phoenix",
+      "edge_type": "geo_hierarchy"
+    },
+    {
+      "parent": "CO",
+      "child": "denver",
+      "edge_type": "geo_hierarchy"
+    }
+  ],
+  "sparse_geo_ids": [
+    "phoenix",
+    "denver"
+  ],
+  "panel_geo_ids": [
+    "sf",
+    "la",
+    "houston",
+    "dallas",
+    "phoenix",
+    "denver"
+  ],
+  "spend_weights": {
+    "sf": 0.22,
+    "la": 0.2,
+    "houston": 0.18,
+    "dallas": 0.17,
+    "phoenix": 0.04,
+    "denver": 0.03
+  }
+}

@@ -121,3 +121,4 @@ For decision paths after training, use `mmm decide simulate` and `mmm decide opt
 | Concepts (architecture, calibration, diagnostics) | [docs/02_concepts/](docs/02_concepts/) |
 | Planning & budget decisions | [docs/03_planning/planning_howto.md](docs/03_planning/planning_howto.md) |
 | Production governance | [docs/04_governance/](docs/04_governance/) |
+| **v1.0.0 release** | [CHANGELOG.md](CHANGELOG.md) · [release notes](docs/04_governance/v1_release_notes.md) |

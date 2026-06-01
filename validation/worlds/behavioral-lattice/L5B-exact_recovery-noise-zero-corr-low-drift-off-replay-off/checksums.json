@@ -1,0 +1,12 @@
+{
+  "checksum_version": "checksums_v1",
+  "decision_truth_sha256": "f8822b89b47937f2af0ebb2bfb3741898b2d6b536717a3393c1590ddd781ac5f",
+  "dgp_diagnostics_sha256": "34839544455b9eebc8ee47a680a72bb7eb56abbcd9de4e12a42630e0f7274f0f",
+  "dgp_materialization_version": "dgp_materialize_v1.0.0",
+  "experiment_sha256": null,
+  "manifest_hash": "5ea9c43edd5915e321c20f8e9fbd1cd34e9d2543cac90387c60db2a3a0bb394d",
+  "metadata_sha256": "58c0c9182b6679510684554ac55a0b8d9357996c97882603d641fc41a8605973",
+  "panel_sha256": "427870c6dd94f6946ff53e523a706c7b58829a50e84a63f99b200eedee218dd8",
+  "replay_sha256": null,
+  "world_truth_sha256": "def73274e4da8f99ed1bf4e01b1037b8205ad6a9b80fd5ec8a389c5b0cb6b6e2"
+}

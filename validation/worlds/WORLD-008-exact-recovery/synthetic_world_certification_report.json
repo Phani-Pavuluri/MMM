@@ -1,0 +1,850 @@
+{
+  "bundle_path": "/workspace/mmm/validation/worlds/WORLD-008-exact-recovery",
+  "calibration_signal_compatibility": {
+    "checks_considered": [
+      "CERT-4A-008",
+      "CERT-4A-011"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 0,
+    "n_skipped": 2,
+    "passed": true
+  },
+  "certification_runner_version": "cert_runner_v1.0.0",
+  "coefficient_recovery": {
+    "category": "coefficient_recovery",
+    "check_id": "REC-4B2-001",
+    "details": {
+      "atol": 0.08,
+      "fitted_beta": {
+        "display": 0.9579872814189666,
+        "search": 0.5052481402257502,
+        "social": 0.505248140223664
+      },
+      "max_abs_error": 0.8779872814189666,
+      "rtol": 0.2,
+      "true_beta": {
+        "display": 0.08,
+        "search": 0.42,
+        "social": 0.15
+      }
+    },
+    "message": "fitted vs coefficient_truth.true_beta_by_channel",
+    "metric_kind": "provisional_statistical",
+    "skip_reason": null,
+    "status": "fail"
+  },
+  "contract_compatibility": {
+    "failures": [],
+    "passed": true
+  },
+  "decision_artifact_recovery": {
+    "category": "decision_artifact_compatibility",
+    "check_id": "REC-4B2-008",
+    "details": {
+      "artifact_tier": null,
+      "decision_safe": true,
+      "delta_mu": 0.0005727550543426219,
+      "model_form": "semi_log",
+      "release_state": "planning_allowed"
+    },
+    "message": "simulate_decision bundle + DecisionSurface / release-gate fields",
+    "metric_kind": "provisional_statistical",
+    "skip_reason": null,
+    "status": "pass"
+  },
+  "decision_surface_compatibility": {
+    "checks_considered": [
+      "CERT-4A-009"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 1,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "delta_mu_recovery": {
+    "category": "delta_mu_recovery",
+    "check_id": "REC-4B2-005",
+    "details": {
+      "abs_error": 0.05319870645010916,
+      "analytic_true_delta_mu": 0.05377146150445178,
+      "atol": 0.15,
+      "estimated_delta_mu": 0.0005727550543426219,
+      "placeholder_replaced": true,
+      "rtol": 0.35
+    },
+    "message": "fitted simulate \u0394\u03bc vs analytic decision_truth",
+    "metric_kind": "provisional_statistical",
+    "skip_reason": null,
+    "status": "pass"
+  },
+  "drift_recovery": {},
+  "drift_recovery_status": null,
+  "estimand_compatibility": {
+    "checks_considered": [
+      "CERT-4A-010"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 0,
+    "n_skipped": 1,
+    "passed": true
+  },
+  "executed_validations": [
+    "CERT-4A-001",
+    "CERT-4A-002",
+    "CERT-4A-004",
+    "CERT-4A-005",
+    "CERT-4A-006",
+    "CERT-4A-007",
+    "CERT-4A-009",
+    "CERT-4A-012",
+    "CERT-4A-013",
+    "REC-4B2-TRAIN",
+    "REC-4B2-001",
+    "REC-4B2-002",
+    "REC-4B2-003",
+    "REC-4B2-004",
+    "REC-4B2-005",
+    "REC-4B2-007",
+    "REC-4B2-008"
+  ],
+  "failed_validations": [
+    "REC-4B2-001",
+    "REC-4B2-002",
+    "REC-4B2-003"
+  ],
+  "generator_version": "manual_dgp_v1.0.0",
+  "identifiability_recovery": {},
+  "identifiability_recovery_status": null,
+  "limitations": [
+    "Phase 4B-2 exact-recovery only \u2014 WORLD-008, Ridge semi_log, zero-noise DGP",
+    "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+    "Ridge BO uses shared adstock/Hill hyperparameters across channels",
+    "Does not prove causal validity or production allocation correctness"
+  ],
+  "materialization_version": "dgp_materialize_v1.0.0",
+  "optimizer_recovery": {},
+  "optimizer_recovery_status": null,
+  "overall_status": "fail",
+  "readiness_reaction_results": {},
+  "recovery_certification_version": "recovery_cert_v1.0.0",
+  "recovery_limitations": [
+    "Phase 4B-2 exact-recovery only \u2014 WORLD-008, Ridge semi_log, zero-noise DGP",
+    "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+    "Ridge BO uses shared adstock/Hill hyperparameters across channels",
+    "Does not prove causal validity or production allocation correctness"
+  ],
+  "recovery_results": {
+    "coefficient_recovery": {
+      "category": "coefficient_recovery",
+      "check_id": "REC-4B2-001",
+      "details": {
+        "atol": 0.08,
+        "fitted_beta": {
+          "display": 0.9579872814189666,
+          "search": 0.5052481402257502,
+          "social": 0.505248140223664
+        },
+        "max_abs_error": 0.8779872814189666,
+        "rtol": 0.2,
+        "true_beta": {
+          "display": 0.08,
+          "search": 0.42,
+          "social": 0.15
+        }
+      },
+      "message": "fitted vs coefficient_truth.true_beta_by_channel",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    "decision_artifact_recovery": {
+      "category": "decision_artifact_compatibility",
+      "check_id": "REC-4B2-008",
+      "details": {
+        "artifact_tier": null,
+        "decision_safe": true,
+        "delta_mu": 0.0005727550543426219,
+        "model_form": "semi_log",
+        "release_state": "planning_allowed"
+      },
+      "message": "simulate_decision bundle + DecisionSurface / release-gate fields",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    "delta_mu_recovery": {
+      "category": "delta_mu_recovery",
+      "check_id": "REC-4B2-005",
+      "details": {
+        "abs_error": 0.05319870645010916,
+        "analytic_true_delta_mu": 0.05377146150445178,
+        "atol": 0.15,
+        "estimated_delta_mu": 0.0005727550543426219,
+        "placeholder_replaced": true,
+        "rtol": 0.35
+      },
+      "message": "fitted simulate \u0394\u03bc vs analytic decision_truth",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    "drift_recovery": {},
+    "drift_recovery_status": null,
+    "identifiability_recovery": {},
+    "identifiability_recovery_status": null,
+    "optimizer_recovery": {},
+    "optimizer_recovery_status": null,
+    "passed": false,
+    "readiness_reaction_results": {},
+    "recovery_limitations": [
+      "Phase 4B-2 exact-recovery only \u2014 WORLD-008, Ridge semi_log, zero-noise DGP",
+      "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+      "Ridge BO uses shared adstock/Hill hyperparameters across channels",
+      "Does not prove causal validity or production allocation correctness"
+    ],
+    "reliability_degradation_results": {},
+    "replay_recovery": {},
+    "replay_recovery_status": null,
+    "train_decide_recovery_status": {
+      "category": "train_decide_fingerprint",
+      "check_id": "REC-4B2-007",
+      "details": {
+        "comparison": "sha256_combined",
+        "decision_kind": "v2_combined",
+        "decision_sha": "ac5233d08dd7f275a0d1ff139cfaca2833239ea0797e69e609c40e00bbc27191",
+        "matched": true,
+        "training_kind": "v2_combined",
+        "training_sha": "ac5233d08dd7f275a0d1ff139cfaca2833239ea0797e69e609c40e00bbc27191",
+        "warnings": []
+      },
+      "message": "training extension_report fingerprint matches decide-time panel",
+      "metric_kind": "exact_formula",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    "transform_recovery": {
+      "adstock": {
+        "category": "adstock_transform_consistency",
+        "check_id": "REC-4B2-002",
+        "details": {
+          "fitted": {
+            "decay": 0.17033184419858716,
+            "hill_half": 1.2084310095623298,
+            "hill_slope": 2.881491659547926,
+            "log_alpha": -2.9524096680815126
+          },
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        },
+        "message": "fitted decay vs transform_truth (shared hyperparameter policy)",
+        "metric_kind": "provisional_statistical",
+        "skip_reason": null,
+        "status": "fail"
+      },
+      "formula": {
+        "category": "transform_formula_consistency",
+        "check_id": "REC-4B2-004",
+        "details": {},
+        "message": "geometric adstock + Hill match canonical transforms on panel spend",
+        "metric_kind": "exact_formula",
+        "skip_reason": null,
+        "status": "pass"
+      },
+      "hill": {
+        "category": "hill_transform_consistency",
+        "check_id": "REC-4B2-003",
+        "details": {
+          "fitted": {
+            "decay": 0.17033184419858716,
+            "hill_half": 1.2084310095623298,
+            "hill_slope": 2.881491659547926,
+            "log_alpha": -2.9524096680815126
+          },
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        },
+        "message": "fitted Hill params vs transform_truth (shared hyperparameter policy)",
+        "metric_kind": "provisional_statistical",
+        "skip_reason": null,
+        "status": "fail"
+      }
+    }
+  },
+  "recovery_validation_results": [
+    {
+      "category": "train_path",
+      "check_id": "REC-4B2-TRAIN",
+      "details": {
+        "n_rows": 48,
+        "n_trials": 12
+      },
+      "message": "Ridge BO fit completed on DGP panel",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "coefficient_recovery",
+      "check_id": "REC-4B2-001",
+      "details": {
+        "atol": 0.08,
+        "fitted_beta": {
+          "display": 0.9579872814189666,
+          "search": 0.5052481402257502,
+          "social": 0.505248140223664
+        },
+        "max_abs_error": 0.8779872814189666,
+        "rtol": 0.2,
+        "true_beta": {
+          "display": 0.08,
+          "search": 0.42,
+          "social": 0.15
+        }
+      },
+      "message": "fitted vs coefficient_truth.true_beta_by_channel",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "adstock_transform_consistency",
+      "check_id": "REC-4B2-002",
+      "details": {
+        "fitted": {
+          "decay": 0.17033184419858716,
+          "hill_half": 1.2084310095623298,
+          "hill_slope": 2.881491659547926,
+          "log_alpha": -2.9524096680815126
+        },
+        "truth_shared": {
+          "decay": 0.55,
+          "hill_half": 10.0,
+          "hill_slope": 2.0,
+          "per_channel_uniform": true
+        }
+      },
+      "message": "fitted decay vs transform_truth (shared hyperparameter policy)",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "hill_transform_consistency",
+      "check_id": "REC-4B2-003",
+      "details": {
+        "fitted": {
+          "decay": 0.17033184419858716,
+          "hill_half": 1.2084310095623298,
+          "hill_slope": 2.881491659547926,
+          "log_alpha": -2.9524096680815126
+        },
+        "truth_shared": {
+          "decay": 0.55,
+          "hill_half": 10.0,
+          "hill_slope": 2.0,
+          "per_channel_uniform": true
+        }
+      },
+      "message": "fitted Hill params vs transform_truth (shared hyperparameter policy)",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "transform_formula_consistency",
+      "check_id": "REC-4B2-004",
+      "details": {},
+      "message": "geometric adstock + Hill match canonical transforms on panel spend",
+      "metric_kind": "exact_formula",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "delta_mu_recovery",
+      "check_id": "REC-4B2-005",
+      "details": {
+        "abs_error": 0.05319870645010916,
+        "analytic_true_delta_mu": 0.05377146150445178,
+        "atol": 0.15,
+        "estimated_delta_mu": 0.0005727550543426219,
+        "placeholder_replaced": true,
+        "rtol": 0.35
+      },
+      "message": "fitted simulate \u0394\u03bc vs analytic decision_truth",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "optimizer_recovery",
+      "check_id": "REC-4B2-006",
+      "details": {},
+      "message": "Optimizer recovery deferred",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": "requires_optimizer_truth_thresholds",
+      "status": "skipped"
+    },
+    {
+      "category": "train_decide_fingerprint",
+      "check_id": "REC-4B2-007",
+      "details": {
+        "comparison": "sha256_combined",
+        "decision_kind": "v2_combined",
+        "decision_sha": "ac5233d08dd7f275a0d1ff139cfaca2833239ea0797e69e609c40e00bbc27191",
+        "matched": true,
+        "training_kind": "v2_combined",
+        "training_sha": "ac5233d08dd7f275a0d1ff139cfaca2833239ea0797e69e609c40e00bbc27191",
+        "warnings": []
+      },
+      "message": "training extension_report fingerprint matches decide-time panel",
+      "metric_kind": "exact_formula",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "decision_artifact_compatibility",
+      "check_id": "REC-4B2-008",
+      "details": {
+        "artifact_tier": null,
+        "decision_safe": true,
+        "delta_mu": 0.0005727550543426219,
+        "model_form": "semi_log",
+        "release_state": "planning_allowed"
+      },
+      "message": "simulate_decision bundle + DecisionSurface / release-gate fields",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    }
+  ],
+  "release_gate_compatibility": {
+    "checks_considered": [
+      "CERT-4A-013"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 1,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "reliability_degradation_results": {},
+  "replay_compatibility": {
+    "checks_considered": [
+      "CERT-4A-003",
+      "CERT-4A-008",
+      "CERT-4A-011"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 0,
+    "n_skipped": 3,
+    "passed": true
+  },
+  "replay_recovery": {},
+  "replay_recovery_status": null,
+  "report_kind": "synthetic_world_certification_report",
+  "skipped_validations": [
+    {
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds"
+    },
+    {
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds"
+    },
+    {
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-006",
+      "message": "Replay train/holdout loss vs implied y",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-012",
+      "message": "Drift detection accuracy vs shift_truth",
+      "skip_reason": "requires_thresholds"
+    },
+    {
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-014",
+      "message": "Runtime cert levels vs artifact_truth.expected_certification_levels",
+      "skip_reason": "requires_train_decide_execution"
+    }
+  ],
+  "tolerance_policy_id": "TBD_v1_runtime",
+  "train_decide_recovery_status": {
+    "category": "train_decide_fingerprint",
+    "check_id": "REC-4B2-007",
+    "details": {
+      "comparison": "sha256_combined",
+      "decision_kind": "v2_combined",
+      "decision_sha": "ac5233d08dd7f275a0d1ff139cfaca2833239ea0797e69e609c40e00bbc27191",
+      "matched": true,
+      "training_kind": "v2_combined",
+      "training_sha": "ac5233d08dd7f275a0d1ff139cfaca2833239ea0797e69e609c40e00bbc27191",
+      "warnings": []
+    },
+    "message": "training extension_report fingerprint matches decide-time panel",
+    "metric_kind": "exact_formula",
+    "skip_reason": null,
+    "status": "pass"
+  },
+  "transform_recovery": {
+    "adstock": {
+      "category": "adstock_transform_consistency",
+      "check_id": "REC-4B2-002",
+      "details": {
+        "fitted": {
+          "decay": 0.17033184419858716,
+          "hill_half": 1.2084310095623298,
+          "hill_slope": 2.881491659547926,
+          "log_alpha": -2.9524096680815126
+        },
+        "truth_shared": {
+          "decay": 0.55,
+          "hill_half": 10.0,
+          "hill_slope": 2.0,
+          "per_channel_uniform": true
+        }
+      },
+      "message": "fitted decay vs transform_truth (shared hyperparameter policy)",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    "formula": {
+      "category": "transform_formula_consistency",
+      "check_id": "REC-4B2-004",
+      "details": {},
+      "message": "geometric adstock + Hill match canonical transforms on panel spend",
+      "metric_kind": "exact_formula",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    "hill": {
+      "category": "hill_transform_consistency",
+      "check_id": "REC-4B2-003",
+      "details": {
+        "fitted": {
+          "decay": 0.17033184419858716,
+          "hill_half": 1.2084310095623298,
+          "hill_slope": 2.881491659547926,
+          "log_alpha": -2.9524096680815126
+        },
+        "truth_shared": {
+          "decay": 0.55,
+          "hill_half": 10.0,
+          "hill_slope": 2.0,
+          "per_channel_uniform": true
+        }
+      },
+      "message": "fitted Hill params vs transform_truth (shared hyperparameter policy)",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "fail"
+    }
+  },
+  "trust_semantics_compatibility": {
+    "checks_considered": [
+      "CERT-4A-006",
+      "CERT-4A-012"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 2,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "validation_results": [
+    {
+      "category": "bundle_integrity",
+      "check_id": "CERT-4A-001",
+      "message": "L1\u2013L3 validator passed (world_id=WORLD-008-exact-recovery)",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "checksum_reproducibility",
+      "check_id": "CERT-4A-002",
+      "message": "checksums match on-disk artifacts",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "replay_loader_compatibility",
+      "check_id": "CERT-4A-003",
+      "message": "no experiment units in truth",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "transform_truth_consistency",
+      "check_id": "CERT-4A-004",
+      "message": "canonical semi_log + geometric + Hill transform truth",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "metadata_consistency",
+      "check_id": "CERT-4A-005",
+      "message": "bundle metadata matches world_truth.metadata",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "governance_warning_compatibility",
+      "check_id": "CERT-4A-006",
+      "message": "0 expected warning(s) well-formed",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "decision_truth_structure",
+      "check_id": "CERT-4A-007",
+      "message": "decision_truth valid (1 scenario(s))",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "calibration_payload_compatibility",
+      "check_id": "CERT-4A-008",
+      "message": "no replay payload required",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "decision_surface_compatibility",
+      "check_id": "CERT-4A-009",
+      "message": "DecisionSurface: semi_log + full-panel replay transform semantics",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "estimand_compatibility",
+      "check_id": "CERT-4A-010",
+      "message": "no experiment units",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "calibration_signal_compatibility",
+      "check_id": "CERT-4A-011",
+      "message": "no calibration signals",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "trust_report_compatibility",
+      "check_id": "CERT-4A-012",
+      "message": "TrustReport semantics present in truth",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "release_gate_compatibility",
+      "check_id": "CERT-4A-013",
+      "message": "release-gate fields consistent",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "train_path",
+      "check_id": "REC-4B2-TRAIN",
+      "message": "Ridge BO fit completed on DGP panel",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "coefficient_recovery",
+      "check_id": "REC-4B2-001",
+      "message": "fitted vs coefficient_truth.true_beta_by_channel",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "adstock_transform_consistency",
+      "check_id": "REC-4B2-002",
+      "message": "fitted decay vs transform_truth (shared hyperparameter policy)",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "hill_transform_consistency",
+      "check_id": "REC-4B2-003",
+      "message": "fitted Hill params vs transform_truth (shared hyperparameter policy)",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "transform_formula_consistency",
+      "check_id": "REC-4B2-004",
+      "message": "geometric adstock + Hill match canonical transforms on panel spend",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "delta_mu_recovery",
+      "check_id": "REC-4B2-005",
+      "message": "fitted simulate \u0394\u03bc vs analytic decision_truth",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "optimizer_recovery",
+      "check_id": "REC-4B2-006",
+      "message": "Optimizer recovery deferred",
+      "skip_reason": "requires_optimizer_truth_thresholds",
+      "status": "skipped"
+    },
+    {
+      "category": "train_decide_fingerprint",
+      "check_id": "REC-4B2-007",
+      "message": "training extension_report fingerprint matches decide-time panel",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "decision_artifact_compatibility",
+      "check_id": "REC-4B2-008",
+      "message": "simulate_decision bundle + DecisionSurface / release-gate fields",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "adstock_recovery",
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "status": "skipped"
+    },
+    {
+      "category": "hill_recovery",
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "status": "skipped"
+    },
+    {
+      "category": "optimizer_recovery",
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "replay_consistency",
+      "check_id": "VAL-006",
+      "message": "Replay train/holdout loss vs implied y",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "calibration_robustness",
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "decision_safety",
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "artifact_integrity_runtime",
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "reproducibility",
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "promotion_workflow",
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "drift_detection",
+      "check_id": "VAL-012",
+      "message": "Drift detection accuracy vs shift_truth",
+      "skip_reason": "requires_thresholds",
+      "status": "skipped"
+    },
+    {
+      "category": "governance_behavior",
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "certification_behavior",
+      "check_id": "VAL-014",
+      "message": "Runtime cert levels vs artifact_truth.expected_certification_levels",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    }
+  ],
+  "warnings": [
+    "behavioral validations VAL-001\u2013VAL-014 deferred \u2014 not executed"
+  ],
+  "world_contract_version": "groundtruth_world_v1",
+  "world_id": "WORLD-008-exact-recovery",
+  "world_version": "1.0.0"
+}

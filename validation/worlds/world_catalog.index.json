@@ -1,0 +1,461 @@
+{
+  "catalog_version": "world_catalog_bayes_h2b_v1",
+  "description": "Bayes-H2b hierarchy evidence validation worlds (no-fit fixtures)",
+  "entries": [
+    {
+      "world_id": "WORLD-BAYES-GEOX-LOCAL",
+      "path": "validation/worlds/WORLD-BAYES-GEOX-LOCAL/",
+      "status": "materialized_fixtures_v1",
+      "validation_family": "bayes-hierarchy-evidence",
+      "canonical_assertions": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "source_docs": [
+        "docs/BAYES_H2B_VALIDATION_WORLDS_001.md",
+        "docs/BAYES_H2B_VALIDATION_RUNNER_002.md",
+        "docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md"
+      ],
+      "world_family": "bayes-hierarchy-evidence",
+      "world_description": "Bayes-H2b no-fit hierarchy evidence contract world: WORLD-BAYES-GEOX-LOCAL",
+      "world_version": "1.0.0",
+      "world_contract_version": "bayes_h2b_fixture_v1",
+      "world_generator_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "materialization_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "scenario_tags": [
+        "bayes-h2b",
+        "no-fit",
+        "hierarchy-evidence"
+      ],
+      "expected_capabilities": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "expected_failures": [],
+      "difficulty": "smoke",
+      "intended_certifications": [
+        "BayesHierarchyEvidenceCertification"
+      ],
+      "unsupported_uses": [
+        "bayesian_prod_decide",
+        "coef_recovery_certification",
+        "posterior_calibration",
+        "pymc_sampling",
+        "causal_incrementality_claims"
+      ],
+      "bundle_path": "validation/worlds/WORLD-BAYES-GEOX-LOCAL/"
+    },
+    {
+      "world_id": "WORLD-BAYES-CLS-NATIONAL",
+      "path": "validation/worlds/WORLD-BAYES-CLS-NATIONAL/",
+      "status": "materialized_fixtures_v1",
+      "validation_family": "bayes-hierarchy-evidence",
+      "canonical_assertions": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "source_docs": [
+        "docs/BAYES_H2B_VALIDATION_WORLDS_001.md",
+        "docs/BAYES_H2B_VALIDATION_RUNNER_002.md",
+        "docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md"
+      ],
+      "world_family": "bayes-hierarchy-evidence",
+      "world_description": "Bayes-H2b no-fit hierarchy evidence contract world: WORLD-BAYES-CLS-NATIONAL",
+      "world_version": "1.0.0",
+      "world_contract_version": "bayes_h2b_fixture_v1",
+      "world_generator_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "materialization_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "scenario_tags": [
+        "bayes-h2b",
+        "no-fit",
+        "hierarchy-evidence"
+      ],
+      "expected_capabilities": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "expected_failures": [],
+      "difficulty": "smoke",
+      "intended_certifications": [
+        "BayesHierarchyEvidenceCertification"
+      ],
+      "unsupported_uses": [
+        "bayesian_prod_decide",
+        "coef_recovery_certification",
+        "posterior_calibration",
+        "pymc_sampling",
+        "causal_incrementality_claims"
+      ],
+      "bundle_path": "validation/worlds/WORLD-BAYES-CLS-NATIONAL/"
+    },
+    {
+      "world_id": "WORLD-BAYES-CONFLICT",
+      "path": "validation/worlds/WORLD-BAYES-CONFLICT/",
+      "status": "materialized_fixtures_v1",
+      "validation_family": "bayes-hierarchy-evidence",
+      "canonical_assertions": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "source_docs": [
+        "docs/BAYES_H2B_VALIDATION_WORLDS_001.md",
+        "docs/BAYES_H2B_VALIDATION_RUNNER_002.md",
+        "docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md"
+      ],
+      "world_family": "bayes-hierarchy-evidence",
+      "world_description": "Bayes-H2b no-fit hierarchy evidence contract world: WORLD-BAYES-CONFLICT",
+      "world_version": "1.0.0",
+      "world_contract_version": "bayes_h2b_fixture_v1",
+      "world_generator_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "materialization_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "scenario_tags": [
+        "bayes-h2b",
+        "no-fit",
+        "hierarchy-evidence"
+      ],
+      "expected_capabilities": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "expected_failures": [],
+      "difficulty": "smoke",
+      "intended_certifications": [
+        "BayesHierarchyEvidenceCertification"
+      ],
+      "unsupported_uses": [
+        "bayesian_prod_decide",
+        "coef_recovery_certification",
+        "posterior_calibration",
+        "pymc_sampling",
+        "causal_incrementality_claims"
+      ],
+      "bundle_path": "validation/worlds/WORLD-BAYES-CONFLICT/"
+    },
+    {
+      "world_id": "WORLD-BAYES-STALE",
+      "path": "validation/worlds/WORLD-BAYES-STALE/",
+      "status": "materialized_fixtures_v1",
+      "validation_family": "bayes-hierarchy-evidence",
+      "canonical_assertions": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "source_docs": [
+        "docs/BAYES_H2B_VALIDATION_WORLDS_001.md",
+        "docs/BAYES_H2B_VALIDATION_RUNNER_002.md",
+        "docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md"
+      ],
+      "world_family": "bayes-hierarchy-evidence",
+      "world_description": "Bayes-H2b no-fit hierarchy evidence contract world: WORLD-BAYES-STALE",
+      "world_version": "1.0.0",
+      "world_contract_version": "bayes_h2b_fixture_v1",
+      "world_generator_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "materialization_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "scenario_tags": [
+        "bayes-h2b",
+        "no-fit",
+        "hierarchy-evidence"
+      ],
+      "expected_capabilities": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "expected_failures": [],
+      "difficulty": "smoke",
+      "intended_certifications": [
+        "BayesHierarchyEvidenceCertification"
+      ],
+      "unsupported_uses": [
+        "bayesian_prod_decide",
+        "coef_recovery_certification",
+        "posterior_calibration",
+        "pymc_sampling",
+        "causal_incrementality_claims"
+      ],
+      "bundle_path": "validation/worlds/WORLD-BAYES-STALE/"
+    },
+    {
+      "world_id": "WORLD-BAYES-MISSING-SE",
+      "path": "validation/worlds/WORLD-BAYES-MISSING-SE/",
+      "status": "materialized_fixtures_v1",
+      "validation_family": "bayes-hierarchy-evidence",
+      "canonical_assertions": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "source_docs": [
+        "docs/BAYES_H2B_VALIDATION_WORLDS_001.md",
+        "docs/BAYES_H2B_VALIDATION_RUNNER_002.md",
+        "docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md"
+      ],
+      "world_family": "bayes-hierarchy-evidence",
+      "world_description": "Bayes-H2b no-fit hierarchy evidence contract world: WORLD-BAYES-MISSING-SE",
+      "world_version": "1.0.0",
+      "world_contract_version": "bayes_h2b_fixture_v1",
+      "world_generator_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "materialization_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "scenario_tags": [
+        "bayes-h2b",
+        "no-fit",
+        "hierarchy-evidence"
+      ],
+      "expected_capabilities": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "expected_failures": [],
+      "difficulty": "smoke",
+      "intended_certifications": [
+        "BayesHierarchyEvidenceCertification"
+      ],
+      "unsupported_uses": [
+        "bayesian_prod_decide",
+        "coef_recovery_certification",
+        "posterior_calibration",
+        "pymc_sampling",
+        "causal_incrementality_claims"
+      ],
+      "bundle_path": "validation/worlds/WORLD-BAYES-MISSING-SE/"
+    },
+    {
+      "world_id": "WORLD-BAYES-SPARSE-GEO",
+      "path": "validation/worlds/WORLD-BAYES-SPARSE-GEO/",
+      "status": "materialized_fixtures_v1",
+      "validation_family": "bayes-hierarchy-evidence",
+      "canonical_assertions": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "source_docs": [
+        "docs/BAYES_H2B_VALIDATION_WORLDS_001.md",
+        "docs/BAYES_H2B_VALIDATION_RUNNER_002.md",
+        "docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md"
+      ],
+      "world_family": "bayes-hierarchy-evidence",
+      "world_description": "Bayes-H2b no-fit hierarchy evidence contract world: WORLD-BAYES-SPARSE-GEO",
+      "world_version": "1.0.0",
+      "world_contract_version": "bayes_h2b_fixture_v1",
+      "world_generator_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "materialization_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "scenario_tags": [
+        "bayes-h2b",
+        "no-fit",
+        "hierarchy-evidence"
+      ],
+      "expected_capabilities": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "expected_failures": [],
+      "difficulty": "smoke",
+      "intended_certifications": [
+        "BayesHierarchyEvidenceCertification"
+      ],
+      "unsupported_uses": [
+        "bayesian_prod_decide",
+        "coef_recovery_certification",
+        "posterior_calibration",
+        "pymc_sampling",
+        "causal_incrementality_claims"
+      ],
+      "bundle_path": "validation/worlds/WORLD-BAYES-SPARSE-GEO/"
+    },
+    {
+      "world_id": "WORLD-BAYES-ESTIMAND-EXCLUDE",
+      "path": "validation/worlds/WORLD-BAYES-ESTIMAND-EXCLUDE/",
+      "status": "materialized_fixtures_v1",
+      "validation_family": "bayes-hierarchy-evidence",
+      "canonical_assertions": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "source_docs": [
+        "docs/BAYES_H2B_VALIDATION_WORLDS_001.md",
+        "docs/BAYES_H2B_VALIDATION_RUNNER_002.md",
+        "docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md"
+      ],
+      "world_family": "bayes-hierarchy-evidence",
+      "world_description": "Bayes-H2b no-fit hierarchy evidence contract world: WORLD-BAYES-ESTIMAND-EXCLUDE",
+      "world_version": "1.0.0",
+      "world_contract_version": "bayes_h2b_fixture_v1",
+      "world_generator_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "materialization_version": "bayes_h2b_fixture_materialize_v1.0.0",
+      "scenario_tags": [
+        "bayes-h2b",
+        "no-fit",
+        "hierarchy-evidence"
+      ],
+      "expected_capabilities": [
+        "VAL-BAYES-001",
+        "VAL-BAYES-002",
+        "VAL-BAYES-003",
+        "VAL-BAYES-004",
+        "VAL-BAYES-005",
+        "VAL-BAYES-006",
+        "VAL-BAYES-007",
+        "VAL-BAYES-008",
+        "VAL-BAYES-009",
+        "VAL-BAYES-010",
+        "VAL-BAYES-011",
+        "VAL-BAYES-012",
+        "VAL-BAYES-H2B-SMOKE"
+      ],
+      "expected_failures": [],
+      "difficulty": "smoke",
+      "intended_certifications": [
+        "BayesHierarchyEvidenceCertification"
+      ],
+      "unsupported_uses": [
+        "bayesian_prod_decide",
+        "coef_recovery_certification",
+        "posterior_calibration",
+        "pymc_sampling",
+        "causal_incrementality_claims"
+      ],
+      "bundle_path": "validation/worlds/WORLD-BAYES-ESTIMAND-EXCLUDE/"
+    }
+  ]
+}

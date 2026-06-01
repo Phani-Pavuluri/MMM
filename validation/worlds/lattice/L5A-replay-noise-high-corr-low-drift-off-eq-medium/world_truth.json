@@ -1,0 +1,149 @@
+{
+  "artifact_truth": {
+    "expected_certification_levels": {
+      "synthetic": "exact"
+    },
+    "expected_failures": [],
+    "expected_gates": [
+      {
+        "expected": "pass",
+        "gate_id": "production_readiness_approved"
+      }
+    ],
+    "expected_warnings": []
+  },
+  "coefficient_truth": {
+    "controls": {},
+    "interactions": [],
+    "intercept": 4.605170185988092,
+    "true_beta_by_channel": {
+      "search": 0.4496
+    }
+  },
+  "decision_truth": {
+    "budget_constraints": [],
+    "scenarios": []
+  },
+  "drift_truth": {
+    "changepoints": [],
+    "coefficient_drift": [],
+    "policy_changes": [],
+    "privacy_shifts": []
+  },
+  "experiment_truth": {
+    "units": [
+      {
+        "aggregation": "mean",
+        "calibration_readiness": "approved",
+        "channel": "search",
+        "estimand": "geo_time_ATT",
+        "experiment_id": "exp-search-747",
+        "geo_scope": "listed",
+        "geos": [
+          "G0",
+          "G1"
+        ],
+        "lift_definition": {
+          "scale": "mean_kpi_level_delta",
+          "value": 0.02
+        },
+        "replay_transform_mode": "full_panel_transform_estimand_mask",
+        "uncertainty": {
+          "se": 0.08
+        },
+        "unit_id": "replay_u_0747",
+        "week_end": "2020-03-09",
+        "week_start": "2020-02-24"
+      }
+    ]
+  },
+  "geo_truth": {
+    "geo_column_name": "geo_id",
+    "geos": [
+      "G0",
+      "G1"
+    ],
+    "hierarchy": null,
+    "n_geos": 2,
+    "weights": {
+      "G0": 0.5,
+      "G1": 0.5
+    }
+  },
+  "governance_truth": {
+    "approved_for_optimization": true,
+    "model_release_state": "planning_allowed",
+    "replay_calibration_active": true,
+    "require_production_certification": false,
+    "require_promoted_model": false
+  },
+  "media_truth": {
+    "baseline_spend_by_channel": {
+      "search": 12.0
+    },
+    "channels": [
+      "search"
+    ],
+    "spend_process_spec": {
+      "correlation_level": "low",
+      "kind": "constant",
+      "level": 12.0
+    }
+  },
+  "metadata": {
+    "archetype_id": "experiment_world",
+    "creation_timestamp": "2026-01-01T14:05:47Z",
+    "description": "ScenarioBuilder replay (L5A-replay-noise-high-corr-low-drift-off-eq-medium, seed=50747)",
+    "generation_seed": 50747,
+    "materialization_version": "materialize_v1.0.0",
+    "negative_world": false,
+    "scenario_tags": [
+      "family:replay",
+      "builder:scenario_builder_v1.0.0",
+      "noise:high",
+      "correlation:low",
+      "seasonality:none",
+      "missingness:none"
+    ],
+    "world_contract_version": "groundtruth_world_v1",
+    "world_generator_version": "archetype_gen_v1.0.0",
+    "world_id": "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+    "world_version": "1.0.0"
+  },
+  "outcome_truth": {
+    "base_level_mean": 113.0,
+    "model_form": "semi_log",
+    "observation_noise_level": "high",
+    "target_column": "revenue",
+    "target_scale": "positive_level"
+  },
+  "time_truth": {
+    "date_frequency": "weekly",
+    "end_date": "2020-03-23",
+    "eval_window": {
+      "end_period_index": 11,
+      "start_period_index": 10
+    },
+    "n_periods": 12,
+    "seasonality_declared": false,
+    "start_date": "2020-01-06",
+    "train_window": {
+      "end_period_index": 9,
+      "start_period_index": 0
+    },
+    "week_column_name": "week_start_date"
+  },
+  "transform_truth": {
+    "adstock_decay_by_channel": {
+      "search": 0.5
+    },
+    "adstock_family": "geometric",
+    "hill_half_max_by_channel": {
+      "search": 10.0
+    },
+    "hill_slope_by_channel": {
+      "search": 2.0
+    },
+    "saturation_family": "hill"
+  }
+}

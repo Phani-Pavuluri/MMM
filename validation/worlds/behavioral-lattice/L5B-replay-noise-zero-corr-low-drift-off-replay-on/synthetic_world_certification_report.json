@@ -1,0 +1,532 @@
+{
+  "bundle_path": "validation/worlds/behavioral-lattice/L5B-replay-noise-zero-corr-low-drift-off-replay-on",
+  "calibration_signal_compatibility": {
+    "checks_considered": [
+      "CERT-4A-008",
+      "CERT-4A-011"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 2,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "certification_runner_version": "cert_runner_v1.0.0",
+  "coefficient_recovery": {},
+  "contract_compatibility": {
+    "failures": [
+      "CERT-4A-001",
+      "CERT-4A-002"
+    ],
+    "passed": false
+  },
+  "decision_artifact_recovery": {},
+  "decision_surface_compatibility": {
+    "checks_considered": [
+      "CERT-4A-009"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 1,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "delta_mu_recovery": {},
+  "drift_recovery": {},
+  "drift_recovery_status": null,
+  "estimand_compatibility": {
+    "checks_considered": [
+      "CERT-4A-010"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 1,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "executed_validations": [
+    "CERT-4A-001",
+    "CERT-4A-002",
+    "CERT-4A-003",
+    "CERT-4A-004",
+    "CERT-4A-005",
+    "CERT-4A-006",
+    "CERT-4A-007",
+    "CERT-4A-008",
+    "CERT-4A-009",
+    "CERT-4A-010",
+    "CERT-4A-011",
+    "CERT-4A-012",
+    "CERT-4A-013",
+    "REC-4B4-LOAD",
+    "REC-4B4-TRAIN",
+    "REC-4B4-REPLAY"
+  ],
+  "failed_validations": [
+    "CERT-4A-001",
+    "CERT-4A-002"
+  ],
+  "generator_version": "manual_replay_v1.0.0",
+  "identifiability_recovery": {},
+  "identifiability_recovery_status": null,
+  "limitations": [
+    "Phase 4B-4 replay-recovery \u2014 WORLD-010, Ridge semi_log, known experiment lift in truth",
+    "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+    "Train pins adstock/Hill to truth; replay uses fitted coefficients on full-panel frames"
+  ],
+  "materialization_version": "dgp_materialize_v1.0.0",
+  "optimizer_recovery": {},
+  "optimizer_recovery_status": null,
+  "overall_status": "fail",
+  "readiness_reaction_results": {},
+  "recovery_certification_version": "recovery_cert_v1.0.0",
+  "recovery_limitations": [
+    "Phase 4B-4 replay-recovery \u2014 WORLD-010, Ridge semi_log, known experiment lift in truth",
+    "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+    "Train pins adstock/Hill to truth; replay uses fitted coefficients on full-panel frames"
+  ],
+  "recovery_results": {
+    "coefficient_recovery": {},
+    "decision_artifact_recovery": {},
+    "delta_mu_recovery": {},
+    "drift_recovery": {},
+    "drift_recovery_status": null,
+    "identifiability_recovery": {},
+    "identifiability_recovery_status": null,
+    "optimizer_recovery": {},
+    "optimizer_recovery_status": null,
+    "passed": true,
+    "readiness_reaction_results": {},
+    "recovery_limitations": [
+      "Phase 4B-4 replay-recovery \u2014 WORLD-010, Ridge semi_log, known experiment lift in truth",
+      "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+      "Train pins adstock/Hill to truth; replay uses fitted coefficients on full-panel frames"
+    ],
+    "reliability_degradation_results": {},
+    "replay_recovery": {
+      "estimand_mask_used": {
+        "aggregation": "mean",
+        "geo_ids": [
+          "G0",
+          "G1"
+        ],
+        "geo_scope": "listed",
+        "lift_scale": "mean_kpi_level_delta",
+        "notes": "WORLD-010 replay recovery",
+        "target_kpi_column": "revenue",
+        "week_end": "2020-03-02",
+        "week_start": "2020-02-17"
+      },
+      "fitted_replay_implied_lift": 4.65514337939059,
+      "pre_window_adstock_preserved": true,
+      "registry_validation_id": "VAL-006",
+      "replay_lift_error": 4.359441460088931e-05,
+      "replay_lift_relative_error": 9.364696809429085e-06,
+      "replay_recovery_status": "pass",
+      "replay_transform_mode": "full_panel_transform_estimand_mask",
+      "true_experiment_lift": 4.655186973805191
+    },
+    "replay_recovery_status": "pass",
+    "train_decide_recovery_status": {},
+    "transform_recovery": {
+      "adstock": {},
+      "formula": {},
+      "hill": {}
+    }
+  },
+  "recovery_validation_results": [
+    {
+      "category": "replay_loader",
+      "check_id": "REC-4B4-LOAD",
+      "details": {},
+      "message": "loaded 1 replay unit(s) from replay_units.json",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "train_path",
+      "check_id": "REC-4B4-TRAIN",
+      "details": {},
+      "message": "Ridge fit (truth transforms) completed for replay world",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "replay_recovery",
+      "check_id": "REC-4B4-REPLAY",
+      "details": {
+        "estimand_mask_used": {
+          "aggregation": "mean",
+          "geo_ids": [
+            "G0",
+            "G1"
+          ],
+          "geo_scope": "listed",
+          "lift_scale": "mean_kpi_level_delta",
+          "notes": "WORLD-010 replay recovery",
+          "target_kpi_column": "revenue",
+          "week_end": "2020-03-02",
+          "week_start": "2020-02-17"
+        },
+        "fitted_replay_implied_lift": 4.65514337939059,
+        "pre_window_adstock_preserved": true,
+        "registry_validation_id": "VAL-006",
+        "replay_lift_error": 4.359441460088931e-05,
+        "replay_lift_relative_error": 9.364696809429085e-06,
+        "replay_recovery_status": "pass",
+        "replay_transform_mode": "full_panel_transform_estimand_mask",
+        "true_experiment_lift": 4.655186973805191
+      },
+      "message": "VAL-006 fitted replay-implied lift vs experiment_truth.true_lift",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    }
+  ],
+  "release_gate_compatibility": {
+    "checks_considered": [
+      "CERT-4A-013"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 1,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "reliability_degradation_results": {},
+  "replay_compatibility": {
+    "checks_considered": [
+      "CERT-4A-003",
+      "CERT-4A-008",
+      "CERT-4A-011"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 3,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "replay_recovery": {
+    "estimand_mask_used": {
+      "aggregation": "mean",
+      "geo_ids": [
+        "G0",
+        "G1"
+      ],
+      "geo_scope": "listed",
+      "lift_scale": "mean_kpi_level_delta",
+      "notes": "WORLD-010 replay recovery",
+      "target_kpi_column": "revenue",
+      "week_end": "2020-03-02",
+      "week_start": "2020-02-17"
+    },
+    "fitted_replay_implied_lift": 4.65514337939059,
+    "pre_window_adstock_preserved": true,
+    "registry_validation_id": "VAL-006",
+    "replay_lift_error": 4.359441460088931e-05,
+    "replay_lift_relative_error": 9.364696809429085e-06,
+    "replay_recovery_status": "pass",
+    "replay_transform_mode": "full_panel_transform_estimand_mask",
+    "true_experiment_lift": 4.655186973805191
+  },
+  "replay_recovery_status": "pass",
+  "report_kind": "synthetic_world_certification_report",
+  "skipped_validations": [
+    {
+      "check_id": "VAL-001",
+      "message": "Coefficient recovery vs true_beta",
+      "skip_reason": "requires_rich_dgp_worlds"
+    },
+    {
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds"
+    },
+    {
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds"
+    },
+    {
+      "check_id": "VAL-004",
+      "message": "\u0394\u03bc recovery vs decision_truth",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-012",
+      "message": "Drift detection accuracy vs shift_truth",
+      "skip_reason": "requires_thresholds"
+    },
+    {
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-014",
+      "message": "Runtime cert levels vs artifact_truth.expected_certification_levels",
+      "skip_reason": "requires_train_decide_execution"
+    }
+  ],
+  "tolerance_policy_id": "TBD_v1_runtime",
+  "train_decide_recovery_status": {},
+  "transform_recovery": {
+    "adstock": {},
+    "formula": {},
+    "hill": {}
+  },
+  "trust_semantics_compatibility": {
+    "checks_considered": [
+      "CERT-4A-006",
+      "CERT-4A-012"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 2,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "validation_results": [
+    {
+      "category": "bundle_integrity",
+      "check_id": "CERT-4A-001",
+      "message": "validator failures: ['L3-replay-lift-mismatch:replay_search_g01', 'L3-012-world_truth_sha256']",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "checksum_reproducibility",
+      "check_id": "CERT-4A-002",
+      "message": "checksum mismatch: ['L3-012-world_truth_sha256']",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "replay_loader_compatibility",
+      "check_id": "CERT-4A-003",
+      "message": "loaded 1 replay unit(s)",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "transform_truth_consistency",
+      "check_id": "CERT-4A-004",
+      "message": "canonical semi_log + geometric + Hill transform truth",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "metadata_consistency",
+      "check_id": "CERT-4A-005",
+      "message": "bundle metadata matches world_truth.metadata",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "governance_warning_compatibility",
+      "check_id": "CERT-4A-006",
+      "message": "0 expected warning(s) well-formed",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "decision_truth_structure",
+      "check_id": "CERT-4A-007",
+      "message": "decision_truth valid (0 scenario(s))",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "calibration_payload_compatibility",
+      "check_id": "CERT-4A-008",
+      "message": "replay payload structure valid",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "decision_surface_compatibility",
+      "check_id": "CERT-4A-009",
+      "message": "DecisionSurface: semi_log + full-panel replay transform semantics",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "estimand_compatibility",
+      "check_id": "CERT-4A-010",
+      "message": "estimand declarations compatible",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "calibration_signal_compatibility",
+      "check_id": "CERT-4A-011",
+      "message": "CalibrationSignal fields valid (1 unit(s))",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "trust_report_compatibility",
+      "check_id": "CERT-4A-012",
+      "message": "TrustReport semantics present in truth",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "release_gate_compatibility",
+      "check_id": "CERT-4A-013",
+      "message": "release-gate fields consistent",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "replay_loader",
+      "check_id": "REC-4B4-LOAD",
+      "message": "loaded 1 replay unit(s) from replay_units.json",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "train_path",
+      "check_id": "REC-4B4-TRAIN",
+      "message": "Ridge fit (truth transforms) completed for replay world",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "replay_recovery",
+      "check_id": "REC-4B4-REPLAY",
+      "message": "VAL-006 fitted replay-implied lift vs experiment_truth.true_lift",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "coefficient_recovery",
+      "check_id": "VAL-001",
+      "message": "Coefficient recovery vs true_beta",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "status": "skipped"
+    },
+    {
+      "category": "adstock_recovery",
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "status": "skipped"
+    },
+    {
+      "category": "hill_recovery",
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "status": "skipped"
+    },
+    {
+      "category": "delta_mu_recovery",
+      "check_id": "VAL-004",
+      "message": "\u0394\u03bc recovery vs decision_truth",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "optimizer_recovery",
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "calibration_robustness",
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "decision_safety",
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "artifact_integrity_runtime",
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "reproducibility",
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "promotion_workflow",
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "drift_detection",
+      "check_id": "VAL-012",
+      "message": "Drift detection accuracy vs shift_truth",
+      "skip_reason": "requires_thresholds",
+      "status": "skipped"
+    },
+    {
+      "category": "governance_behavior",
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "certification_behavior",
+      "check_id": "VAL-014",
+      "message": "Runtime cert levels vs artifact_truth.expected_certification_levels",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    }
+  ],
+  "warnings": [
+    "behavioral validations VAL-001\u2013VAL-014 deferred \u2014 not executed"
+  ],
+  "world_contract_version": "groundtruth_world_v1",
+  "world_id": "L5B-replay-noise-zero-corr-low-drift-off-replay-on",
+  "world_version": "1.0.0"
+}

@@ -1,0 +1,49 @@
+{
+  "per_world": [
+    {
+      "categories": [
+        "identifiability_limitations",
+        "regularization_bias",
+        "threshold_artifacts",
+        "transform_misspecification"
+      ],
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "categories": [
+        "identifiability_limitations",
+        "regularization_bias",
+        "threshold_artifacts",
+        "transform_misspecification"
+      ],
+      "world_id": "L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off"
+    },
+    {
+      "categories": [
+        "implementation_issues",
+        "threshold_artifacts",
+        "transform_misspecification"
+      ],
+      "world_id": "L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off"
+    },
+    {
+      "categories": [
+        "identifiability_limitations",
+        "regularization_bias",
+        "threshold_artifacts",
+        "transform_misspecification"
+      ],
+      "world_id": "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off"
+    }
+  ],
+  "taxonomy_definitions": [
+    "transform_misspecification",
+    "regularization_bias",
+    "hyperparameter_compensation",
+    "identifiability_limitations",
+    "insufficient_data",
+    "threshold_artifacts",
+    "implementation_issues",
+    "expected_mmm_limitation"
+  ]
+}

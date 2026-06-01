@@ -1,0 +1,768 @@
+{
+  "capability_scores": {
+    "artifact_integrity": 1.0,
+    "coefficient_recovery": 0.0,
+    "delta_mu_recovery": 1.0,
+    "drift_behavior": 0.5,
+    "governance_reaction": 1.0,
+    "identifiability_behavior": 1.0,
+    "optimizer_recovery": 1.0,
+    "platform_contract_compatibility": 0.8823529411764706,
+    "replay_recovery": 1.0,
+    "structural_integrity": 1.0,
+    "transform_consistency": 0.5
+  },
+  "capability_summary": {
+    "artifact_integrity": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 27,
+      "n_scored": 5,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "coefficient_recovery": {
+      "failures": [
+        "WORLD-008-exact-recovery:REC-4B2-001"
+      ],
+      "mean_score": 0.0,
+      "n_entries": 7,
+      "n_scored": 1,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "delta_mu_recovery": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 5,
+      "n_scored": 1,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "drift_behavior": {
+      "failures": [],
+      "mean_score": 0.5,
+      "n_entries": 5,
+      "n_scored": 1,
+      "partials": [
+        "WORLD-011-drift-recovery:REC-4B5-DRIFT"
+      ],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "governance_reaction": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 22,
+      "n_scored": 2,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "identifiability_behavior": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 1,
+      "n_scored": 1,
+      "partials": [],
+      "worlds": [
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "optimizer_recovery": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 7,
+      "n_scored": 2,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "platform_contract_compatibility": {
+      "failures": [
+        "WORLD-011-drift-recovery:contract_compatibility",
+        "WORLD-011-drift-recovery:CERT-4A-013",
+        "WORLD-012-identifiability-recovery:contract_compatibility",
+        "WORLD-012-identifiability-recovery:CERT-4A-013"
+      ],
+      "mean_score": 0.8823529411764706,
+      "n_entries": 30,
+      "n_scored": 17,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "replay_recovery": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 12,
+      "n_scored": 4,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "structural_integrity": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 15,
+      "n_scored": 15,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    },
+    "transform_consistency": {
+      "failures": [
+        "WORLD-008-exact-recovery:REC-4B2-002",
+        "WORLD-008-exact-recovery:REC-4B2-003"
+      ],
+      "mean_score": 0.5,
+      "n_entries": 18,
+      "n_scored": 4,
+      "partials": [],
+      "worlds": [
+        "WORLD-008-exact-recovery",
+        "WORLD-009-optimizer-recovery",
+        "WORLD-010-replay-recovery",
+        "WORLD-011-drift-recovery",
+        "WORLD-012-identifiability-recovery"
+      ]
+    }
+  },
+  "coverage_ratio": 0.7733333333333333,
+  "executed_validations": [
+    "CERT-4A-001",
+    "CERT-4A-002",
+    "CERT-4A-003",
+    "CERT-4A-004",
+    "CERT-4A-005",
+    "CERT-4A-006",
+    "CERT-4A-007",
+    "CERT-4A-008",
+    "CERT-4A-009",
+    "CERT-4A-010",
+    "CERT-4A-011",
+    "CERT-4A-012",
+    "CERT-4A-013",
+    "REC-4B2-001",
+    "REC-4B2-002",
+    "REC-4B2-003",
+    "REC-4B2-004",
+    "REC-4B2-005",
+    "REC-4B2-007",
+    "REC-4B2-008",
+    "REC-4B3-OPT",
+    "REC-4B3-OPT-PATH",
+    "REC-4B4-LOAD",
+    "REC-4B4-REPLAY",
+    "REC-4B4-TRAIN",
+    "REC-4B5-DRIFT",
+    "REC-4B5-ID"
+  ],
+  "failed_validations": [
+    "WORLD-008-exact-recovery:REC-4B2-001",
+    "WORLD-008-exact-recovery:REC-4B2-002",
+    "WORLD-008-exact-recovery:REC-4B2-003",
+    "WORLD-011-drift-recovery:CERT-4A-013",
+    "WORLD-012-identifiability-recovery:CERT-4A-013"
+  ],
+  "generated_at": "2026-05-29T00:23:54.642173+00:00",
+  "limitations": [
+    "Synthetic certification evidence only \u2014 not causal validity or incrementality",
+    "Limited to five recovery worlds (WORLD-008\u2013012); not a Monte Carlo sweep",
+    "Numeric recovery tolerances are TBD_v1_runtime provisional",
+    "VAL-012 drift detection is partial (INV-055); not a dedicated drift_detection_runner",
+    "Skipped registry rows are excluded from score when marked expected for the world",
+    "Does not certify production release readiness or live experiment validation"
+  ],
+  "open_investigations": [
+    "INV-055"
+  ],
+  "partial_validations": [
+    "WORLD-011-drift-recovery:REC-4B5-DRIFT",
+    "WORLD-011-drift-recovery:VAL-012"
+  ],
+  "release_readiness_interpretation": "synthetic_evidence_mixed_review_required",
+  "reliability_score": 0.8074866310160428,
+  "reliability_score_method": "mean_capability_score_v1",
+  "required_warnings": [
+    "synthetic_only",
+    "no_causal_claim",
+    "limited_world_count",
+    "thresholds_TBD_v1_runtime",
+    "no_monte_carlo",
+    "no_real_experiment_validation"
+  ],
+  "scorecard_version": "reliability_scorecard_v1.0.0",
+  "scored_capabilities": [
+    "structural_integrity",
+    "transform_consistency",
+    "coefficient_recovery",
+    "delta_mu_recovery",
+    "optimizer_recovery",
+    "replay_recovery",
+    "drift_behavior",
+    "identifiability_behavior",
+    "platform_contract_compatibility",
+    "artifact_integrity",
+    "governance_reaction"
+  ],
+  "skipped_validations": [
+    {
+      "check_id": "CERT-4A-003",
+      "message": "no experiment units in truth",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "CERT-4A-008",
+      "message": "no replay payload required",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "CERT-4A-010",
+      "message": "no experiment units",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "CERT-4A-011",
+      "message": "no calibration signals",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "REC-4B2-006",
+      "message": "Optimizer recovery deferred",
+      "skip_reason": "requires_optimizer_truth_thresholds",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-006",
+      "message": "Replay train/holdout loss vs implied y",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-012",
+      "message": "Drift detection accuracy vs shift_truth",
+      "skip_reason": "requires_thresholds",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "VAL-014",
+      "message": "Runtime cert levels vs artifact_truth.expected_certification_levels",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "check_id": "CERT-4A-003",
+      "message": "no experiment units in truth",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "CERT-4A-008",
+      "message": "no replay payload required",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "CERT-4A-010",
+      "message": "no experiment units",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "CERT-4A-011",
+      "message": "no calibration signals",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-001",
+      "message": "Coefficient recovery vs true_beta",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-004",
+      "message": "\u0394\u03bc recovery vs decision_truth",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-006",
+      "message": "Replay train/holdout loss vs implied y",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-012",
+      "message": "Drift detection accuracy vs shift_truth",
+      "skip_reason": "requires_thresholds",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-014",
+      "message": "Runtime cert levels vs artifact_truth.expected_certification_levels",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-009-optimizer-recovery"
+    },
+    {
+      "check_id": "VAL-001",
+      "message": "Coefficient recovery vs true_beta",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-004",
+      "message": "\u0394\u03bc recovery vs decision_truth",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-012",
+      "message": "Drift detection accuracy vs shift_truth",
+      "skip_reason": "requires_thresholds",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "VAL-014",
+      "message": "Runtime cert levels vs artifact_truth.expected_certification_levels",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-010-replay-recovery"
+    },
+    {
+      "check_id": "CERT-4A-003",
+      "message": "no experiment units in truth",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "CERT-4A-008",
+      "message": "no replay payload required",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "CERT-4A-010",
+      "message": "no experiment units",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "CERT-4A-011",
+      "message": "no calibration signals",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "REC-4B5-DRIFT-COEF",
+      "message": "coefficient recovery across drift regimes not expected",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-001",
+      "message": "Coefficient recovery vs true_beta",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-004",
+      "message": "\u0394\u03bc recovery vs decision_truth",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-006",
+      "message": "Replay train/holdout loss vs implied y",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-011-drift-recovery"
+    },
+    {
+      "check_id": "CERT-4A-003",
+      "message": "no experiment units in truth",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "CERT-4A-008",
+      "message": "no replay payload required",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "CERT-4A-010",
+      "message": "no experiment units",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "CERT-4A-011",
+      "message": "no calibration signals",
+      "skip_reason": "not_applicable",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "REC-4B5-ID-COEF",
+      "message": "coefficient recovery unstable under severe collinearity",
+      "skip_reason": "recovery_marked_unstable",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-001",
+      "message": "Coefficient recovery vs true_beta",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-004",
+      "message": "\u0394\u03bc recovery vs decision_truth",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-006",
+      "message": "Replay train/holdout loss vs implied y",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution",
+      "world_id": "WORLD-012-identifiability-recovery"
+    },
+    {
+      "check_id": "VAL-012",
+      "message": "Drift detection accuracy vs shift_truth",
+      "skip_reason": "requires_thresholds",
+      "world_id": "WORLD-012-identifiability-recovery"
+    }
+  ],
+  "status_counts": {
+    "fail": 7,
+    "partial": 1,
+    "pass": 60,
+    "skipped": 65,
+    "unsupported": 16
+  },
+  "unscored_capabilities": [],
+  "world_ids": [
+    "WORLD-008-exact-recovery",
+    "WORLD-009-optimizer-recovery",
+    "WORLD-010-replay-recovery",
+    "WORLD-011-drift-recovery",
+    "WORLD-012-identifiability-recovery"
+  ],
+  "worlds_certified": [
+    "WORLD-008-exact-recovery",
+    "WORLD-009-optimizer-recovery",
+    "WORLD-010-replay-recovery",
+    "WORLD-011-drift-recovery",
+    "WORLD-012-identifiability-recovery"
+  ],
+  "worlds_missing": []
+}

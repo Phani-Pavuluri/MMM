@@ -1,0 +1,255 @@
+{
+  "fixture_version": "bayes_h2b_fixture_v1",
+  "world_id": "WORLD-BAYES-CLS-NATIONAL",
+  "hierarchy_spec_ref": "hierarchy_spec.json",
+  "calibration_signals_ref": "calibration_signals.json",
+  "policy_overrides": {
+    "conflict_tolerance": 0.15,
+    "conflict_fail_closed": false,
+    "coverage_gate_state": 0.6,
+    "coverage_gate_region": 0.6,
+    "coverage_gate_national": 0.8,
+    "stale_precision_multiplier": 0.25,
+    "governance_max_omega": 100.0
+  },
+  "mandatory_assertions": [
+    "MA-CLS-01",
+    "MA-CLS-02",
+    "MA-CLS-03",
+    "MA-CLS-04",
+    "MA-CLS-05"
+  ],
+  "expected_routing": [
+    {
+      "signal_id": "SIG-CLS-NAT",
+      "mechanism": "likelihood_term",
+      "rule_id": "R7",
+      "ingress": "calibration_signal"
+    }
+  ],
+  "expected_influence_class": [
+    {
+      "signal_id": "SIG-CLS-NAT",
+      "influence_class": "national_calibration_evidence",
+      "target": {
+        "scope_type": "national",
+        "scope_id": "US",
+        "channel_ids": [
+          "search"
+        ]
+      }
+    }
+  ],
+  "expected_propagation": [
+    {
+      "edge": "US\u2192sf",
+      "direction": "down",
+      "gate": "downward_shrinkage",
+      "gate_value": 1.0,
+      "threshold": 1.0,
+      "outcome": "allowed",
+      "allowed_influence": "model_estimate_with_borrowed_strength"
+    },
+    {
+      "edge": "US\u2192la",
+      "direction": "down",
+      "gate": "downward_shrinkage",
+      "gate_value": 1.0,
+      "threshold": 1.0,
+      "outcome": "allowed",
+      "allowed_influence": "model_estimate_with_borrowed_strength"
+    },
+    {
+      "edge": "US\u2192houston",
+      "direction": "down",
+      "gate": "downward_shrinkage",
+      "gate_value": 1.0,
+      "threshold": 1.0,
+      "outcome": "allowed",
+      "allowed_influence": "model_estimate_with_borrowed_strength"
+    },
+    {
+      "edge": "US\u2192dallas",
+      "direction": "down",
+      "gate": "downward_shrinkage",
+      "gate_value": 1.0,
+      "threshold": 1.0,
+      "outcome": "allowed",
+      "allowed_influence": "model_estimate_with_borrowed_strength"
+    },
+    {
+      "edge": "US\u2192phoenix",
+      "direction": "down",
+      "gate": "downward_shrinkage",
+      "gate_value": 1.0,
+      "threshold": 1.0,
+      "outcome": "allowed",
+      "allowed_influence": "model_estimate_with_borrowed_strength"
+    },
+    {
+      "edge": "US\u2192denver",
+      "direction": "down",
+      "gate": "downward_shrinkage",
+      "gate_value": 1.0,
+      "threshold": 1.0,
+      "outcome": "allowed",
+      "allowed_influence": "model_estimate_with_borrowed_strength"
+    }
+  ],
+  "expected_inclusion_exclusion": [
+    {
+      "signal_id": "SIG-CLS-NAT",
+      "included": true,
+      "decision_grade": true,
+      "exclusion_reason": null
+    }
+  ],
+  "expected_conflicts": [],
+  "expected_trust_report_fields": {
+    "included_signals": [
+      "SIG-CLS-NAT"
+    ],
+    "borrowed_strength_sources": [
+      {
+        "geo_id": "sf",
+        "channel_id": "search",
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ],
+        "claim_level": "model_estimate_with_borrowed_strength"
+      },
+      {
+        "geo_id": "la",
+        "channel_id": "search",
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ],
+        "claim_level": "model_estimate_with_borrowed_strength"
+      },
+      {
+        "geo_id": "houston",
+        "channel_id": "search",
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ],
+        "claim_level": "model_estimate_with_borrowed_strength"
+      },
+      {
+        "geo_id": "dallas",
+        "channel_id": "search",
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ],
+        "claim_level": "model_estimate_with_borrowed_strength"
+      },
+      {
+        "geo_id": "phoenix",
+        "channel_id": "search",
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ],
+        "claim_level": "model_estimate_with_borrowed_strength"
+      },
+      {
+        "geo_id": "denver",
+        "channel_id": "search",
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ],
+        "claim_level": "model_estimate_with_borrowed_strength"
+      }
+    ],
+    "unsupported_claims": [
+      "DMA-specific causal lift from national CLS",
+      "State ROI equals national CLS lift"
+    ],
+    "lateral_borrowing": "pooled_only",
+    "claim_levels": [
+      {
+        "scope_type": "dma",
+        "scope_id": "sf",
+        "channel_id": "search",
+        "claim_level": "model_estimate_with_borrowed_strength",
+        "borrowed_strength_from_parent": true,
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ]
+      },
+      {
+        "scope_type": "dma",
+        "scope_id": "la",
+        "channel_id": "search",
+        "claim_level": "model_estimate_with_borrowed_strength",
+        "borrowed_strength_from_parent": true,
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ]
+      },
+      {
+        "scope_type": "dma",
+        "scope_id": "houston",
+        "channel_id": "search",
+        "claim_level": "model_estimate_with_borrowed_strength",
+        "borrowed_strength_from_parent": true,
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ]
+      },
+      {
+        "scope_type": "dma",
+        "scope_id": "dallas",
+        "channel_id": "search",
+        "claim_level": "model_estimate_with_borrowed_strength",
+        "borrowed_strength_from_parent": true,
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ]
+      },
+      {
+        "scope_type": "dma",
+        "scope_id": "phoenix",
+        "channel_id": "search",
+        "claim_level": "model_estimate_with_borrowed_strength",
+        "borrowed_strength_from_parent": true,
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ]
+      },
+      {
+        "scope_type": "dma",
+        "scope_id": "denver",
+        "channel_id": "search",
+        "claim_level": "model_estimate_with_borrowed_strength",
+        "borrowed_strength_from_parent": true,
+        "parent_signal_ids": [
+          "SIG-CLS-NAT"
+        ]
+      }
+    ],
+    "local_vs_national_alignment": {
+      "score": 1.0,
+      "warning": false
+    }
+  },
+  "expected_release_gate_effect": {
+    "prod_decisioning_allowed": false,
+    "decision_safe": true,
+    "optimization_blocked": false,
+    "release_gate_recommendation": "conditional_not_approved",
+    "attribution_safe": true
+  },
+  "expected_failures": [
+    {
+      "forbidden_pattern": "dma_causal_claim_from_national_cls",
+      "signal_ids": [
+        "SIG-CLS-NAT"
+      ]
+    },
+    {
+      "forbidden_pattern": "local_likelihood_from_national_cls",
+      "signal_ids": [
+        "SIG-CLS-NAT"
+      ]
+    }
+  ]
+}

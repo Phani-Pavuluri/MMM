@@ -1,0 +1,26 @@
+{
+  "bundle_path": "validation/worlds/lattice/L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+  "catalog_ref": "L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+  "checksum_version": "checksums_v1",
+  "creation_timestamp": "2026-01-01T14:14:30Z",
+  "materialization_version": "materialize_v1.0.0",
+  "materialized_files": [
+    "panel.parquet",
+    "replay_units.json"
+  ],
+  "scenario_tags": [
+    "family:replay",
+    "builder:scenario_builder_v1.0.0",
+    "drift:on",
+    "noise:high",
+    "correlation:severe",
+    "seasonality:none",
+    "missingness:none",
+    "drift:on"
+  ],
+  "seed": 51270,
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "archetype_gen_v1.0.0",
+  "world_id": "L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+  "world_version": "1.0.0"
+}

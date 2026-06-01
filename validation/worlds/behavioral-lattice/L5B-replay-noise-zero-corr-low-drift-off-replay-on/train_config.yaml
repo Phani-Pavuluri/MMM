@@ -1,0 +1,24 @@
+framework: ridge_bo
+model_form: semi_log
+run_environment: research
+random_seed: 10010
+data:
+  path: panel.parquet
+  geo_column: geo_id
+  week_column: week_start_date
+  target_column: revenue
+  channel_columns:
+  - search
+  control_columns: []
+  data_version_id: L5B-replay-noise-zero-corr-low-drift-off-replay-on-recovery
+cv:
+  mode: rolling
+  n_splits: 2
+  min_train_weeks: 10
+  horizon_weeks: 2
+ridge_bo:
+  n_trials: 12
+  sampler_seed: 10010
+transforms:
+  adstock: geometric
+  saturation: hill

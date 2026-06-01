@@ -1,0 +1,35 @@
+[
+  {
+    "signal_id": "SIG-AB-PROD",
+    "source": "ab_test",
+    "scope_type": "segment",
+    "scope_id": "product_sku_test",
+    "parent_scope_ids": [],
+    "child_scope_ids": [],
+    "geo_ids": [],
+    "channel_ids": [
+      "search"
+    ],
+    "estimand": "product_conversion_lift",
+    "lift_scale": "mean_kpi_level_delta",
+    "observed_lift": 0.1,
+    "lift_se": 0.02,
+    "target_kpi": "revenue",
+    "time_window": {
+      "start": "2024-01-01",
+      "end": "2024-06-30"
+    },
+    "freshness": {
+      "age_days": 30,
+      "tier": "fresh"
+    },
+    "design_quality_tier": "A",
+    "coverage_ratio": 1.0,
+    "population_basis": "spend",
+    "spend_basis": "spend",
+    "kpi_basis": "revenue",
+    "experiment_id": "exp-sig-ab-prod",
+    "truth_ref": "SIG-AB-PROD",
+    "segment_id": "product_sku_test"
+  }
+]

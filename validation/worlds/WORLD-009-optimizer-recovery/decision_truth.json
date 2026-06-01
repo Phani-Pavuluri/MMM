@@ -1,0 +1,17 @@
+{
+  "materialization_version": "materialize_v1.0.0",
+  "scenario_index": [
+    {
+      "ref": "decision_truth.scenarios[0]",
+      "scenario_id": "bau_equal_split"
+    },
+    {
+      "ref": "decision_truth.scenarios[1]",
+      "scenario_id": "grid_optimum_plan"
+    }
+  ],
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "manual_optimizer_v1.0.0",
+  "world_id": "WORLD-009-optimizer-recovery",
+  "world_version": "1.0.0"
+}

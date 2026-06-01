@@ -42,15 +42,76 @@ Operational workflows for analysts and data scientists:
 | Budget optimization concepts | [03_planning/budget_optimization.md](03_planning/budget_optimization.md) |
 | Execution pipeline (developers) | [03_planning/planning_execution.md](03_planning/planning_execution.md) |
 
+## Platform & validation roadmap
+
+**Planning frame:** Contract-driven **Marketing Intelligence Platform** (MMM is one implementation surface). Reliability proving is the primary gate for modeling expansion.
+
+| Topic | Doc |
+|--------|-----|
+| **Roadmap alignment gate** (north star, risk tiers, anti-drift) | [ROADMAP_ALIGNMENT_GATE.md](ROADMAP_ALIGNMENT_GATE.md) |
+| **Roadmap alignment registry** (Bayes-H2b/H2d/H3 status) | [ROADMAP_ALIGNMENT_REGISTRY.md](ROADMAP_ALIGNMENT_REGISTRY.md) |
+| **MIP platform audit template** (phase / promotion / mini) | [MIP_PLATFORM_AUDIT_TEMPLATE.md](MIP_PLATFORM_AUDIT_TEMPLATE.md) |
+| Pre–Bayes-H3 phase audit (2026-06-01) | [audits/MIP_PLATFORM_AUDIT_20260601_PRE_BAYES_H3.md](audits/MIP_PLATFORM_AUDIT_20260601_PRE_BAYES_H3.md) |
+| **Master platform roadmap** | [05_validation/platform_roadmap.md](05_validation/platform_roadmap.md) (MMM tracks 1–5) |
+| Track 2 — Reliability program (phases 0–6, preserved) | [05_validation/synthetic_validation_roadmap.md](05_validation/synthetic_validation_roadmap.md) |
+| ScenarioBuilder (Phase 3B ✅) | [05_validation/scenario_builder.md](05_validation/scenario_builder.md) |
+| Structural certification runner (Phase 4A ✅) | [05_validation/certification_runner.md](05_validation/certification_runner.md) |
+| Rich DGP materialization (Phase 4B-1 ✅) | [05_validation/dgp_materialization.md](05_validation/dgp_materialization.md) |
+| ReliabilityScorecard (Phase 4C / 5D metric classes) | [05_validation/reliability_scorecard.md](05_validation/reliability_scorecard.md) |
+| Reliability threshold governance (Phase 5D ✅) | [05_validation/reliability_threshold_governance.md](05_validation/reliability_threshold_governance.md) |
+| Lattice sweep MVP (Phase 5A ✅) | [05_validation/lattice_sweep.md](05_validation/lattice_sweep.md) |
+| Behavioral lattice sweep MVP (Phase 5B ✅) | [05_validation/behavioral_lattice_sweep.md](05_validation/behavioral_lattice_sweep.md) |
+| Exact recovery investigation (Phase 5C ✅) | [05_validation/exact_recovery_investigation.md](05_validation/exact_recovery_investigation.md) |
+| Drift detection / TrustReport semantics (Phase 5E ✅) | [05_validation/drift_detection.md](05_validation/drift_detection.md), [trust_report_semantics.md](05_validation/trust_report_semantics.md) |
+| Monte Carlo reliability (Phase 5F ✅) | [05_validation/monte_carlo_reliability_program.md](05_validation/monte_carlo_reliability_program.md), [monte_carlo_threshold_recommendations.md](05_validation/monte_carlo_threshold_recommendations.md) |
+| Bayesian Hierarchical Geo MMM (Research Sandbox) | [bayesian_hierarchical_geo_mmm_roadmap.md](05_validation/bayesian_hierarchical_geo_mmm_roadmap.md) |
+| Bayes-H1 DecisionSurface Preservation ADR ✅ | [05_validation/bayes_h1_decision_surface_preservation_adr.md](05_validation/bayes_h1_decision_surface_preservation_adr.md) |
+| Bayes-H2 CalibrationSignal Mapping ADR ✅ | [05_validation/bayes_h2_calibration_signal_mapping_adr.md](05_validation/bayes_h2_calibration_signal_mapping_adr.md) |
+| Bayes-H2b Hierarchical Experiment-Prior Scope Rules ADR ✅ | [05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md](05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md) |
+| Bayes-H2b validation worlds catalog (001) ✅ | [BAYES_H2B_VALIDATION_WORLDS_001.md](BAYES_H2B_VALIDATION_WORLDS_001.md) |
+| Bayes-H2b validation runner contract (002) ✅ | [BAYES_H2B_VALIDATION_RUNNER_002.md](BAYES_H2B_VALIDATION_RUNNER_002.md) |
+| Bayes-H2b hierarchy evidence validator (no-fit stub) | `mmm.validation.synthetic.hierarchy_evidence_validator` — `python -m mmm.validation.synthetic.hierarchy_evidence_validator --smoke VAL-BAYES-H2B-SMOKE` |
+| Bayes-H2d hierarchical model spec ADR ✅ | [05_validation/bayes_h2d_hierarchical_model_spec_adr.md](05_validation/bayes_h2d_hierarchical_model_spec_adr.md) |
+| Bayesian Geo MMM architecture refinement | [05_validation/bayesian_hierarchical_geo_mmm_refinement.md](05_validation/bayesian_hierarchical_geo_mmm_refinement.md) |
+| Investigation backlog | [06_investigations/open_investigations.md](06_investigations/open_investigations.md) |
+| Investigation index (by track) | [06_investigations/investigation_index.md](06_investigations/investigation_index.md) |
+| GroundTruthWorld contract | [05_validation/groundtruth_contract.md](05_validation/groundtruth_contract.md) |
+| Validation registry | [05_validation/validation_registry.md](05_validation/validation_registry.md) |
+| Architecture decisions (ADR) | [05_validation/synthetic_architecture_decisions.md](05_validation/synthetic_architecture_decisions.md) |
+| **World bundle materialization (DR-01)** | [05_validation/world_materialization.md](05_validation/world_materialization.md) |
+| **Truth versioning (DR-02)** | [05_validation/truth_versioning.md](05_validation/truth_versioning.md) |
+| **World catalog spec** | [05_validation/world_catalog.md](05_validation/world_catalog.md) |
+| **World truth schema (`world_truth.json`)** | [05_validation/world_schema.md](05_validation/world_schema.md) |
+| **Bundle + catalog JSON schema** | [05_validation/world_bundle_schema.md](05_validation/world_bundle_schema.md) |
+| **Validator specification (L1–L4)** | [05_validation/world_validator_spec.md](05_validation/world_validator_spec.md) |
+| **Smoke world bundle** | `validation/worlds/WORLD-001-baseline/` |
+| **Replay smoke world** | `validation/worlds/WORLD-002-replay/` |
+| **Generated baseline world** | `validation/worlds/WORLD-003-generated-baseline/` |
+| **Generated replay world** | `validation/worlds/WORLD-004-generated-replay/` |
+| **Scenario: low noise** | `validation/worlds/WORLD-005-scenario-low-noise/` |
+| **Scenario: high collinearity** | `validation/worlds/WORLD-006-scenario-high-collinearity/` |
+| **Scenario: replay + drift** | `validation/worlds/WORLD-007-scenario-replay-drift/` |
+| **Exact-recovery DGP world** | `validation/worlds/WORLD-008-exact-recovery/` |
+
 ## Run in production
 
 Governance, safety checks, and operations:
 
 | Topic | Doc |
 |--------|-----|
+| **v1.0.0 release notes** | [04_governance/v1_release_notes.md](04_governance/v1_release_notes.md) |
 | Operator workflows | [04_governance/operator_runbook.md](04_governance/operator_runbook.md) |
 | Prod safety checklist | [04_governance/prod_safety_checklist.md](04_governance/prod_safety_checklist.md) |
 | Artifact & bundle fields | [04_governance/artifact_schema.md](04_governance/artifact_schema.md) |
+
+## Investigations backlog
+
+Living register of open gaps, design debt, and deferred work (evidence-linked; no fixes in-repo):
+
+| Topic | Doc |
+|--------|-----|
+| **Full investigation records** | [06_investigations/open_investigations.md](06_investigations/open_investigations.md) |
+| **Index by risk area** | [06_investigations/investigation_index.md](06_investigations/investigation_index.md) |
 
 ## Documentation maintenance
 

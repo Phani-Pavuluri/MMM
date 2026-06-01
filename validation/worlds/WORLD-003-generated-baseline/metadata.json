@@ -1,0 +1,20 @@
+{
+  "bundle_path": "/workspace/mmm/validation/worlds/WORLD-003-generated-baseline",
+  "catalog_ref": "WORLD-003-generated-baseline",
+  "checksum_version": "checksums_v1",
+  "creation_timestamp": "2026-01-01T00:50:03Z",
+  "materialization_version": "materialize_v1.0.0",
+  "materialized_files": [
+    "decision_truth.json",
+    "panel.parquet"
+  ],
+  "scenario_tags": [
+    "signal:low",
+    "noise:high"
+  ],
+  "seed": 3003,
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "archetype_gen_v1.0.0",
+  "world_id": "WORLD-003-generated-baseline",
+  "world_version": "1.0.0"
+}

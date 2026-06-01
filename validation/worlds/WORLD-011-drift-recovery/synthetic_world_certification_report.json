@@ -1,0 +1,542 @@
+{
+  "bundle_path": "/workspace/mmm/validation/worlds/WORLD-011-drift-recovery",
+  "calibration_signal_compatibility": {
+    "checks_considered": [
+      "CERT-4A-008",
+      "CERT-4A-011"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 0,
+    "n_skipped": 2,
+    "passed": true
+  },
+  "certification_runner_version": "cert_runner_v1.0.0",
+  "coefficient_recovery": {},
+  "contract_compatibility": {
+    "failures": [
+      "CERT-4A-013"
+    ],
+    "passed": false
+  },
+  "decision_artifact_recovery": {},
+  "decision_surface_compatibility": {
+    "checks_considered": [
+      "CERT-4A-009"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 1,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "delta_mu_recovery": {},
+  "drift_recovery": {
+    "changepoint_period_index": 8,
+    "changepoint_week": "2020-03-02",
+    "detected_drifts": [],
+    "drift_recovery_status": "pass",
+    "drift_report_severity": "informational",
+    "drift_warning_emitted": true,
+    "kpi_level_shift_relative": 0.2276573365634664,
+    "post_period_fit_error": 32.64909670172187,
+    "post_pre_mae_ratio": 955629.0154231397,
+    "pre_period_fit_error": 3.416503284725536e-05,
+    "readiness_downgraded": true,
+    "registry_validation_id": "VAL-012",
+    "val_014_warnings_expected": [
+      "coefficient_drift_detected"
+    ]
+  },
+  "drift_recovery_status": "pass",
+  "estimand_compatibility": {
+    "checks_considered": [
+      "CERT-4A-010"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 0,
+    "n_skipped": 1,
+    "passed": true
+  },
+  "executed_validations": [
+    "CERT-4A-001",
+    "CERT-4A-002",
+    "CERT-4A-004",
+    "CERT-4A-005",
+    "CERT-4A-006",
+    "CERT-4A-007",
+    "CERT-4A-009",
+    "CERT-4A-012",
+    "CERT-4A-013",
+    "REC-4B5-DRIFT-TRAIN",
+    "REC-4B5-DRIFT"
+  ],
+  "failed_validations": [
+    "CERT-4A-013"
+  ],
+  "generator_version": "manual_drift_v1.0.0",
+  "identifiability_recovery": {},
+  "identifiability_recovery_status": null,
+  "limitations": [
+    "Phase 4B-5 drift-recovery \u2014 WORLD-011; not coefficient recovery across regimes",
+    "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+    "VAL-012 partial: fit degradation + drift_report only (no dedicated drift_detection_runner)"
+  ],
+  "materialization_version": "dgp_materialize_v1.0.0",
+  "optimizer_recovery": {},
+  "optimizer_recovery_status": null,
+  "overall_status": "fail",
+  "readiness_reaction_results": {
+    "approved_for_optimization_scorecard": true,
+    "approved_for_optimization_truth": false,
+    "model_release_state": "review_required"
+  },
+  "recovery_certification_version": "recovery_cert_v1.0.0",
+  "recovery_limitations": [
+    "Phase 4B-5 drift-recovery \u2014 WORLD-011; not coefficient recovery across regimes",
+    "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+    "VAL-012 partial: fit degradation + drift_report only (no dedicated drift_detection_runner)"
+  ],
+  "recovery_results": {
+    "coefficient_recovery": {},
+    "decision_artifact_recovery": {},
+    "delta_mu_recovery": {},
+    "drift_recovery": {
+      "changepoint_period_index": 8,
+      "changepoint_week": "2020-03-02",
+      "detected_drifts": [],
+      "drift_recovery_status": "pass",
+      "drift_report_severity": "informational",
+      "drift_warning_emitted": true,
+      "kpi_level_shift_relative": 0.2276573365634664,
+      "post_period_fit_error": 32.64909670172187,
+      "post_pre_mae_ratio": 955629.0154231397,
+      "pre_period_fit_error": 3.416503284725536e-05,
+      "readiness_downgraded": true,
+      "registry_validation_id": "VAL-012",
+      "val_014_warnings_expected": [
+        "coefficient_drift_detected"
+      ]
+    },
+    "drift_recovery_status": "pass",
+    "identifiability_recovery": {},
+    "identifiability_recovery_status": null,
+    "optimizer_recovery": {},
+    "optimizer_recovery_status": null,
+    "passed": true,
+    "readiness_reaction_results": {
+      "approved_for_optimization_scorecard": true,
+      "approved_for_optimization_truth": false,
+      "model_release_state": "review_required"
+    },
+    "recovery_limitations": [
+      "Phase 4B-5 drift-recovery \u2014 WORLD-011; not coefficient recovery across regimes",
+      "Tolerances are TBD_v1_runtime provisional \u2014 not production gates",
+      "VAL-012 partial: fit degradation + drift_report only (no dedicated drift_detection_runner)"
+    ],
+    "reliability_degradation_results": {
+      "drift": {
+        "changepoint_period_index": 8,
+        "changepoint_week": "2020-03-02",
+        "detected_drifts": [],
+        "drift_recovery_status": "pass",
+        "drift_report_severity": "informational",
+        "drift_warning_emitted": true,
+        "kpi_level_shift_relative": 0.2276573365634664,
+        "post_period_fit_error": 32.64909670172187,
+        "post_pre_mae_ratio": 955629.0154231397,
+        "pre_period_fit_error": 3.416503284725536e-05,
+        "readiness_downgraded": true,
+        "registry_validation_id": "VAL-012",
+        "val_014_warnings_expected": [
+          "coefficient_drift_detected"
+        ]
+      }
+    },
+    "replay_recovery": {},
+    "replay_recovery_status": null,
+    "train_decide_recovery_status": {},
+    "transform_recovery": {
+      "adstock": {},
+      "formula": {},
+      "hill": {}
+    }
+  },
+  "recovery_validation_results": [
+    {
+      "category": "train_path",
+      "check_id": "REC-4B5-DRIFT-TRAIN",
+      "details": {},
+      "message": "Ridge fit on pre-changepoint panel only (regime mismatch test)",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "coefficient_recovery",
+      "check_id": "REC-4B5-DRIFT-COEF",
+      "details": {},
+      "message": "coefficient recovery across drift regimes not expected",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "drift_recovery",
+      "check_id": "REC-4B5-DRIFT",
+      "details": {
+        "changepoint_period_index": 8,
+        "changepoint_week": "2020-03-02",
+        "detected_drifts": [],
+        "drift_recovery_status": "pass",
+        "drift_report_severity": "informational",
+        "drift_warning_emitted": true,
+        "kpi_level_shift_relative": 0.2276573365634664,
+        "post_period_fit_error": 32.64909670172187,
+        "post_pre_mae_ratio": 955629.0154231397,
+        "pre_period_fit_error": 3.416503284725536e-05,
+        "readiness_downgraded": true,
+        "registry_validation_id": "VAL-012",
+        "val_014_warnings_expected": [
+          "coefficient_drift_detected"
+        ]
+      },
+      "message": "VAL-012 partial \u2014 post-period fit degradation and drift surfacing",
+      "metric_kind": "provisional_statistical",
+      "skip_reason": null,
+      "status": "pass"
+    }
+  ],
+  "release_gate_compatibility": {
+    "checks_considered": [
+      "CERT-4A-013"
+    ],
+    "failures": [
+      "CERT-4A-013"
+    ],
+    "n_fail": 1,
+    "n_pass": 0,
+    "n_skipped": 0,
+    "passed": false
+  },
+  "reliability_degradation_results": {
+    "drift": {
+      "changepoint_period_index": 8,
+      "changepoint_week": "2020-03-02",
+      "detected_drifts": [],
+      "drift_recovery_status": "pass",
+      "drift_report_severity": "informational",
+      "drift_warning_emitted": true,
+      "kpi_level_shift_relative": 0.2276573365634664,
+      "post_period_fit_error": 32.64909670172187,
+      "post_pre_mae_ratio": 955629.0154231397,
+      "pre_period_fit_error": 3.416503284725536e-05,
+      "readiness_downgraded": true,
+      "registry_validation_id": "VAL-012",
+      "val_014_warnings_expected": [
+        "coefficient_drift_detected"
+      ]
+    }
+  },
+  "replay_compatibility": {
+    "checks_considered": [
+      "CERT-4A-003",
+      "CERT-4A-008",
+      "CERT-4A-011"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 0,
+    "n_skipped": 3,
+    "passed": true
+  },
+  "replay_recovery": {},
+  "replay_recovery_status": null,
+  "report_kind": "synthetic_world_certification_report",
+  "skipped_validations": [
+    {
+      "check_id": "VAL-001",
+      "message": "Coefficient recovery vs true_beta",
+      "skip_reason": "requires_rich_dgp_worlds"
+    },
+    {
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds"
+    },
+    {
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds"
+    },
+    {
+      "check_id": "VAL-004",
+      "message": "\u0394\u03bc recovery vs decision_truth",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-006",
+      "message": "Replay train/holdout loss vs implied y",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution"
+    },
+    {
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution"
+    }
+  ],
+  "tolerance_policy_id": "TBD_v1_runtime",
+  "train_decide_recovery_status": {},
+  "transform_recovery": {
+    "adstock": {},
+    "formula": {},
+    "hill": {}
+  },
+  "trust_semantics_compatibility": {
+    "checks_considered": [
+      "CERT-4A-006",
+      "CERT-4A-012"
+    ],
+    "failures": [],
+    "n_fail": 0,
+    "n_pass": 2,
+    "n_skipped": 0,
+    "passed": true
+  },
+  "validation_results": [
+    {
+      "category": "bundle_integrity",
+      "check_id": "CERT-4A-001",
+      "message": "L1\u2013L3 validator passed (world_id=WORLD-011-drift-recovery)",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "checksum_reproducibility",
+      "check_id": "CERT-4A-002",
+      "message": "checksums match on-disk artifacts",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "replay_loader_compatibility",
+      "check_id": "CERT-4A-003",
+      "message": "no experiment units in truth",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "transform_truth_consistency",
+      "check_id": "CERT-4A-004",
+      "message": "canonical semi_log + geometric + Hill transform truth",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "metadata_consistency",
+      "check_id": "CERT-4A-005",
+      "message": "bundle metadata matches world_truth.metadata",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "governance_warning_compatibility",
+      "check_id": "CERT-4A-006",
+      "message": "1 expected warning(s) well-formed",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "decision_truth_structure",
+      "check_id": "CERT-4A-007",
+      "message": "decision_truth valid (0 scenario(s))",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "calibration_payload_compatibility",
+      "check_id": "CERT-4A-008",
+      "message": "no replay payload required",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "decision_surface_compatibility",
+      "check_id": "CERT-4A-009",
+      "message": "DecisionSurface: semi_log + full-panel replay transform semantics",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "estimand_compatibility",
+      "check_id": "CERT-4A-010",
+      "message": "no experiment units",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "calibration_signal_compatibility",
+      "check_id": "CERT-4A-011",
+      "message": "no calibration signals",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "trust_report_compatibility",
+      "check_id": "CERT-4A-012",
+      "message": "TrustReport semantics present in truth",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "release_gate_compatibility",
+      "check_id": "CERT-4A-013",
+      "message": "unknown model_release_state 'review_required'",
+      "skip_reason": null,
+      "status": "fail"
+    },
+    {
+      "category": "train_path",
+      "check_id": "REC-4B5-DRIFT-TRAIN",
+      "message": "Ridge fit on pre-changepoint panel only (regime mismatch test)",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "coefficient_recovery",
+      "check_id": "REC-4B5-DRIFT-COEF",
+      "message": "coefficient recovery across drift regimes not expected",
+      "skip_reason": "not_applicable",
+      "status": "skipped"
+    },
+    {
+      "category": "drift_recovery",
+      "check_id": "REC-4B5-DRIFT",
+      "message": "VAL-012 partial \u2014 post-period fit degradation and drift surfacing",
+      "skip_reason": null,
+      "status": "pass"
+    },
+    {
+      "category": "coefficient_recovery",
+      "check_id": "VAL-001",
+      "message": "Coefficient recovery vs true_beta",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "status": "skipped"
+    },
+    {
+      "category": "adstock_recovery",
+      "check_id": "VAL-002",
+      "message": "Adstock parameter recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "status": "skipped"
+    },
+    {
+      "category": "hill_recovery",
+      "check_id": "VAL-003",
+      "message": "Hill saturation recovery",
+      "skip_reason": "requires_rich_dgp_worlds",
+      "status": "skipped"
+    },
+    {
+      "category": "delta_mu_recovery",
+      "check_id": "VAL-004",
+      "message": "\u0394\u03bc recovery vs decision_truth",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "optimizer_recovery",
+      "check_id": "VAL-005",
+      "message": "Optimizer recovery vs true optimum",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "replay_consistency",
+      "check_id": "VAL-006",
+      "message": "Replay train/holdout loss vs implied y",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "calibration_robustness",
+      "check_id": "VAL-007",
+      "message": "Calibration weight stability across quality tiers",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "decision_safety",
+      "check_id": "VAL-008",
+      "message": "decision_safe and unsupported-question rate",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "artifact_integrity_runtime",
+      "check_id": "VAL-009",
+      "message": "Prod decide bundle tier and fingerprint at runtime",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "reproducibility",
+      "check_id": "VAL-010",
+      "message": "Independent-run reproducibility match",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "promotion_workflow",
+      "check_id": "VAL-011",
+      "message": "Promotion record validation",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    },
+    {
+      "category": "governance_behavior",
+      "check_id": "VAL-013",
+      "message": "Live governance JSON vs artifact_truth gates",
+      "skip_reason": "requires_train_decide_execution",
+      "status": "skipped"
+    }
+  ],
+  "warnings": [
+    "truth expects warning: coefficient_drift_detected (high)",
+    "behavioral validations VAL-001\u2013VAL-014 deferred \u2014 not executed"
+  ],
+  "world_contract_version": "groundtruth_world_v1",
+  "world_id": "WORLD-011-drift-recovery",
+  "world_version": "1.0.0"
+}

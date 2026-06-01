@@ -1,0 +1,13 @@
+{
+  "materialization_version": "materialize_v1.0.0",
+  "scenario_index": [
+    {
+      "ref": "decision_truth.scenarios[0]",
+      "scenario_id": "exact_recovery_bump_search"
+    }
+  ],
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "manual_dgp_v1.0.0",
+  "world_id": "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off",
+  "world_version": "1.0.0"
+}

@@ -1,0 +1,11 @@
+{
+  "allowlist_version": "bayes_h2b_estimand_v1",
+  "estimand_ids": [
+    "ATT_dma_week_search",
+    "national_incremental_lift_search"
+  ],
+  "lift_scales": [
+    "mean_kpi_level_delta"
+  ],
+  "segment_bridge_required": true
+}

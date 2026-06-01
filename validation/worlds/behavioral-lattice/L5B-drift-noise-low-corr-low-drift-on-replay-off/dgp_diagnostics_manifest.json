@@ -1,0 +1,27 @@
+{
+  "artifact_kind": "derived_dgp_diagnostics_manifest",
+  "authoritative": false,
+  "columns_in_parquet": [
+    "geo_id",
+    "week_start_date",
+    "channel",
+    "raw_spend",
+    "adstocked_spend",
+    "saturated_feature",
+    "linear_predictor",
+    "log_kpi",
+    "generated_kpi",
+    "noise_epsilon",
+    "derived_artifact"
+  ],
+  "dgp_materialization_version": "dgp_materialize_v1.0.0",
+  "formulas": {
+    "adstock": "geometric_carry[t] = spend[t] + decay * carry[t-1]",
+    "kpi": "y = exp(eta + eps); eps ~ N(0, observation_noise_std) deterministic at 0 for exact worlds",
+    "linear_predictor": "eta = intercept + sum_c beta_c * hill_c",
+    "model_form": "semi_log",
+    "saturation": "hill(x) = x^slope / (half_max^slope + x^slope + 1e-12)"
+  },
+  "not_world_truth": true,
+  "world_id": "L5B-drift-noise-low-corr-low-drift-on-replay-off"
+}

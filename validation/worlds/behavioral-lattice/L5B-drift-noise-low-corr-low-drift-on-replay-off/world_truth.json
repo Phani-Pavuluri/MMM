@@ -1,0 +1,157 @@
+{
+  "artifact_truth": {
+    "expected_certification_levels": {
+      "synthetic": "exact"
+    },
+    "expected_failures": [],
+    "expected_gates": [
+      {
+        "expected": "warn",
+        "gate_id": "production_readiness_approved"
+      }
+    ],
+    "expected_warnings": [
+      {
+        "severity": "high",
+        "warning_id": "coefficient_drift_detected"
+      }
+    ]
+  },
+  "coefficient_truth": {
+    "controls": {},
+    "interactions": [],
+    "intercept": 4.605170185988092,
+    "true_beta_by_channel": {
+      "media": 0.45
+    }
+  },
+  "decision_truth": {},
+  "drift_truth": {
+    "changepoints": [
+      {
+        "affected_domains": [
+          "coefficient_truth"
+        ],
+        "period_index": 8,
+        "week_date": "2020-02-24"
+      }
+    ],
+    "coefficient_drift": [
+      {
+        "channel": "media",
+        "delta_beta": -0.33,
+        "post_beta": 0.12,
+        "pre_beta": 0.45,
+        "start_period_index": 8
+      }
+    ],
+    "expected_reliability": {
+      "coef_recovery_across_regimes": false,
+      "drift_warning_expected": true,
+      "post_period_fit_degradation_min_ratio": 1.15,
+      "readiness_downgrade_expected": true
+    },
+    "policy_changes": [],
+    "privacy_shifts": []
+  },
+  "experiment_truth": {
+    "units": []
+  },
+  "geo_truth": {
+    "geo_column_name": "geo_id",
+    "geos": [
+      "G0",
+      "G1"
+    ],
+    "hierarchy": null,
+    "n_geos": 2,
+    "weights": {
+      "G0": 0.5,
+      "G1": 0.5
+    }
+  },
+  "governance_truth": {
+    "approved_for_optimization": false,
+    "model_release_state": "review_required",
+    "replay_calibration_active": false,
+    "require_production_certification": false,
+    "require_promoted_model": false
+  },
+  "media_truth": {
+    "baseline_spend_by_channel": {
+      "media": 12.0
+    },
+    "channels": [
+      "media"
+    ],
+    "spend_process_spec": {
+      "correlation_level": "low",
+      "kind": "constant",
+      "level": 12.0
+    }
+  },
+  "metadata": {
+    "archetype_id": "drift_recovery_world",
+    "behavioral_mode": "behavioral",
+    "creation_timestamp": "2026-05-22T18:00:00Z",
+    "description": "Drift recovery \u2014 known coefficient changepoint in KPI generation",
+    "generation_seed": 62661,
+    "lattice_axes": {
+      "correlation_level": "low",
+      "drift": "true",
+      "noise_level": "low",
+      "replay": "false",
+      "world_type": "drift"
+    },
+    "materialization_version": "dgp_materialize_v1.0.0",
+    "negative_world": false,
+    "scenario_tags": [
+      "dgp:drift_recovery",
+      "drift:known_changepoint",
+      "noise:low",
+      "lattice:behavioral_v1",
+      "dgp:drift_recovery"
+    ],
+    "world_contract_version": "groundtruth_world_v1",
+    "world_generator_version": "manual_drift_v1.0.0",
+    "world_id": "L5B-drift-noise-low-corr-low-drift-on-replay-off",
+    "world_version": "1.0.0"
+  },
+  "outcome_truth": {
+    "base_level_mean": 100.0,
+    "model_form": "semi_log",
+    "observation_noise_level": "low",
+    "observation_noise_std": 0.02,
+    "target_column": "revenue",
+    "target_scale": "positive_level"
+  },
+  "time_truth": {
+    "date_frequency": "weekly",
+    "end_date": "2020-04-27",
+    "eval_window": {
+      "end_period_index": 15,
+      "start_period_index": 14
+    },
+    "n_periods": 16,
+    "seasonality_declared": false,
+    "start_date": "2020-01-06",
+    "train_window": {
+      "end_period_index": 13,
+      "start_period_index": 0
+    },
+    "week_column_name": "week_start_date"
+  },
+  "transform_truth": {
+    "adstock_decay_by_channel": {
+      "media": 0.5
+    },
+    "adstock_family": "geometric",
+    "hill_half_max_by_channel": {
+      "media": 10.0
+    },
+    "hill_slope_by_channel": {
+      "media": 2.0
+    },
+    "saturation_family": "hill"
+  }
+}

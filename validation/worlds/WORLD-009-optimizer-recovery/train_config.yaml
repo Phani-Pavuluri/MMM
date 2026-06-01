@@ -1,0 +1,26 @@
+# Phase 4B-3 optimizer recovery fixture — paths resolved relative to bundle dir at runtime.
+framework: ridge_bo
+model_form: semi_log
+run_environment: research
+random_seed: 9009
+data:
+  path: panel.parquet
+  geo_column: geo_id
+  week_column: week_start_date
+  target_column: revenue
+  channel_columns:
+    - high_return
+    - low_return
+  control_columns: []
+  data_version_id: WORLD-009-optimizer-recovery-recovery
+cv:
+  mode: rolling
+  n_splits: 2
+  min_train_weeks: 8
+  horizon_weeks: 2
+ridge_bo:
+  n_trials: 12
+  sampler_seed: 9009
+transforms:
+  adstock: geometric
+  saturation: hill

@@ -1,0 +1,109 @@
+{
+  "fixture_version": "bayes_h2b_fixture_v1",
+  "world_id": "WORLD-BAYES-MISSING-SE",
+  "hierarchy_spec_ref": "hierarchy_spec.json",
+  "calibration_signals_ref": "calibration_signals.json",
+  "policy_overrides": {
+    "conflict_tolerance": 0.15,
+    "conflict_fail_closed": false,
+    "coverage_gate_state": 0.6,
+    "coverage_gate_region": 0.6,
+    "coverage_gate_national": 0.8,
+    "stale_precision_multiplier": 0.25,
+    "governance_max_omega": 100.0
+  },
+  "mandatory_assertions": [
+    "MA-MSE-01",
+    "MA-MSE-02",
+    "MA-MSE-03",
+    "MA-MSE-04"
+  ],
+  "expected_routing": [
+    {
+      "signal_id": "SIG-GEOX-NOSE",
+      "mechanism": "excluded",
+      "rule_id": "R4",
+      "ingress": "calibration_signal"
+    },
+    {
+      "signal_id": "SIG-GEOX-CI",
+      "mechanism": "trust_report_only",
+      "rule_id": "R4",
+      "ingress": "calibration_signal"
+    }
+  ],
+  "expected_influence_class": [
+    {
+      "signal_id": "SIG-GEOX-NOSE",
+      "influence_class": "excluded",
+      "target": {
+        "scope_type": "dma",
+        "scope_id": "dallas",
+        "channel_ids": [
+          "search"
+        ]
+      }
+    },
+    {
+      "signal_id": "SIG-GEOX-CI",
+      "influence_class": "trust_report_only",
+      "target": {
+        "scope_type": "dma",
+        "scope_id": "dallas",
+        "channel_ids": [
+          "search"
+        ]
+      }
+    }
+  ],
+  "expected_propagation": [],
+  "expected_inclusion_exclusion": [
+    {
+      "signal_id": "SIG-GEOX-NOSE",
+      "included": false,
+      "decision_grade": false,
+      "exclusion_reason": "missing_se"
+    },
+    {
+      "signal_id": "SIG-GEOX-CI",
+      "included": false,
+      "decision_grade": false,
+      "exclusion_reason": "ci_conversion_not_declared"
+    }
+  ],
+  "expected_conflicts": [],
+  "expected_trust_report_fields": {
+    "missing_se_signals": [
+      "SIG-GEOX-NOSE"
+    ],
+    "excluded_signals": [
+      "SIG-GEOX-NOSE",
+      "SIG-GEOX-CI"
+    ],
+    "signal_weight_summary": {
+      "SIG-GEOX-NOSE": "excluded",
+      "SIG-GEOX-CI": "diagnostic"
+    }
+  },
+  "expected_release_gate_effect": {
+    "prod_decisioning_allowed": false,
+    "decision_safe": false,
+    "optimization_blocked": true,
+    "release_gate_recommendation": "warn",
+    "attribution_safe": true
+  },
+  "expected_failures": [
+    {
+      "forbidden_pattern": "decision_grade_without_se",
+      "signal_ids": [
+        "SIG-GEOX-NOSE"
+      ]
+    },
+    {
+      "forbidden_pattern": "high_precision_from_point_only",
+      "signal_ids": [
+        "SIG-GEOX-NOSE"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "bundle_path": "validation/worlds/behavioral-lattice/L5B-optimizer-noise-zero-corr-low-drift-off-replay-off",
+  "catalog_ref": "L5B-optimizer-noise-zero-corr-low-drift-off-replay-off",
+  "checksum_version": "checksums_v1",
+  "creation_timestamp": "2026-05-22T12:00:00Z",
+  "derived_artifacts": [
+    "dgp_diagnostics.parquet",
+    "dgp_diagnostics_manifest.json"
+  ],
+  "dgp_materialization": true,
+  "materialization_version": "dgp_materialize_v1.0.0",
+  "materialized_files": [
+    "dgp_diagnostics.parquet",
+    "dgp_diagnostics_manifest.json",
+    "panel.parquet"
+  ],
+  "scenario_tags": [
+    "dgp:optimizer_recovery",
+    "optimizer:known_optimum",
+    "noise:zero",
+    "lattice:behavioral_v1",
+    "dgp:optimizer_recovery"
+  ],
+  "seed": 67455,
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "manual_optimizer_v1.0.0",
+  "world_id": "L5B-optimizer-noise-zero-corr-low-drift-off-replay-off",
+  "world_version": "1.0.0"
+}

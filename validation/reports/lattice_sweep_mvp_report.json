@@ -1,0 +1,1095 @@
+{
+  "capability_summary": {
+    "artifact_integrity": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 60,
+      "n_scored": 18,
+      "partials": [],
+      "worlds": [
+        "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+        "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-severe-drift-off-eq-medium"
+      ]
+    },
+    "coefficient_recovery": {
+      "failures": [],
+      "mean_score": null,
+      "n_entries": 0,
+      "n_scored": 0,
+      "partials": [],
+      "worlds": []
+    },
+    "delta_mu_recovery": {
+      "failures": [],
+      "mean_score": null,
+      "n_entries": 0,
+      "n_scored": 0,
+      "partials": [],
+      "worlds": []
+    },
+    "drift_behavior": {
+      "failures": [],
+      "mean_score": null,
+      "n_entries": 0,
+      "n_scored": 0,
+      "partials": [],
+      "worlds": []
+    },
+    "governance_reaction": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 60,
+      "n_scored": 12,
+      "partials": [],
+      "worlds": [
+        "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+        "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-severe-drift-off-eq-medium"
+      ]
+    },
+    "identifiability_behavior": {
+      "failures": [],
+      "mean_score": null,
+      "n_entries": 0,
+      "n_scored": 0,
+      "partials": [],
+      "worlds": []
+    },
+    "optimizer_recovery": {
+      "failures": [],
+      "mean_score": null,
+      "n_entries": 0,
+      "n_scored": 0,
+      "partials": [],
+      "worlds": []
+    },
+    "platform_contract_compatibility": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 72,
+      "n_scored": 48,
+      "partials": [],
+      "worlds": [
+        "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+        "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-severe-drift-off-eq-medium"
+      ]
+    },
+    "replay_recovery": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 24,
+      "n_scored": 6,
+      "partials": [],
+      "worlds": [
+        "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+        "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-severe-drift-off-eq-medium"
+      ]
+    },
+    "structural_integrity": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 36,
+      "n_scored": 36,
+      "partials": [],
+      "worlds": [
+        "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+        "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-severe-drift-off-eq-medium"
+      ]
+    },
+    "transform_consistency": {
+      "failures": [],
+      "mean_score": 1.0,
+      "n_entries": 36,
+      "n_scored": 12,
+      "partials": [],
+      "worlds": [
+        "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+        "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+        "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+        "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+        "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+        "L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+        "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+        "L5A-replay-noise-low-corr-severe-drift-off-eq-medium"
+      ]
+    }
+  },
+  "failure_taxonomy": {
+    "contract_failures": [],
+    "governance_failures": [],
+    "recovery_failures": [],
+    "replay_failures": [],
+    "structural_failures": [],
+    "unsupported_or_skipped": [
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:CERT-4A-003",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:CERT-4A-008",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:CERT-4A-010",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:CERT-4A-011",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-001",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-002",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-003",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-004",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-005",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-006",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-007",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-008",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-009",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-010",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-011",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-012",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-013",
+      "L5A-baseline-noise-low-corr-low-drift-off-eq-none:VAL-014",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:CERT-4A-003",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:CERT-4A-008",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:CERT-4A-010",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:CERT-4A-011",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-001",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-002",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-003",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-004",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-005",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-006",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-007",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-008",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-009",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-010",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-011",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-012",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-013",
+      "L5A-baseline-noise-low-corr-severe-drift-off-eq-none:VAL-014",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:CERT-4A-003",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:CERT-4A-008",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:CERT-4A-010",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:CERT-4A-011",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-001",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-002",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-003",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-004",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-005",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-006",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-007",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-008",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-009",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-010",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-011",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-012",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-013",
+      "L5A-baseline-noise-high-corr-low-drift-off-eq-none:VAL-014",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:CERT-4A-003",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:CERT-4A-008",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:CERT-4A-010",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:CERT-4A-011",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-001",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-002",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-003",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-004",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-005",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-006",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-007",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-008",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-009",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-010",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-011",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-012",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-013",
+      "L5A-baseline-noise-high-corr-severe-drift-off-eq-none:VAL-014",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:CERT-4A-003",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:CERT-4A-008",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:CERT-4A-010",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:CERT-4A-011",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-001",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-002",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-003",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-004",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-005",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-006",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-007",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-008",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-009",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-010",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-011",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-012",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-013",
+      "L5A-baseline-noise-low-corr-low-drift-on-eq-none:VAL-014",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:CERT-4A-003",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:CERT-4A-008",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:CERT-4A-010",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:CERT-4A-011",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-001",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-002",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-003",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-004",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-005",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-006",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-007",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-008",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-009",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-010",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-011",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-012",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-013",
+      "L5A-baseline-noise-high-corr-severe-drift-on-eq-none:VAL-014",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-001",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-002",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-003",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-004",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-005",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-006",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-007",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-008",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-009",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-010",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-011",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-012",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-013",
+      "L5A-replay-noise-low-corr-low-drift-off-eq-medium:VAL-014",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-001",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-002",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-003",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-004",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-005",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-006",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-007",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-008",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-009",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-010",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-011",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-012",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-013",
+      "L5A-replay-noise-low-corr-severe-drift-off-eq-medium:VAL-014",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-001",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-002",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-003",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-004",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-005",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-006",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-007",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-008",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-009",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-010",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-011",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-012",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-013",
+      "L5A-replay-noise-high-corr-low-drift-off-eq-medium:VAL-014",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-001",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-002",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-003",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-004",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-005",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-006",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-007",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-008",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-009",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-010",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-011",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-012",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-013",
+      "L5A-replay-noise-high-corr-severe-drift-off-eq-medium:VAL-014",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-001",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-002",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-003",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-004",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-005",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-006",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-007",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-008",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-009",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-010",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-011",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-012",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-013",
+      "L5A-replay-noise-low-corr-low-drift-on-eq-medium:VAL-014",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-001",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-002",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-003",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-004",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-005",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-006",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-007",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-008",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-009",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-010",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-011",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-012",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-013",
+      "L5A-replay-noise-high-corr-severe-drift-on-eq-medium:VAL-014"
+    ]
+  },
+  "generated_at": "2026-05-29T00:39:34.410165+00:00",
+  "lattice_axes": {
+    "correlation_level": [
+      "low",
+      "severe"
+    ],
+    "drift": [
+      "false",
+      "true"
+    ],
+    "experiment_quality": [
+      "none",
+      "medium"
+    ],
+    "family": [
+      "baseline",
+      "replay"
+    ],
+    "noise_level": [
+      "low",
+      "high"
+    ]
+  },
+  "limitations": [
+    "Phase 5A MVP \u2014 deterministic ScenarioBuilder lattice only (not Monte Carlo)",
+    "Materialized panels use smoke materializer (constant KPI), not rich DGP",
+    "Behavioral recovery (VAL-001\u2013006) deferred/skipped \u2014 structural certification focus",
+    "Small fixed grid (12 worlds); not statistically representative",
+    "Does not certify production readiness or causal validity",
+    "thresholds_TBD_v1_runtime \u2014 no automatic threshold learning"
+  ],
+  "per_axis_summary": {
+    "correlation_level": {
+      "low": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": 0,
+        "drift_signal_worlds": null,
+        "world_count": 6,
+        "world_ids": [
+          "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+          "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-low-corr-low-drift-on-eq-medium"
+        ]
+      },
+      "severe": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": 6,
+        "drift_signal_worlds": null,
+        "world_count": 6,
+        "world_ids": [
+          "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+          "L5A-replay-noise-low-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-on-eq-medium"
+        ]
+      }
+    },
+    "drift": {
+      "false": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": null,
+        "drift_signal_worlds": 0,
+        "world_count": 8,
+        "world_ids": [
+          "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+          "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-low-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-off-eq-medium"
+        ]
+      },
+      "true": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": null,
+        "drift_signal_worlds": 0,
+        "world_count": 4,
+        "world_ids": [
+          "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+          "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-on-eq-medium"
+        ]
+      }
+    },
+    "experiment_quality": {
+      "medium": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": null,
+        "drift_signal_worlds": null,
+        "world_count": 6,
+        "world_ids": [
+          "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-low-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-on-eq-medium"
+        ]
+      },
+      "none": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": null,
+        "drift_signal_worlds": null,
+        "world_count": 6,
+        "world_ids": [
+          "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-on-eq-none"
+        ]
+      }
+    },
+    "family": {
+      "baseline": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": null,
+        "drift_signal_worlds": null,
+        "world_count": 6,
+        "world_ids": [
+          "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-on-eq-none"
+        ]
+      },
+      "replay": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": null,
+        "drift_signal_worlds": null,
+        "world_count": 6,
+        "world_ids": [
+          "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-low-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-on-eq-medium"
+        ]
+      }
+    },
+    "noise_level": {
+      "high": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": null,
+        "drift_signal_worlds": null,
+        "world_count": 6,
+        "world_ids": [
+          "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+          "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-high-corr-severe-drift-on-eq-medium"
+        ]
+      },
+      "low": {
+        "certification_error_rate": 0.0,
+        "certification_fail_rate": 0.0,
+        "certification_pass_rate": 1.0,
+        "collinearity_warning_worlds": null,
+        "drift_signal_worlds": null,
+        "world_count": 6,
+        "world_ids": [
+          "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+          "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+          "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+          "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+          "L5A-replay-noise-low-corr-severe-drift-off-eq-medium",
+          "L5A-replay-noise-low-corr-low-drift-on-eq-medium"
+        ]
+      }
+    }
+  },
+  "per_world_status": {
+    "L5A-baseline-noise-high-corr-low-drift-off-eq-none": {
+      "axis": {
+        "correlation_level": "low",
+        "drift": "false",
+        "experiment_quality": "none",
+        "family": "baseline",
+        "noise_level": "high"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+    },
+    "L5A-baseline-noise-high-corr-severe-drift-off-eq-none": {
+      "axis": {
+        "correlation_level": "severe",
+        "drift": "false",
+        "experiment_quality": "none",
+        "family": "baseline",
+        "noise_level": "high"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+    },
+    "L5A-baseline-noise-high-corr-severe-drift-on-eq-none": {
+      "axis": {
+        "correlation_level": "severe",
+        "drift": "true",
+        "experiment_quality": "none",
+        "family": "baseline",
+        "noise_level": "high"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-baseline-noise-high-corr-severe-drift-on-eq-none"
+    },
+    "L5A-baseline-noise-low-corr-low-drift-off-eq-none": {
+      "axis": {
+        "correlation_level": "low",
+        "drift": "false",
+        "experiment_quality": "none",
+        "family": "baseline",
+        "noise_level": "low"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+    },
+    "L5A-baseline-noise-low-corr-low-drift-on-eq-none": {
+      "axis": {
+        "correlation_level": "low",
+        "drift": "true",
+        "experiment_quality": "none",
+        "family": "baseline",
+        "noise_level": "low"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-baseline-noise-low-corr-low-drift-on-eq-none"
+    },
+    "L5A-baseline-noise-low-corr-severe-drift-off-eq-none": {
+      "axis": {
+        "correlation_level": "severe",
+        "drift": "false",
+        "experiment_quality": "none",
+        "family": "baseline",
+        "noise_level": "low"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+    },
+    "L5A-replay-noise-high-corr-low-drift-off-eq-medium": {
+      "axis": {
+        "correlation_level": "low",
+        "drift": "false",
+        "experiment_quality": "medium",
+        "family": "replay",
+        "noise_level": "high"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-replay-noise-high-corr-low-drift-off-eq-medium"
+    },
+    "L5A-replay-noise-high-corr-severe-drift-off-eq-medium": {
+      "axis": {
+        "correlation_level": "severe",
+        "drift": "false",
+        "experiment_quality": "medium",
+        "family": "replay",
+        "noise_level": "high"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-replay-noise-high-corr-severe-drift-off-eq-medium"
+    },
+    "L5A-replay-noise-high-corr-severe-drift-on-eq-medium": {
+      "axis": {
+        "correlation_level": "severe",
+        "drift": "true",
+        "experiment_quality": "medium",
+        "family": "replay",
+        "noise_level": "high"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-replay-noise-high-corr-severe-drift-on-eq-medium",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-replay-noise-high-corr-severe-drift-on-eq-medium"
+    },
+    "L5A-replay-noise-low-corr-low-drift-off-eq-medium": {
+      "axis": {
+        "correlation_level": "low",
+        "drift": "false",
+        "experiment_quality": "medium",
+        "family": "replay",
+        "noise_level": "low"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-replay-noise-low-corr-low-drift-off-eq-medium"
+    },
+    "L5A-replay-noise-low-corr-low-drift-on-eq-medium": {
+      "axis": {
+        "correlation_level": "low",
+        "drift": "true",
+        "experiment_quality": "medium",
+        "family": "replay",
+        "noise_level": "low"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-replay-noise-low-corr-low-drift-on-eq-medium"
+    },
+    "L5A-replay-noise-low-corr-severe-drift-off-eq-medium": {
+      "axis": {
+        "correlation_level": "severe",
+        "drift": "false",
+        "experiment_quality": "medium",
+        "family": "replay",
+        "noise_level": "low"
+      },
+      "bundle_dir": "validation/worlds/lattice/L5A-replay-noise-low-corr-severe-drift-off-eq-medium",
+      "certified": true,
+      "error": null,
+      "materialized": true,
+      "overall_status": "pass",
+      "truth_written": true,
+      "world_id": "L5A-replay-noise-low-corr-severe-drift-off-eq-medium"
+    }
+  },
+  "recommended_followups": [
+    "Phase 5B \u2014 rich DGP lattice with recovery metrics per axis",
+    "Dedicated drift_detection_runner for VAL-012 on drift axis",
+    "Expand lattice with privacy_loss and missingness axes"
+  ],
+  "required_warnings": [
+    "synthetic_only",
+    "no_causal_claim",
+    "limited_world_count",
+    "thresholds_TBD_v1_runtime",
+    "no_monte_carlo",
+    "no_real_experiment_validation"
+  ],
+  "scorecard_summary": {
+    "coverage_ratio": 0.5217391304347826,
+    "release_readiness_interpretation": "synthetic_evidence_favorable_still_not_prod_ready",
+    "reliability_score": 1.0,
+    "reliability_score_method": "mean_capability_score_v1",
+    "scored_capabilities": [
+      "structural_integrity",
+      "transform_consistency",
+      "replay_recovery",
+      "platform_contract_compatibility",
+      "artifact_integrity",
+      "governance_reaction"
+    ],
+    "status_counts": {
+      "fail": 0,
+      "partial": 0,
+      "pass": 144,
+      "skipped": 120,
+      "unsupported": 24
+    }
+  },
+  "skipped_validation_summary": {
+    "by_check_id": {
+      "VAL-001": 12,
+      "VAL-002": 12,
+      "VAL-003": 12,
+      "VAL-004": 12,
+      "VAL-005": 12,
+      "VAL-006": 12,
+      "VAL-007": 12,
+      "VAL-008": 12,
+      "VAL-009": 12,
+      "VAL-010": 12,
+      "VAL-011": 12,
+      "VAL-012": 12,
+      "VAL-013": 12,
+      "VAL-014": 12
+    },
+    "by_skip_reason": {
+      "requires_rich_dgp_worlds": 36,
+      "requires_thresholds": 12,
+      "requires_train_decide_execution": 120
+    },
+    "entries": [
+      {
+        "check_id": "VAL-001",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-002",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-003",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-004",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-005",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-006",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-007",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-008",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-009",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-010",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-011",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-012",
+        "skip_reason": "requires_thresholds",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-013",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-014",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-001",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-002",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-003",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-004",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-005",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-006",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-007",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-008",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-009",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-010",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-011",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-012",
+        "skip_reason": "requires_thresholds",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-013",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-014",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-low-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-001",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-002",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-003",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-004",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-005",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-006",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-007",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-008",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-009",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-010",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-011",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-012",
+        "skip_reason": "requires_thresholds",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-013",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-014",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-low-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-001",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-002",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-003",
+        "skip_reason": "requires_rich_dgp_worlds",
+        "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-004",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-005",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-006",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-007",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+      },
+      {
+        "check_id": "VAL-008",
+        "skip_reason": "requires_train_decide_execution",
+        "world_id": "L5A-baseline-noise-high-corr-severe-drift-off-eq-none"
+      }
+    ],
+    "total_skipped_rows": 168
+  },
+  "sweep_id": "lattice_sweep_mvp",
+  "sweep_version": "lattice_sweep_v1.0.0",
+  "world_count": 12,
+  "world_ids": [
+    "L5A-baseline-noise-low-corr-low-drift-off-eq-none",
+    "L5A-baseline-noise-low-corr-severe-drift-off-eq-none",
+    "L5A-baseline-noise-high-corr-low-drift-off-eq-none",
+    "L5A-baseline-noise-high-corr-severe-drift-off-eq-none",
+    "L5A-baseline-noise-low-corr-low-drift-on-eq-none",
+    "L5A-baseline-noise-high-corr-severe-drift-on-eq-none",
+    "L5A-replay-noise-low-corr-low-drift-off-eq-medium",
+    "L5A-replay-noise-low-corr-severe-drift-off-eq-medium",
+    "L5A-replay-noise-high-corr-low-drift-off-eq-medium",
+    "L5A-replay-noise-high-corr-severe-drift-off-eq-medium",
+    "L5A-replay-noise-low-corr-low-drift-on-eq-medium",
+    "L5A-replay-noise-high-corr-severe-drift-on-eq-medium"
+  ]
+}

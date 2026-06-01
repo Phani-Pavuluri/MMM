@@ -1,0 +1,28 @@
+{
+  "variants": [
+    {
+      "coef_pass_bo": false,
+      "coef_pass_pinned": true,
+      "correlation_level": "low",
+      "delta_mu_pass_bo": null,
+      "n_channels": 1,
+      "world_id": "id-1ch"
+    },
+    {
+      "coef_pass_bo": false,
+      "coef_pass_pinned": true,
+      "correlation_level": "low",
+      "delta_mu_pass_bo": null,
+      "n_channels": 2,
+      "world_id": "id-2ch-orth"
+    },
+    {
+      "coef_pass_bo": false,
+      "coef_pass_pinned": true,
+      "correlation_level": "severe",
+      "delta_mu_pass_bo": null,
+      "n_channels": 2,
+      "world_id": "id-2ch-severe"
+    }
+  ]
+}

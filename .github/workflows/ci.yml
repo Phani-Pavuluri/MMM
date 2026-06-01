@@ -23,6 +23,10 @@ jobs:
           python -m pip install -e ".[dev,tracking]"
       - name: Ruff
         run: ruff check mmm tests scripts
+      - name: VAL-BAYES-H2B-SMOKE
+        run: python -m mmm.validation.synthetic.hierarchy_evidence_validator --smoke VAL-BAYES-H2B-SMOKE
+      - name: Bayes-H3 sandbox guardrails
+        run: pytest tests/research/test_bayes_h3_sandbox_guardrails.py -q -m "not slow"
       - name: Pytest
         run: pytest tests/ -q -m "not slow"
 

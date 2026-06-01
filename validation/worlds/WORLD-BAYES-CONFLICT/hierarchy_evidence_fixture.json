@@ -1,0 +1,146 @@
+{
+  "fixture_version": "bayes_h2b_fixture_v1",
+  "world_id": "WORLD-BAYES-CONFLICT",
+  "hierarchy_spec_ref": "hierarchy_spec.json",
+  "calibration_signals_ref": "calibration_signals.json",
+  "policy_overrides": {
+    "conflict_tolerance": 0.15,
+    "conflict_fail_closed": true,
+    "coverage_gate_state": 0.6,
+    "coverage_gate_region": 0.6,
+    "coverage_gate_national": 0.8,
+    "stale_precision_multiplier": 0.25,
+    "governance_max_omega": 100.0
+  },
+  "mandatory_assertions": [
+    "MA-CNF-01",
+    "MA-CNF-02",
+    "MA-CNF-03",
+    "MA-CNF-04",
+    "MA-CNF-05"
+  ],
+  "expected_routing": [
+    {
+      "signal_id": "SIG-GEOX-HOU",
+      "mechanism": "likelihood_term",
+      "rule_id": "R6",
+      "ingress": "calibration_signal"
+    },
+    {
+      "signal_id": "SIG-CLS-NAT",
+      "mechanism": "likelihood_term",
+      "rule_id": "R7",
+      "ingress": "calibration_signal"
+    }
+  ],
+  "expected_influence_class": [
+    {
+      "signal_id": "SIG-GEOX-HOU",
+      "influence_class": "local_likelihood_style",
+      "target": {
+        "scope_type": "dma",
+        "scope_id": "houston",
+        "channel_ids": [
+          "search"
+        ]
+      }
+    },
+    {
+      "signal_id": "SIG-CLS-NAT",
+      "influence_class": "national_calibration_evidence",
+      "target": {
+        "scope_type": "national",
+        "scope_id": "US",
+        "channel_ids": [
+          "search"
+        ]
+      }
+    }
+  ],
+  "expected_propagation": [
+    {
+      "edge": "houston\u2192US",
+      "direction": "up",
+      "gate": "local_vs_national_alignment",
+      "gate_value": 0.75,
+      "threshold": 0.15,
+      "outcome": "conflict",
+      "allowed_influence": "none"
+    }
+  ],
+  "expected_inclusion_exclusion": [
+    {
+      "signal_id": "SIG-GEOX-HOU",
+      "included": true,
+      "decision_grade": true,
+      "exclusion_reason": null
+    },
+    {
+      "signal_id": "SIG-CLS-NAT",
+      "included": true,
+      "decision_grade": false,
+      "exclusion_reason": "conflict_downweight"
+    }
+  ],
+  "expected_conflicts": [
+    {
+      "group_id": "CNF-SEARCH-01",
+      "signal_ids": [
+        "SIG-GEOX-HOU",
+        "SIG-CLS-NAT"
+      ],
+      "channel_ids": [
+        "search"
+      ],
+      "conflict_metric": 0.75,
+      "silent_average": false,
+      "sensitivity_required": true,
+      "implied_forbidden_lift": 0.05
+    }
+  ],
+  "expected_trust_report_fields": {
+    "conflicting_signals": [
+      "SIG-GEOX-HOU",
+      "SIG-CLS-NAT"
+    ],
+    "conflicting_hierarchy_signals": [
+      "CNF-SEARCH-01"
+    ],
+    "sensitivity_required": true,
+    "local_vs_national_alignment": {
+      "score": 0.25,
+      "warning": true,
+      "message": "Local GeoX +8% vs national CLS +2% on search"
+    }
+  },
+  "expected_release_gate_effect": {
+    "prod_decisioning_allowed": false,
+    "decision_safe": false,
+    "optimization_blocked": true,
+    "release_gate_recommendation": "warn",
+    "attribution_safe": false
+  },
+  "expected_failures": [
+    {
+      "forbidden_pattern": "merged_lift",
+      "signal_ids": [
+        "SIG-GEOX-HOU",
+        "SIG-CLS-NAT"
+      ]
+    },
+    {
+      "forbidden_pattern": "averaged_lift",
+      "signal_ids": [
+        "SIG-GEOX-HOU",
+        "SIG-CLS-NAT"
+      ]
+    },
+    {
+      "forbidden_pattern": "silent_average",
+      "signal_ids": [
+        "SIG-GEOX-HOU",
+        "SIG-CLS-NAT"
+      ]
+    }
+  ]
+}

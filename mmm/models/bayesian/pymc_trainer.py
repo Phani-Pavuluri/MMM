@@ -33,6 +33,7 @@ from mmm.hierarchy.bayesian_hierarchy import (
 )
 from mmm.hierarchy.pooling import partial_pooling_indices
 from mmm.models.base import BayesianMMMBase
+from mmm.research.bayes_h3_sandbox.labels import apply_research_only_envelope
 from mmm.transforms.stack import build_channel_features_from_params
 from mmm.utils.math import safe_log
 
@@ -303,37 +304,44 @@ class BayesianMMMTrainer(BayesianMMMBase):
                 idata_out,
                 pymc_var_names=hier_pymc_vars,
             )
-        return {
-            "idata": idata_out,
-            "summary": self._summary,
-            "ppc": ppc,
-            "bayesian_experiment_likelihood_report": exp_report,
-            "bayesian_hierarchy_report": hier_report,
-            "linear_coef_draws": draws,
-            "linear_coef_draws_meta": draw_meta,
-            "hierarchical_draw_pack": hpack,
-            "hierarchical_draw_pack_meta": hmeta,
-            "bayesian_prior_policy": {
-                "media_channel_prior": media_prior,
-                "pooling_mode": self.config.pooling.value,
-                "prod_budget_decision_posture": (
-                    "Bayesian draws and posterior planning are research/diagnostic only under current "
-                    "prod policy; not approved for prod Δμ budgeting."
-                ),
-                "positivity_assumption_note": (
-                    (
-                        "HalfNormal on media channels encodes non-negative media elasticities on the "
-                        "modeling scale; use bayesian.media_channel_prior=normal_symmetric only when "
-                        "negative effects are scientifically required."
-                    )
-                    if media_prior == "half_normal_nonneg"
-                    else (
-                        "Normal(0, sigma) media prior allows negative elasticities; review KPI sign "
-                        "semantics before interpreting."
-                    )
-                ),
-            },
-        }
+        return apply_research_only_envelope(
+            {
+                "idata": idata_out,
+                "summary": self._summary,
+                "ppc": ppc,
+                "bayesian_experiment_likelihood_report": exp_report,
+                "bayesian_hierarchy_report": hier_report,
+                "linear_coef_draws": draws,
+                "linear_coef_draws_meta": draw_meta,
+                "hierarchical_draw_pack": hpack,
+                "hierarchical_draw_pack_meta": hmeta,
+                "outputs_are_diagnostic_only": True,
+                "production_decision_surface": False,
+                "production_recommendation": False,
+                "legacy_trainer": "mmm.models.bayesian.pymc_trainer.BayesianMMMTrainer",
+                "sandbox_entrypoint_preferred": "mmm.research.bayes_h3_sandbox.run_sandbox_fit",
+                "bayesian_prior_policy": {
+                    "media_channel_prior": media_prior,
+                    "pooling_mode": self.config.pooling.value,
+                    "prod_budget_decision_posture": (
+                        "Bayesian draws and posterior planning are research/diagnostic only under current "
+                        "prod policy; not approved for prod Δμ budgeting."
+                    ),
+                    "positivity_assumption_note": (
+                        (
+                            "HalfNormal on media channels encodes non-negative media elasticities on the "
+                            "modeling scale; use bayesian.media_channel_prior=normal_symmetric only when "
+                            "negative effects are scientifically required."
+                        )
+                        if media_prior == "half_normal_nonneg"
+                        else (
+                            "Normal(0, sigma) media prior allows negative elasticities; review KPI sign "
+                            "semantics before interpreting."
+                        )
+                    ),
+                },
+            }
+        )
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
         if self._idata is None:

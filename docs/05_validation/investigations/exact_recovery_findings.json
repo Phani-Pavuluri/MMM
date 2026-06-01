@@ -1,0 +1,1032 @@
+{
+  "data_volume_sweep": {
+    "sweep": [
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.2033342384870167,
+        "n_geos": 1,
+        "n_periods": 10,
+        "n_rows": 10,
+        "noise_std": 0.0,
+        "world_id": "vol-g1-p10-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.2033342384870167,
+        "n_geos": 1,
+        "n_periods": 10,
+        "n_rows": 10,
+        "noise_std": 0.02,
+        "world_id": "vol-g1-p10-n0.02"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333416547904895,
+        "n_geos": 1,
+        "n_periods": 14,
+        "n_rows": 14,
+        "noise_std": 0.0,
+        "world_id": "vol-g1-p14-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333416547904895,
+        "n_geos": 1,
+        "n_periods": 14,
+        "n_rows": 14,
+        "noise_std": 0.02,
+        "world_id": "vol-g1-p14-n0.02"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333412969629044,
+        "n_geos": 1,
+        "n_periods": 18,
+        "n_rows": 18,
+        "noise_std": 0.0,
+        "world_id": "vol-g1-p18-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333412969629044,
+        "n_geos": 1,
+        "n_periods": 18,
+        "n_rows": 18,
+        "noise_std": 0.02,
+        "world_id": "vol-g1-p18-n0.02"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333378587974754,
+        "n_geos": 2,
+        "n_periods": 10,
+        "n_rows": 20,
+        "noise_std": 0.0,
+        "world_id": "vol-g2-p10-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333378587974754,
+        "n_geos": 2,
+        "n_periods": 10,
+        "n_rows": 20,
+        "noise_std": 0.02,
+        "world_id": "vol-g2-p10-n0.02"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.2033337498647379,
+        "n_geos": 2,
+        "n_periods": 14,
+        "n_rows": 28,
+        "noise_std": 0.0,
+        "world_id": "vol-g2-p14-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.2033337498647379,
+        "n_geos": 2,
+        "n_periods": 14,
+        "n_rows": 28,
+        "noise_std": 0.02,
+        "world_id": "vol-g2-p14-n0.02"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333373117400327,
+        "n_geos": 2,
+        "n_periods": 18,
+        "n_rows": 36,
+        "noise_std": 0.0,
+        "world_id": "vol-g2-p18-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333373117400327,
+        "n_geos": 2,
+        "n_periods": 18,
+        "n_rows": 36,
+        "noise_std": 0.02,
+        "world_id": "vol-g2-p18-n0.02"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333363498912593,
+        "n_geos": 3,
+        "n_periods": 10,
+        "n_rows": 30,
+        "noise_std": 0.0,
+        "world_id": "vol-g3-p10-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333363498912593,
+        "n_geos": 3,
+        "n_periods": 10,
+        "n_rows": 30,
+        "noise_std": 0.02,
+        "world_id": "vol-g3-p10-n0.02"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333361054568488,
+        "n_geos": 3,
+        "n_periods": 14,
+        "n_rows": 42,
+        "noise_std": 0.0,
+        "world_id": "vol-g3-p14-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333361054568488,
+        "n_geos": 3,
+        "n_periods": 14,
+        "n_rows": 42,
+        "noise_std": 0.02,
+        "world_id": "vol-g3-p14-n0.02"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333359854626498,
+        "n_geos": 3,
+        "n_periods": 18,
+        "n_rows": 54,
+        "noise_std": 0.0,
+        "world_id": "vol-g3-p18-n0.0"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": false,
+        "max_coef_err_pinned": 0.20333359854626498,
+        "n_geos": 3,
+        "n_periods": 18,
+        "n_rows": 54,
+        "noise_std": 0.02,
+        "world_id": "vol-g3-p18-n0.02"
+      }
+    ]
+  },
+  "generated_at": "2026-05-29T17:03:12.752586+00:00",
+  "hyperparameter_coupling": {
+    "bo_fitted_hyperparameters": {
+      "decay": 0.17033184419858716,
+      "hill_half": 1.2084310095623298,
+      "hill_slope": 2.881491659547926,
+      "log_alpha": -2.9524096680815126
+    },
+    "bo_in_sample_mae_log": 0.03334181384686685,
+    "coef_error_spread_near_best_fit": 0.0,
+    "grid_best_rmse_log": 1.351358823560923e-06,
+    "grid_entries_near_best_rmse": 1,
+    "interpretation_hooks": {
+      "bo_rmse_vs_grid_best_ratio": 24672.805820003374,
+      "multiple_near_equivalent_fits": false
+    },
+    "sample_grid": [
+      {
+        "decay": 0.30000000000000004,
+        "fitted_coef": {
+          "display": 23.950418854967534,
+          "search": -14.648980472639645,
+          "social": -14.64898049377975
+        },
+        "hill_half": 5.0,
+        "max_coef_abs_error": 23.870418854967536,
+        "rmse_log": 0.005603225264505731
+      },
+      {
+        "decay": 0.30000000000000004,
+        "fitted_coef": {
+          "display": 11.138430960309158,
+          "search": -4.1929262579210755,
+          "social": -4.192926260173146
+        },
+        "hill_half": 15.0,
+        "max_coef_abs_error": 11.058430960309158,
+        "rmse_log": 0.003917144112891088
+      },
+      {
+        "decay": 0.38333333333333336,
+        "fitted_coef": {
+          "display": 2.846809320278831,
+          "search": -0.9121538682711069,
+          "social": -0.9121538659822686
+        },
+        "hill_half": 12.5,
+        "max_coef_abs_error": 2.766809320278831,
+        "rmse_log": 0.0023956915413429762
+      },
+      {
+        "decay": 0.4666666666666667,
+        "fitted_coef": {
+          "display": 1.0830299695163272,
+          "search": -0.19678449430038983,
+          "social": -0.19678449382863444
+        },
+        "hill_half": 10.0,
+        "max_coef_abs_error": 1.0030299695163272,
+        "rmse_log": 0.0011254006834679395
+      },
+      {
+        "decay": 0.55,
+        "fitted_coef": {
+          "display": 1.0404348674047843,
+          "search": -0.21520577976970276,
+          "social": -0.21520577427443838
+        },
+        "hill_half": 7.5,
+        "max_coef_abs_error": 0.9604348674047843,
+        "rmse_log": 2.7453770769008744e-05
+      },
+      {
+        "decay": 0.6333333333333333,
+        "fitted_coef": {
+          "display": 2.961250657615859,
+          "search": -1.386299399301527,
+          "social": -1.3862993882411594
+        },
+        "hill_half": 5.0,
+        "max_coef_abs_error": 2.8812506576158587,
+        "rmse_log": 0.0008976275846673898
+      },
+      {
+        "decay": 0.6333333333333333,
+        "fitted_coef": {
+          "display": -0.9822620435809966,
+          "search": 0.7266294979119375,
+          "social": 0.7266294955918489
+        },
+        "hill_half": 15.0,
+        "max_coef_abs_error": 1.0622620435809966,
+        "rmse_log": 0.0003870902255494669
+      },
+      {
+        "decay": 0.7166666666666667,
+        "fitted_coef": {
+          "display": -0.6511548564512322,
+          "search": 0.5777470250432668,
+          "social": 0.5777470247454666
+        },
+        "hill_half": 12.5,
+        "max_coef_abs_error": 0.7311548564512321,
+        "rmse_log": 0.001167967090235628
+      },
+      {
+        "decay": 0.8,
+        "fitted_coef": {
+          "display": -0.38566002238835856,
+          "search": 0.47094642923831853,
+          "social": 0.47094642877287163
+        },
+        "hill_half": 10.0,
+        "max_coef_abs_error": 0.4656600223883586,
+        "rmse_log": 0.0019524947375364544
+      }
+    ],
+    "truth_hyperparameters": {
+      "decay": 0.55,
+      "hill_half": 10.0,
+      "hill_slope": 2.0,
+      "per_channel_uniform": true
+    },
+    "world_id": "WORLD-008-exact-recovery"
+  },
+  "identifiability_grid": {
+    "variants": [
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": true,
+        "correlation_level": "low",
+        "delta_mu_pass_bo": null,
+        "n_channels": 1,
+        "world_id": "id-1ch"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": true,
+        "correlation_level": "low",
+        "delta_mu_pass_bo": null,
+        "n_channels": 2,
+        "world_id": "id-2ch-orth"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_pinned": true,
+        "correlation_level": "severe",
+        "delta_mu_pass_bo": null,
+        "n_channels": 2,
+        "world_id": "id-2ch-severe"
+      }
+    ]
+  },
+  "investigation_id": "INV-056",
+  "investigation_version": "exact_recovery_investigation_v1.0.0",
+  "recovery_decomposition": [
+    {
+      "bundle_path": "/workspace/mmm/validation/worlds/WORLD-008-exact-recovery",
+      "certification_snapshot": {
+        "coef_status": "fail",
+        "delta_mu_status": "pass",
+        "transform_status": "fail"
+      },
+      "fitted_transforms": {
+        "best_params": {
+          "decay": 0.17033184419858716,
+          "hill_half": 1.2084310095623298,
+          "hill_slope": 2.881491659547926,
+          "log_alpha": -2.9524096680815126
+        },
+        "coefficient_recovery": {
+          "max_abs_error": 0.8779872814189666,
+          "mean_abs_error": 0.4394945206227936,
+          "pass": false,
+          "per_channel": {
+            "display": {
+              "abs_error": 0.8779872814189666,
+              "fitted": 0.9579872814189666,
+              "true": 0.08,
+              "within_tol": false
+            },
+            "search": {
+              "abs_error": 0.08524814022575017,
+              "fitted": 0.5052481402257502,
+              "true": 0.42,
+              "within_tol": true
+            },
+            "social": {
+              "abs_error": 0.355248140223664,
+              "fitted": 0.505248140223664,
+              "true": 0.15,
+              "within_tol": false
+            }
+          }
+        },
+        "delta_mu_recovery": {
+          "abs_error": 0.05319870645010916,
+          "analytic_delta_mu": 0.05377146150445178,
+          "fitted_delta_mu": 0.0005727550543426219,
+          "pass": true,
+          "relative_error": 0.9893483450455368
+        },
+        "prediction_mae_log": 0.03334181384686685,
+        "transform_recovery": {
+          "decay_abs_error": 0.3796681558014129,
+          "fitted": {
+            "decay": 0.17033184419858716,
+            "hill_half": 1.2084310095623298,
+            "hill_slope": 2.881491659547926,
+            "log_alpha": -2.9524096680815126
+          },
+          "hill_half_rel_error": 0.8791568990437669,
+          "hill_slope_rel_error": 0.44074582977396304,
+          "pass": false,
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        }
+      },
+      "truth_pinned_transforms": {
+        "best_params": {
+          "decay": 0.55,
+          "hill_half": 10.0,
+          "hill_slope": 2.0,
+          "log_alpha": -6.0
+        },
+        "coefficient_recovery": {
+          "max_abs_error": 0.13520525486163348,
+          "mean_abs_error": 0.09012134293912462,
+          "pass": false,
+          "per_channel": {
+            "display": {
+              "abs_error": 0.0003640289659646856,
+              "fitted": 0.08036402896596469,
+              "true": 0.08,
+              "within_tol": true
+            },
+            "search": {
+              "abs_error": 0.13520525486163348,
+              "fitted": 0.2847947451383665,
+              "true": 0.42,
+              "within_tol": true
+            },
+            "social": {
+              "abs_error": 0.13479474498977576,
+              "fitted": 0.28479474498977575,
+              "true": 0.15,
+              "within_tol": false
+            }
+          }
+        },
+        "delta_mu_recovery": {
+          "abs_error": 0.01730996227855197,
+          "analytic_delta_mu": 0.05377146150445178,
+          "fitted_delta_mu": 0.03646149922589981,
+          "pass": true,
+          "relative_error": 0.3219172734800758
+        },
+        "prediction_mae_log": 9.428171149905573e-07,
+        "transform_recovery": {
+          "decay_abs_error": 0.0,
+          "fitted": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "log_alpha": -6.0
+          },
+          "hill_half_rel_error": 0.0,
+          "hill_slope_rel_error": 0.0,
+          "pass": true,
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        }
+      },
+      "world_id": "WORLD-008-exact-recovery"
+    },
+    {
+      "bundle_path": "validation/worlds/behavioral-lattice/L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off",
+      "certification_snapshot": {
+        "coef_status": "fail",
+        "delta_mu_status": "pass",
+        "transform_status": "fail"
+      },
+      "fitted_transforms": {
+        "best_params": {
+          "decay": 0.4180074830520377,
+          "hill_half": 1.8520807781712134,
+          "hill_slope": 1.3647938294556496,
+          "log_alpha": -0.42430759880071056
+        },
+        "coefficient_recovery": {
+          "max_abs_error": 0.3473590766238984,
+          "mean_abs_error": 0.14623171071354454,
+          "pass": false,
+          "per_channel": {
+            "display": {
+              "abs_error": 0.013976978892837597,
+              "fitted": 0.0939769788928376,
+              "true": 0.08,
+              "within_tol": true
+            },
+            "search": {
+              "abs_error": 0.3473590766238984,
+              "fitted": 0.07264092337610153,
+              "true": 0.42,
+              "within_tol": false
+            },
+            "social": {
+              "abs_error": 0.07735907662389765,
+              "fitted": 0.07264092337610234,
+              "true": 0.15,
+              "within_tol": true
+            }
+          }
+        },
+        "delta_mu_recovery": {
+          "abs_error": 0.05182491206764617,
+          "analytic_delta_mu": 0.05377146150445178,
+          "fitted_delta_mu": 0.0019465494368056113,
+          "pass": true,
+          "relative_error": 0.9637995809981015
+        },
+        "prediction_mae_log": 0.03196210453542486,
+        "transform_recovery": {
+          "decay_abs_error": 0.13199251694796232,
+          "fitted": {
+            "decay": 0.4180074830520377,
+            "hill_half": 1.8520807781712134,
+            "hill_slope": 1.3647938294556496,
+            "log_alpha": -0.42430759880071056
+          },
+          "hill_half_rel_error": 0.8147919221828787,
+          "hill_slope_rel_error": 0.3176030852721752,
+          "pass": false,
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        }
+      },
+      "truth_pinned_transforms": {
+        "best_params": {
+          "decay": 0.55,
+          "hill_half": 10.0,
+          "hill_slope": 2.0,
+          "log_alpha": -6.0
+        },
+        "coefficient_recovery": {
+          "max_abs_error": 0.13520525486163348,
+          "mean_abs_error": 0.09012134293912462,
+          "pass": false,
+          "per_channel": {
+            "display": {
+              "abs_error": 0.0003640289659646856,
+              "fitted": 0.08036402896596469,
+              "true": 0.08,
+              "within_tol": true
+            },
+            "search": {
+              "abs_error": 0.13520525486163348,
+              "fitted": 0.2847947451383665,
+              "true": 0.42,
+              "within_tol": true
+            },
+            "social": {
+              "abs_error": 0.13479474498977576,
+              "fitted": 0.28479474498977575,
+              "true": 0.15,
+              "within_tol": false
+            }
+          }
+        },
+        "delta_mu_recovery": {
+          "abs_error": 0.01730996227855197,
+          "analytic_delta_mu": 0.05377146150445178,
+          "fitted_delta_mu": 0.03646149922589981,
+          "pass": true,
+          "relative_error": 0.3219172734800758
+        },
+        "prediction_mae_log": 9.428171149905573e-07,
+        "transform_recovery": {
+          "decay_abs_error": 0.0,
+          "fitted": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "log_alpha": -6.0
+          },
+          "hill_half_rel_error": 0.0,
+          "hill_slope_rel_error": 0.0,
+          "pass": true,
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        }
+      },
+      "world_id": "L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off"
+    },
+    {
+      "bundle_path": "validation/worlds/behavioral-lattice/L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off",
+      "certification_snapshot": {
+        "coef_status": "fail",
+        "delta_mu_status": "pass",
+        "transform_status": "fail"
+      },
+      "fitted_transforms": {
+        "best_params": {
+          "decay": 0.5199491285670205,
+          "hill_half": 0.6297592959263485,
+          "hill_slope": 1.9500321774890494,
+          "log_alpha": -1.0609295448399556
+        },
+        "coefficient_recovery": {
+          "max_abs_error": 0.3949569111070465,
+          "mean_abs_error": 0.18674384225584287,
+          "pass": false,
+          "per_channel": {
+            "display": {
+              "abs_error": 0.04131830240040176,
+              "fitted": 0.03868169759959824,
+              "true": 0.08,
+              "within_tol": true
+            },
+            "search": {
+              "abs_error": 0.3949569111070465,
+              "fitted": 0.025043088892953487,
+              "true": 0.42,
+              "within_tol": false
+            },
+            "social": {
+              "abs_error": 0.12395631326008029,
+              "fitted": 0.026043686739919702,
+              "true": 0.15,
+              "within_tol": false
+            }
+          }
+        },
+        "delta_mu_recovery": {
+          "abs_error": 0.05374746835181288,
+          "analytic_delta_mu": 0.05377146150445178,
+          "fitted_delta_mu": 2.399315263890145e-05,
+          "pass": true,
+          "relative_error": 0.9995537939277155
+        },
+        "prediction_mae_log": 0.03343104107009787,
+        "transform_recovery": {
+          "decay_abs_error": 0.030050871432979576,
+          "fitted": {
+            "decay": 0.5199491285670205,
+            "hill_half": 0.6297592959263485,
+            "hill_slope": 1.9500321774890494,
+            "log_alpha": -1.0609295448399556
+          },
+          "hill_half_rel_error": 0.9370240704073651,
+          "hill_slope_rel_error": 0.024983911255475277,
+          "pass": false,
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        }
+      },
+      "truth_pinned_transforms": {
+        "best_params": {
+          "decay": 0.55,
+          "hill_half": 10.0,
+          "hill_slope": 2.0,
+          "log_alpha": -6.0
+        },
+        "coefficient_recovery": {
+          "max_abs_error": 0.07137834701127285,
+          "mean_abs_error": 0.04783344599345099,
+          "pass": true,
+          "per_channel": {
+            "display": {
+              "abs_error": 0.0020020694213646606,
+              "fitted": 0.07799793057863534,
+              "true": 0.08,
+              "within_tol": true
+            },
+            "search": {
+              "abs_error": 0.07011992154771546,
+              "fitted": 0.3498800784522845,
+              "true": 0.42,
+              "within_tol": true
+            },
+            "social": {
+              "abs_error": 0.07137834701127285,
+              "fitted": 0.22137834701127285,
+              "true": 0.15,
+              "within_tol": true
+            }
+          }
+        },
+        "delta_mu_recovery": {
+          "abs_error": 0.008977263481423137,
+          "analytic_delta_mu": 0.05377146150445178,
+          "fitted_delta_mu": 0.04479419802302864,
+          "pass": true,
+          "relative_error": 0.16695219416120766
+        },
+        "prediction_mae_log": 1.1344735181550991e-05,
+        "transform_recovery": {
+          "decay_abs_error": 0.0,
+          "fitted": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "log_alpha": -6.0
+          },
+          "hill_half_rel_error": 0.0,
+          "hill_slope_rel_error": 0.0,
+          "pass": true,
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        }
+      },
+      "world_id": "L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off"
+    },
+    {
+      "bundle_path": "validation/worlds/behavioral-lattice/L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off",
+      "certification_snapshot": {
+        "coef_status": "fail",
+        "delta_mu_status": "pass",
+        "transform_status": "fail"
+      },
+      "fitted_transforms": {
+        "best_params": {
+          "decay": 0.2833446268680814,
+          "hill_half": 0.5044808519667527,
+          "hill_slope": 0.8286910565198125,
+          "log_alpha": -0.3180515592256379
+        },
+        "coefficient_recovery": {
+          "max_abs_error": 0.39717002090640885,
+          "mean_abs_error": 0.19253992539430928,
+          "pass": false,
+          "per_channel": {
+            "display": {
+              "abs_error": 0.05327973437011009,
+              "fitted": 0.026720265629889908,
+              "true": 0.08,
+              "within_tol": true
+            },
+            "search": {
+              "abs_error": 0.39717002090640885,
+              "fitted": 0.022829979093591107,
+              "true": 0.42,
+              "within_tol": false
+            },
+            "social": {
+              "abs_error": 0.1271700209064089,
+              "fitted": 0.022829979093591118,
+              "true": 0.15,
+              "within_tol": false
+            }
+          }
+        },
+        "delta_mu_recovery": {
+          "abs_error": 0.05325143157879442,
+          "analytic_delta_mu": 0.05377146150445178,
+          "fitted_delta_mu": 0.0005200299256573615,
+          "pass": true,
+          "relative_error": 0.9903288861580541
+        },
+        "prediction_mae_log": 0.033473630830579026,
+        "transform_recovery": {
+          "decay_abs_error": 0.26665537313191867,
+          "fitted": {
+            "decay": 0.2833446268680814,
+            "hill_half": 0.5044808519667527,
+            "hill_slope": 0.8286910565198125,
+            "log_alpha": -0.3180515592256379
+          },
+          "hill_half_rel_error": 0.9495519148033248,
+          "hill_slope_rel_error": 0.5856544717400938,
+          "pass": false,
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        }
+      },
+      "truth_pinned_transforms": {
+        "best_params": {
+          "decay": 0.55,
+          "hill_half": 10.0,
+          "hill_slope": 2.0,
+          "log_alpha": -6.0
+        },
+        "coefficient_recovery": {
+          "max_abs_error": 0.13520525486163348,
+          "mean_abs_error": 0.09012134293912462,
+          "pass": false,
+          "per_channel": {
+            "display": {
+              "abs_error": 0.0003640289659646856,
+              "fitted": 0.08036402896596469,
+              "true": 0.08,
+              "within_tol": true
+            },
+            "search": {
+              "abs_error": 0.13520525486163348,
+              "fitted": 0.2847947451383665,
+              "true": 0.42,
+              "within_tol": true
+            },
+            "social": {
+              "abs_error": 0.13479474498977576,
+              "fitted": 0.28479474498977575,
+              "true": 0.15,
+              "within_tol": false
+            }
+          }
+        },
+        "delta_mu_recovery": {
+          "abs_error": 0.01730996227855197,
+          "analytic_delta_mu": 0.05377146150445178,
+          "fitted_delta_mu": 0.03646149922589981,
+          "pass": true,
+          "relative_error": 0.3219172734800758
+        },
+        "prediction_mae_log": 9.428171149905573e-07,
+        "transform_recovery": {
+          "decay_abs_error": 0.0,
+          "fitted": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "log_alpha": -6.0
+          },
+          "hill_half_rel_error": 0.0,
+          "hill_slope_rel_error": 0.0,
+          "pass": true,
+          "truth_shared": {
+            "decay": 0.55,
+            "hill_half": 10.0,
+            "hill_slope": 2.0,
+            "per_channel_uniform": true
+          }
+        }
+      },
+      "world_id": "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off"
+    }
+  ],
+  "recovery_taxonomy": {
+    "per_world": [
+      {
+        "categories": [
+          "identifiability_limitations",
+          "regularization_bias",
+          "threshold_artifacts",
+          "transform_misspecification"
+        ],
+        "world_id": "WORLD-008-exact-recovery"
+      },
+      {
+        "categories": [
+          "identifiability_limitations",
+          "regularization_bias",
+          "threshold_artifacts",
+          "transform_misspecification"
+        ],
+        "world_id": "L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off"
+      },
+      {
+        "categories": [
+          "implementation_issues",
+          "threshold_artifacts",
+          "transform_misspecification"
+        ],
+        "world_id": "L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off"
+      },
+      {
+        "categories": [
+          "identifiability_limitations",
+          "regularization_bias",
+          "threshold_artifacts",
+          "transform_misspecification"
+        ],
+        "world_id": "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off"
+      }
+    ],
+    "taxonomy_definitions": [
+      "transform_misspecification",
+      "regularization_bias",
+      "hyperparameter_compensation",
+      "identifiability_limitations",
+      "insufficient_data",
+      "threshold_artifacts",
+      "implementation_issues",
+      "expected_mmm_limitation"
+    ]
+  },
+  "regularization_sweep": {
+    "sweep": [
+      {
+        "alpha": 1e-10,
+        "coef_recovery_pass": false,
+        "delta_mu_abs_error": 0.017283618579504,
+        "delta_mu_pass": true,
+        "in_sample_rmse_log": 1.350381950507308e-10,
+        "log_alpha": -10,
+        "max_coef_abs_error": 0.13499948858169536
+      },
+      {
+        "alpha": 1e-08,
+        "coef_recovery_pass": false,
+        "delta_mu_abs_error": 0.017283947152754386,
+        "delta_mu_pass": true,
+        "in_sample_rmse_log": 1.3546249033376754e-08,
+        "log_alpha": -8,
+        "max_coef_abs_error": 0.13500205501306167
+      },
+      {
+        "alpha": 1e-06,
+        "coef_recovery_pass": false,
+        "delta_mu_abs_error": 0.01730996227855197,
+        "delta_mu_pass": true,
+        "in_sample_rmse_log": 1.351358823560923e-06,
+        "log_alpha": -6,
+        "max_coef_abs_error": 0.13520525486163348
+      },
+      {
+        "alpha": 0.0001,
+        "coef_recovery_pass": false,
+        "delta_mu_abs_error": 0.019395586097920692,
+        "delta_mu_pass": true,
+        "in_sample_rmse_log": 0.00010862250063750826,
+        "log_alpha": -4,
+        "max_coef_abs_error": 0.15149571786237864
+      },
+      {
+        "alpha": 0.01,
+        "coef_recovery_pass": false,
+        "delta_mu_abs_error": 0.027737507967851016,
+        "delta_mu_pass": true,
+        "in_sample_rmse_log": 0.0007282155996566902,
+        "log_alpha": -2,
+        "max_coef_abs_error": 0.21665309107384512
+      },
+      {
+        "alpha": 1.0,
+        "coef_recovery_pass": false,
+        "delta_mu_abs_error": 0.040384883695949725,
+        "delta_mu_pass": true,
+        "in_sample_rmse_log": 0.026341566494751573,
+        "log_alpha": 0,
+        "max_coef_abs_error": 0.3154396528890111
+      },
+      {
+        "alpha": 100.0,
+        "coef_recovery_pass": false,
+        "delta_mu_abs_error": 0.05349701859913125,
+        "delta_mu_pass": true,
+        "in_sample_rmse_log": 0.054003773527408934,
+        "log_alpha": 2,
+        "max_coef_abs_error": 0.41785637181862423
+      }
+    ],
+    "world_id": "WORLD-008-exact-recovery"
+  },
+  "root_cause_ranking": [
+    {
+      "cause": "shared_transform_across_channels",
+      "evidence": "Ridge BO uses one decay/Hill for all channels; fitted betas homogenize (display error largest)",
+      "rank": 1,
+      "severity": "high"
+    },
+    {
+      "cause": "hyperparameter_search_objective",
+      "evidence": "BO transform params differ from truth; grid shows 1 near-equivalent RMSE points",
+      "rank": 2,
+      "severity": "high"
+    },
+    {
+      "cause": "coefficient_non_identifiability_under_shared_features",
+      "evidence": "Multi-channel worlds fail coef recovery even at truth-pinned transforms",
+      "rank": 3,
+      "severity": "medium"
+    },
+    {
+      "cause": "ridge_shrinkage_secondary_at_default_alpha",
+      "evidence": "Best coef error in alpha sweep log_alpha=-10 (pinned transforms)",
+      "rank": 4,
+      "severity": "low"
+    },
+    {
+      "cause": "delta_mu_more_forgiving_than_coef",
+      "evidence": "\u0394\u03bc recovery passes TBD_v1 tolerances while coef fails on same worlds",
+      "rank": 5,
+      "severity": "informational"
+    }
+  ],
+  "transform_sensitivity": {
+    "comparison_summary": [
+      {
+        "coef_pass_bo": false,
+        "coef_pass_truth_pinned": false,
+        "delta_mu_pass_bo": true,
+        "transform_pass_bo": false,
+        "world_id": "WORLD-008-exact-recovery"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_truth_pinned": false,
+        "delta_mu_pass_bo": true,
+        "transform_pass_bo": false,
+        "world_id": "L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_truth_pinned": true,
+        "delta_mu_pass_bo": true,
+        "transform_pass_bo": false,
+        "world_id": "L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off"
+      },
+      {
+        "coef_pass_bo": false,
+        "coef_pass_truth_pinned": false,
+        "delta_mu_pass_bo": true,
+        "transform_pass_bo": false,
+        "world_id": "L5B-exact_recovery-noise-zero-corr-low-drift-off-replay-off"
+      }
+    ]
+  }
+}

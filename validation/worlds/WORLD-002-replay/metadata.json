@@ -1,0 +1,20 @@
+{
+  "bundle_path": "/workspace/mmm/validation/worlds/WORLD-002-replay",
+  "catalog_ref": "WORLD-002-replay",
+  "checksum_version": "checksums_v1",
+  "creation_timestamp": "2026-05-22T14:00:00Z",
+  "materialization_version": "materialize_v1.0.0",
+  "materialized_files": [
+    "panel.parquet",
+    "replay_units.json"
+  ],
+  "scenario_tags": [
+    "experiment_quality:medium",
+    "signal:medium"
+  ],
+  "seed": 4243,
+  "world_contract_version": "groundtruth_world_v1",
+  "world_generator_version": "manual_v1.0.0",
+  "world_id": "WORLD-002-replay",
+  "world_version": "1.0.0"
+}
