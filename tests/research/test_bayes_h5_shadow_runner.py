@@ -110,6 +110,39 @@ def test_dry_run_no_fit_schema_path(tmp_path) -> None:
     validate_shadow_run_record(artifact["shadow_run"])
 
 
+def test_panel_schema_from_transform_config() -> None:
+    import pandas as pd
+
+    df = pd.DataFrame(
+        {
+            "geo_id": ["G0", "G0"],
+            "week_start_date": ["2022-01-03", "2022-01-10"],
+            "revenue": [100.0, 101.0],
+            "search": [1.0, 2.0],
+            "social": [1.0, 2.0],
+        }
+    )
+    cfg = dict(DEFAULT_FIXTURE_TRANSFORM_CONFIG)
+    cfg["media_transforms_by_channel"] = {"search": "identity", "social": "identity"}
+    cfg["panel_schema"] = {
+        "geo_column": "geo_id",
+        "week_column": "week_start_date",
+        "target_column": "revenue",
+    }
+    artifact = build_shadow_run_artifact(
+        ShadowRunRequest(
+            panel_id="schema_test_panel",
+            dataset_snapshot_id="snap-schema-test",
+            transform_config=cfg,
+            panel_df=df,
+            execute_fit=False,
+            artifact_type="real_panel_shadow_artifact",
+        ),
+    )
+    assert artifact["artifact_type"] == "real_panel_shadow_artifact"
+    validate_shadow_run_record(artifact["shadow_run"])
+
+
 def test_production_flags_false_on_envelope() -> None:
     artifact = build_shadow_run_artifact(
         _base_request(artifact_type="dry_run_shadow_artifact", execute_fit=False),

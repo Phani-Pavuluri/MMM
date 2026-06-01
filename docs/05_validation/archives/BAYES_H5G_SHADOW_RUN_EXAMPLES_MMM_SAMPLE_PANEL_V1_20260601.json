@@ -1,0 +1,187 @@
+{
+  "harness_version": "bayes_h5f_shadow_runner_v1",
+  "artifact_type": "real_panel_shadow_artifact",
+  "schema_reference": "BAYES_H5E_SHADOW_RUN_SCHEMA_20260601",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "research_only": true,
+  "shadow_run": {
+    "run_id": "BAYES-H5F-SHADOW-examples_mmm_sample_panel_v1-20260601",
+    "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
+    "panel_id": "examples_mmm_sample_panel_v1",
+    "data_snapshot_hash": "sha256:ed1d3aeac70e7b09e15ad3ff9c047ed6fc5ed3ef60d5037297972cb67c0da537",
+    "mmm_config_hash": "sha256:9cf3cadb104ac26e89e54ee3acacd187d8a37f96e75250d4c10ab7aefbffa454",
+    "run_environment": "research",
+    "sandbox_entrypoint": "mmm.research.bayes_h3_sandbox.run_sandbox_fit",
+    "model_spec_version": "bayes_h5_sandbox_spec_v1",
+    "enable_h5_sandbox": true,
+    "research_only": true,
+    "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+    "transform_config": {
+      "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+      "media_transforms_by_channel": {
+        "search": "identity",
+        "social": "identity",
+        "tv": "identity"
+      },
+      "transform_params_by_channel": {},
+      "transform_mismatch_mode": "aligned",
+      "policy_note": "H5g first real-panel shadow: identity H5 media transforms; prod Ridge template uses geometric adstock + hill (documented diagnostic gap, not optimizer input).",
+      "panel_schema": {
+        "geo_column": "geo_id",
+        "week_column": "week_start_date",
+        "target_column": "revenue"
+      },
+      "control_columns": []
+    },
+    "calibration_signal_summary": {
+      "signals_present": [],
+      "likelihood_integrated": false,
+      "stub_slots_only": true
+    },
+    "posterior_diagnostics": {
+      "outputs_are_diagnostic_only": true,
+      "posterior_summary": {
+        "model_kind": "bayes_h5_hierarchical_sandbox_v1",
+        "n_obs": 123,
+        "n_geo": 3,
+        "channels": [
+          "search",
+          "social",
+          "tv"
+        ],
+        "mu_channel_mean": {
+          "search": 0.0875459915586478,
+          "social": 0.32524362936252205,
+          "tv": -0.3091373855740925
+        },
+        "tau_channel_mean": {
+          "search": 0.20742409913666215,
+          "social": 0.35802725707187655,
+          "tv": 0.25898117148399286
+        },
+        "sigma_mean": 0.0017564373255093584,
+        "outputs_are_diagnostic_only": true,
+        "model_spec_version": "bayes_h5_sandbox_spec_v1"
+      },
+      "convergence_diagnostics": {
+        "rhat_max": 2.09,
+        "ess_bulk_min": 3.0,
+        "chains": 2,
+        "draws_per_chain": 200
+      },
+      "pooling_diagnostics": {
+        "pooling_mode": "partial",
+        "tau_channel_mean": {
+          "search": 0.20742409913666215,
+          "social": 0.35802725707187655,
+          "tv": 0.25898117148399286
+        },
+        "mu_channel_mean": {
+          "search": 0.0875459915586478,
+          "social": 0.32524362936252205,
+          "tv": -0.3091373855740925
+        }
+      },
+      "h5_transform_diagnostics": {
+        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+        "media_transforms_by_channel": {
+          "search": "identity",
+          "social": "identity",
+          "tv": "identity"
+        },
+        "generative_transform_expected": "shadow_panel",
+        "transform_mismatch_mode": "aligned",
+        "transform_mismatch_detected": true,
+        "transforms_aligned": false,
+        "research_only": true
+      },
+      "diagnostic_trust_report_kind": "bayes_h3_diagnostic_stub"
+    },
+    "recovery_style_diagnostics": {
+      "mode": "report_only",
+      "known_truth_available": false,
+      "note": "Real panels have no synthetic truth; use Ridge/GeoX comparison only"
+    },
+    "trust_report_candidate_diagnostics": {
+      "mapping_version": "bayes_h5d_trust_diagnostic_mapping_v1",
+      "warning_codes": [
+        "h5:production:block",
+        "h5:transform_mismatch:adstock"
+      ],
+      "trust_report_candidate_fields": {
+        "transform_alignment_status": "intentional_mismatch",
+        "transform_mismatch_detected": true,
+        "beta_gc_mae_mean": null,
+        "mu_c_mae_mean": null,
+        "mu_channel_mean": {
+          "search": 0.0875459915586478,
+          "social": 0.32524362936252205,
+          "tv": -0.3091373855740925
+        },
+        "convergence_rhat_max": 2.09,
+        "convergence_ess_bulk_min": 3.0
+      },
+      "production_trust_report": null,
+      "recommended_interpretation": "RESEARCH ONLY \u2014 NOT DECISION GRADE Shadow-run diagnostic mapping only; not production TrustReport."
+    },
+    "ridge_comparison": {
+      "ridge_run_id": "H5G-RIDGE-DIAG-examples_mmm_sample_panel_v1",
+      "comparison_mode": "diagnostic_only",
+      "used_for_optimizer": false,
+      "decision_grade": false,
+      "metrics": {
+        "mae_in_sample": 75.09842015750613,
+        "wmape_in_sample": 0.13611502198376502,
+        "n_rows": 123,
+        "n_geos": 3,
+        "ridge_config_note": "research lane; geometric adstock + hill; matches prod template transforms"
+      }
+    },
+    "geox_cls_comparison": {
+      "available": false,
+      "experiment_evidence_refs": [],
+      "note": "Optional historical GeoX/CLS evidence cross-check"
+    },
+    "excluded_fields": [
+      "approved_for_prod",
+      "budget_recommendation",
+      "budget_recommendation_payload",
+      "decision_grade",
+      "decision_surface",
+      "hard_gate",
+      "idata",
+      "linear_coef_draws",
+      "optimizer_input",
+      "optimizer_ready_curves",
+      "prod_decisioning_allowed",
+      "production_decision_surface",
+      "production_promotion",
+      "production_recommendation",
+      "production_trust_report",
+      "recommendation"
+    ],
+    "production_flags": {
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    "outputs_are_diagnostic_only": true
+  },
+  "fast_mcmc_profile": true,
+  "execute_fit": true,
+  "note": "H5f shadow-run harness output \u2014 research only. Not production TrustReport, optimizer, or DecisionSurface.",
+  "production_flags": {
+    "hard_gate": false,
+    "production_promotion": false,
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "research_only": true,
+    "decision_grade": false,
+    "production_decision_surface": false
+  },
+  "outputs_are_diagnostic_only": true
+}

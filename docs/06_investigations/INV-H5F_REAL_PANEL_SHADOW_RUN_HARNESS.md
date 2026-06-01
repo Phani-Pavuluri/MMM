@@ -96,7 +96,13 @@ Use `artifact_type=real_panel_shadow_artifact` only when the panel is a document
 
 ---
 
-## 7. What counts as real-panel evidence later
+## 7. First real-panel run (H5g)
+
+See [INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md](INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md) and [H5G_FIRST_REAL_PANEL_SHADOW_RUN_MANIFEST.md](H5G_FIRST_REAL_PANEL_SHADOW_RUN_MANIFEST.md).
+
+---
+
+## 8. What counts as real-panel evidence later
 
 A shadow run counts as **real-panel evidence** only when **all** of the following hold:
 
@@ -110,7 +116,7 @@ Dry-run and schema-only records **do not** satisfy (2) or (5).
 
 ---
 
-## 8. Production boundary
+## 9. Production boundary
 
 | Allowed | Blocked |
 |---------|---------|

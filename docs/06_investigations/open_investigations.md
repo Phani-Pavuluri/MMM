@@ -1879,7 +1879,22 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | Authorized real-panel shadow runs (INV-H5F harness); Promotion Gate for prod |
+| **Next** | More real-panel shadows (extended MCMC); Promotion Gate for prod |
+
+---
+
+### INV-H5G — Bayes-H5 first real-panel shadow run
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5G |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md](INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md) |
+| **Manifest** | [H5G_FIRST_REAL_PANEL_SHADOW_RUN_MANIFEST.md](H5G_FIRST_REAL_PANEL_SHADOW_RUN_MANIFEST.md) |
+| **Artifact** | [BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json](../05_validation/archives/BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
+| **Panel** | `examples/sample_panel.csv` (`examples_mmm_sample_panel_v1`) |
+| **Outcome** | First H5e-compliant `real_panel_shadow_artifact`; fast MCMC; diagnostic Ridge contrast |
+| **Production impact** | None — production Bayes blocked |
 
 ---
 

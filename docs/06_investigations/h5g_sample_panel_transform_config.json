@@ -1,0 +1,17 @@
+{
+  "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+  "media_transforms_by_channel": {
+    "search": "identity",
+    "social": "identity",
+    "tv": "identity"
+  },
+  "transform_params_by_channel": {},
+  "transform_mismatch_mode": "aligned",
+  "policy_note": "H5g first real-panel shadow: identity H5 media transforms; prod Ridge template uses geometric adstock + hill (documented diagnostic gap, not optimizer input).",
+  "panel_schema": {
+    "geo_column": "geo_id",
+    "week_column": "week_start_date",
+    "target_column": "revenue"
+  },
+  "control_columns": []
+}

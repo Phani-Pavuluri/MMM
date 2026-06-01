@@ -98,6 +98,16 @@
 | **Dry-run artifact** | [BAYES_H5F_SHADOW_RUN_DRY_RUN_20260601.json](archives/BAYES_H5F_SHADOW_RUN_DRY_RUN_20260601.json) |
 | **Production** | **Still blocked** — no prod TrustReport, optimizer, DecisionSurface, or Ridge replacement |
 
+### H5g first real-panel shadow run (INV-H5G — research evidence)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — first `real_panel_shadow_artifact` on in-repo `examples/sample_panel.csv` |
+| **Investigation** | [INV-H5G](../06_investigations/INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md) |
+| **Manifest** | [H5G_FIRST_REAL_PANEL_SHADOW_RUN_MANIFEST.md](../06_investigations/H5G_FIRST_REAL_PANEL_SHADOW_RUN_MANIFEST.md) |
+| **Artifact** | [BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json](archives/BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
+| **Production** | **Still blocked** — illustrative panel only; not decision grade |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

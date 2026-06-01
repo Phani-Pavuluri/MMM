@@ -179,17 +179,33 @@ def _config_from_panel(
     )
 
 
+def _resolve_panel_schema(transform_config: dict[str, Any]) -> tuple[str, str, str]:
+    """Resolve geo/week/target columns from transform_config.panel_schema or defaults."""
+    raw = transform_config.get("panel_schema") or {}
+    if raw and not isinstance(raw, dict):
+        raise H5ShadowRunnerError("transform_config.panel_schema must be an object when present")
+    geo = str(raw.get("geo_column") or "geo_id")
+    week = str(raw.get("week_column") or "week")
+    target = str(raw.get("target_column") or "y")
+    return geo, week, target
+
+
 def _infer_schema(df: pd.DataFrame, transform_config: dict[str, Any]) -> PanelSchema:
     channels = tuple(transform_config.get("media_transforms_by_channel", {}).keys())
     if not channels:
         raise H5ShadowRunnerError("transform_config.media_transforms_by_channel must list channel columns")
-    for col in ("geo_id", "week", "y"):
+    geo_col, week_col, target_col = _resolve_panel_schema(transform_config)
+    for col in (geo_col, week_col, target_col):
         if col not in df.columns:
             raise H5ShadowRunnerError(f"panel missing required column {col!r}")
     for ch in channels:
         if ch not in df.columns:
             raise H5ShadowRunnerError(f"panel missing channel column {ch!r}")
-    return PanelSchema("geo_id", "week", "y", channels)
+    controls = tuple(transform_config.get("control_columns") or ())
+    for ctrl in controls:
+        if ctrl not in df.columns:
+            raise H5ShadowRunnerError(f"panel missing control column {ctrl!r}")
+    return PanelSchema(geo_col, week_col, target_col, channels, controls)
 
 
 def build_trust_diagnostics_from_fit(
