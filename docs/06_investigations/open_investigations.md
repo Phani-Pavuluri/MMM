@@ -1814,12 +1814,12 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **open** — primary metric fixed; variant sweep done; disposition A–D blocks H4c |
 | **Platform track** | 4 — Research Sandbox |
 | **First identified in** | Bayes-H4b repeated pilot (2026-06-01) |
-| **Evidence sources** | [INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](INV-H4-001_SPARSE_POOLING_BEHAVIOR.md); [BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](../05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json); [BAYES_H4_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json) |
+| **Evidence sources** | [INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](INV-H4-001_SPARSE_POOLING_BEHAVIOR.md); [BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](../05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json); [BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) |
 | **Problem statement** | Legacy vs true \(\mu^\*\) overstated sparse failure; primary vs \(\hat\mu_c\) shows pooling on baseline. Open: official sparse world / τ prior / ADR disposition before H4c. |
 | **Why it matters** | H4c harder worlds and INV-071 thresholds are misleading until sparse pooling is understood or metrics are revised. |
 | **Risk type** | certification reliability |
 | **Production impact** | None — research-only |
-| **Current behavior** | INV-H4-001b sweep complete: baseline primary ≈ 0.55; `sparse_more_weeks` primary &gt; 1; stronger τ improves legacy ratio. |
+| **Current behavior** | H4b-refresh: primary sparse shrinkage **0.63–0.69** (stable &lt; 1); legacy **2.57–2.73** (recovery diagnostic). Pooling mechanics evidenced; true-effect recovery open. |
 | **Desired end state** | Documented root cause or revised acceptance metrics; stable sparse-world behavior across seeds. |
 | **Blocking dependencies** | None for investigation; **H4c blocked** on this INV |
 | **Suggested validation** | `tests/research/test_bayes_h4_sparse_pooling_investigation.py`; optional slow variant runs |
@@ -1841,12 +1841,12 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | open — H4a + H4b pilots complete with **provisional report-only** bands |
 | **Platform track** | 4 — Research Sandbox |
 | **First identified in** | Bayes-H4 recovery world scaffolding (2026-06-01) |
-| **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); [BAYES_H4_THRESHOLD_PILOT_20260601.json](../05_validation/archives/BAYES_H4_THRESHOLD_PILOT_20260601.json); [BAYES_H4_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json); `h4_threshold_pilot.py`; `h4_repeated_pilot.py` |
+| **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); threshold + [primary-metric repeated](../05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) JSON; `h4_threshold_pilot.py`; `h4_repeated_pilot.py` |
 | **Problem statement** | H4 worlds report recovery metrics; promotion pass/fail thresholds need repeated pilots before hard gates. |
 | **Why it matters** | Without stable thresholds, recovery scaffolding must not be misread as production readiness. |
 | **Risk type** | certification reliability |
 | **Production impact** | None — research-only |
-| **Current behavior** | H4a/H4b JSON committed; sparse shrinkage **2.57–2.73** across 3 extended seeds; classification **`likely_model_prior_or_world_design`**. |
+| **Current behavior** | H4b-refresh primary shrinkage **&lt; 1** on sparse world; legacy **2.57–2.73** tracked separately; true-effect MAE/coverage still open. |
 | **Desired end state** | Documented TBD_v1 thresholds after repeated pilots + extended worlds; optional hard warn bands. |
 | **Blocking dependencies** | INV-H4-001 (sparse pooling); optional extended H4 worlds after INV-H4-001 |
 | **Suggested validation** | Slow pytest + recovery report JSON archive |

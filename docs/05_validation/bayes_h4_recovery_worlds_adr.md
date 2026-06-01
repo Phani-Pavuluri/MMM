@@ -143,7 +143,13 @@ Backend choice (PyMC) and recovery metrics remain **research-only**. Passing the
 
 ## 10. Repeated pilot results (Bayes-H4b)
 
-**Artifact:** `docs/05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json`  
+**Artifacts:**
+
+| Artifact | Role |
+|----------|------|
+| [BAYES_H4_REPEATED_PILOT_20260601.json](archives/BAYES_H4_REPEATED_PILOT_20260601.json) | Original H4b (legacy metric conflated with primary field) |
+| [BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json](archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) | **H4b-refresh** — authoritative extended evidence with primary + legacy shrinkage |
+
 **Runner:** `mmm/research/bayes_h3_sandbox/h4_repeated_pilot.py`  
 **Sampler:** extended profile (`draws=600`, `tune=600`, `chains=4`, `target_accept=0.95`); fixed `panel_seed=4400`; `nuts_seeds` ∈ {4400, 4401, 4402}.
 
@@ -165,20 +171,19 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 | `likely_world_design_or_metric` | All runs ratio ≥ 1 — review sparse weeks and metric definition |
 | `inconclusive` | Mixed or missing values — keep INV-071 open |
 
-**H4a reference:** fast pilot `shrinkage_ratio_sparse ≈ 2.57` (expected &lt; 1). H4b tests whether longer sampling restores pooling toward μ_c on `WORLD-BAYES-H4-SPARSE-GEO`.
+**H4a reference (legacy):** fast pilot `shrinkage_ratio_sparse_vs_true_mu ≈ 2.57`.
 
-### Observed H4b outcome (2026-06-01)
+### Observed H4b-refresh outcome (2026-06-01, primary metric artifact)
 
-| Metric | Extended pilot (3 seeds) |
-|--------|--------------------------|
-| `shrinkage_ratio_sparse_vs_true_mu` (legacy) | **2.57, 2.65, 2.73** — all ≥ 1 |
-| Classification (legacy) | **`likely_model_prior_or_world_design`** under old metric |
-| `conflict_warning_pass_rate` | **1.0** on conflict world |
-| Production flags | all **false** |
+| Metric | Extended pilot (3 seeds) | Classification |
+|--------|--------------------------|----------------|
+| `shrinkage_ratio_sparse` (primary vs \(\hat\mu_c\)) | **0.63, 0.68, 0.69** (mean ≈ **0.66**) — all &lt; 1 | **`pooling_toward_posterior_mu_stable`** |
+| `shrinkage_ratio_sparse_vs_true_mu` (legacy) | **2.57, 2.65, 2.73** — all ≥ 1 | **`weak_recovery_vs_true_mu`** (not a pooling gate) |
+| `beta_gc_mae` / `mu_c_mae` | report in artifact | true-effect recovery **open** |
+| `conflict_warning_pass_rate` | **1.0** | conflict world OK |
+| Production flags | all **false** | |
 
-**Post INV-H4-001 / 001b:** legacy ratios compared to **true** \(\mu_c^\*\); primary metric uses **\(\hat\mu_c\)**. Fast refit baseline primary ≈ **0.55**; variant sweep [JSON](archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json). H4b JSON is **not** a failure of pooling toward \(\hat\mu\) — it is weak recovery vs generative \(\mu^\*\) on a harsh toy world.
-
-**Interpretation:** Defer H4c until INV-H4-001 disposition (sparse world / τ prior / metric policy). See [INV-H4-001](../06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) §8–9.
+**Interpretation:** Extended sampling **confirms pooling toward learned \(\hat\mu_c\)** on the sparse world (primary). Legacy vs \(\mu_c^\*\) remains poor — judge recovery with `mu_c_mae`, `beta_gc_mae`, coverage, and legacy shrinkage separately. **Do not** treat primary &lt; 1 as proof of true-effect recovery. Defer H4c until INV-H4-001 disposition **C+A**. See [INV-H4-001](../06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md).
 
 ---
 
@@ -203,8 +208,8 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 
 - **Complete (scaffolding):** `recovery_worlds.py`, `recovery_runner.py`, `tests/research/test_bayes_h4_recovery_worlds.py`.  
 - **Complete (H4a pilot):** `h4_threshold_pilot.py`, committed pilot JSON, `tests/research/test_bayes_h4_threshold_pilot.py`.  
-- **Complete (H4b repeated pilot):** `h4_repeated_pilot.py`, committed repeated pilot JSON, `tests/research/test_bayes_h4_repeated_pilot.py`.  
-- **Next:** Bayes-H4c extended recovery worlds (only after H4b clarifies sparse shrinkage); tighten INV-071 when thresholds stabilize.  
+- **Complete (H4b repeated pilot):** `h4_repeated_pilot.py`, original + [primary-metric refresh JSON](archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json), `tests/research/test_bayes_h4_repeated_pilot.py`.  
+- **Next:** INV-H4-001 disposition (C+A); then H4c (blocked).  
 - **Not authorized:** Bayes-H3 production promotion, NumPyro backend, prod CI Bayesian jobs without research labeling.
 
 **This ADR does not authorize production Bayesian decisioning.**

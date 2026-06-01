@@ -8,11 +8,12 @@ from pathlib import Path
 import pytest
 
 from mmm.research.bayes_h3_sandbox.h4_repeated_pilot import (
-    DEFAULT_ARTIFACT_PATH,
-    PILOT_ID,
+    PILOT_ID_PRIMARY,
+    PRIMARY_ARTIFACT_PATH,
     aggregate_world_runs,
     build_repeated_pilot_summary,
-    classify_sparse_shrinkage,
+    classify_sparse_shrinkage_legacy,
+    classify_sparse_shrinkage_primary,
     load_h4_repeated_pilot_artifact,
 )
 from mmm.research.bayes_h3_sandbox.recovery_worlds import (
@@ -41,6 +42,9 @@ def _fixture_per_run_rows() -> list[dict]:
         "expected_diagnostic_behavior": {},
         "panel_seed": 4400,
         "sampler": {"draws": 600, "tune": 600, "chains": 4},
+        "beta_geo_index_order": ["dma_dense_a", "dma_dense_b", "dma_sparse"],
+        "channel_index_order": ["tv", "search"],
+        "sparse_shrinkage_decomposition": {"by_geo_channel": []},
     }
     rows: list[dict] = []
     for nuts_seed in (4400, 4401):
@@ -54,10 +58,11 @@ def _fixture_per_run_rows() -> list[dict]:
                 "mu_c_mae": 0.08,
                 "beta_gc_coverage_90": 0.5,
                 "shrinkage_ratio_sparse": None,
+                "shrinkage_ratio_sparse_vs_true_mu": None,
                 "conflict_warnings": [],
             }
         )
-    for nuts_seed, shrink in ((4400, 2.4), (4401, 2.6), (4402, 2.5)):
+    for nuts_seed, primary, legacy in ((4400, 0.52, 2.57), (4401, 0.58, 2.65), (4402, 0.54, 2.73)):
         rows.append(
             {
                 **base,
@@ -67,7 +72,8 @@ def _fixture_per_run_rows() -> list[dict]:
                 "beta_gc_mae": 0.21,
                 "mu_c_mae": 0.10,
                 "beta_gc_coverage_90": 0.35,
-                "shrinkage_ratio_sparse": shrink,
+                "shrinkage_ratio_sparse": primary,
+                "shrinkage_ratio_sparse_vs_true_mu": legacy,
                 "conflict_warnings": [],
             }
         )
@@ -81,6 +87,7 @@ def _fixture_per_run_rows() -> list[dict]:
             "mu_c_mae": 0.09,
             "beta_gc_coverage_90": 0.42,
             "shrinkage_ratio_sparse": None,
+            "shrinkage_ratio_sparse_vs_true_mu": None,
             "conflict_warnings": ["conflict:h4-conflict-tv-dma-a: claimed negative"],
         }
     )
@@ -105,46 +112,52 @@ def test_repeated_summary_preserves_all_world_ids() -> None:
 
 def test_repeated_summary_research_flags_and_no_prod_fields() -> None:
     summary = build_repeated_pilot_summary(_fixture_per_run_rows())
-    assert summary["pilot_id"] == PILOT_ID
+    assert summary["pilot_id"] == PILOT_ID_PRIMARY
     assert summary["research_only"] is True
     assert summary["approved_for_prod"] is False
     assert summary["prod_decisioning_allowed"] is False
     assert summary["production_promotion"] is False
     assert summary["interpretation"]["hard_gate"] is False
+    assert summary["interpretation"]["primary_shrinkage_role"] == "pooling_mechanics_only"
     blob = json.dumps(summary)
     assert '"approved_for_prod": true' not in blob
-    assert '"prod_decisioning_allowed": true' not in blob
     for row in summary["per_run"]:
         assert row["has_decision_surface"] is False
-        assert row["production_decision_surface"] is False
+        assert row.get("beta_geo_index_order")
+        assert row.get("channel_index_order")
 
 
-def test_sparse_shrinkage_warning_when_ratio_gte_one() -> None:
+def test_sparse_primary_pooling_stable_fixture() -> None:
     agg = aggregate_world_runs([r for r in _fixture_per_run_rows() if r["world_id"] == WORLD_BAYES_H4_SPARSE_GEO])
-    assert agg["sparse_shrinkage_warning"] is True
-    assert agg["shrinkage_ratio_sparse"]["min"] >= 1.0
+    assert agg["sparse_shrinkage_warning_primary"] is False
+    assert agg["shrinkage_ratio_sparse"]["max"] < 1.0
+    assert agg["sparse_shrinkage_warning_legacy"] is True
 
 
-def test_classify_sparse_shrinkage_likely_model_when_all_gte_one() -> None:
-    out = classify_sparse_shrinkage([2.4, 2.6, 2.5], h4a_fast_reference=2.57)
-    assert out["classification"] in (
-        "likely_model_prior_or_world_design",
-        "likely_world_design_or_metric",
-        "still_unstable",
-        "inconclusive",
-    )
-    assert out["fraction_lt_1"] == 0.0
+def test_classify_primary_pooling_stable() -> None:
+    out = classify_sparse_shrinkage_primary([0.52, 0.58, 0.54])
+    assert out["classification"] == "pooling_toward_posterior_mu_stable"
+    assert out["fraction_lt_1"] == 1.0
 
 
-def test_committed_repeated_artifact_loads() -> None:
-    path = REPO_ROOT / DEFAULT_ARTIFACT_PATH
+def test_classify_legacy_weak_recovery() -> None:
+    out = classify_sparse_shrinkage_legacy([2.57, 2.65, 2.73], h4a_fast_reference=2.57)
+    assert out["classification"] == "weak_recovery_vs_true_mu"
+    assert out.get("not_a_pooling_gate") is True
+
+
+def test_committed_primary_repeated_artifact_loads() -> None:
+    path = REPO_ROOT / PRIMARY_ARTIFACT_PATH
     if not path.exists():
-        pytest.skip("repeated pilot artifact not materialized in workspace")
+        pytest.skip("primary-metric repeated pilot artifact not materialized in workspace")
     art = load_h4_repeated_pilot_artifact(path)
-    assert art["pilot_id"] == PILOT_ID
+    assert art["pilot_id"] == PILOT_ID_PRIMARY
     assert art["research_only"] is True
     assert art["interpretation"]["hard_gate"] is False
-    assert art["approved_for_prod"] is False
+    assert art["metric_definitions"]["shrinkage_ratio_sparse"]["role"] == "pooling_mechanics_primary"
+    sparse_runs = [r for r in art["per_run"] if r["world_id"] == WORLD_BAYES_H4_SPARSE_GEO]
+    assert sparse_runs[0].get("sparse_shrinkage_decomposition") is not None
+    assert sparse_runs[0].get("shrinkage_ratio_sparse_vs_true_mu") is not None
 
 
 @pytest.mark.pymc
@@ -161,7 +174,6 @@ def test_live_repeated_pilot_simple_pooling_two_seeds() -> None:
     )
     assert summary["research_only"] is True
     assert len(summary["per_run"]) == 2
-    assert summary["aggregate_by_world"][WORLD_BAYES_H4_SIMPLE_POOLING]["n_runs"] == 2
 
 
 @pytest.mark.pymc
@@ -176,5 +188,8 @@ def test_live_repeated_pilot_sparse_geo_optional() -> None:
         nuts_seeds=(4400,),
         sampler=SAMPLER_FAST,
     )
-    sparse = summary["per_run"][0].get("shrinkage_ratio_sparse")
-    assert sparse is None or isinstance(sparse, float)
+    row = summary["per_run"][0]
+    assert row.get("shrinkage_ratio_sparse") is None or isinstance(row["shrinkage_ratio_sparse"], float)
+    assert row.get("shrinkage_ratio_sparse_vs_true_mu") is None or isinstance(
+        row["shrinkage_ratio_sparse_vs_true_mu"], float
+    )

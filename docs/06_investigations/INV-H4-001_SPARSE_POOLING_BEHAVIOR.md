@@ -134,9 +134,24 @@ For current sparse world, sorted geo order matches `spec.geo_order` — **H2 unl
 3. **`sparse_stronger_tau_prior`** — Stronger \(\tau\) prior pulls legacy ratio down (1.90 vs 2.57); supports **B. revise τ prior** for production-adjacent research, not required for primary pooling signal.
 4. **`sparse_more_weeks`** — Primary &gt; 1: additional sparse-geo data allows geo-specific fit away from \(\hat\mu\) on at least one channel; original **3-week** design was sparse/unstable for the **primary** pooling metric. Supports **A. revise sparse world** (weeks / outlier strength) before H4c.
 
-### Re-read of H4a/H4b
+### H4b-refresh (primary metric artifact)
 
-Extended multi-seed pilots used the **legacy** metric only. Under the **primary** metric, baseline sparse pooling toward \(\hat\mu_c\) is **not** disproven by H4b; the open work is **world design**, **μ/β recovery on toy panels**, and **ADR acceptance wording** — not “pooling absent.”
+**Artifact:** [BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json)  
+Extended MCMC × 3 seeds on official sparse world:
+
+| Seed | Primary (vs \(\hat\mu_c\)) | Legacy (vs \(\mu^\*\)) |
+|------|---------------------------|------------------------|
+| 4400 | **0.63** | 2.57 |
+| 4401 | **0.68** | 2.65 |
+| 4402 | **0.69** | 2.73 |
+
+**Classification:** `pooling_toward_posterior_mu_stable` (primary); `weak_recovery_vs_true_mu` (legacy diagnostic).
+
+This refresh validates **pooling mechanics** under extended sampling. **True-effect recovery** (`mu_c_mae`, `beta_gc_mae`, coverage, legacy shrinkage) remains a **separate open** evaluation.
+
+### Re-read of original H4b JSON
+
+The first [BAYES_H4_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json) stored legacy values in `shrinkage_ratio_sparse`. It is **superseded** for pooling conclusions by the primary-metric refresh above.
 
 ---
 
@@ -155,6 +170,6 @@ Extended multi-seed pilots used the **legacy** metric only. Under the **primary*
 
 ## 10. Next steps
 
-1. ADR/registry: mark primary metric authoritative; H4c blocked pending **A or D** decision.
-2. Re-run H4b repeated pilot with primary metric if extended JSON should be updated (optional).
-3. Close INV-H4-001 when disposition **A/B/C/D** is recorded in ADR §11.
+1. ADR/registry: primary metric authoritative (**done** — H4b-refresh artifact committed).
+2. Close INV-H4-001 when disposition **A/B/C/D** is recorded (recommended **C+A**).
+3. H4c remains blocked until disposition accepted.

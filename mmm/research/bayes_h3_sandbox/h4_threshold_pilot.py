@@ -68,6 +68,7 @@ def _world_row_from_report(report: dict[str, Any], spec: RecoveryWorldSpec) -> d
     rec = report.get("h4_recovery") or {}
     conv = rec.get("convergence_diagnostics") or report.get("convergence_diagnostics") or {}
     rhat = conv.get("rhat_max")
+    posterior_indexing = rec.get("posterior_indexing") or {}
     return {
         "world_id": spec.world_id,
         "seed": int(spec.mcmc_seed),
@@ -75,6 +76,10 @@ def _world_row_from_report(report: dict[str, Any], spec: RecoveryWorldSpec) -> d
         "mu_c_mae": rec.get("mu_c_mae"),
         "beta_gc_coverage_90": rec.get("beta_gc_coverage_90"),
         "shrinkage_ratio_sparse": rec.get("shrinkage_ratio_sparse"),
+        "shrinkage_ratio_sparse_vs_true_mu": rec.get("shrinkage_ratio_sparse_vs_true_mu"),
+        "sparse_shrinkage_decomposition": rec.get("sparse_shrinkage_decomposition"),
+        "beta_geo_index_order": list(posterior_indexing.get("beta_geo_index_order") or []),
+        "channel_index_order": list(posterior_indexing.get("channel_index_order") or []),
         "conflict_warnings": list(rec.get("conflict_warnings") or []),
         "convergence": {
             "rhat_max": rhat,

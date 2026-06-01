@@ -37,7 +37,8 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | [Bayes-H4 recovery worlds ADR](05_validation/bayes_h4_recovery_worlds_adr.md) | 1 | Reliability / governance | TrustReport (diagnostic) | unfounded prod promotion; unmeasured recovery | H4 ADR + `recovery_worlds` / `recovery_runner` | Architecture | **Accepted** | H4 pilot thresholds + slow CI optional | Yes (validation spec) | Blocked — recovery ≠ prod |
 | Bayes-H4 recovery world scaffolding | 2 | Reliability / governance | TrustReport (diagnostic) | sandbox correctness unproven | `WORLD-BAYES-H4-*`; `tests/research/test_bayes_h4_recovery_worlds.py` | Implementation | **Complete** (scaffolding) | H4a threshold pilot | **Yes** — metrics report-only | Blocked — not decision-grade |
 | Bayes-H4a recovery threshold pilot | 2 | Reliability / governance | TrustReport (diagnostic) | uncalibrated recovery gates | `h4_threshold_pilot.py`; `archives/BAYES_H4_THRESHOLD_PILOT_20260601.json` | Implementation | **Complete** (provisional bands) | H4b repeated pilot | **Yes** — report-only thresholds | Blocked — pilot ≠ prod |
-| Bayes-H4b repeated recovery pilot | 2 | Reliability / governance | TrustReport (diagnostic) | misread fast-MCMC shrinkage as model readiness | `h4_repeated_pilot.py`; `archives/BAYES_H4_REPEATED_PILOT_20260601.json` | Implementation | **Complete** (report-only) | INV-H4-001 sparse pooling investigation | **Yes** — multi-seed extended sampling | Blocked — repeated pilot ≠ prod |
+| Bayes-H4b repeated recovery pilot | 2 | Reliability / governance | TrustReport (diagnostic) | misread fast-MCMC shrinkage as model readiness | `h4_repeated_pilot.py`; `archives/BAYES_H4_REPEATED_PILOT_20260601.json` | Implementation | **Complete** (superseded for pooling) | H4b-refresh primary metric | **Yes** | Blocked |
+| Bayes-H4b-refresh primary-metric repeated pilot | 2 | Reliability / governance | TrustReport (diagnostic) | legacy metric overstated sparse failure | [PRIMARY_METRIC JSON](05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) | Implementation | **Complete** (pooling mechanics) | INV-H4-001 disposition C+A | **Yes** | Blocked — not true-effect recovery proof |
 | INV-H4-001 sparse pooling behavior | 2 | Reliability / governance | TrustReport (diagnostic) | wrong shrinkage metric; weak pooling on sparse geo | [INV-H4-001](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md); `sparse_shrinkage_metrics.py` | Investigation | **Open** (metric fixed) | INV-H4-001b disposition → H4c | **Yes** | Blocked — H4c until sparse world/prior decision |
 | INV-H4-001b sparse variant sweep | 2 | Reliability / governance | TrustReport (diagnostic) | mis-tuned sparse world; τ prior | [sweep JSON](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) | Investigation | **Complete** (report-only) | Pick A/B/C/D in INV-H4-001 §9 | **Yes** | Blocked — H4c |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | Bayes-H4+ gates; Promotion Gate; decision trace | Promotion | **Blocked** | not until H4 gates + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
@@ -59,9 +60,9 @@ Bayes-H2b ADR ✅
   → Bayes-H4 recovery worlds ADR + scaffolding ✅
   → Bayes-H4a threshold pilot (provisional JSON) ✅
   → Bayes-H4b repeated recovery pilot (extended JSON) ✅
-  → INV-H4-001 sparse pooling investigation (metric/indexing) ✅
-  → INV-H4-001b variant sweep ✅
-  → INV-H4-001 disposition (A/B/C/D) + sparse world tune  ← NEXT
+  → INV-H4-001 / 001b (metric + variant sweep) ✅
+  → H4b-refresh primary-metric repeated pilot ✅
+  → INV-H4-001 disposition (C+A)  ← NEXT
   → Bayes-H4c extended recovery worlds (blocked)
   → Bayes-H3 production promotion (blocked)
 ```
