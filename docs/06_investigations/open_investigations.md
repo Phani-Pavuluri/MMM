@@ -1852,6 +1852,22 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H4D — Bayes-H4 sparse/τ tuning and recovery stability
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H4D |
+| **Title** | Sparse/τ prior tuning and recovery-candidate multi-seed stability |
+| **Status** | **complete (report-only)** — H4d pilot artifact committed |
+| **Doc** | [INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md](INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md) |
+| **Artifact** | [BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json](../05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json) |
+| **Code** | `mmm.research.bayes_h3_sandbox.h4d_sparse_tau_stability` |
+| **Outcome** | Seed stability + τ grid on recovery candidates; SPARSE-GEO stress-only; disposition report-only |
+| **Production impact** | None — all production flags false |
+| **Notes** | Does not redo H4c. Does not enable hard gates or production promotion. |
+
+---
+
 ### INV-H4-001b — Sparse variant sweep (complete)
 
 | Field | Value |

@@ -261,6 +261,22 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 
 ---
 
+## 13. H4d sparse/τ stability pilot (INV-H4D)
+
+**Doc:** [INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md](../06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md)  
+**Artifact:** [archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json](archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json)  
+**Code:** `mmm.research.bayes_h3_sandbox.h4d_sparse_tau_stability`
+
+| Policy | Rule |
+|--------|------|
+| Scope | Multi-seed stability + τ grid on recovery candidates + stress reference |
+| Not redoing H4c | World designs fixed; varies seeds and τ prior only |
+| SPARSE-RECOVERY vs SPARSE-GEO | Separate roles — recovery candidate vs stress diagnostic |
+| Hard gates | **`hard_gate: false`** |
+| Production | **Blocked** |
+
+---
+
 ## 14. Consequences
 
 - **Complete (scaffolding):** `recovery_worlds.py`, `recovery_runner.py`, `tests/research/test_bayes_h4_recovery_worlds.py`.  
@@ -269,7 +285,8 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 - **Complete (H4b-disposition):** metric policy C + sparse-world posture A accepted.  
 - **Complete (H4c):** `h4c_recovery_worlds.py`, `h4c_extended_recovery_pilot.py`, H4c pilot JSON, `tests/research/test_bayes_h4c_extended_recovery_worlds.py`.  
 - **Complete (INV-071):** claim-specific report-only threshold policy JSON + `h4_recovery_threshold_policy.py`, `tests/research/test_bayes_h4_recovery_threshold_policy.py`.  
-- **Next:** Tune sparse/τ per disposition A; optional future hard gates after repeated multi-seed stability.  
+- **Complete (H4d / INV-H4D):** sparse/τ stability pilot — [H4D JSON](archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json), `h4d_sparse_tau_stability.py`, [INV-H4D doc](../06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md).  
+- **Next:** Optional extended-MCMC H4d re-run; optional future hard gates after repeated multi-seed stability per role.  
 - **Not authorized:** Bayes-H3 production promotion, NumPyro backend, prod CI Bayesian jobs without research labeling.
 
 **This ADR does not authorize production Bayesian decisioning.**
