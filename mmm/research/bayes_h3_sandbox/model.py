@@ -26,6 +26,7 @@ def fit_h3_sandbox_hierarchical(
     *,
     geo_hierarchy_mapping: dict[str, Any] | None = None,
     calibration_signals_stub: list[dict[str, Any]] | None = None,
+    sandbox_model_overrides: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     Run a small partial-pooling hierarchical Gaussian MMM (research sandbox only).
@@ -41,6 +42,7 @@ def fit_h3_sandbox_hierarchical(
 
     df = validate_panel(df, schema, integrity_qa=False, calendar_strict=False)
     df = sort_panel_for_modeling(df, schema)
+    beta_geo_index_order = df[schema.geo_column].unique().tolist()
     geo_idx = partial_pooling_indices(df, schema)
     n_geo = int(geo_idx.max() + 1)
     channels = list(schema.channel_columns)
@@ -54,12 +56,14 @@ def fit_h3_sandbox_hierarchical(
     tune = int(config.bayesian.tune)
     chains = int(config.bayesian.chains)
     nuts_seed = int(config.bayesian.nuts_seed)
+    overrides = sandbox_model_overrides or {}
+    tau_prior_sigma = float(overrides.get("tau_channel_prior_sigma", 0.5))
 
     with pm.Model() as model:
         alpha_geo = pm.Normal("alpha_geo", mu=0.0, sigma=1.0, shape=n_geo)
         sigma = pm.HalfNormal("sigma", sigma=1.0)
         mu_c = pm.Normal("mu_channel", mu=0.0, sigma=0.5, shape=n_c)
-        tau_c = pm.HalfNormal("tau_channel", sigma=0.5, shape=n_c)
+        tau_c = pm.HalfNormal("tau_channel", sigma=tau_prior_sigma, shape=n_c)
         z = pm.Normal("z_beta", mu=0.0, sigma=1.0, shape=(n_geo, n_c))
         beta = pm.Deterministic("beta", mu_c + z * tau_c)
         mu = alpha_geo[geo_idx] + (x * beta[geo_idx]).sum(axis=-1)
@@ -84,6 +88,8 @@ def fit_h3_sandbox_hierarchical(
         n_obs=len(df),
         geo_hierarchy_mapping=geo_hierarchy_mapping or {},
         calibration_signals_stub=calibration_signals_stub or [],
+        beta_geo_index_order=beta_geo_index_order,
+        sandbox_model_overrides=overrides,
     )
 
 
@@ -97,6 +103,8 @@ def _package_mvp_fit(
     n_obs: int,
     geo_hierarchy_mapping: dict[str, Any],
     calibration_signals_stub: list[dict[str, Any]],
+    beta_geo_index_order: list[str],
+    sandbox_model_overrides: dict[str, Any],
 ) -> dict[str, Any]:
     import arviz as az  # type: ignore
 
@@ -130,9 +138,12 @@ def _package_mvp_fit(
         "h2d_alignment": "partial_pooling_beta_gc",
         "geo_hierarchy_mapping": geo_hierarchy_mapping,
         "calibration_signal_slots": calibration_signals_stub,
+        "beta_geo_index_order": list(beta_geo_index_order),
+        "channel_index_order": list(channels),
         "beta_geo_channel_mean": {
             str(g): {channels[c]: float(beta_post[g, c]) for c in range(len(channels))} for g in range(n_geo)
         },
+        "beta_posterior_coord": "beta[geo_idx, channel_idx] aligned to beta_geo_index_order × channel_index_order",
     }
 
     pooling_diagnostics: dict[str, Any] = {

@@ -47,6 +47,7 @@ class RecoveryWorldSpec:
     sparse_geos: tuple[str, ...] = ()
     expected_diagnostic_behavior: dict[str, Any] = field(default_factory=dict)
     mcmc_seed: int = H4_SEED
+    sandbox_model_overrides: dict[str, Any] = field(default_factory=dict)
 
     @property
     def known_truth(self) -> dict[str, Any]:
@@ -237,17 +238,140 @@ def _conflicting_evidence_world() -> RecoveryWorldSpec:
     )
 
 
+# INV-H4-001 research diagnostics — not part of official H4_WORLD_IDS catalog.
+WORLD_BAYES_H4_SPARSE_DIAG_NO_OUTLIER = "WORLD-BAYES-H4-SPARSE-DIAG-NO-OUTLIER"
+WORLD_BAYES_H4_SPARSE_DIAG_OUTLIER_MODERATE = "WORLD-BAYES-H4-SPARSE-DIAG-OUTLIER-MODERATE"
+WORLD_BAYES_H4_SPARSE_DIAG_STRONGER_TAU = "WORLD-BAYES-H4-SPARSE-DIAG-STRONGER-TAU"
+WORLD_BAYES_H4_SPARSE_DIAG_MORE_WEEKS = "WORLD-BAYES-H4-SPARSE-DIAG-MORE-WEEKS"
+
+SPARSE_POOLING_DIAGNOSTIC_WORLD_IDS: tuple[str, ...] = (
+    WORLD_BAYES_H4_SPARSE_DIAG_NO_OUTLIER,
+    WORLD_BAYES_H4_SPARSE_DIAG_OUTLIER_MODERATE,
+    WORLD_BAYES_H4_SPARSE_DIAG_STRONGER_TAU,
+    WORLD_BAYES_H4_SPARSE_DIAG_MORE_WEEKS,
+)
+
+
+def _sparse_geo_base(**overrides: Any) -> RecoveryWorldSpec:
+    """Base sparse-geo generative layout for diagnostic variants."""
+    geos = ("dma_dense_a", "dma_dense_b", "dma_sparse")
+    mu = {"tv": 0.30, "search": 0.18}
+    tau = {"tv": 0.25, "search": 0.20}
+    base: dict[str, Any] = {
+        "geo_order": geos,
+        "channels": H4_CHANNELS,
+        "weeks_by_geo": {"dma_dense_a": H4_WEEKS_FULL, "dma_dense_b": H4_WEEKS_FULL, "dma_sparse": 3},
+        "noise_sigma": 0.15,
+        "true_mu_c": mu,
+        "true_tau_c": tau,
+        "true_alpha_g": {g: 3.0 for g in geos},
+        "geo_hierarchy": {
+            "dma_dense_a": {"state": "s1", "region": "r1"},
+            "dma_dense_b": {"state": "s1", "region": "r1"},
+            "dma_sparse": {"state": "s2", "region": "r1"},
+        },
+        "sparse_geos": ("dma_sparse",),
+    }
+    base.update(overrides)
+    return RecoveryWorldSpec(**base)
+
+
+def _sparse_diag_no_outlier() -> RecoveryWorldSpec:
+    return _sparse_geo_base(
+        world_id=WORLD_BAYES_H4_SPARSE_DIAG_NO_OUTLIER,
+        true_beta_gc={
+            "dma_dense_a": {"tv": 0.32, "search": 0.17},
+            "dma_dense_b": {"tv": 0.29, "search": 0.19},
+            "dma_sparse": {"tv": 0.31, "search": 0.17},
+        },
+        expected_diagnostic_behavior={
+            "variant": "sparse_no_outlier",
+            "shrinkage_warning_expected": False,
+        },
+    )
+
+
+def _sparse_diag_outlier_moderate() -> RecoveryWorldSpec:
+    return _sparse_geo_base(
+        world_id=WORLD_BAYES_H4_SPARSE_DIAG_OUTLIER_MODERATE,
+        true_beta_gc={
+            "dma_dense_a": {"tv": 0.32, "search": 0.17},
+            "dma_dense_b": {"tv": 0.29, "search": 0.19},
+            "dma_sparse": {"tv": 0.55, "search": 0.10},
+        },
+        expected_diagnostic_behavior={
+            "variant": "sparse_outlier_moderate",
+            "shrinkage_expected": True,
+        },
+    )
+
+
+def _sparse_diag_stronger_tau_prior() -> RecoveryWorldSpec:
+    return _sparse_geo_base(
+        world_id=WORLD_BAYES_H4_SPARSE_DIAG_STRONGER_TAU,
+        true_beta_gc={
+            "dma_dense_a": {"tv": 0.32, "search": 0.17},
+            "dma_dense_b": {"tv": 0.29, "search": 0.19},
+            "dma_sparse": {"tv": 0.85, "search": 0.05},
+        },
+        sandbox_model_overrides={"tau_channel_prior_sigma": 0.15},
+        expected_diagnostic_behavior={
+            "variant": "sparse_stronger_tau_prior",
+            "shrinkage_expected": True,
+            "tau_prior_sigma": 0.15,
+        },
+    )
+
+
+def _sparse_diag_more_weeks() -> RecoveryWorldSpec:
+    return _sparse_geo_base(
+        world_id=WORLD_BAYES_H4_SPARSE_DIAG_MORE_WEEKS,
+        weeks_by_geo={"dma_dense_a": H4_WEEKS_FULL, "dma_dense_b": H4_WEEKS_FULL, "dma_sparse": H4_WEEKS_FULL},
+        true_beta_gc={
+            "dma_dense_a": {"tv": 0.32, "search": 0.17},
+            "dma_dense_b": {"tv": 0.29, "search": 0.19},
+            "dma_sparse": {"tv": 0.85, "search": 0.05},
+        },
+        expected_diagnostic_behavior={
+            "variant": "sparse_more_weeks",
+            "shrinkage_expected": True,
+        },
+    )
+
+
 _WORLDS: dict[str, RecoveryWorldSpec] = {
     WORLD_BAYES_H4_SIMPLE_POOLING: _simple_pooling_world(),
     WORLD_BAYES_H4_SPARSE_GEO: _sparse_geo_world(),
     WORLD_BAYES_H4_CONFLICTING_EVIDENCE: _conflicting_evidence_world(),
 }
 
+_DIAGNOSTIC_WORLDS: dict[str, RecoveryWorldSpec] = {
+    WORLD_BAYES_H4_SPARSE_DIAG_NO_OUTLIER: _sparse_diag_no_outlier(),
+    WORLD_BAYES_H4_SPARSE_DIAG_OUTLIER_MODERATE: _sparse_diag_outlier_moderate(),
+    WORLD_BAYES_H4_SPARSE_DIAG_STRONGER_TAU: _sparse_diag_stronger_tau_prior(),
+    WORLD_BAYES_H4_SPARSE_DIAG_MORE_WEEKS: _sparse_diag_more_weeks(),
+}
+
 
 def get_recovery_world(world_id: str) -> RecoveryWorldSpec:
-    if world_id not in _WORLDS:
-        raise KeyError(f"unknown Bayes-H4 recovery world: {world_id!r}; known: {sorted(_WORLDS)}")
-    return _WORLDS[world_id]
+    if world_id in _WORLDS:
+        return _WORLDS[world_id]
+    if world_id in _DIAGNOSTIC_WORLDS:
+        return _DIAGNOSTIC_WORLDS[world_id]
+    known = sorted({*_WORLDS, *_DIAGNOSTIC_WORLDS})
+    raise KeyError(f"unknown Bayes-H4 recovery world: {world_id!r}; known: {known}")
+
+
+def get_sparse_pooling_diagnostic_world(variant: str) -> RecoveryWorldSpec:
+    """Resolve INV-H4-001 diagnostic variant by short name or world id."""
+    aliases = {
+        "sparse_no_outlier": WORLD_BAYES_H4_SPARSE_DIAG_NO_OUTLIER,
+        "sparse_outlier_moderate": WORLD_BAYES_H4_SPARSE_DIAG_OUTLIER_MODERATE,
+        "sparse_stronger_tau_prior": WORLD_BAYES_H4_SPARSE_DIAG_STRONGER_TAU,
+        "sparse_more_weeks": WORLD_BAYES_H4_SPARSE_DIAG_MORE_WEEKS,
+    }
+    wid = aliases.get(variant, variant)
+    return get_recovery_world(wid)
 
 
 def list_recovery_worlds() -> tuple[RecoveryWorldSpec, ...]:

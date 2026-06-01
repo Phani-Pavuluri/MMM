@@ -14,28 +14,13 @@ from mmm.research.bayes_h3_sandbox.recovery_worlds import (
     get_recovery_world,
     materialize_recovery_bundle,
 )
-
-
-def _posterior_beta_means(artifact: dict[str, Any], spec: RecoveryWorldSpec) -> dict[str, dict[str, float]]:
-    hier = artifact.get("hierarchy_evidence_diagnostics") or {}
-    raw = hier.get("beta_geo_channel_mean") or {}
-    out: dict[str, dict[str, float]] = {}
-    for gi, geo in enumerate(spec.geo_order):
-        ch_map = raw.get(str(gi), raw.get(geo, {}))
-        if not isinstance(ch_map, dict):
-            continue
-        out[geo] = {str(c): float(ch_map.get(c, ch_map.get(str(c), float("nan")))) for c in spec.channels}
-    return out
-
-
-def _posterior_mu_tau(artifact: dict[str, Any], spec: RecoveryWorldSpec) -> tuple[dict[str, float], dict[str, float]]:
-    ps = artifact.get("posterior_summary") or {}
-    mu = {c: float(ps.get("mu_channel_mean", {}).get(c, float("nan"))) for c in spec.channels}
-    tau = {c: float(ps.get("tau_channel_mean", {}).get(c, float("nan"))) for c in spec.channels}
-    pool = artifact.get("pooling_diagnostics") or {}
-    if pool.get("tau_channel_mean"):
-        tau = {c: float(pool["tau_channel_mean"].get(c, tau[c])) for c in spec.channels}
-    return mu, tau
+from mmm.research.bayes_h3_sandbox.sparse_shrinkage_metrics import (
+    beta_geo_index_order,
+    channel_index_order,
+    compute_sparse_shrinkage_decomposition,
+    posterior_beta_means_by_geo,
+    posterior_mu_tau,
+)
 
 
 def _beta_posterior_intervals(
@@ -48,18 +33,19 @@ def _beta_posterior_intervals(
     idata = artifact.get("idata")
     if idata is None:
         return {}
+    geo_order = beta_geo_index_order(artifact, spec)
+    ch_order = channel_index_order(artifact, spec)
     try:
         beta_da = idata.posterior["beta"].stack(sample=("chain", "draw"))
         beta = np.asarray(beta_da.values).reshape(-1, beta_da.shape[-2], beta_da.shape[-1])
     except Exception:
         return {}
-    n_geo_post = beta.shape[1]
     out: dict[str, dict[str, tuple[float, float]]] = {}
-    for gi, geo in enumerate(spec.geo_order):
-        if gi >= n_geo_post:
+    for gi, geo in enumerate(geo_order):
+        if gi >= beta.shape[1]:
             continue
         out[geo] = {}
-        for ci, ch in enumerate(spec.channels):
+        for ci, ch in enumerate(ch_order):
             if ci >= beta.shape[2]:
                 continue
             draws = beta[:, gi, ci]
@@ -92,8 +78,8 @@ def compute_conflict_warnings(spec: RecoveryWorldSpec) -> list[str]:
 
 def compute_recovery_metrics(artifact: dict[str, Any], spec: RecoveryWorldSpec) -> dict[str, Any]:
     """Compare sandbox posterior summaries to known truth (diagnostic only)."""
-    beta_post = _posterior_beta_means(artifact, spec)
-    mu_post, tau_post = _posterior_mu_tau(artifact, spec)
+    beta_post = posterior_beta_means_by_geo(artifact, spec)
+    mu_post, _tau_post = posterior_mu_tau(artifact, spec)
     intervals = _beta_posterior_intervals(artifact, spec)
 
     beta_errors: list[float] = []
@@ -117,18 +103,13 @@ def compute_recovery_metrics(artifact: dict[str, Any], spec: RecoveryWorldSpec) 
                 if lo <= true_b <= hi:
                     covered += 1
 
-    shrinkage_ratios: list[float] = []
-    for geo in spec.sparse_geos:
-        for ch in spec.channels:
-            true_b = spec.true_beta_gc[geo][ch]
-            mu_c = spec.true_mu_c[ch]
-            post_b = beta_post.get(geo, {}).get(ch, float("nan"))
-            if post_b != post_b:
-                continue
-            d_true = abs(true_b - mu_c)
-            d_post = abs(post_b - mu_c)
-            if d_true > 1e-6:
-                shrinkage_ratios.append(d_post / d_true)
+    sparse_decomp: dict[str, Any] | None = None
+    shrinkage_ratio_sparse: float | None = None
+    shrinkage_ratio_sparse_vs_true_mu: float | None = None
+    if spec.sparse_geos:
+        sparse_decomp = compute_sparse_shrinkage_decomposition(artifact, spec)
+        shrinkage_ratio_sparse = sparse_decomp.get("shrinkage_ratio_sparse")
+        shrinkage_ratio_sparse_vs_true_mu = sparse_decomp.get("shrinkage_ratio_sparse_vs_true_mu")
 
     conflict_warnings = compute_conflict_warnings(spec)
     trust = artifact.get("diagnostic_trust_report") or {}
@@ -141,7 +122,15 @@ def compute_recovery_metrics(artifact: dict[str, Any], spec: RecoveryWorldSpec) 
         "beta_gc_mae": float(np.mean(beta_errors)) if beta_errors else None,
         "mu_c_mae": float(np.mean(mu_errors)) if mu_errors else None,
         "beta_gc_coverage_90": (covered / total_intervals) if total_intervals else None,
-        "shrinkage_ratio_sparse": float(np.mean(shrinkage_ratios)) if shrinkage_ratios else None,
+        "shrinkage_ratio_sparse": shrinkage_ratio_sparse,
+        "shrinkage_ratio_sparse_vs_true_mu": shrinkage_ratio_sparse_vs_true_mu,
+        "sparse_shrinkage_decomposition": sparse_decomp,
+        "posterior_indexing": {
+            "beta_geo_index_order": beta_geo_index_order(artifact, spec),
+            "channel_index_order": channel_index_order(artifact, spec),
+            "spec_geo_order": list(spec.geo_order),
+            "index_order_matches_spec": beta_geo_index_order(artifact, spec) == list(spec.geo_order),
+        },
         "conflict_warnings": conflict_warnings,
         "expected_diagnostic_behavior": dict(spec.expected_diagnostic_behavior),
         "convergence_diagnostics": artifact.get("convergence_diagnostics"),
@@ -179,6 +168,7 @@ def run_h4_recovery_world(
     sampler: dict[str, Any] | None = None,
     nuts_seed: int | None = None,
     panel_seed: int | None = None,
+    sandbox_model_overrides: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     Materialize world, run sandbox fit, compute recovery metrics (research only).
@@ -193,12 +183,16 @@ def run_h4_recovery_world(
         nuts_seed=nuts_seed,
         panel_seed=panel_seed,
     )
+    overrides = dict(spec.sandbox_model_overrides)
+    if sandbox_model_overrides:
+        overrides.update(sandbox_model_overrides)
     artifact = run_sandbox_fit(
         cfg,
         schema,
         df,
         geo_hierarchy_mapping=spec.geo_hierarchy,
         calibration_signals_stub=list(spec.calibration_signals),
+        sandbox_model_overrides=overrides or None,
     )
     return build_h4_recovery_report(spec, artifact)
 
@@ -222,4 +216,18 @@ def validate_world_catalog() -> dict[str, Any]:
     return {
         "status": "pass" if all(r["deterministic"] and r["has_known_truth"] for r in results) else "fail",
         "worlds": results,
+    }
+
+
+def validate_posterior_index_mapping(artifact: dict[str, Any], spec: RecoveryWorldSpec) -> dict[str, Any]:
+    """Expose beta/geo/channel index mapping for tests (research only)."""
+    geo_order = beta_geo_index_order(artifact, spec)
+    ch_order = channel_index_order(artifact, spec)
+    beta_post = posterior_beta_means_by_geo(artifact, spec)
+    return {
+        "beta_geo_index_order": geo_order,
+        "channel_index_order": ch_order,
+        "beta_keys_by_geo": {g: sorted(beta_post.get(g, {}).keys()) for g in geo_order},
+        "spec_geo_order": list(spec.geo_order),
+        "spec_channels": list(spec.channels),
     }

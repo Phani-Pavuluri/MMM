@@ -1803,6 +1803,33 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H4-001 — Sparse partial-pooling shrinkage on H4 sparse world
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H4-001 |
+| **Title** | Explain/fix sparse-geo shrinkage behavior on `WORLD-BAYES-H4-SPARSE-GEO` |
+| **Category** | certification reliability gaps |
+| **Severity** | medium |
+| **Status** | **open** — blocks Bayes-H4c extended worlds |
+| **Platform track** | 4 — Research Sandbox |
+| **First identified in** | Bayes-H4b repeated pilot (2026-06-01) |
+| **Evidence sources** | [INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](INV-H4-001_SPARSE_POOLING_BEHAVIOR.md); [BAYES_H4_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json); `sparse_shrinkage_metrics.py` |
+| **Problem statement** | Legacy `shrinkage_ratio_sparse` &gt; 1 persists under extended sampling; partial pooling toward \(\mu_c\) not observed on sparse toy world. |
+| **Why it matters** | H4c harder worlds and INV-071 thresholds are misleading until sparse pooling is understood or metrics are revised. |
+| **Risk type** | certification reliability |
+| **Production impact** | None — research-only |
+| **Current behavior** | Metric audit + decomposition + 4 diagnostic variants; primary ratio uses posterior \(\hat\mu_c\). |
+| **Desired end state** | Documented root cause or revised acceptance metrics; stable sparse-world behavior across seeds. |
+| **Blocking dependencies** | None for investigation; **H4c blocked** on this INV |
+| **Suggested validation** | `tests/research/test_bayes_h4_sparse_pooling_investigation.py`; optional slow variant runs |
+| **Suggested owner area** | `mmm.research.bayes_h3_sandbox.sparse_shrinkage_metrics` |
+| **Recommended phase** | Before H4c |
+| **Related investigations** | INV-071 |
+| **Notes** | H4b ruled out fast-MCMC-only explanation. |
+
+---
+
 ### INV-071 — Bayes-H4 recovery metric thresholds TBD
 
 | Field | Value |
@@ -1821,7 +1848,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Production impact** | None — research-only |
 | **Current behavior** | H4a/H4b JSON committed; sparse shrinkage **2.57–2.73** across 3 extended seeds; classification **`likely_model_prior_or_world_design`**. |
 | **Desired end state** | Documented TBD_v1 thresholds after repeated pilots + extended worlds; optional hard warn bands. |
-| **Blocking dependencies** | Optional extended H4 worlds |
+| **Blocking dependencies** | INV-H4-001 (sparse pooling); optional extended H4 worlds after INV-H4-001 |
 | **Suggested validation** | Slow pytest + recovery report JSON archive |
 | **Suggested owner area** | `mmm.research.bayes_h3_sandbox.recovery_runner` |
 | **Recommended phase** | After H4 scaffolding stabilizes |

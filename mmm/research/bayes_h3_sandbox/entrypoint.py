@@ -46,6 +46,7 @@ def run_sandbox_fit(
     diagnostic_trust: dict[str, Any] | None = None,
     geo_hierarchy_mapping: dict[str, Any] | None = None,
     calibration_signals_stub: list[dict[str, Any]] | None = None,
+    sandbox_model_overrides: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     Run the Bayes-H3 hierarchical sandbox fit (research / diagnostic only).
@@ -60,6 +61,7 @@ def run_sandbox_fit(
         df,
         geo_hierarchy_mapping=geo_hierarchy_mapping,
         calibration_signals_stub=calibration_signals_stub,
+        sandbox_model_overrides=sandbox_model_overrides,
     )
     trust = diagnostic_trust or build_diagnostic_trust_from_fit(raw)
     return wrap_sandbox_artifact(raw, diagnostic_trust=trust)

@@ -81,7 +81,9 @@ Media \(\tilde{x}\) are standardized per channel for numerical stability.
 | `beta_gc_mae` | Mean absolute error of posterior \(\mathbb{E}[\beta_{g,c}]\) vs true | Report only; threshold TBD |
 | `mu_c_mae` | MAE of posterior \(\mathbb{E}[\mu_c]\) vs true | Report only |
 | `beta_gc_coverage_90` | Fraction of \((g,c)\) where true \(\beta_{g,c}\) lies in posterior 90% interval | Report only |
-| `shrinkage_ratio` | \(\mathbb{E}[\|\beta^{\text{post}}_{g,c}-\mu_c\|] / \mathbb{E}[\|\beta^{\text{true}}_{g,c}-\mu_c\|]\) for sparse geos | Expect \(< 1\) for sparse world (slow tests) |
+| `shrinkage_ratio_sparse` | Mean \(\|\hat\beta_{g,c}-\hat\mu_c\| / \|\beta^{\text{true}}_{g,c}-\hat\mu_c\|\) for sparse geos (pool center = **posterior** \(\hat\mu_c\)) | Expect \(< 1\) when partial pooling pulls toward estimated hyper-mean |
+| `shrinkage_ratio_sparse_vs_true_mu` | Legacy H4a/H4b: same with **true** \(\mu_c^\*\) in denominator/numerator reference | Report-only; may exceed 1 when \(\hat\mu_c \neq \mu_c^\*\) |
+| `sparse_shrinkage_decomposition` | Per \((g,c)\) distances, \(\hat\tau_c\), interval width | INV-H4-001 diagnostic |
 | `conflict_warnings` | Strings when calibration stub direction opposes generative truth | Expect non-empty for conflict world |
 
 **Pass/fail gates for promotion are not defined in this ADR.**
@@ -175,6 +177,21 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 | Production flags | all **false** |
 
 **Interpretation:** Sparse shrinkage failure is **not** explained by fast-MCMC alone under the committed extended profile. Keep INV-071 open; defer H4c extended worlds until MVP pooling / metric / sparse-world design is reviewed.
+
+---
+
+## 11. INV-H4-001 sparse pooling investigation
+
+**Doc:** [INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](../06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md)  
+**Code:** `sparse_shrinkage_metrics.py` · `sparse_pooling_investigation.py` · diagnostic sparse variants in `recovery_worlds.py`
+
+| Item | Status |
+|------|--------|
+| Metric audit (posterior \(\hat\mu_c\) vs true \(\mu_c\)) | **Complete** |
+| Posterior geo/channel index metadata | **Complete** |
+| Diagnostic world variants (4) | **Complete** (research-only, not in `H4_WORLD_IDS`) |
+| INV-H4-001 | **Open** — blocks H4c |
+| INV-071 | **Open** |
 
 **Governance:** Repeated pilot is **report-only**. Do not promote Bayesian output, enable prod decisioning, or tighten hard gates until sparse shrinkage is stable across seeds.
 

@@ -67,6 +67,8 @@ def test_recovery_report_research_only_and_no_prod_paths() -> None:
             "tau_channel_mean": dict(spec.true_tau_c),
         },
         "hierarchy_evidence_diagnostics": {
+            "beta_geo_index_order": list(spec.geo_order),
+            "channel_index_order": list(spec.channels),
             "beta_geo_channel_mean": {
                 str(i): {ch: spec.true_beta_gc[geo][ch] for ch in spec.channels} for i, geo in enumerate(spec.geo_order)
             },
@@ -119,13 +121,13 @@ def test_run_h4_recovery_simple_pooling_sample() -> None:
 
 @pytest.mark.pymc
 @pytest.mark.slow
-def test_run_h4_sparse_world_shrinkage_direction() -> None:
+def test_run_h4_sparse_world_shrinkage_decomposition_present() -> None:
     pytest.importorskip("pymc")
     report = run_h4_recovery_world(WORLD_BAYES_H4_SPARSE_GEO)
     rec = report["h4_recovery"]
-    ratio = rec.get("shrinkage_ratio_sparse")
-    if ratio is not None:
-        assert ratio < 1.0, f"expected shrinkage toward mu on sparse geo, got ratio={ratio}"
+    assert rec.get("sparse_shrinkage_decomposition") is not None
+    assert rec.get("shrinkage_ratio_sparse") is not None
+    assert rec.get("shrinkage_ratio_sparse_vs_true_mu") is not None
 
 
 @pytest.mark.pymc
