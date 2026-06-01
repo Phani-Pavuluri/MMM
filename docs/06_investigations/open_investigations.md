@@ -1811,19 +1811,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Title** | Calibrate Bayes-H4 recovery pass thresholds (`beta_gc_mae`, coverage, shrinkage) |
 | **Category** | certification reliability gaps |
 | **Severity** | medium |
-| **Status** | open — pilot complete with **provisional report-only** bands |
+| **Status** | open — H4a + H4b pilots complete with **provisional report-only** bands |
 | **Platform track** | 4 — Research Sandbox |
 | **First identified in** | Bayes-H4 recovery world scaffolding (2026-06-01) |
-| **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); [BAYES_H4_THRESHOLD_PILOT_20260601.json](../05_validation/archives/BAYES_H4_THRESHOLD_PILOT_20260601.json); `h4_threshold_pilot.py` |
+| **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); [BAYES_H4_THRESHOLD_PILOT_20260601.json](../05_validation/archives/BAYES_H4_THRESHOLD_PILOT_20260601.json); [BAYES_H4_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json); `h4_threshold_pilot.py`; `h4_repeated_pilot.py` |
 | **Problem statement** | H4 worlds report recovery metrics; promotion pass/fail thresholds need repeated pilots before hard gates. |
 | **Why it matters** | Without stable thresholds, recovery scaffolding must not be misread as production readiness. |
 | **Risk type** | certification reliability |
 | **Production impact** | None — research-only |
-| **Current behavior** | Bayes-H4a pilot JSON committed; `provisional_thresholds.report_only=true`; sparse shrinkage **inconclusive** in fast pilot (ratio &gt; 1). |
+| **Current behavior** | H4a/H4b JSON committed; sparse shrinkage **2.57–2.73** across 3 extended seeds; classification **`likely_model_prior_or_world_design`**. |
 | **Desired end state** | Documented TBD_v1 thresholds after repeated pilots + extended worlds; optional hard warn bands. |
 | **Blocking dependencies** | Optional extended H4 worlds |
 | **Suggested validation** | Slow pytest + recovery report JSON archive |
 | **Suggested owner area** | `mmm.research.bayes_h3_sandbox.recovery_runner` |
 | **Recommended phase** | After H4 scaffolding stabilizes |
 | **Related investigations** | INV-064, INV-065, INV-069 |
-| **Notes** | H4a pilot: conflict warnings OK; shrinkage direction **not** met under fast MCMC — keep INV open. |
+| **Notes** | H4b: extended MCMC did **not** restore shrinkage &lt; 1; not a fast-MCMC-only artifact. Review MVP partial pooling / sparse world / metric before H4c. |

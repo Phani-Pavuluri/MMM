@@ -176,6 +176,9 @@ def run_h4_recovery_world(
     world_id: str,
     *,
     fast_mcmc: bool = True,
+    sampler: dict[str, Any] | None = None,
+    nuts_seed: int | None = None,
+    panel_seed: int | None = None,
 ) -> dict[str, Any]:
     """
     Materialize world, run sandbox fit, compute recovery metrics (research only).
@@ -183,7 +186,13 @@ def run_h4_recovery_world(
     Does not emit production DecisionSurface, optimizer inputs, or recommendations.
     """
     spec = get_recovery_world(world_id)
-    cfg, schema, df = materialize_recovery_bundle(spec, fast_mcmc=fast_mcmc)
+    cfg, schema, df = materialize_recovery_bundle(
+        spec,
+        fast_mcmc=fast_mcmc,
+        sampler=sampler,
+        nuts_seed=nuts_seed,
+        panel_seed=panel_seed,
+    )
     artifact = run_sandbox_fit(
         cfg,
         schema,

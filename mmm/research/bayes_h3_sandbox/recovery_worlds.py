@@ -25,6 +25,9 @@ H4_SEED = 4400
 H4_CHANNELS = ("tv", "search")
 H4_WEEKS_FULL = 10
 
+SAMPLER_FAST: dict[str, Any] = {"draws": 200, "tune": 200, "chains": 2, "target_accept": 0.92}
+SAMPLER_EXTENDED: dict[str, Any] = {"draws": 600, "tune": 600, "chains": 4, "target_accept": 0.95}
+
 
 @dataclass(frozen=True)
 class RecoveryWorldSpec:
@@ -61,9 +64,9 @@ def _standardized_media(rng: np.random.Generator, n: int) -> np.ndarray:
     return (x - x.mean()) / (x.std() + 1e-6)
 
 
-def materialize_recovery_panel(spec: RecoveryWorldSpec) -> pd.DataFrame:
-    """Build observed panel from known truth (deterministic given spec + mcmc_seed)."""
-    rng = np.random.default_rng(spec.mcmc_seed)
+def materialize_recovery_panel(spec: RecoveryWorldSpec, *, panel_seed: int | None = None) -> pd.DataFrame:
+    """Build observed panel from known truth (deterministic given spec + panel_seed)."""
+    rng = np.random.default_rng(panel_seed if panel_seed is not None else spec.mcmc_seed)
     rows: list[dict[str, Any]] = []
     for geo in spec.geo_order:
         n_weeks = spec.weeks_by_geo[geo]
@@ -82,15 +85,25 @@ def materialize_recovery_panel(spec: RecoveryWorldSpec) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def recovery_world_config(spec: RecoveryWorldSpec, *, fast_mcmc: bool = True) -> MMMConfig:
+def recovery_world_config(
+    spec: RecoveryWorldSpec,
+    *,
+    fast_mcmc: bool = True,
+    sampler: dict[str, Any] | None = None,
+    nuts_seed: int | None = None,
+) -> MMMConfig:
     bayesian: dict[str, Any] = {
         "backend": BayesianBackend.PYMC,
-        "nuts_seed": spec.mcmc_seed,
+        "nuts_seed": int(nuts_seed if nuts_seed is not None else spec.mcmc_seed),
         "prior_predictive_draws": 0,
         "posterior_predictive_draws": 0,
     }
-    if fast_mcmc:
-        bayesian.update({"draws": 200, "tune": 200, "chains": 2, "target_accept": 0.92})
+    if sampler is not None:
+        bayesian.update(sampler)
+    elif fast_mcmc:
+        bayesian.update(SAMPLER_FAST)
+    else:
+        bayesian.update(SAMPLER_EXTENDED)
     return MMMConfig(
         framework=Framework.BAYESIAN,
         run_environment=RunEnvironment.RESEARCH,
@@ -116,11 +129,14 @@ def materialize_recovery_bundle(
     spec: RecoveryWorldSpec,
     *,
     fast_mcmc: bool = True,
+    sampler: dict[str, Any] | None = None,
+    nuts_seed: int | None = None,
+    panel_seed: int | None = None,
 ) -> tuple[MMMConfig, PanelSchema, pd.DataFrame]:
     return (
-        recovery_world_config(spec, fast_mcmc=fast_mcmc),
+        recovery_world_config(spec, fast_mcmc=fast_mcmc, sampler=sampler, nuts_seed=nuts_seed),
         recovery_world_schema(spec),
-        materialize_recovery_panel(spec),
+        materialize_recovery_panel(spec, panel_seed=panel_seed),
     )
 
 

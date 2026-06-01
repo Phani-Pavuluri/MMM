@@ -1,0 +1,874 @@
+{
+  "aggregate_by_world": {
+    "WORLD-BAYES-H4-CONFLICTING-EVIDENCE": {
+      "beta_gc_coverage_90": {
+        "max": 0.25,
+        "mean": 0.08333333333333333,
+        "median": 0.0,
+        "min": 0.0,
+        "n": 3,
+        "std": 0.11785113019775792
+      },
+      "beta_gc_mae": {
+        "max": 0.3511542332141328,
+        "mean": 0.34996585455666657,
+        "median": 0.35006869935937096,
+        "min": 0.3486746310964959,
+        "n": 3,
+        "std": 0.0010149021153227416
+      },
+      "conflict_warning_pass_rate": 1.0,
+      "mu_c_mae": {
+        "max": 0.322048453569959,
+        "mean": 0.3167812667429232,
+        "median": 0.31463905572362255,
+        "min": 0.313656290935188,
+        "n": 3,
+        "std": 0.003746011163937926
+      },
+      "n_runs": 3,
+      "rhat_max": {
+        "max": 1.01,
+        "mean": 1.0033333333333334,
+        "median": 1.0,
+        "min": 1.0,
+        "n": 3,
+        "std": 0.004714045207910321
+      },
+      "shrinkage_ratio_sparse": {
+        "max": null,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "n": 0,
+        "std": null
+      },
+      "sparse_shrinkage_warning": null
+    },
+    "WORLD-BAYES-H4-SIMPLE-POOLING": {
+      "beta_gc_coverage_90": {
+        "max": 0.25,
+        "mean": 0.08333333333333333,
+        "median": 0.0,
+        "min": 0.0,
+        "n": 3,
+        "std": 0.11785113019775792
+      },
+      "beta_gc_mae": {
+        "max": 0.29981742708816544,
+        "mean": 0.2982394609205953,
+        "median": 0.2976470339405812,
+        "min": 0.29725392173303916,
+        "n": 3,
+        "std": 0.0011272731764237513
+      },
+      "conflict_warning_pass_rate": 0.0,
+      "mu_c_mae": {
+        "max": 0.29716431387985653,
+        "mean": 0.296231317512868,
+        "median": 0.29625172496488134,
+        "min": 0.29527791369386613,
+        "n": 3,
+        "std": 0.000770254833804766
+      },
+      "n_runs": 3,
+      "rhat_max": {
+        "max": 1.01,
+        "mean": 1.0066666666666666,
+        "median": 1.01,
+        "min": 1.0,
+        "n": 3,
+        "std": 0.004714045207910321
+      },
+      "shrinkage_ratio_sparse": {
+        "max": null,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "n": 0,
+        "std": null
+      },
+      "sparse_shrinkage_warning": null
+    },
+    "WORLD-BAYES-H4-SPARSE-GEO": {
+      "beta_gc_coverage_90": {
+        "max": 0.25,
+        "mean": 0.08333333333333333,
+        "median": 0.0,
+        "min": 0.0,
+        "n": 3,
+        "std": 0.11785113019775792
+      },
+      "beta_gc_mae": {
+        "max": 0.46877120059721805,
+        "mean": 0.46471013544038964,
+        "median": 0.4649461289764854,
+        "min": 0.4604130767474654,
+        "n": 3,
+        "std": 0.0034162677767567997
+      },
+      "conflict_warning_pass_rate": 0.0,
+      "mu_c_mae": {
+        "max": 0.37631478991318196,
+        "mean": 0.3736603488552554,
+        "median": 0.37242235786614725,
+        "min": 0.37224389878643693,
+        "n": 3,
+        "std": 0.0018783867028716499
+      },
+      "n_runs": 3,
+      "rhat_max": {
+        "max": 1.01,
+        "mean": 1.0066666666666666,
+        "median": 1.01,
+        "min": 1.0,
+        "n": 3,
+        "std": 0.004714045207910321
+      },
+      "shrinkage_ratio_sparse": {
+        "max": 2.728026122642419,
+        "mean": 2.6495540290871413,
+        "median": 2.651262505035903,
+        "min": 2.569373459583102,
+        "n": 3,
+        "std": 0.06478094391359203
+      },
+      "sparse_shrinkage_interpretation": {
+        "aggregate": {
+          "max": 2.728026122642419,
+          "mean": 2.6495540290871413,
+          "median": 2.651262505035903,
+          "min": 2.569373459583102,
+          "n": 3,
+          "std": 0.06478094391359203
+        },
+        "classification": "likely_model_prior_or_world_design",
+        "expect_direction": "ratio_lt_1",
+        "fraction_lt_1": 0.0,
+        "h4a_fast_reference": 2.57,
+        "per_run_values": [
+          2.569373459583102,
+          2.651262505035903,
+          2.728026122642419
+        ],
+        "reason": "extended sampling did not improve shrinkage vs H4a fast pilot; posterior means may not pool toward mu_c under current MVP spec"
+      },
+      "sparse_shrinkage_warning": true
+    }
+  },
+  "approved_for_prod": false,
+  "backend_defaults": {
+    "WORLD-BAYES-H4-CONFLICTING-EVIDENCE": {
+      "chains": 4,
+      "draws": 600,
+      "fast_mcmc_profile": false,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.95,
+      "tune": 600,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4-SIMPLE-POOLING": {
+      "chains": 4,
+      "draws": 600,
+      "fast_mcmc_profile": false,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.95,
+      "tune": 600,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4-SPARSE-GEO": {
+      "chains": 4,
+      "draws": 600,
+      "fast_mcmc_profile": false,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.95,
+      "tune": 600,
+      "world_mcmc_seed": 4400
+    }
+  },
+  "conflict_warning_pass_rate": 1.0,
+  "decision_grade": false,
+  "interpretation": {
+    "conflict_warning_pass_rate": 1.0,
+    "hard_gate": false,
+    "note": "Repeated pilot diagnoses sparse shrinkage; does not authorize production.",
+    "production_promotion": false,
+    "report_only": true,
+    "sparse_shrinkage_summary": {
+      "aggregate": {
+        "max": 2.728026122642419,
+        "mean": 2.6495540290871413,
+        "median": 2.651262505035903,
+        "min": 2.569373459583102,
+        "n": 3,
+        "std": 0.06478094391359203
+      },
+      "classification": "likely_model_prior_or_world_design",
+      "expect_direction": "ratio_lt_1",
+      "fraction_lt_1": 0.0,
+      "h4a_fast_reference": 2.57,
+      "per_run_values": [
+        2.569373459583102,
+        2.651262505035903,
+        2.728026122642419
+      ],
+      "reason": "extended sampling did not improve shrinkage vs H4a fast pilot; posterior means may not pool toward mu_c under current MVP spec"
+    }
+  },
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "outputs_are_diagnostic_only": true,
+  "panel_seed": 4400,
+  "per_run": [
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.2976470339405812,
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 908.0,
+        "rhat_max": 1.01
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "pooling_strength": "low",
+        "recovery_expectation": "beta_gc_near_mu_c"
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b",
+          "dma_c"
+        ],
+        "noise_sigma": 0.12,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.2,
+            "tv": 0.38
+          },
+          "dma_b": {
+            "search": 0.24,
+            "tv": 0.33
+          },
+          "dma_c": {
+            "search": 0.21,
+            "tv": 0.36
+          }
+        },
+        "true_mu_c": {
+          "search": 0.22,
+          "tv": 0.35
+        },
+        "true_tau_c": {
+          "search": 0.06,
+          "tv": 0.08
+        }
+      },
+      "mu_c_mae": 0.29716431387985653,
+      "nuts_seed": 4400,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "world_id": "WORLD-BAYES-H4-SIMPLE-POOLING"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.25,
+      "beta_gc_mae": 0.29981742708816544,
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 1016.0,
+        "rhat_max": 1.01
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "pooling_strength": "low",
+        "recovery_expectation": "beta_gc_near_mu_c"
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b",
+          "dma_c"
+        ],
+        "noise_sigma": 0.12,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.2,
+            "tv": 0.38
+          },
+          "dma_b": {
+            "search": 0.24,
+            "tv": 0.33
+          },
+          "dma_c": {
+            "search": 0.21,
+            "tv": 0.36
+          }
+        },
+        "true_mu_c": {
+          "search": 0.22,
+          "tv": 0.35
+        },
+        "true_tau_c": {
+          "search": 0.06,
+          "tv": 0.08
+        }
+      },
+      "mu_c_mae": 0.29625172496488134,
+      "nuts_seed": 4401,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "world_id": "WORLD-BAYES-H4-SIMPLE-POOLING"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.29725392173303916,
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 824.0,
+        "rhat_max": 1.0
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "pooling_strength": "low",
+        "recovery_expectation": "beta_gc_near_mu_c"
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b",
+          "dma_c"
+        ],
+        "noise_sigma": 0.12,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.2,
+            "tv": 0.38
+          },
+          "dma_b": {
+            "search": 0.24,
+            "tv": 0.33
+          },
+          "dma_c": {
+            "search": 0.21,
+            "tv": 0.36
+          }
+        },
+        "true_mu_c": {
+          "search": 0.22,
+          "tv": 0.35
+        },
+        "true_tau_c": {
+          "search": 0.06,
+          "tv": 0.08
+        }
+      },
+      "mu_c_mae": 0.29527791369386613,
+      "nuts_seed": 4402,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "world_id": "WORLD-BAYES-H4-SIMPLE-POOLING"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.25,
+      "beta_gc_mae": 0.4604130767474654,
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 768.0,
+        "rhat_max": 1.01
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "shrinkage_expected": true,
+        "sparse_geo": "dma_sparse"
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "noise_sigma": 0.15,
+        "true_beta_gc": {
+          "dma_dense_a": {
+            "search": 0.17,
+            "tv": 0.32
+          },
+          "dma_dense_b": {
+            "search": 0.19,
+            "tv": 0.29
+          },
+          "dma_sparse": {
+            "search": 0.05,
+            "tv": 0.85
+          }
+        },
+        "true_mu_c": {
+          "search": 0.18,
+          "tv": 0.3
+        },
+        "true_tau_c": {
+          "search": 0.2,
+          "tv": 0.25
+        }
+      },
+      "mu_c_mae": 0.37224389878643693,
+      "nuts_seed": 4400,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": 2.569373459583102,
+      "world_id": "WORLD-BAYES-H4-SPARSE-GEO"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.4649461289764854,
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 895.0,
+        "rhat_max": 1.01
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "shrinkage_expected": true,
+        "sparse_geo": "dma_sparse"
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "noise_sigma": 0.15,
+        "true_beta_gc": {
+          "dma_dense_a": {
+            "search": 0.17,
+            "tv": 0.32
+          },
+          "dma_dense_b": {
+            "search": 0.19,
+            "tv": 0.29
+          },
+          "dma_sparse": {
+            "search": 0.05,
+            "tv": 0.85
+          }
+        },
+        "true_mu_c": {
+          "search": 0.18,
+          "tv": 0.3
+        },
+        "true_tau_c": {
+          "search": 0.2,
+          "tv": 0.25
+        }
+      },
+      "mu_c_mae": 0.37242235786614725,
+      "nuts_seed": 4401,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": 2.651262505035903,
+      "world_id": "WORLD-BAYES-H4-SPARSE-GEO"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.46877120059721805,
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 848.0,
+        "rhat_max": 1.0
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "shrinkage_expected": true,
+        "sparse_geo": "dma_sparse"
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "noise_sigma": 0.15,
+        "true_beta_gc": {
+          "dma_dense_a": {
+            "search": 0.17,
+            "tv": 0.32
+          },
+          "dma_dense_b": {
+            "search": 0.19,
+            "tv": 0.29
+          },
+          "dma_sparse": {
+            "search": 0.05,
+            "tv": 0.85
+          }
+        },
+        "true_mu_c": {
+          "search": 0.18,
+          "tv": 0.3
+        },
+        "true_tau_c": {
+          "search": 0.2,
+          "tv": 0.25
+        }
+      },
+      "mu_c_mae": 0.37631478991318196,
+      "nuts_seed": 4402,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": 2.728026122642419,
+      "world_id": "WORLD-BAYES-H4-SPARSE-GEO"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.3486746310964959,
+      "conflict_warnings": [
+        "conflict:h4-conflict-tv-dma-a: claimed negative lift on dma_a/tv but true_beta_gc=0.550 is positive"
+      ],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 766.0,
+        "rhat_max": 1.0
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "conflict_warning_expected": true
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b"
+        ],
+        "noise_sigma": 0.1,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.18,
+            "tv": 0.55
+          },
+          "dma_b": {
+            "search": 0.22,
+            "tv": 0.38
+          }
+        },
+        "true_mu_c": {
+          "search": 0.2,
+          "tv": 0.4
+        },
+        "true_tau_c": {
+          "search": 0.08,
+          "tv": 0.1
+        }
+      },
+      "mu_c_mae": 0.31463905572362255,
+      "nuts_seed": 4400,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "world_id": "WORLD-BAYES-H4-CONFLICTING-EVIDENCE"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.3511542332141328,
+      "conflict_warnings": [
+        "conflict:h4-conflict-tv-dma-a: claimed negative lift on dma_a/tv but true_beta_gc=0.550 is positive"
+      ],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 844.0,
+        "rhat_max": 1.01
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "conflict_warning_expected": true
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b"
+        ],
+        "noise_sigma": 0.1,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.18,
+            "tv": 0.55
+          },
+          "dma_b": {
+            "search": 0.22,
+            "tv": 0.38
+          }
+        },
+        "true_mu_c": {
+          "search": 0.2,
+          "tv": 0.4
+        },
+        "true_tau_c": {
+          "search": 0.08,
+          "tv": 0.1
+        }
+      },
+      "mu_c_mae": 0.322048453569959,
+      "nuts_seed": 4401,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "world_id": "WORLD-BAYES-H4-CONFLICTING-EVIDENCE"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.25,
+      "beta_gc_mae": 0.35006869935937096,
+      "conflict_warnings": [
+        "conflict:h4-conflict-tv-dma-a: claimed negative lift on dma_a/tv but true_beta_gc=0.550 is positive"
+      ],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 967.0,
+        "rhat_max": 1.0
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "conflict_warning_expected": true
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b"
+        ],
+        "noise_sigma": 0.1,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.18,
+            "tv": 0.55
+          },
+          "dma_b": {
+            "search": 0.22,
+            "tv": 0.38
+          }
+        },
+        "true_mu_c": {
+          "search": 0.2,
+          "tv": 0.4
+        },
+        "true_tau_c": {
+          "search": 0.08,
+          "tv": 0.1
+        }
+      },
+      "mu_c_mae": 0.313656290935188,
+      "nuts_seed": 4402,
+      "panel_seed": 4400,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "sampler": {
+        "chains": 4,
+        "draws": 600,
+        "target_accept": 0.95,
+        "tune": 600
+      },
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "world_id": "WORLD-BAYES-H4-CONFLICTING-EVIDENCE"
+    }
+  ],
+  "pilot_id": "BAYES_H4_REPEATED_PILOT_20260601",
+  "pilot_version": "bayes_h4_repeated_pilot_v1",
+  "prod_decisioning_allowed": false,
+  "production_promotion": false,
+  "research_only": true,
+  "sampler_settings": {
+    "chains": 4,
+    "draws": 600,
+    "target_accept": 0.95,
+    "tune": 600
+  },
+  "seeds": [
+    4400,
+    4401,
+    4402
+  ],
+  "sparse_shrinkage_distribution": {
+    "max": 2.728026122642419,
+    "mean": 2.6495540290871413,
+    "median": 2.651262505035903,
+    "min": 2.569373459583102,
+    "n": 3,
+    "std": 0.06478094391359203
+  },
+  "status": "complete",
+  "world_ids": [
+    "WORLD-BAYES-H4-SIMPLE-POOLING",
+    "WORLD-BAYES-H4-SPARSE-GEO",
+    "WORLD-BAYES-H4-CONFLICTING-EVIDENCE"
+  ]
+}

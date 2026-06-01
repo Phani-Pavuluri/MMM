@@ -139,11 +139,53 @@ Backend choice (PyMC) and recovery metrics remain **research-only**. Passing the
 
 ---
 
-## 10. Consequences
+## 10. Repeated pilot results (Bayes-H4b)
+
+**Artifact:** `docs/05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json`  
+**Runner:** `mmm/research/bayes_h3_sandbox/h4_repeated_pilot.py`  
+**Sampler:** extended profile (`draws=600`, `tune=600`, `chains=4`, `target_accept=0.95`); fixed `panel_seed=4400`; `nuts_seeds` ∈ {4400, 4401, 4402}.
+
+| Setting | Value |
+|---------|--------|
+| Production promotion | **Blocked** — all production flags false |
+| Hard gates | **None** — `interpretation.hard_gate: false` |
+| INV-071 | **Open** — repeated pilot does not stabilize sparse shrinkage |
+
+### Sparse shrinkage classification
+
+See artifact `interpretation.sparse_shrinkage_summary.classification` and `sparse_shrinkage_distribution`.
+
+| Classification | Meaning |
+|----------------|---------|
+| `resolved_under_longer_sampling` | Majority of extended runs show `shrinkage_ratio_sparse` &lt; 1 |
+| `still_unstable` | High variance across seeds — likely fast/extended MCMC instability |
+| `likely_model_prior_or_world_design` | Extended runs still ≥ H4a fast reference — MVP partial pooling or sparse world design |
+| `likely_world_design_or_metric` | All runs ratio ≥ 1 — review sparse weeks and metric definition |
+| `inconclusive` | Mixed or missing values — keep INV-071 open |
+
+**H4a reference:** fast pilot `shrinkage_ratio_sparse ≈ 2.57` (expected &lt; 1). H4b tests whether longer sampling restores pooling toward μ_c on `WORLD-BAYES-H4-SPARSE-GEO`.
+
+### Observed H4b outcome (2026-06-01)
+
+| Metric | Extended pilot (3 seeds) |
+|--------|--------------------------|
+| `shrinkage_ratio_sparse` | **2.57, 2.65, 2.73** (mean ≈ 2.65) — all ≥ 1 |
+| Classification | **`likely_model_prior_or_world_design`** — not resolved by longer sampling |
+| `conflict_warning_pass_rate` | **1.0** on conflict world |
+| Production flags | all **false** |
+
+**Interpretation:** Sparse shrinkage failure is **not** explained by fast-MCMC alone under the committed extended profile. Keep INV-071 open; defer H4c extended worlds until MVP pooling / metric / sparse-world design is reviewed.
+
+**Governance:** Repeated pilot is **report-only**. Do not promote Bayesian output, enable prod decisioning, or tighten hard gates until sparse shrinkage is stable across seeds.
+
+---
+
+## 11. Consequences
 
 - **Complete (scaffolding):** `recovery_worlds.py`, `recovery_runner.py`, `tests/research/test_bayes_h4_recovery_worlds.py`.  
 - **Complete (H4a pilot):** `h4_threshold_pilot.py`, committed pilot JSON, `tests/research/test_bayes_h4_threshold_pilot.py`.  
-- **Next:** Repeated pilots, extended worlds, tighten INV-071 after stable shrinkage/coverage behavior.  
+- **Complete (H4b repeated pilot):** `h4_repeated_pilot.py`, committed repeated pilot JSON, `tests/research/test_bayes_h4_repeated_pilot.py`.  
+- **Next:** Bayes-H4c extended recovery worlds (only after H4b clarifies sparse shrinkage); tighten INV-071 when thresholds stabilize.  
 - **Not authorized:** Bayes-H3 production promotion, NumPyro backend, prod CI Bayesian jobs without research labeling.
 
 **This ADR does not authorize production Bayesian decisioning.**
