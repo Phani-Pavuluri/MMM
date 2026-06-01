@@ -53,9 +53,7 @@ def validate_research_only_artifact(artifact: dict[str, Any]) -> None:
         raise ResearchOnlyLabelError(f"missing required research-only keys: {sorted(missing)}")
 
     if artifact.get("label") != RESEARCH_ONLY_LABEL:
-        raise ResearchOnlyLabelError(
-            f"label must be {RESEARCH_ONLY_LABEL!r}, got {artifact.get('label')!r}"
-        )
+        raise ResearchOnlyLabelError(f"label must be {RESEARCH_ONLY_LABEL!r}, got {artifact.get('label')!r}")
 
     for key, forbidden in FORBIDDEN_PROD_VALUES.items():
         if artifact.get(key) is forbidden:

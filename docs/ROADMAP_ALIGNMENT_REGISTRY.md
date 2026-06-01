@@ -32,7 +32,7 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | `VAL-BAYES-H2B-SMOKE` | 2 | Reliability / governance | CalibrationSignal, TrustReport | seven-world contract regression | `validate_world_catalog`; CLI `--smoke VAL-BAYES-H2B-SMOKE` | Implementation | **Complete** | Bayes-H2d architecture ADR | Yes (CI smoke) | Blocked — smoke ≠ prod release |
 | [Bayes-H2d model spec ADR](05_validation/bayes_h2d_hierarchical_model_spec_adr.md) | 1 | MMM calibration ecosystem | DecisionSurface, CalibrationSignal, TrustReport, Estimand | premature PyMC; posterior-as-decision; ABI drift | Bayes-H2d ADR accepted | Architecture | **Accepted** | Bayes-H3 research sandbox only | Yes (architecture-only) | Blocked — spec not implementation |
 | Bayes-H3 sandbox guardrails (P0 audit) | 2 | Reliability / governance | (sandbox labels) | prod optimizer/decide misuse; unlabeled artifacts | `mmm/research/bayes_h3_sandbox/`; `tests/research/test_bayes_h3_sandbox_guardrails.py`; CI smoke + guardrails in `.github/workflows/ci.yml` | Implementation | **Complete** | Bayes-H3 sandbox **fit** work (PyMC prototype) | **Yes** — guardrails only | Blocked — fences ≠ prod Bayesian |
-| Bayes-H3 research sandbox (PyMC prototype) | 2 | MMM calibration ecosystem | (sandbox — maps to ABI on promotion) | ungrounded algorithm change | sandbox report via `run_sandbox_fit`; `RESEARCH ONLY` label | Implementation + sandbox | **Next** | hierarchical fit + diagnostic exports; no prod paths | **Yes** — posterior/coefs in sandbox OK | Blocked — not decision-grade |
+| Bayes-H3 research sandbox MVP fit | 2 | MMM calibration ecosystem | (sandbox — maps to ABI on promotion) | ungrounded algorithm change | `mmm/research/bayes_h3_sandbox/model.py`; `run_sandbox_fit`; `tests/research/test_bayes_h3_sandbox_mvp_fit.py` | Implementation + sandbox | **Complete** | Bayes-H4 recovery worlds | **Yes** — diagnostic hierarchical fit only | Blocked — not decision-grade |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | Bayes-H4+ worlds; Promotion Gate; decision trace | Promotion | **Blocked** | not until H2d + H4 gates + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -48,7 +48,8 @@ Bayes-H2b ADR ✅
   → VAL-BAYES-H2B-SMOKE ✅
   → Bayes-H2d model spec ADR ✅
   → Bayes-H3 sandbox guardrails (P0) ✅
-  → Bayes-H3 research sandbox fit  ← NEXT (labeled RESEARCH ONLY)
+  → Bayes-H3 research sandbox MVP fit ✅
+  → Bayes-H4 recovery worlds  ← NEXT
   → Bayes-H3 production promotion (blocked)
 ```
 
