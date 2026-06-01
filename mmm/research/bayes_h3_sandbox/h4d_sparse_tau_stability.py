@@ -33,9 +33,14 @@ from mmm.research.bayes_h3_sandbox.recovery_worlds import (
 )
 
 PILOT_ID = "BAYES_H4D_SPARSE_TAU_STABILITY_20260601"
+PILOT_ID_EXTENDED = "BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601"
 PILOT_VERSION = "bayes_h4d_sparse_tau_stability_v1"
+PILOT_VERSION_EXTENDED = "bayes_h4d_sparse_tau_stability_extended_v1"
 INVESTIGATION_ID = "INV-H4D"
 DEFAULT_ARTIFACT_PATH = Path("docs/05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json")
+EXTENDED_ARTIFACT_PATH = Path(
+    "docs/05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json"
+)
 
 DEFAULT_PANEL_SEED = 4400
 DEFAULT_NUTS_SEEDS: tuple[int, ...] = (4400, 4401, 4402)
@@ -312,16 +317,109 @@ def recommend_disposition(
     }
 
 
+def compare_to_fast_pilot(
+    extended_summary: dict[str, Any],
+    *,
+    fast_artifact_path: Path | None = None,
+) -> dict[str, Any]:
+    """Compare extended MCMC aggregates to committed fast pilot (report-only)."""
+    fast_path = fast_artifact_path or DEFAULT_ARTIFACT_PATH
+    if not fast_path.exists():
+        return {
+            "fast_pilot_available": False,
+            "fast_pilot_id": PILOT_ID,
+            "fast_artifact_path": str(fast_path),
+            "conclusions_hold": None,
+            "note": "Fast pilot artifact missing; comparison skipped.",
+        }
+
+    fast = load_h4d_stability_artifact(fast_path)
+    ext_agg = extended_summary.get("aggregated_by_world_tau") or {}
+    fast_agg = fast.get("aggregated_by_world_tau") or {}
+
+    per_group: dict[str, Any] = {}
+    stability_matches = 0
+    stability_compared = 0
+    disposition_match = (
+        extended_summary.get("recommended_disposition", {}).get("disposition")
+        == fast.get("recommended_disposition", {}).get("disposition")
+    )
+
+    for key in sorted(ext_agg):
+        if key not in fast_agg:
+            continue
+        e = ext_agg[key]
+        f = fast_agg[key]
+        e_beta = (e.get("beta_gc_mae") or {}).get("mean")
+        f_beta = (f.get("beta_gc_mae") or {}).get("mean")
+        e_stable = (e.get("stability") or {}).get("beta_gc_mae", {}).get("stable")
+        f_stable = (f.get("stability") or {}).get("beta_gc_mae", {}).get("stable")
+        if e_stable is not None and f_stable is not None:
+            stability_compared += 1
+            if e_stable == f_stable:
+                stability_matches += 1
+        delta = None
+        if e_beta is not None and f_beta is not None:
+            delta = float(e_beta) - float(f_beta)
+        per_group[key] = {
+            "extended_beta_gc_mae_mean": e_beta,
+            "fast_beta_gc_mae_mean": f_beta,
+            "beta_gc_mae_delta_extended_minus_fast": delta,
+            "extended_stable": e_stable,
+            "fast_stable": f_stable,
+            "stability_classification_unchanged": e_stable == f_stable if e_stable is not None else None,
+        }
+
+    ext_disp = extended_summary.get("recommended_disposition", {})
+    fast_disp = fast.get("recommended_disposition", {})
+    tau_unchanged = (
+        ext_disp.get("tau_helps_sparse_recovery") == fast_disp.get("tau_helps_sparse_recovery")
+        and ext_disp.get("tau_hurts_clean_recovery") == fast_disp.get("tau_hurts_clean_recovery")
+    )
+
+    stability_hold = (
+        stability_compared > 0 and stability_matches == stability_compared
+    )
+    conclusions_hold = bool(disposition_match and stability_hold and tau_unchanged)
+
+    return _json_safe(
+        {
+            "fast_pilot_available": True,
+            "fast_pilot_id": fast.get("pilot_id", PILOT_ID),
+            "fast_artifact_path": str(fast_path),
+            "extended_pilot_id": extended_summary.get("pilot_id"),
+            "disposition_extended": ext_disp.get("disposition"),
+            "disposition_fast": fast_disp.get("disposition"),
+            "disposition_unchanged": disposition_match,
+            "tau_signal_unchanged": tau_unchanged,
+            "stability_classification_hold_rate": (
+                stability_matches / stability_compared if stability_compared else None
+            ),
+            "stability_classifications_hold": stability_hold,
+            "conclusions_hold": conclusions_hold,
+            "per_world_tau_group": per_group,
+            "summary": (
+                "Extended MCMC confirms fast-pilot conclusions."
+                if conclusions_hold
+                else "Extended MCMC shifts some stability or disposition signals vs fast pilot; "
+                "remain report-only and do not promote."
+            ),
+        }
+    )
+
+
 def build_h4d_summary(
     per_run_rows: list[dict[str, Any]],
     *,
     pilot_id: str = PILOT_ID,
+    pilot_version: str = PILOT_VERSION,
     nuts_seeds: tuple[int, ...] = DEFAULT_NUTS_SEEDS,
     panel_seed: int = DEFAULT_PANEL_SEED,
     sampler: dict[str, Any] | None = None,
     fast_mcmc: bool = True,
     tau_grid: tuple[dict[str, Any], ...] | None = None,
     include_sparse_variants: bool = False,
+    fast_pilot_artifact_path: Path | None = None,
 ) -> dict[str, Any]:
     """Build H4d stability summary from per-run rows."""
     sampler_settings = dict(sampler or (SAMPLER_FAST if fast_mcmc else SAMPLER_EXTENDED))
@@ -343,10 +441,9 @@ def build_h4d_summary(
 
     disposition = recommend_disposition(aggregated)
 
-    return _json_safe(
-        {
+    payload: dict[str, Any] = {
             "pilot_id": pilot_id,
-            "pilot_version": PILOT_VERSION,
+            "pilot_version": pilot_version,
             "investigation_id": INVESTIGATION_ID,
             "status": "complete",
             "label": "RESEARCH ONLY — NOT DECISION GRADE",
@@ -387,7 +484,16 @@ def build_h4d_summary(
             "aggregated_by_world_tau": aggregated,
             "recommended_disposition": disposition,
         }
-    )
+
+    if not fast_mcmc:
+        payload["mcmc_profile"] = "extended"
+        payload["fast_pilot_reference"] = str(fast_pilot_artifact_path or DEFAULT_ARTIFACT_PATH)
+        partial = _json_safe(payload)
+        payload["comparison_to_fast_pilot"] = compare_to_fast_pilot(partial)
+    else:
+        payload["mcmc_profile"] = "fast"
+
+    return _json_safe(payload)
 
 
 def run_h4d_stability_pilot(
@@ -436,8 +542,12 @@ def run_h4d_stability_pilot(
                         )
                     )
 
+    pilot_id = PILOT_ID if fast_mcmc else PILOT_ID_EXTENDED
+    pilot_version = PILOT_VERSION if fast_mcmc else PILOT_VERSION_EXTENDED
     return build_h4d_summary(
         rows,
+        pilot_id=pilot_id,
+        pilot_version=pilot_version,
         nuts_seeds=nuts_seeds,
         panel_seed=panel_seed,
         sampler=sampler_settings,
@@ -467,18 +577,30 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(description="Bayes-H4d sparse/τ stability pilot")
-    parser.add_argument("--output", type=Path, default=DEFAULT_ARTIFACT_PATH)
+    parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--fast-mcmc", action="store_true", default=True)
     parser.add_argument("--extended-mcmc", action="store_true", default=False)
     parser.add_argument("--include-sparse-variants", action="store_true", default=False)
     args = parser.parse_args()
     fast = not args.extended_mcmc
+    out_default = DEFAULT_ARTIFACT_PATH if fast else EXTENDED_ARTIFACT_PATH
+    out_path = args.output or out_default
     summary = run_h4d_stability_pilot(
         fast_mcmc=fast,
         include_sparse_diagnostic_variants=args.include_sparse_variants,
     )
-    out = write_h4d_stability_artifact(args.output, summary)
-    print(json.dumps({"written": str(out), "pilot_id": PILOT_ID, "n_runs": len(summary["per_run"])}))
+    out = write_h4d_stability_artifact(out_path, summary)
+    print(
+        json.dumps(
+            {
+                "written": str(out),
+                "pilot_id": summary["pilot_id"],
+                "mcmc_profile": summary.get("mcmc_profile"),
+                "n_runs": len(summary["per_run"]),
+                "conclusions_hold": (summary.get("comparison_to_fast_pilot") or {}).get("conclusions_hold"),
+            }
+        )
+    )
 
 
 if __name__ == "__main__":

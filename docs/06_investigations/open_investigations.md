@@ -1860,9 +1860,9 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Title** | Sparse/τ prior tuning and recovery-candidate multi-seed stability |
 | **Status** | **complete (report-only)** — H4d pilot artifact committed |
 | **Doc** | [INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md](INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md) |
-| **Artifact** | [BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json](../05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json) |
+| **Artifacts** | [fast](../05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json) · [extended MCMC](../05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json) |
 | **Code** | `mmm.research.bayes_h3_sandbox.h4d_sparse_tau_stability` |
-| **Outcome** | Seed stability + τ grid on recovery candidates; SPARSE-GEO stress-only; disposition report-only |
+| **Outcome** | Fast + extended MCMC: recovery candidates stable; τ=0.15 no material gain; SPARSE-GEO stress-only; `conclusions_hold: true` |
 | **Production impact** | None — all production flags false |
 | **Notes** | Does not redo H4c. Does not enable hard gates or production promotion. |
 

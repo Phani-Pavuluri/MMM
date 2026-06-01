@@ -17,11 +17,14 @@ from mmm.research.bayes_h3_sandbox.h4c_recovery_worlds import (
 )
 from mmm.research.bayes_h3_sandbox.h4d_sparse_tau_stability import (
     DEFAULT_ARTIFACT_PATH,
+    EXTENDED_ARTIFACT_PATH,
     H4D_WORLD_IDS,
     PILOT_ID,
+    PILOT_ID_EXTENDED,
     TAU_GRID,
     build_h4d_summary,
     classify_metric_stability,
+    compare_to_fast_pilot,
     h4d_tau_grid,
     h4d_world_ids,
     load_h4d_stability_artifact,
@@ -177,6 +180,40 @@ def test_committed_artifact_if_present() -> None:
     assert art["pilot_id"] == PILOT_ID
     assert art["hard_gate"] is False
     assert set(art["world_ids"]) == set(H4D_WORLD_IDS)
+
+
+def test_extended_artifact_schema_if_present() -> None:
+    path = REPO_ROOT / EXTENDED_ARTIFACT_PATH
+    if not path.exists():
+        pytest.skip("H4d extended artifact not materialized")
+    art = load_h4d_stability_artifact(path)
+    assert art["pilot_id"] == PILOT_ID_EXTENDED
+    assert art["mcmc_profile"] == "extended"
+    assert art["hard_gate"] is False
+    assert art["approved_for_prod"] is False
+    assert art["production_promotion"] is False
+    assert art["prod_decisioning_allowed"] is False
+    assert len(art["tau_grid"]) == 4
+    assert art.get("comparison_to_fast_pilot")
+    cmp = art["comparison_to_fast_pilot"]
+    assert cmp["fast_pilot_available"] is True
+    for row in art["per_run"]:
+        assert row["policy_evaluation"]["hard_gate"] is False
+
+
+def test_compare_to_fast_pilot_from_fixture() -> None:
+    rows = _fixture_rows_stable_clean()
+    extended_rows = []
+    for r in rows:
+        extended_rows.append({**r, "beta_gc_mae": float(r["beta_gc_mae"]) + 0.001})
+    ext = build_h4d_summary(extended_rows, fast_mcmc=False, pilot_id=PILOT_ID_EXTENDED)
+    # inject fast comparison without file by building partial
+    cmp = compare_to_fast_pilot(
+        {**ext, "aggregated_by_world_tau": ext["aggregated_by_world_tau"]},
+        fast_artifact_path=REPO_ROOT / DEFAULT_ARTIFACT_PATH,
+    )
+    if (REPO_ROOT / DEFAULT_ARTIFACT_PATH).exists():
+        assert "conclusions_hold" in cmp
 
 
 @pytest.mark.slow

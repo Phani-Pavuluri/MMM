@@ -6,7 +6,8 @@
 | **Title** | Sparse/τ prior tuning and multi-seed stability for recovery_candidate worlds |
 | **Status** | **Complete (report-only pilot)** |
 | **Track** | Bayes-H4 research sandbox — follows H4c reliability map and INV-071 thresholds |
-| **Pilot artifact** | [BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json](../05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json) |
+| **Fast pilot artifact** | [BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json](../05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json) |
+| **Extended MCMC artifact** | [BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json](../05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json) |
 | **Runner** | `mmm.research.bayes_h3_sandbox.h4d_sparse_tau_stability` |
 
 ---
@@ -125,15 +126,47 @@ Artifact field: `recommended_disposition.disposition`
 
 ---
 
-## 9. Open questions
+## 9. Extended MCMC confirmation
 
-1. Re-run H4d with extended sampler — do stability classifications change?
-2. Include sparse diagnostic variants (more weeks, outlier severity) in a follow-on sweep?
-3. When to promote τ=0.15 (or other) into default sandbox overrides for sparse worlds only?
+**Artifact:** [BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json](../05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json)  
+**Command:** `poetry run python -m mmm.research.bayes_h3_sandbox.h4d_sparse_tau_stability --extended-mcmc`  
+**Sampler:** `draws=600`, `tune=600`, `chains=4`, `target_accept=0.95` (same world/τ/seed grid as fast pilot)
+
+### Did fast-MCMC conclusions hold?
+
+**Yes.** `comparison_to_fast_pilot.conclusions_hold: true` — disposition unchanged (`continue_report_only_monitoring`), all stability classifications match fast pilot, τ signal unchanged (`tau_helps_sparse_recovery: false`).
+
+### Per-world answers (default τ, 3 seeds)
+
+| World | Role | Stable across seeds? | β_gc MAE (mean) | Notes |
+|-------|------|----------------------|-----------------|-------|
+| CLEAN-RECOVERY | recovery_candidate | **Yes** (spread ≈ 0.002) | ≈ 0.296 | Matches fast pilot |
+| SPARSE-RECOVERY | recovery_candidate | **Yes** (spread ≈ 0.001) | ≈ 0.269 | Matches fast pilot |
+| SIMPLE-POOLING | recovery_candidate | **Yes** (spread ≈ 0.003) | ≈ 0.298 | Matches fast pilot |
+| SPARSE-GEO | stress_diagnostic | Stable numerically but **elevated** MAE ≈ 0.465 | Stress-only; not a recovery gate |
+
+### τ prior tuning (extended)
+
+| Question | Answer |
+|----------|--------|
+| Material improvement at τ=0.15? | **No** — SPARSE-RECOVERY default ≈ 0.269 vs τ=0.15 ≈ 0.268 (negligible); no `recommend_tau_prior_sandbox_research_update` |
+| Tradeoff on CLEAN? | **No material harm** — CLEAN τ=0.15 ≈ 0.296 vs default ≈ 0.296 |
+
+### Governance (unchanged)
+
+`hard_gate: false`, `approved_for_prod: false`, `production_promotion: false`, `prod_decisioning_allowed: false`. INV-071 thresholds remain **report-only**. Production Bayes **blocked**.
 
 ---
 
-## 10. Related work
+## 10. Open questions
+
+1. ~~Re-run H4d with extended sampler~~ — **Done** (this section); conclusions confirmed.
+2. Include sparse diagnostic variants (more weeks, outlier severity) in a follow-on sweep?
+3. When to promote τ=0.15 (or other) into default sandbox overrides for sparse worlds only? (Still **not** recommended after extended run.)
+
+---
+
+## 11. Related work
 
 | ID | Status |
 |----|--------|
