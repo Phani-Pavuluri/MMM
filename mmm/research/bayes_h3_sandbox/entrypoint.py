@@ -10,8 +10,8 @@ from mmm.config.schema import MMMConfig
 from mmm.data.schema import PanelSchema
 from mmm.research.bayes_h3_sandbox.diagnostic_trust import build_diagnostic_trust_stub
 from mmm.research.bayes_h3_sandbox.fencing import (
-    assert_not_production_decision_surface,
     assert_no_production_recommendation,
+    assert_not_production_decision_surface,
     wrap_legacy_trainer_warning,
 )
 from mmm.research.bayes_h3_sandbox.labels import apply_research_only_envelope, validate_research_only_artifact

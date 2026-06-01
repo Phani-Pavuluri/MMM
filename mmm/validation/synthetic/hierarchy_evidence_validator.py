@@ -235,9 +235,8 @@ def _check_scope_mapping(loaded: dict[str, Any]) -> tuple[bool, str]:
     for sig in loaded["calibration_signals"]:
         sid = sig.get("scope_id")
         stype = sig.get("scope_type")
-        if stype in ("dma", "state", "region", "national") and sid and stype != "national":
-            if str(sid) not in scope_ids and stype == "dma":
-                return False, f"unresolved scope_id {sid!r} for signal {sig.get('signal_id')}"
+        if stype == "dma" and sid and str(sid) not in scope_ids:
+            return False, f"unresolved scope_id {sid!r} for signal {sig.get('signal_id')}"
         if stype == "segment":
             continue
     return True, ""
@@ -248,9 +247,7 @@ def _run_val_bayes_assertions(loaded: dict[str, Any], stub: dict[str, Any]) -> l
     results: list[dict[str, Any]] = []
 
     ok, msg = _check_ingress(loaded)
-    results.append(
-        _assertion_row("MA-INGRESS", "VAL-BAYES-001", "pass" if ok else "fail", message=msg)
-    )
+    results.append(_assertion_row("MA-INGRESS", "VAL-BAYES-001", "pass" if ok else "fail", message=msg))
 
     ok, msg = _check_scope_mapping(loaded)
     results.append(_assertion_row("MA-SCOPE", "VAL-BAYES-002", "pass" if ok else "fail", message=msg))
@@ -334,9 +331,7 @@ def _run_val_bayes_assertions(loaded: dict[str, Any], stub: dict[str, Any]) -> l
         )
     )
 
-    silent_bad = any(
-        c.get("silent_average") is True for c in obs_conf if isinstance(c, dict)
-    )
+    silent_bad = any(c.get("silent_average") is True for c in obs_conf if isinstance(c, dict))
     report_text = json.dumps(stub)
     silent_pattern = any(p in report_text for p in SILENT_AVERAGE_FORBIDDEN if p not in ("silent_average",))
     results.append(
@@ -435,9 +430,7 @@ def validate_hierarchy_evidence_world(world_path: str | Path) -> dict[str, Any]:
     failure_reasons: list[str] = []
     for row in assertion_results:
         if row.get("validation_id", "").startswith("VAL-BAYES") and row.get("outcome") == "fail":
-            failure_reasons.append(
-                f"{row['validation_id']}: {row.get('message') or row.get('assertion_id')}"
-            )
+            failure_reasons.append(f"{row['validation_id']}: {row.get('message') or row.get('assertion_id')}")
 
     report: dict[str, Any] = _empty_report(loaded["world_id"], "pass")
     report.update(stub)

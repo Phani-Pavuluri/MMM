@@ -6,7 +6,6 @@ from typing import Any
 
 from mmm.config.schema import Framework, MMMConfig, RunEnvironment
 from mmm.research.bayes_h3_sandbox.labels import (
-    ResearchOnlyLabelError,
     validate_research_only_artifact,
 )
 
@@ -29,9 +28,12 @@ def assert_not_production_decision_surface(artifact: dict[str, Any]) -> None:
     """Block packaging sandbox output as a production DecisionSurface."""
     validate_research_only_artifact(artifact)
     reject_if_prod_decisioning_flags(artifact)
-    if artifact.get("decision_surface") is not None and artifact.get("production_decision_surface") is not False:
-        if artifact.get("decision_surface_production") is True:
-            raise BayesSandboxGuardError("cannot attach production DecisionSurface to sandbox artifact")
+    if (
+        artifact.get("decision_surface") is not None
+        and artifact.get("production_decision_surface") is not False
+        and artifact.get("decision_surface_production") is True
+    ):
+        raise BayesSandboxGuardError("cannot attach production DecisionSurface to sandbox artifact")
     if artifact.get("production_decision_surface") is True:
         raise BayesSandboxGuardError("production DecisionSurface emission blocked for Bayes sandbox")
 
@@ -58,9 +60,7 @@ def assert_optimizer_input_not_bayes_sandbox(
         and isinstance(payload, dict)
         and payload.get("bayes_h3_sandbox") is True
     ):
-        raise BayesSandboxGuardError(
-            "production optimize_budget_via_simulation cannot consume Bayes-H3 sandbox output"
-        )
+        raise BayesSandboxGuardError("production optimize_budget_via_simulation cannot consume Bayes-H3 sandbox output")
 
 
 def assert_no_production_recommendation(artifact: dict[str, Any]) -> None:
