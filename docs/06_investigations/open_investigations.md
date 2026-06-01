@@ -1879,7 +1879,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | TrustReport wiring / shadow panels; no promotion review |
+| **Next** | Production TrustReport integration blocked until Promotion Gate |
+
+---
+
+### INV-H5D — Bayes-H5 TrustReport diagnostic mapping (research)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5D |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5D_TRUST_DIAGNOSTIC_MAPPING.md](INV-H5D_TRUST_DIAGNOSTIC_MAPPING.md) |
+| **Artifact** | [BAYES_H5D_TRUST_DIAGNOSTIC_MAPPING_20260601.json](../05_validation/archives/BAYES_H5D_TRUST_DIAGNOSTIC_MAPPING_20260601.json) |
+| **Outcome** | Research-only candidate fields + warning taxonomy from H5c pilot |
+| **Production impact** | None — not production TrustReport wiring |
 
 ---
 

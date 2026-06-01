@@ -68,6 +68,16 @@
 | **Outcome** | All H5b conclusions hold; no material Δ vs H5b (\|Δ\| &lt; 0.05); H5 transform evidence **accepted for research** |
 | **Production** | **Still blocked** |
 
+### H5d TrustReport diagnostic mapping (INV-H5D — research only)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — candidate field catalog + warning taxonomy; **not** production TrustReport wiring |
+| **Investigation** | [INV-H5D](../06_investigations/INV-H5D_TRUST_DIAGNOSTIC_MAPPING.md) |
+| **Code** | `mmm/research/bayes_h3_sandbox/h5_trust_diagnostics.py` |
+| **Artifact** | [BAYES_H5D_TRUST_DIAGNOSTIC_MAPPING_20260601.json](archives/BAYES_H5D_TRUST_DIAGNOSTIC_MAPPING_20260601.json) |
+| **Production** | **Still blocked** — no optimizer, DecisionSurface, or prod TrustReport |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)
