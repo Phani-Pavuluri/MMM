@@ -1,0 +1,183 @@
+{
+  "schema_id": "BAYES_H5E_SHADOW_RUN_SCHEMA_20260601",
+  "schema_version": "bayes_h5e_shadow_run_schema_v1",
+  "protocol_investigation": "INV-H5E_REAL_PANEL_SHADOW_RUN_PROTOCOL",
+  "model_spec_version": "bayes_h5_sandbox_spec_v1",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "research_only": true,
+  "purpose": "Schema for Bayes-H5 real-panel shadow runs. Outputs are diagnostic only and must not feed optimizer, DecisionSurface, recommendations, or production TrustReport.",
+  "required_lineage_fields": [
+    "data_snapshot_hash",
+    "dataset_snapshot_id",
+    "enable_h5_sandbox",
+    "mmm_config_hash",
+    "model_spec_version",
+    "panel_id",
+    "research_only",
+    "run_environment",
+    "run_id",
+    "sandbox_entrypoint"
+  ],
+  "required_record_fields": [
+    "calibration_signal_summary",
+    "data_snapshot_hash",
+    "dataset_snapshot_id",
+    "enable_h5_sandbox",
+    "label",
+    "mmm_config_hash",
+    "model_spec_version",
+    "panel_id",
+    "posterior_diagnostics",
+    "production_flags",
+    "research_only",
+    "ridge_comparison",
+    "run_environment",
+    "run_id",
+    "sandbox_entrypoint",
+    "transform_config",
+    "trust_report_candidate_diagnostics"
+  ],
+  "optional_comparison_fields": [
+    "geox_cls_comparison",
+    "recovery_style_diagnostics"
+  ],
+  "excluded_fields": [
+    "approved_for_prod",
+    "budget_recommendation",
+    "budget_recommendation_payload",
+    "decision_grade",
+    "decision_surface",
+    "hard_gate",
+    "idata",
+    "linear_coef_draws",
+    "optimizer_input",
+    "optimizer_ready_curves",
+    "prod_decisioning_allowed",
+    "production_decision_surface",
+    "production_promotion",
+    "production_recommendation",
+    "production_trust_report",
+    "recommendation"
+  ],
+  "production_flags": {
+    "hard_gate": false,
+    "production_promotion": false,
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "research_only": true,
+    "decision_grade": false,
+    "production_decision_surface": false
+  },
+  "transform_config_policy": {
+    "registry_id": "bayes_h5_media_transform_registry_v1",
+    "must_be_declared_explicitly": true,
+    "must_not_use_production_feature_engineering_pipeline": true,
+    "aligned_vs_mismatch_documented": true
+  },
+  "calibration_signal_policy": {
+    "ingress": "CalibrationSignal stubs only in H5e v1",
+    "likelihood_integrated": false,
+    "no_prod_decisioning": true
+  },
+  "example_shadow_run_record": {
+    "run_id": "BAYES-H5E-SHADOW-DRY-RUN-0001",
+    "dataset_snapshot_id": "dry-run-snapshot-v1",
+    "panel_id": "dry-run-panel-v1",
+    "data_snapshot_hash": "sha256:dry-run-panel-placeholder",
+    "mmm_config_hash": "sha256:dry-run-config-placeholder",
+    "run_environment": "research",
+    "sandbox_entrypoint": "mmm.research.bayes_h3_sandbox.run_sandbox_fit",
+    "model_spec_version": "bayes_h5_sandbox_spec_v1",
+    "enable_h5_sandbox": true,
+    "research_only": true,
+    "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+    "transform_config": {
+      "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+      "media_transforms_by_channel": {
+        "tv": "geometric_adstock",
+        "search": "identity"
+      },
+      "transform_params_by_channel": {
+        "tv": {
+          "decay": 0.7
+        }
+      },
+      "transform_mismatch_mode": "aligned",
+      "policy_note": "Declared per client media spec; shadow run does not auto-infer prod FE transforms"
+    },
+    "calibration_signal_summary": {
+      "signals_present": [],
+      "likelihood_integrated": false,
+      "stub_slots_only": true,
+      "note": "CalibrationSignal ingress per platform contract; no prod likelihood in H5e v1"
+    },
+    "posterior_diagnostics": {
+      "outputs_are_diagnostic_only": true,
+      "convergence_diagnostics": {
+        "status": "not_executed_dry_run"
+      },
+      "pooling_diagnostics": {
+        "status": "not_executed_dry_run"
+      }
+    },
+    "recovery_style_diagnostics": {
+      "mode": "report_only",
+      "known_truth_available": false,
+      "note": "Real panels have no synthetic truth; compare Ridge/GeoX only"
+    },
+    "trust_report_candidate_diagnostics": {
+      "mapping_version": "bayes_h5d_trust_diagnostic_mapping_v1",
+      "warning_codes": [
+        "h5:production:block"
+      ],
+      "trust_report_candidate_fields": {
+        "transform_alignment_status": "aligned"
+      },
+      "production_trust_report": null
+    },
+    "ridge_comparison": {
+      "ridge_run_id": null,
+      "ridge_model_form": "semi_log",
+      "comparison_mode": "diagnostic_only",
+      "used_for_optimizer": false,
+      "decision_grade": false,
+      "metrics": {
+        "note": "Compare coefficient stability / residual diagnostics vs H5 posterior summaries"
+      }
+    },
+    "geox_cls_comparison": {
+      "available": false,
+      "experiment_evidence_refs": [],
+      "note": "Optional cross-check vs historical GeoX/CLS CalibrationSignal or replay evidence when documented"
+    },
+    "excluded_fields": [
+      "optimizer_ready_curves",
+      "recommendation",
+      "optimizer_input",
+      "production_trust_report",
+      "production_promotion",
+      "budget_recommendation_payload",
+      "prod_decisioning_allowed",
+      "budget_recommendation",
+      "production_recommendation",
+      "production_decision_surface",
+      "idata",
+      "linear_coef_draws",
+      "approved_for_prod",
+      "decision_grade",
+      "hard_gate",
+      "decision_surface"
+    ],
+    "production_flags": {
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    "outputs_are_diagnostic_only": true
+  },
+  "note": "Example record is dry-run only (no MCMC). Authorized execution is a separate step."
+}

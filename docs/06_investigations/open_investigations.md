@@ -1879,7 +1879,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | Production TrustReport integration blocked until Promotion Gate |
+| **Next** | H5e shadow execution (separate authorization); Promotion Gate for prod |
+
+---
+
+### INV-H5E — Bayes-H5 real-panel shadow-run protocol
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5E |
+| **Status** | **protocol defined** (no execution authorized) |
+| **Doc** | [INV-H5E_REAL_PANEL_SHADOW_RUN_PROTOCOL.md](INV-H5E_REAL_PANEL_SHADOW_RUN_PROTOCOL.md) |
+| **Schema** | [BAYES_H5E_SHADOW_RUN_SCHEMA_20260601.json](../05_validation/archives/BAYES_H5E_SHADOW_RUN_SCHEMA_20260601.json) |
+| **Outcome** | Lineage, transform policy, Ridge/GeoX comparison rules, fail-closed validation |
+| **Production impact** | None |
 
 ---
 

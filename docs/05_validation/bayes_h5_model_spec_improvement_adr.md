@@ -78,6 +78,16 @@
 | **Artifact** | [BAYES_H5D_TRUST_DIAGNOSTIC_MAPPING_20260601.json](archives/BAYES_H5D_TRUST_DIAGNOSTIC_MAPPING_20260601.json) |
 | **Production** | **Still blocked** — no optimizer, DecisionSurface, or prod TrustReport |
 
+### H5e real-panel shadow-run protocol (INV-H5E — design only)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Protocol defined** — no authorized shadow execution in H5e deliverable |
+| **Investigation** | [INV-H5E](../06_investigations/INV-H5E_REAL_PANEL_SHADOW_RUN_PROTOCOL.md) |
+| **Schema** | [BAYES_H5E_SHADOW_RUN_SCHEMA_20260601.json](archives/BAYES_H5E_SHADOW_RUN_SCHEMA_20260601.json) |
+| **Code** | `mmm/research/bayes_h3_sandbox/h5_shadow_protocol.py` |
+| **Production** | **Still blocked** — Ridge unchanged; H5 not wired to prod pipelines |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)
