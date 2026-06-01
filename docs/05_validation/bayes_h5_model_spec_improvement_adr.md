@@ -2,12 +2,25 @@
 
 **ADR ID:** `bayes_h5_model_spec_improvement_v1`  
 **Title:** Bayes-H5 — Next research sandbox hierarchical model specification (architecture only)  
-**Status:** **Proposed** (design-only — does **not** authorize implementation, PyMC changes, production promotion, or hard gates)  
+**Status:** **Accepted** (architecture only — does **not** authorize implementation, PyMC changes, production promotion, or hard gates)  
 **Date:** 2026-06-01  
+**Accepted:** 2026-06-01  
 **Track:** [platform_roadmap.md § Track 4 — Research Sandbox](platform_roadmap.md#track-4--research-sandbox)  
 **Prerequisites:** [bayes_h2d_hierarchical_model_spec_adr.md](bayes_h2d_hierarchical_model_spec_adr.md) · [bayes_h3_research_sandbox_backend_adr.md](bayes_h3_research_sandbox_backend_adr.md) · [bayes_h4_recovery_worlds_adr.md](bayes_h4_recovery_worlds_adr.md) · Bayes-H4c reliability map ✅ · INV-071 report-only thresholds ✅ · [INV-H4D](../06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md) (H4d extended MCMC confirmed) ✅  
 **Governance:** [ROADMAP_ALIGNMENT_GATE.md](../ROADMAP_ALIGNMENT_GATE.md) · [ROADMAP_ALIGNMENT_REGISTRY.md](../ROADMAP_ALIGNMENT_REGISTRY.md)  
 **Supersedes (partial):** H3 MVP generative detail in `mmm/research/bayes_h3_sandbox/model.py` — **only after** separate implementation approval and H5 validation worlds pass
+
+---
+
+## Acceptance
+
+| Field | Value |
+|-------|--------|
+| **Decision** | **Accepted** — model-spec architecture for next sandbox version |
+| **Acceptance date** | 2026-06-01 |
+| **Rationale** | Aligns with H3/H4 evidence (H4c reliability map, H4d extended MCMC, INV-071 report-only policy); defines transform registry, prior/diagnostic policy, validation worlds, and promotion boundaries without authorizing code or production paths |
+| **Does not authorize** | `model.py` changes, PyMC implementation, hard gates, DecisionSurface/optimizer/recommendations, `approved_for_prod`, Ridge replacement |
+| **Next authorized step** | H5 validation world catalog + gated sandbox implementation + `BAYES_H5_RECOVERY_PILOT_*` artifacts (research-only) |
 
 ---
 
@@ -45,6 +58,7 @@ This ADR is **design-only**. Implementation requires a follow-on authorization a
 
 | Finding | Source | Implication for H5 |
 |---------|--------|-------------------|
+| **H3 sandbox safety** (fences, `run_sandbox_fit`, research-only labels) | Bayes-H3 MVP + guardrails | Preserve entrypoint and fencing; H5 is spec evolution inside same lane |
 | **Pooling mechanics** pass (primary shrinkage vs posterior \(\hat\mu_c\)) | H4b-refresh, INV-H4-001 C+A | Keep partial-pooling structure; fix readouts, not abandon hierarchy |
 | **True-effect recovery** open on stress; partial on favorable worlds | H4c map, INV-071 | Recovery metrics stay separate from pooling; claim-specific thresholds remain report-only |
 | **CLEAN / SPARSE-RECOVERY / SIMPLE-POOLING** stable across seeds (extended MCMC) | H4d extended | Favorable worlds are valid regression targets for H5 spec |
@@ -309,13 +323,15 @@ H5 success means: **credible sandbox spec + diagnostics + classified recovery ma
 | OQ-H5-06 | Re-calibrate INV-071 bands using H5 recovery_candidate runs only | Post H5 pilot |
 | OQ-H5-07 | NumPyro backend timing — separate ADR vs H5 spec | Bayes-H5+ backend |
 | OQ-H5-08 | Draw-based \(\Delta\mu\) in sandbox — remains forbidden for prod ([Bayes-H1](bayes_h1_decision_surface_preservation_adr.md)) | Out of scope |
+| OQ-H5-09 | Fast vs extended MCMC profiles for H5 pilots (mirror H4d) | H5 validation |
+| OQ-H5-10 | Promotion evidence chain: reproducible Δμ adapter + Promotion Gate before any prod tier | Bayes-H5 production candidacy ADR (separate) |
 
 ---
 
 ## Consequences
 
-- **Accepted (this ADR):** architectural direction for next sandbox model spec.  
-- **Not authorized:** code changes to `model.py`, production paths, or promotion flags.  
-- **Next step (when approved):** implement `bayes_h5_sandbox_spec_v1` behind `run_sandbox_fit` feature flag + H5 world materialization + pilot JSON.
+- **Accepted:** architectural direction for `bayes_h5_sandbox_spec_v1` (this ADR).  
+- **Not authorized:** code changes to `model.py`, production paths, promotion flags, or hard CI gates.  
+- **Next step:** implement `bayes_h5_sandbox_spec_v1` behind `run_sandbox_fit` feature flag + H5 world materialization + pilot JSON — **separate implementation authorization**.
 
 **This ADR does not authorize production Bayesian decisioning.**

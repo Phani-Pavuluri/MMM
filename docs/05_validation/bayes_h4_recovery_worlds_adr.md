@@ -279,10 +279,10 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 
 ---
 
-## 14. Bayes-H5 model-spec improvement (next — architecture only)
+## 14. Bayes-H5 model-spec improvement (accepted — architecture only)
 
 **ADR:** [bayes_h5_model_spec_improvement_adr.md](bayes_h5_model_spec_improvement_adr.md)  
-**Status:** **Proposed** — design-only; **no** sandbox implementation in this step.
+**Status:** **Accepted** (2026-06-01) — design-only; **no** sandbox implementation authorized by acceptance alone.
 
 | H4 finding | H5 spec response (planned) |
 |------------|----------------------------|
@@ -305,7 +305,7 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 - **Complete (H4c):** `h4c_recovery_worlds.py`, `h4c_extended_recovery_pilot.py`, H4c pilot JSON, `tests/research/test_bayes_h4c_extended_recovery_worlds.py`.  
 - **Complete (INV-071):** claim-specific report-only threshold policy JSON + `h4_recovery_threshold_policy.py`, `tests/research/test_bayes_h4_recovery_threshold_policy.py`.  
 - **Complete (H4d / INV-H4D):** sparse/τ stability — [fast JSON](archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json), [extended JSON](archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json), `h4d_sparse_tau_stability.py`, [INV-H4D doc](../06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md).  
-- **Proposed (H5):** [bayes_h5_model_spec_improvement_adr.md](bayes_h5_model_spec_improvement_adr.md) — next sandbox model spec (implementation gated).  
+- **Accepted (H5):** [bayes_h5_model_spec_improvement_adr.md](bayes_h5_model_spec_improvement_adr.md) — next sandbox model spec (implementation gated separately).  
 - **Next (research):** H5 validation worlds + pilot when implementation approved; optional sparse variant sweep.  
 - **Not authorized:** Bayes-H3 production promotion, NumPyro backend, prod CI Bayesian jobs without research labeling.
 

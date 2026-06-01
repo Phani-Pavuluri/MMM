@@ -1868,13 +1868,13 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
-### Bayes-H5 — Sandbox model-spec improvement ADR (proposed)
+### Bayes-H5 — Sandbox model-spec improvement ADR (accepted)
 
 | Field | Value |
 |-------|-------|
 | **Track item** | Bayes-H5 |
 | **Title** | Next hierarchical sandbox model specification (transforms, priors, diagnostics) |
-| **Status** | **proposed** — architecture ADR only; implementation not authorized |
+| **Status** | **accepted** (2026-06-01) — architecture ADR only; implementation not authorized |
 | **Doc** | [bayes_h5_model_spec_improvement_adr.md](../05_validation/bayes_h5_model_spec_improvement_adr.md) |
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Spec for media transform registry, prior policy, weak-ID/sparse diagnostics, TrustReport mapping |

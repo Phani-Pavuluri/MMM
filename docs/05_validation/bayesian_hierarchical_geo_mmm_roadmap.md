@@ -192,6 +192,16 @@ All items below are **future** reliability-program requirements (Track 2), not s
 
 **Exit:** ReliabilityScorecard stratum for `framework:bayesian_hierarchical` (future).
 
+### Bayes-H5 — Sandbox model-spec improvement ✅
+
+| Deliverable | Status |
+|-------------|--------|
+| [bayes_h5_model_spec_improvement_adr.md](bayes_h5_model_spec_improvement_adr.md) | **Accepted** (2026-06-01) — transforms, priors, diagnostics, validation plan |
+| Implementation (`bayes_h5_sandbox_spec_v1`) | **Not authorized** until H5 worlds + pilot |
+| Production promotion | **Blocked** |
+
+**Exit:** Authorizes **spec direction** only; H3 MVP remains running code until gated implementation lands.
+
 ### Bayes-H5 — Production candidacy review
 
 | Gate | Rule |
