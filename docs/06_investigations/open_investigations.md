@@ -1800,3 +1800,30 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Recommended phase** | Closed |
 | **Related investigations** | INV-023, INV-008 |
 | **Notes** | **Fix:** commit `Fix validation package import cycles`. Do not re-export synthetic validators from package `__init__` files. |
+
+---
+
+### INV-071 — Bayes-H4 recovery metric thresholds TBD
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-071 |
+| **Title** | Calibrate Bayes-H4 recovery pass thresholds (`beta_gc_mae`, coverage, shrinkage) |
+| **Category** | certification reliability gaps |
+| **Severity** | medium |
+| **Status** | open |
+| **Platform track** | 4 — Research Sandbox |
+| **First identified in** | Bayes-H4 recovery world scaffolding (2026-06-01) |
+| **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); `mmm.research.bayes_h3_sandbox.recovery_runner` |
+| **Problem statement** | H4 worlds report recovery metrics but promotion pass/fail thresholds are not yet calibrated on pilot runs. |
+| **Why it matters** | Without thresholds, recovery scaffolding must not be misread as production readiness. |
+| **Risk type** | certification reliability |
+| **Production impact** | None — research-only |
+| **Current behavior** | Metrics emitted; `status: pass` on catalog determinism only. |
+| **Desired end state** | Documented TBD_v1 thresholds after slow-test pilot characterization. |
+| **Blocking dependencies** | Optional extended H4 worlds |
+| **Suggested validation** | Slow pytest + recovery report JSON archive |
+| **Suggested owner area** | `mmm.research.bayes_h3_sandbox.recovery_runner` |
+| **Recommended phase** | After H4 scaffolding stabilizes |
+| **Related investigations** | INV-064, INV-065, INV-069 |
+| **Notes** | Inconclusive slow runs should be recorded here — not hidden. |

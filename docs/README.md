@@ -73,6 +73,7 @@ Operational workflows for analysts and data scientists:
 | Bayes-H2b hierarchy evidence validator (no-fit stub) | `mmm.validation.synthetic.hierarchy_evidence_validator` — `python -m mmm.validation.synthetic.hierarchy_evidence_validator --smoke VAL-BAYES-H2B-SMOKE` |
 | Bayes-H2d hierarchical model spec ADR ✅ | [05_validation/bayes_h2d_hierarchical_model_spec_adr.md](05_validation/bayes_h2d_hierarchical_model_spec_adr.md) |
 | Bayes-H3 sandbox backend ADR (PyMC; NumPyro deferred) ✅ | [05_validation/bayes_h3_research_sandbox_backend_adr.md](05_validation/bayes_h3_research_sandbox_backend_adr.md) |
+| Bayes-H4 recovery worlds ADR ✅ | [05_validation/bayes_h4_recovery_worlds_adr.md](05_validation/bayes_h4_recovery_worlds_adr.md) |
 | Bayesian Geo MMM architecture refinement | [05_validation/bayesian_hierarchical_geo_mmm_refinement.md](05_validation/bayesian_hierarchical_geo_mmm_refinement.md) |
 | Investigation backlog | [06_investigations/open_investigations.md](06_investigations/open_investigations.md) |
 | Investigation index (by track) | [06_investigations/investigation_index.md](06_investigations/investigation_index.md) |

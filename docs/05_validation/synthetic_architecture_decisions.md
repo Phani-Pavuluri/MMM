@@ -411,6 +411,27 @@ Binding detail: [bayes_h3_research_sandbox_backend_adr.md](bayes_h3_research_san
 
 ---
 
+## Decision 15 — Bayes-H4 recovery worlds (Track 4)
+
+### Decision
+
+**Bayes-H4** adds deterministic generative recovery worlds (`WORLD-BAYES-H4-*`) to validate whether the Bayes-H3 sandbox recovers known \(\mu_c\), \(\tau_c\), and \(\beta_{g,c}\) under research-only fences. Promotion remains blocked.
+
+Binding detail: [bayes_h4_recovery_worlds_adr.md](bayes_h4_recovery_worlds_adr.md).
+
+### Rationale
+
+- H3 proved safe execution; H4 proves scientific behavior on controlled truth.  
+- Recovery metrics are diagnostic report-only until pilot thresholds are calibrated.
+
+### Consequences
+
+- `run_h4_recovery_world` must not emit production DecisionSurface or optimizer inputs.  
+- Pass/fail promotion thresholds are **TBD** (see INV-071).  
+- Production Bayesian decisioning remains blocked.
+
+---
+
 ## Supersession
 
 | ADR ID | Supersedes | Status |
@@ -421,6 +442,7 @@ Binding detail: [bayes_h3_research_sandbox_backend_adr.md](bayes_h3_research_san
 | `bayes_h2b_hierarchical_experiment_prior_scope_rules_v1` | Informal §3.3 propagation in refinement doc | Active (Track 4) |
 | `bayes_h2d_hierarchical_model_spec_v1` | Informal §2 hierarchy in refinement doc | Active (Track 4) |
 | `bayes_h3_research_sandbox_backend_v1` | Informal backend choice in sandbox code | Active (Track 4) |
+| `bayes_h4_recovery_worlds_v1` | Informal recovery validation | Active (Track 4) |
 | DR-01 | Phase 1A | Option C bundle — [world_materialization.md](world_materialization.md) |
 | DR-02 | Phase 1A | Three-version policy — [truth_versioning.md](truth_versioning.md) |
 | DR-07 | Feature-centric MMM-only roadmap narrative | [platform_roadmap.md](platform_roadmap.md) |
