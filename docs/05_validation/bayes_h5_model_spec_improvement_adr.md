@@ -57,6 +57,17 @@
 | **Mismatch warnings** | 100% rate on intentional mismatch worlds |
 | **Production** | **Still blocked** |
 
+### H5c extended MCMC confirmation (INV-H5C)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — extended repeated pilot confirms H5b |
+| **Investigation** | [INV-H5C](../06_investigations/INV-H5C_EXTENDED_MCMC_CONFIRMATION.md) |
+| **Artifact** | [BAYES_H5C_EXTENDED_REPEATED_PILOT_20260601.json](archives/BAYES_H5C_EXTENDED_REPEATED_PILOT_20260601.json) |
+| **Sampler** | 600 tune / 600 draw / 4 chains / target_accept=0.95 |
+| **Outcome** | All H5b conclusions hold; no material Δ vs H5b (\|Δ\| &lt; 0.05); H5 transform evidence **accepted for research** |
+| **Production** | **Still blocked** |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

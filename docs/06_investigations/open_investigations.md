@@ -1879,7 +1879,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | Optional H5c extended MCMC; no promotion review |
+| **Next** | TrustReport wiring / shadow panels; no promotion review |
+
+---
+
+### INV-H5C — Bayes-H5 extended MCMC confirmation
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5C |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5C_EXTENDED_MCMC_CONFIRMATION.md](INV-H5C_EXTENDED_MCMC_CONFIRMATION.md) |
+| **Artifact** | [BAYES_H5C_EXTENDED_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H5C_EXTENDED_REPEATED_PILOT_20260601.json) |
+| **Outcome** | H5b conclusions hold under 600/600/4 extended MCMC; H5 transform evidence accepted for research |
+| **Production impact** | None |
 
 ---
 

@@ -47,7 +47,8 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | Bayes-H4d sparse/τ stability (INV-H4D) | 2 | Reliability / governance | TrustReport (diagnostic) | conflate sparse recovery with sparse stress; prod τ promotion | [INV-H4D](06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md); [H4D fast](05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json); [H4D extended](05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json) | Investigation | **Complete** (fast + extended confirmed) | Bayes-H5 model-spec ADR | **Yes** | Blocked — sandbox τ only |
 | [Bayes-H5 model-spec improvement ADR](05_validation/bayes_h5_model_spec_improvement_adr.md) | 1 | MMM calibration ecosystem | TrustReport (diagnostic) | transform mismatch; weak ID; false prod promotion | H5 ADR accepted 2026-06-01; H4c/H4d evidence | Architecture | **Accepted** | H5 pilot + spec validation | Yes (architecture-only) | Blocked — spec not implementation |
 | Bayes-H5a sandbox validation worlds + gated fit | 2 | Reliability / governance | TrustReport (diagnostic) | prod promotion from sandbox pilot | `h5_validation_worlds.py`; [H5 pilot JSON](05_validation/archives/BAYES_H5_SANDBOX_PILOT_20260601.json) (fast MCMC ✅) | Implementation | **Complete (H5a)** | H5c extended MCMC (optional) | **Yes** | Blocked — research only |
-| Bayes-H5b diagnostic polish + repeated pilot (INV-H5B) | 2 | Reliability / governance | TrustReport (diagnostic) | false promotion from pilot variance | [INV-H5B](06_investigations/INV-H5B_REPEATED_PILOT_AND_DIAGNOSTICS.md); [H5b repeated JSON](05_validation/archives/BAYES_H5B_REPEATED_PILOT_20260601.json) | Investigation | **Complete** | H5c extended MCMC / TrustReport wiring | **Yes** | Blocked — research only |
+| Bayes-H5b diagnostic polish + repeated pilot (INV-H5B) | 2 | Reliability / governance | TrustReport (diagnostic) | false promotion from pilot variance | [INV-H5B](06_investigations/INV-H5B_REPEATED_PILOT_AND_DIAGNOSTICS.md); [H5b repeated JSON](05_validation/archives/BAYES_H5B_REPEATED_PILOT_20260601.json) | Investigation | **Complete** | H5c extended MCMC | **Yes** | Blocked — research only |
+| Bayes-H5c extended MCMC confirmation (INV-H5C) | 2 | Reliability / governance | TrustReport (diagnostic) | overfit fast MCMC conclusions | [INV-H5C](06_investigations/INV-H5C_EXTENDED_MCMC_CONFIRMATION.md); [H5c extended JSON](05_validation/archives/BAYES_H5C_EXTENDED_REPEATED_PILOT_20260601.json) | Investigation | **Complete** | TrustReport wiring / shadow panels | **Yes** | Blocked — research only |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | H5 validation + Promotion Gate; decision trace | Promotion | **Blocked** | not until H5 implementation + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -76,7 +77,8 @@ Bayes-H2b ADR ✅
   → Bayes-H5 model-spec improvement ADR ✅
   → Bayes-H5a sandbox validation worlds + gated fit ✅ (fast MCMC pilot)
   → Bayes-H5b diagnostic polish + repeated pilot ✅ (INV-H5B)
-  → Bayes-H5c extended MCMC / TrustReport wiring ← optional (research only)
+  → Bayes-H5c extended MCMC confirmation ✅ (INV-H5C)
+  → TrustReport wiring / real-panel shadow ← optional (research only)
   → Bayes-H5 production promotion (blocked)
   → Bayes-H3 production promotion (blocked)
 ```

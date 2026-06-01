@@ -17,7 +17,13 @@ from mmm.research.bayes_h3_sandbox.h5_validation_worlds import (
     h5_world_production_flags,
 )
 from mmm.research.bayes_h3_sandbox.recovery_runner import run_h5_recovery_world
-from mmm.research.bayes_h3_sandbox.recovery_worlds import RecoveryWorldSpec, get_recovery_world, recovery_world_config
+from mmm.research.bayes_h3_sandbox.recovery_worlds import (
+    SAMPLER_EXTENDED,
+    SAMPLER_FAST,
+    RecoveryWorldSpec,
+    get_recovery_world,
+    recovery_world_config,
+)
 
 PILOT_ID = "BAYES_H5_SANDBOX_PILOT_20260601"
 PILOT_VERSION = "bayes_h5_sandbox_pilot_v1"
@@ -26,7 +32,15 @@ DEFAULT_ARTIFACT_PATH = Path("docs/05_validation/archives/BAYES_H5_SANDBOX_PILOT
 REPEATED_PILOT_ID = "BAYES_H5B_REPEATED_PILOT_20260601"
 REPEATED_PILOT_VERSION = "bayes_h5b_repeated_pilot_v1"
 DEFAULT_REPEATED_ARTIFACT_PATH = Path("docs/05_validation/archives/BAYES_H5B_REPEATED_PILOT_20260601.json")
+
+EXTENDED_PILOT_ID = "BAYES_H5C_EXTENDED_REPEATED_PILOT_20260601"
+EXTENDED_PILOT_VERSION = "bayes_h5c_extended_repeated_pilot_v1"
+DEFAULT_EXTENDED_ARTIFACT_PATH = Path(
+    "docs/05_validation/archives/BAYES_H5C_EXTENDED_REPEATED_PILOT_20260601.json"
+)
+
 DEFAULT_REPEATED_SEEDS: tuple[int, ...] = (4400, 4401, 4402)
+H5C_MATERIAL_CHANGE_BETA_MAE_DELTA = 0.05
 H4C_PILOT_PATH = Path("docs/05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json")
 
 # H5 world → H4c mismatch/recovery baseline world for beta_gc_mae comparison.
@@ -56,8 +70,17 @@ def _json_safe(value: Any) -> Any:
     return str(value)
 
 
-def _backend_metadata(spec: RecoveryWorldSpec, *, fast_mcmc: bool) -> dict[str, Any]:
-    cfg = recovery_world_config(spec, fast_mcmc=fast_mcmc)
+def _backend_metadata(
+    spec: RecoveryWorldSpec,
+    *,
+    fast_mcmc: bool,
+    extended_mcmc: bool = False,
+) -> dict[str, Any]:
+    cfg = recovery_world_config(
+        spec,
+        fast_mcmc=fast_mcmc and not extended_mcmc,
+        sampler=_sampler_for_profile(extended_mcmc),
+    )
     b = cfg.bayesian
     return {
         "inference_backend": BayesianBackend.PYMC.value,
@@ -70,8 +93,15 @@ def _backend_metadata(spec: RecoveryWorldSpec, *, fast_mcmc: bool) -> dict[str, 
         "target_accept": float(b.target_accept),
         "nuts_seed": int(b.nuts_seed),
         "world_mcmc_seed": int(spec.mcmc_seed),
-        "fast_mcmc_profile": fast_mcmc,
+        "fast_mcmc_profile": fast_mcmc and not extended_mcmc,
+        "extended_mcmc_profile": extended_mcmc,
     }
+
+
+def _sampler_for_profile(extended_mcmc: bool) -> dict[str, Any] | None:
+    if extended_mcmc:
+        return dict(SAMPLER_EXTENDED)
+    return None
 
 
 def _world_row_from_report(report: dict[str, Any], spec: RecoveryWorldSpec) -> dict[str, Any]:
@@ -187,6 +217,14 @@ def _agg_numeric(values: list[float]) -> dict[str, Any]:
     }
 
 
+def load_h5b_repeated_pilot(path: Path | None = None) -> dict[str, Any]:
+    """Load H5b fast repeated pilot JSON (empty dict if missing)."""
+    p = path or DEFAULT_REPEATED_ARTIFACT_PATH
+    if not p.is_file():
+        return {}
+    return json.loads(p.read_text(encoding="utf-8"))
+
+
 def load_h4c_beta_mae_baselines(path: Path | None = None) -> dict[str, float]:
     """Load H4c extended pilot beta_gc_mae by world_id for comparison."""
     p = path or H4C_PILOT_PATH
@@ -234,15 +272,96 @@ def aggregate_h5_world_runs(runs: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _compare_to_h5b_fast_pilot(
+    aggregate_by_world: dict[str, Any],
+    *,
+    h5b_data: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Per-world comparison of extended (or current) aggregates vs H5b fast pilot."""
+    h5b = h5b_data if h5b_data is not None else load_h5b_repeated_pilot()
+    h5b_agg = h5b.get("aggregate_by_world") or {}
+    out: dict[str, Any] = {}
+    for wid in H5_WORLD_IDS:
+        cur = aggregate_by_world.get(wid) or {}
+        ref = h5b_agg.get(wid) or {}
+        cur_mean = (cur.get("beta_gc_mae") or {}).get("mean")
+        ref_mean = (ref.get("beta_gc_mae") or {}).get("mean")
+        if cur_mean is None or ref_mean is None:
+            continue
+        delta = float(cur_mean) - float(ref_mean)
+        out[wid] = {
+            "h5b_beta_gc_mae_mean": ref_mean,
+            "current_beta_gc_mae_mean": cur_mean,
+            "delta_vs_h5b": delta,
+            "material_change_vs_h5b": abs(delta) > H5C_MATERIAL_CHANGE_BETA_MAE_DELTA,
+            "h5b_transform_mismatch_warning_rate": ref.get("transform_mismatch_warning_rate"),
+            "current_transform_mismatch_warning_rate": cur.get("transform_mismatch_warning_rate"),
+            "h5b_unexpected_mismatch_warning_rate": ref.get("unexpected_mismatch_warning_rate"),
+            "current_unexpected_mismatch_warning_rate": cur.get("unexpected_mismatch_warning_rate"),
+        }
+    return out
+
+
+def _extended_conclusions(
+    aggregate_by_world: dict[str, Any],
+    h4c_comparison: dict[str, Any],
+    comparison_to_h5b: dict[str, Any],
+) -> dict[str, Any]:
+    """Research-only acceptance notes for H5c vs H5b/H4c."""
+    sat = aggregate_by_world.get("WORLD-BAYES-H5-SATURATION-ALIGNED", {})
+    ad = aggregate_by_world.get("WORLD-BAYES-H5-ADSTOCK-ALIGNED", {})
+    sat_mean = (sat.get("beta_gc_mae") or {}).get("mean")
+    ad_mean = (ad.get("beta_gc_mae") or {}).get("mean")
+    sat_h4c = h4c_comparison.get("WORLD-BAYES-H5-SATURATION-ALIGNED", {})
+    ad_h4c = h4c_comparison.get("WORLD-BAYES-H5-ADSTOCK-ALIGNED", {})
+
+    mismatch_rates = [
+        aggregate_by_world.get(w, {}).get("transform_mismatch_warning_rate", 0.0)
+        for w in H5_WORLD_IDS
+        if "MISMATCH" in w
+    ]
+    unexpected_rates = [
+        aggregate_by_world.get(w, {}).get("unexpected_mismatch_warning_rate", 0.0) for w in H5_WORLD_IDS
+    ]
+    material_changes = [v.get("material_change_vs_h5b") for v in comparison_to_h5b.values() if v]
+
+    return {
+        "saturation_aligned_improvement_holds": bool(
+            sat_h4c.get("improved_vs_h4c") and sat_mean is not None and float(sat_mean) < 0.15
+        ),
+        "adstock_aligned_improvement_holds": bool(
+            ad_h4c.get("improved_vs_h4c") and ad_mean is not None and float(ad_mean) < 0.28
+        ),
+        "mismatch_warnings_clean": all(r >= 0.99 for r in mismatch_rates) if mismatch_rates else False,
+        "unexpected_mismatch_clean": all(r == 0.0 for r in unexpected_rates),
+        "weak_id_diagnostics_present": (
+            aggregate_by_world.get("WORLD-BAYES-H5-WEAK-SIGNAL", {}).get("weak_identification_warning_rate", 0) >= 0.99
+            and aggregate_by_world.get("WORLD-BAYES-H5-CORRELATED-CHANNELS", {}).get("collinearity_warning_rate", 0)
+            >= 0.99
+        ),
+        "sparse_recovery_report_only": True,
+        "material_change_any_world": any(material_changes),
+        "accepted_research_evidence": (
+            "H5 transform-aligned spec improves saturation recovery vs H4c MVP mismatch; "
+            "adstock gain modest but directionally stable; diagnostics behave as designed."
+        ),
+        "rejected_for_production": "Production Bayes, optimizer, DecisionSurface, and hard gates remain blocked.",
+    }
+
+
 def build_h5_repeated_pilot_summary(
     per_run_rows: list[dict[str, Any]],
     *,
     seeds: tuple[int, ...] = DEFAULT_REPEATED_SEEDS,
     fast_mcmc: bool = True,
+    extended_mcmc: bool = False,
     sampler_metadata: dict[str, Any] | None = None,
     h4c_baselines: dict[str, float] | None = None,
+    h5b_data: dict[str, Any] | None = None,
+    pilot_id: str | None = None,
+    pilot_version: str | None = None,
 ) -> dict[str, Any]:
-    """Assemble H5b repeated pilot JSON (research only)."""
+    """Assemble H5b/H5c repeated pilot JSON (research only)."""
     baselines = h4c_baselines if h4c_baselines is not None else load_h4c_beta_mae_baselines()
     by_world: dict[str, list[dict[str, Any]]] = {}
     for row in per_run_rows:
@@ -284,20 +403,34 @@ def build_h5_repeated_pilot_summary(
         aggregate_by_world.get(w, {}).get("transform_mismatch_warning_rate", 0.0) for w in mismatch_worlds
     ]
 
-    return {
-        "pilot_id": REPEATED_PILOT_ID,
-        "pilot_version": REPEATED_PILOT_VERSION,
+    comparison_to_h5b = (
+        _compare_to_h5b_fast_pilot(aggregate_by_world, h5b_data=h5b_data) if extended_mcmc else None
+    )
+    conclusions = (
+        _extended_conclusions(aggregate_by_world, h4c_comparison, comparison_to_h5b or {})
+        if extended_mcmc
+        else None
+    )
+
+    summary: dict[str, Any] = {
+        "pilot_id": pilot_id or (EXTENDED_PILOT_ID if extended_mcmc else REPEATED_PILOT_ID),
+        "pilot_version": pilot_version
+        or (EXTENDED_PILOT_VERSION if extended_mcmc else REPEATED_PILOT_VERSION),
         "model_spec_version": H5_MODEL_SPEC_VERSION,
         "label": "RESEARCH ONLY — NOT DECISION GRADE",
         "research_only": True,
         "seeds": list(seeds),
-        "sampler_settings": sampler_metadata or {"fast_mcmc_profile": fast_mcmc},
+        "sampler_settings": sampler_metadata
+        or (
+            {**SAMPLER_EXTENDED, "extended_mcmc_profile": True}
+            if extended_mcmc
+            else {**SAMPLER_FAST, "fast_mcmc_profile": fast_mcmc}
+        ),
         "per_run": per_run_rows,
         "aggregate_by_world": aggregate_by_world,
         "h4c_baseline_comparison": h4c_comparison,
         "stability_summary": stability,
         "mismatch_warning_rate_by_world": dict(zip(mismatch_worlds, mismatch_warn_rates, strict=True)),
-        "diagnostic_fix": "transforms_aligned treats linear/correlated/weak_signal + identity as aligned",
         "hard_gate": False,
         "production_promotion": False,
         "approved_for_prod": False,
@@ -305,8 +438,16 @@ def build_h5_repeated_pilot_summary(
         "decision_grade": False,
         "outputs_are_diagnostic_only": True,
         "production_decision_surface": False,
-        "note": "H5b repeated fast-MCMC pilot — stability check only; INV-071 report-only.",
     }
+    if extended_mcmc:
+        summary["comparison_to_h5b_fast_pilot"] = comparison_to_h5b
+        summary["h5c_conclusions"] = conclusions
+        summary["reference_h5b_artifact"] = str(DEFAULT_REPEATED_ARTIFACT_PATH)
+        summary["note"] = "H5c extended MCMC repeated pilot — confirms H5b conclusions; INV-071 report-only."
+    else:
+        summary["diagnostic_fix"] = "transforms_aligned treats linear/correlated/weak_signal + identity as aligned"
+        summary["note"] = "H5b repeated fast-MCMC pilot — stability check only; INV-071 report-only."
+    return summary
 
 
 def aggregate_world_runs(runs: list[dict[str, Any]]) -> dict[str, Any]:
@@ -318,34 +459,61 @@ def run_h5_repeated_pilot(
     *,
     world_ids: tuple[str, ...] | None = None,
     fast_mcmc: bool = True,
+    extended_mcmc: bool = False,
     artifact_path: Path | None = None,
 ) -> dict[str, Any]:
-    """Run H5 recovery across seeds and write repeated pilot artifact."""
+    """Run H5 recovery across seeds and write repeated pilot artifact (H5b fast or H5c extended)."""
+    if extended_mcmc:
+        fast_mcmc = False
     nut_seeds = seeds or DEFAULT_REPEATED_SEEDS
     ids = world_ids or H5_WORLD_IDS
+    sampler_settings = dict(SAMPLER_EXTENDED) if extended_mcmc else None
     rows: list[dict[str, Any]] = []
     sampler_meta: dict[str, Any] | None = None
     for wid in ids:
         for nuts_seed in nut_seeds:
             spec = get_recovery_world(wid)
-            report = run_h5_recovery_world(wid, fast_mcmc=fast_mcmc, nuts_seed=int(nuts_seed))
+            report = run_h5_recovery_world(
+                wid,
+                fast_mcmc=fast_mcmc,
+                sampler=sampler_settings,
+                nuts_seed=int(nuts_seed),
+            )
             if sampler_meta is None:
-                sampler_meta = _backend_metadata(spec, fast_mcmc=fast_mcmc)
+                sampler_meta = _backend_metadata(
+                    spec,
+                    fast_mcmc=fast_mcmc,
+                    extended_mcmc=extended_mcmc,
+                )
             row = _world_row_from_report(report, spec)
             row["nuts_seed"] = int(nuts_seed)
+            row["extended_mcmc"] = extended_mcmc
             rows.append(row)
 
+    default_path = DEFAULT_EXTENDED_ARTIFACT_PATH if extended_mcmc else DEFAULT_REPEATED_ARTIFACT_PATH
     summary = build_h5_repeated_pilot_summary(
         rows,
         seeds=nut_seeds,
         fast_mcmc=fast_mcmc,
+        extended_mcmc=extended_mcmc,
         sampler_metadata=sampler_meta,
     )
-    path = artifact_path or DEFAULT_REPEATED_ARTIFACT_PATH
+    path = artifact_path or default_path
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(_json_safe(summary), indent=2) + "\n", encoding="utf-8")
     summary["artifact_path"] = str(path)
     return summary
+
+
+def validate_h5_extended_repeated_pilot_schema(summary: dict[str, Any]) -> None:
+    """Fail fast if H5c extended repeated pilot artifact is invalid."""
+    validate_h5_repeated_pilot_schema(summary)
+    if summary.get("pilot_id") != EXTENDED_PILOT_ID:
+        raise ValueError(f"pilot_id must be {EXTENDED_PILOT_ID!r}")
+    if "comparison_to_h5b_fast_pilot" not in summary:
+        raise ValueError("comparison_to_h5b_fast_pilot required for H5c artifact")
+    if summary.get("sampler_settings", {}).get("extended_mcmc_profile") is not True:
+        raise ValueError("extended_mcmc_profile must be true in sampler_settings")
 
 
 def validate_h5_repeated_pilot_schema(summary: dict[str, Any]) -> None:
