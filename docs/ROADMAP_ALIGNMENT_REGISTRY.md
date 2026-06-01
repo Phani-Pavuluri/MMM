@@ -42,7 +42,8 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | Bayes-H4b-disposition (metric + recovery posture) | 2 | Reliability / governance | TrustReport (diagnostic) | conflate pooling with truth recovery | [INV-H4-001 §11](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) | Governance | **Complete** (C+A accepted) | Bayes-H4c research worlds | **Yes** | Blocked — disposition ≠ prod |
 | INV-H4-001 sparse pooling behavior | 2 | Reliability / governance | TrustReport (diagnostic) | wrong shrinkage metric; weak pooling on sparse geo | [INV-H4-001](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) | Investigation | **Closed** (disposition C+A) | sparse world / τ tuning (research) | **Yes** | Blocked — no production promotion |
 | INV-H4-001b sparse variant sweep | 2 | Reliability / governance | TrustReport (diagnostic) | mis-tuned sparse world; τ prior | [sweep JSON](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) | Investigation | **Closed** | — | **Yes** | Blocked |
-| Bayes-H4c extended recovery worlds | 2 | Reliability / governance | TrustReport (diagnostic) | premature hard gates; prod promotion | `h4c_recovery_worlds.py`; [H4C pilot JSON](05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json) | Implementation | **Complete** (reliability map) | INV-071 calibration; sparse/τ tuning | **Yes** | Blocked — not production ready |
+| Bayes-H4c extended recovery worlds | 2 | Reliability / governance | TrustReport (diagnostic) | premature hard gates; prod promotion | `h4c_recovery_worlds.py`; [H4C pilot JSON](05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json) | Implementation | **Complete** (reliability map) | sparse/τ tuning (research) | **Yes** | Blocked — not production ready |
+| INV-071 true-effect recovery threshold policy | 2 | Reliability / governance | TrustReport (diagnostic) | global thresholds; stress worlds as hard fail | [INV-071](06_investigations/INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md); [policy JSON](05_validation/archives/BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601.json) | Investigation | **Complete** (report-only) | repeated multi-seed hard gates (future) | **Yes** | Blocked — no production promotion |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | Bayes-H4+ gates; Promotion Gate; decision trace | Promotion | **Blocked** | not until H4 gates + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -66,7 +67,7 @@ Bayes-H2b ADR ✅
   → H4b-refresh primary-metric repeated pilot ✅
   → H4b-disposition (C+A accepted) ✅
   → Bayes-H4c extended recovery worlds (reliability map) ✅
-  → INV-071 true-effect threshold calibration  ← NEXT
+  → INV-071 true-effect threshold calibration (report-only policy) ✅
   → Bayes-H3 production promotion (blocked)
 ```
 

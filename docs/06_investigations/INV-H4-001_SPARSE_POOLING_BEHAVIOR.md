@@ -97,7 +97,7 @@ For current sparse world, sorted geo order matches `spec.geo_order` — **H2 unl
 
 **Honest summary:** Do **not** say “Bayes recovers truth.” Say: **the hierarchy is mechanically pooling as expected, but the current sparse world / \(\tau\) prior / data design does not yet recover the synthetic true center well enough** for recovery gating.
 
-**Disposition:** **C+A accepted** (see §11). **INV-071** remains open for true-effect threshold calibration. **H4c** may proceed as **research-only** extended worlds — not production promotion.
+**Disposition:** **C+A accepted** (see §11). **INV-071** calibrated report-only true-effect thresholds (no production promotion). **H4c** complete as **research-only** extended worlds.
 
 ---
 

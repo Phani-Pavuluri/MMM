@@ -1,0 +1,842 @@
+{
+  "approved_for_prod": false,
+  "decision_grade": false,
+  "hard_gate": false,
+  "input_artifacts": [
+    "docs/05_validation/archives/BAYES_H4_THRESHOLD_PILOT_20260601.json",
+    "docs/05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json",
+    "docs/05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json",
+    "docs/05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json"
+  ],
+  "interpretation": {
+    "does_not_claim": "Bayesian MMM is production-ready or recovers truth globally.",
+    "pooling_vs_recovery": "Pooling metrics (primary shrinkage) are separate from true-effect recovery.",
+    "promotion_blocked": true,
+    "purpose": "Claim-specific true-effect recovery thresholds for Bayes-H4 research sandbox.",
+    "stress_worlds_never_global_fail": true
+  },
+  "investigation_id": "INV-071",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "metric_definitions": {
+    "pooling_mechanics": {
+      "shrinkage_ratio_sparse": {
+        "note": "Per H4b-disposition C; not a truth-recovery gate.",
+        "pool_center": "posterior_mu_c",
+        "role": "pooling_mechanics_only",
+        "true_effect_recovery_gate": false
+      },
+      "shrinkage_ratio_sparse_vs_true_mu": {
+        "note": "Legacy diagnostic only.",
+        "pool_center": "true_mu_c",
+        "role": "true_effect_recovery_diagnostic",
+        "true_effect_recovery_gate": false
+      }
+    },
+    "reliability_diagnostics": {
+      "conflict_warnings": {
+        "role": "expected_on_conflict_world"
+      },
+      "h4c_classification": {
+        "role": "reliability_map"
+      },
+      "h4c_diagnostic_warnings": {
+        "role": "expected_on_mismatch_worlds"
+      }
+    },
+    "true_effect_recovery": {
+      "beta_gc_coverage_90": {
+        "note": "Do not require exact 90% on toy panels.",
+        "role": "uncertainty_directional"
+      },
+      "beta_gc_mae": {
+        "applies_to_roles": [
+          "recovery_candidate"
+        ],
+        "role": "point_recovery"
+      },
+      "beta_interval_width_90_mean": {
+        "note": "Wide intervals expected under weak ID; not a global fail.",
+        "role": "uncertainty_sanity"
+      },
+      "mu_c_mae": {
+        "applies_to_roles": [
+          "recovery_candidate"
+        ],
+        "role": "point_recovery"
+      }
+    }
+  },
+  "policy_id": "BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601",
+  "policy_version": "bayes_h4_recovery_threshold_policy_v1",
+  "prod_decisioning_allowed": false,
+  "production_promotion": false,
+  "provisional_thresholds": {
+    "calibrated_from_roles": [
+      "recovery_candidate"
+    ],
+    "hard_gate": false,
+    "point_recovery": {
+      "beta_gc_mae": {
+        "hard_fail_above": null,
+        "max": 0.29981742708816544,
+        "median": 0.29745047783681017,
+        "min": 0.26889435621118535,
+        "mode": "report_only",
+        "n": 6,
+        "report_restricted_above": 0.40475352656902336,
+        "report_warn_above": 0.3447900411513902
+      },
+      "mu_c_mae": {
+        "hard_fail_above": null,
+        "max": 0.29716431387985653,
+        "median": 0.28938599541200716,
+        "min": 0.2620381414724353,
+        "mode": "report_only",
+        "n": 6,
+        "report_restricted_above": 0.40117182373780635,
+        "report_warn_above": 0.341738960961835
+      }
+    },
+    "production_promotion": false,
+    "reliability_by_role": {
+      "conflict_diagnostic": {
+        "default": "warn",
+        "expected": "conflict_warning_required",
+        "global_model_failure": false
+      },
+      "recovery_candidate": {
+        "default": "warn",
+        "global_model_failure": false,
+        "informs_future_thresholds": true,
+        "note": "Only role used to calibrate true-effect report bands.",
+        "on_metric_exceed_report_restricted": "restricted",
+        "on_metric_exceed_report_warn": "warn"
+      },
+      "stress_diagnostic": {
+        "default": "report_only",
+        "global_model_failure": false,
+        "hard_gate": false,
+        "note": "Stress world; never a global Bayes pass/fail.",
+        "on_any_metric": "report_only"
+      },
+      "transform_mismatch": {
+        "default": "restricted",
+        "expected": "transform_mismatch_warning",
+        "global_model_failure": false,
+        "note": "Generative transform differs from MVP; not recovery failure."
+      },
+      "weak_identification": {
+        "default": "warn",
+        "expected": "warning_or_restricted",
+        "global_model_failure": false,
+        "note": "Collinearity / weak SNR; not recovery failure."
+      }
+    },
+    "report_only": true,
+    "uncertainty": {
+      "beta_gc_coverage_90": {
+        "mode": "directional_only",
+        "note": "Toy panels; coverage is trend-only.",
+        "observed_range": [
+          0.0,
+          0.25
+        ],
+        "require_exact_90": false
+      },
+      "beta_interval_width_90_mean": {
+        "hard_fail_above": null,
+        "max": 0.1010308500347577,
+        "median": 0.09359526262918941,
+        "min": 0.0861596752236211,
+        "mode": "report_only",
+        "n": 2,
+        "report_restricted_above": 0.1363916475469229,
+        "report_warn_above": 0.11618547753997135
+      }
+    }
+  },
+  "research_only": true,
+  "world_catalog": {
+    "conflict_diagnostic": [
+      "WORLD-BAYES-H4-CONFLICTING-EVIDENCE"
+    ],
+    "h4_core": [
+      "WORLD-BAYES-H4-SIMPLE-POOLING",
+      "WORLD-BAYES-H4-SPARSE-GEO",
+      "WORLD-BAYES-H4-CONFLICTING-EVIDENCE"
+    ],
+    "h4c_extended": [
+      "WORLD-BAYES-H4C-CLEAN-RECOVERY",
+      "WORLD-BAYES-H4C-CORRELATED-CHANNELS",
+      "WORLD-BAYES-H4C-ADSTOCKED-MEDIA",
+      "WORLD-BAYES-H4C-SATURATION",
+      "WORLD-BAYES-H4C-WEAK-SIGNAL",
+      "WORLD-BAYES-H4C-SPARSE-RECOVERY"
+    ],
+    "recovery_candidate": [
+      "WORLD-BAYES-H4-SIMPLE-POOLING",
+      "WORLD-BAYES-H4C-CLEAN-RECOVERY",
+      "WORLD-BAYES-H4C-SPARSE-RECOVERY"
+    ],
+    "stress_diagnostic": [
+      "WORLD-BAYES-H4-SPARSE-GEO"
+    ],
+    "transform_mismatch": [
+      "WORLD-BAYES-H4C-ADSTOCKED-MEDIA",
+      "WORLD-BAYES-H4C-SATURATION"
+    ],
+    "weak_identification": [
+      "WORLD-BAYES-H4C-CORRELATED-CHANNELS",
+      "WORLD-BAYES-H4C-WEAK-SIGNAL"
+    ]
+  },
+  "worlds": [
+    {
+      "gate_behavior": {
+        "default": "warn",
+        "expected": "conflict_warning_required",
+        "global_model_failure": false
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.3567785333279875,
+          "median": 0.3506114662867519,
+          "min": 0.3486746310964959,
+          "mode": "report_only",
+          "n": 4,
+          "report_restricted_above": 0.48165101999278315,
+          "report_warn_above": 0.41029531332718555
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.322048453569959,
+          "median": 0.31794745812921676,
+          "min": 0.313656290935188,
+          "mode": "report_only",
+          "n": 4,
+          "report_restricted_above": 0.43476541231944466,
+          "report_warn_above": 0.3703557216054528
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.5,
+          "beta_gc_mae": 0.3567785333279875,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.32125586053481103,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_THRESHOLD_PILOT_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.3486746310964959,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.31463905572362255,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.3511542332141328,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.322048453569959,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.25,
+          "beta_gc_mae": 0.35006869935937096,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.313656290935188,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        }
+      ],
+      "policy_role": "conflict_diagnostic",
+      "world_id": "WORLD-BAYES-H4-CONFLICTING-EVIDENCE"
+    },
+    {
+      "gate_behavior": {
+        "default": "warn",
+        "global_model_failure": false,
+        "informs_future_thresholds": true,
+        "note": "Only role used to calibrate true-effect report bands.",
+        "on_metric_exceed_report_restricted": "restricted",
+        "on_metric_exceed_report_warn": "warn"
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.29981742708816544,
+          "median": 0.29745047783681017,
+          "min": 0.2918571382116935,
+          "mode": "report_only",
+          "n": 4,
+          "report_restricted_above": 0.40475352656902336,
+          "report_warn_above": 0.3447900411513902
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.29716431387985653,
+          "median": 0.2957648193293737,
+          "min": 0.28342839590780455,
+          "mode": "report_only",
+          "n": 4,
+          "report_restricted_above": 0.40117182373780635,
+          "report_warn_above": 0.341738960961835
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.25,
+          "beta_gc_mae": 0.2918571382116935,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.28342839590780455,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_THRESHOLD_PILOT_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.2976470339405812,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.29716431387985653,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.25,
+          "beta_gc_mae": 0.29981742708816544,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.29625172496488134,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.29725392173303916,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.29527791369386613,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        }
+      ],
+      "policy_role": "recovery_candidate",
+      "world_id": "WORLD-BAYES-H4-SIMPLE-POOLING"
+    },
+    {
+      "gate_behavior": {
+        "default": "report_only",
+        "global_model_failure": false
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.3496820037995579,
+          "median": 0.3496820037995579,
+          "min": 0.3496820037995579,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.4720707051294032,
+          "report_warn_above": 0.40213430436949155
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.21968518804854373,
+          "median": 0.21968518804854373,
+          "min": 0.21968518804854373,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.29657500386553404,
+          "report_warn_above": 0.25263796625582524
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": null,
+          "beta_gc_mae": 0.3496820037995579,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.21968518804854373,
+          "shrinkage_ratio_sparse": 1.1196525939427395,
+          "shrinkage_ratio_sparse_vs_true_mu": 0.6180492791249599,
+          "source_pilot": "BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json"
+        }
+      ],
+      "policy_role": "unclassified",
+      "world_id": "WORLD-BAYES-H4-SPARSE-DIAG-MORE-WEEKS"
+    },
+    {
+      "gate_behavior": {
+        "default": "report_only",
+        "global_model_failure": false
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.29526314254749986,
+          "median": 0.29526314254749986,
+          "min": 0.29526314254749986,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.3986052424391248,
+          "report_warn_above": 0.3395526139296248
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.2798019148761574,
+          "median": 0.2798019148761574,
+          "min": 0.2798019148761574,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.37773258508281254,
+          "report_warn_above": 0.321772202107581
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": null,
+          "beta_gc_mae": 0.29526314254749986,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.2798019148761574,
+          "shrinkage_ratio_sparse": 0.2068432049438858,
+          "shrinkage_ratio_sparse_vs_true_mu": 32.866049547709146,
+          "source_pilot": "BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json"
+        }
+      ],
+      "policy_role": "unclassified",
+      "world_id": "WORLD-BAYES-H4-SPARSE-DIAG-NO-OUTLIER"
+    },
+    {
+      "gate_behavior": {
+        "default": "report_only",
+        "global_model_failure": false
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.36189225506427586,
+          "median": 0.36189225506427586,
+          "min": 0.36189225506427586,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.4885545443367724,
+          "report_warn_above": 0.4161760933239172
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.3315182792298177,
+          "median": 0.3315182792298177,
+          "min": 0.3315182792298177,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.44754967696025394,
+          "report_warn_above": 0.3812460211142903
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": null,
+          "beta_gc_mae": 0.36189225506427586,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.3315182792298177,
+          "shrinkage_ratio_sparse": 0.27069396395346346,
+          "shrinkage_ratio_sparse_vs_true_mu": 3.1972837333455058,
+          "source_pilot": "BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json"
+        }
+      ],
+      "policy_role": "unclassified",
+      "world_id": "WORLD-BAYES-H4-SPARSE-DIAG-OUTLIER-MODERATE"
+    },
+    {
+      "gate_behavior": {
+        "default": "report_only",
+        "global_model_failure": false
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.4288852649292408,
+          "median": 0.4288852649292408,
+          "min": 0.4288852649292408,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.5789951076544751,
+          "report_warn_above": 0.49321805466862684
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.3495740950855988,
+          "median": 0.3495740950855988,
+          "min": 0.3495740950855988,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.4719250283655584,
+          "report_warn_above": 0.40201020934843856
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": null,
+          "beta_gc_mae": 0.4288852649292408,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.3495740950855988,
+          "shrinkage_ratio_sparse": 0.2778923038811398,
+          "shrinkage_ratio_sparse_vs_true_mu": 1.8998745711131377,
+          "source_pilot": "BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json"
+        }
+      ],
+      "policy_role": "unclassified",
+      "world_id": "WORLD-BAYES-H4-SPARSE-DIAG-STRONGER-TAU"
+    },
+    {
+      "gate_behavior": {
+        "default": "report_only",
+        "global_model_failure": false,
+        "hard_gate": false,
+        "note": "Stress world; never a global Bayes pass/fail.",
+        "on_any_metric": "report_only"
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.46877120059721805,
+          "median": 0.46648957952782805,
+          "min": 0.4604130767474654,
+          "mode": "report_only",
+          "n": 5,
+          "report_restricted_above": 0.6328411208062444,
+          "report_warn_above": 0.5390868806868007
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.38519555703815095,
+          "median": 0.37631478991318196,
+          "min": 0.37224389878643693,
+          "mode": "report_only",
+          "n": 5,
+          "report_restricted_above": 0.5200140020015038,
+          "report_warn_above": 0.44297489059387357
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.46648957952782805,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.38519555703815095,
+          "shrinkage_ratio_sparse": 2.567658071560661,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4_THRESHOLD_PILOT_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.25,
+          "beta_gc_mae": 0.4604130767474654,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.37224389878643693,
+          "shrinkage_ratio_sparse": 0.6274846264824417,
+          "shrinkage_ratio_sparse_vs_true_mu": 2.569373459583102,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.4649461289764854,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.37242235786614725,
+          "shrinkage_ratio_sparse": 0.6808007180069573,
+          "shrinkage_ratio_sparse_vs_true_mu": 2.651262505035903,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        },
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.46877120059721805,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.37631478991318196,
+          "shrinkage_ratio_sparse": 0.6854210669012597,
+          "shrinkage_ratio_sparse_vs_true_mu": 2.728026122642419,
+          "source_pilot": "BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601"
+        },
+        {
+          "beta_gc_coverage_90": null,
+          "beta_gc_mae": 0.46648957952782805,
+          "beta_interval_width_90_mean": null,
+          "mu_c_mae": 0.38519555703815095,
+          "shrinkage_ratio_sparse": 0.5496233111454373,
+          "shrinkage_ratio_sparse_vs_true_mu": 2.567658071560661,
+          "source_pilot": "BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json"
+        }
+      ],
+      "policy_role": "stress_diagnostic",
+      "world_id": "WORLD-BAYES-H4-SPARSE-GEO"
+    },
+    {
+      "gate_behavior": {
+        "default": "restricted",
+        "expected": "transform_mismatch_warning",
+        "global_model_failure": false,
+        "note": "Generative transform differs from MVP; not recovery failure."
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.2792256953538691,
+          "median": 0.2792256953538691,
+          "min": 0.2792256953538691,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.3769546887277233,
+          "report_warn_above": 0.32110954965694943
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.2713154337692605,
+          "median": 0.2713154337692605,
+          "min": 0.2713154337692605,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.3662758355885017,
+          "report_warn_above": 0.3120127488346495
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.2792256953538691,
+          "beta_interval_width_90_mean": 0.023076667650383336,
+          "mu_c_mae": 0.2713154337692605,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601"
+        }
+      ],
+      "policy_role": "transform_mismatch",
+      "world_id": "WORLD-BAYES-H4C-ADSTOCKED-MEDIA"
+    },
+    {
+      "gate_behavior": {
+        "default": "warn",
+        "global_model_failure": false,
+        "informs_future_thresholds": true,
+        "note": "Only role used to calibrate true-effect report bands.",
+        "on_metric_exceed_report_restricted": "restricted",
+        "on_metric_exceed_report_warn": "warn"
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.29779619039007077,
+          "median": 0.29779619039007077,
+          "min": 0.29779619039007077,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.4020248570265956,
+          "report_warn_above": 0.34246561894858135
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.2834940771301482,
+          "median": 0.2834940771301482,
+          "min": 0.2834940771301482,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.3827170041257001,
+          "report_warn_above": 0.32601818869967036
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.29779619039007077,
+          "beta_interval_width_90_mean": 0.0861596752236211,
+          "mu_c_mae": 0.2834940771301482,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601"
+        }
+      ],
+      "policy_role": "recovery_candidate",
+      "world_id": "WORLD-BAYES-H4C-CLEAN-RECOVERY"
+    },
+    {
+      "gate_behavior": {
+        "default": "warn",
+        "expected": "warning_or_restricted",
+        "global_model_failure": false,
+        "note": "Collinearity / weak SNR; not recovery failure."
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.26810702624751037,
+          "median": 0.26810702624751037,
+          "min": 0.26810702624751037,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.36194448543413904,
+          "report_warn_above": 0.3083230801846369
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.2676939622567796,
+          "median": 0.2676939622567796,
+          "min": 0.2676939622567796,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.36138684904665247,
+          "report_warn_above": 0.3078480565952965
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.26810702624751037,
+          "beta_interval_width_90_mean": 0.056271848707473565,
+          "mu_c_mae": 0.2676939622567796,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601"
+        }
+      ],
+      "policy_role": "weak_identification",
+      "world_id": "WORLD-BAYES-H4C-CORRELATED-CHANNELS"
+    },
+    {
+      "gate_behavior": {
+        "default": "restricted",
+        "expected": "transform_mismatch_warning",
+        "global_model_failure": false,
+        "note": "Generative transform differs from MVP; not recovery failure."
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.17106256135771242,
+          "median": 0.17106256135771242,
+          "min": 0.17106256135771242,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.23093445783291178,
+          "report_warn_above": 0.19672194556136927
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.16301448892075965,
+          "median": 0.16301448892075965,
+          "min": 0.16301448892075965,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.22006956004302555,
+          "report_warn_above": 0.18746666225887357
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.17106256135771242,
+          "beta_interval_width_90_mean": 0.005241826558342861,
+          "mu_c_mae": 0.16301448892075965,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601"
+        }
+      ],
+      "policy_role": "transform_mismatch",
+      "world_id": "WORLD-BAYES-H4C-SATURATION"
+    },
+    {
+      "gate_behavior": {
+        "default": "warn",
+        "global_model_failure": false,
+        "informs_future_thresholds": true,
+        "note": "Only role used to calibrate true-effect report bands.",
+        "on_metric_exceed_report_restricted": "restricted",
+        "on_metric_exceed_report_warn": "warn"
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.26889435621118535,
+          "median": 0.26889435621118535,
+          "min": 0.26889435621118535,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.36300738088510026,
+          "report_warn_above": 0.30922850964286314
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.2620381414724353,
+          "median": 0.2620381414724353,
+          "min": 0.2620381414724353,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.3537514909877877,
+          "report_warn_above": 0.3013438626933006
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.26889435621118535,
+          "beta_interval_width_90_mean": 0.1010308500347577,
+          "mu_c_mae": 0.2620381414724353,
+          "shrinkage_ratio_sparse": 0.07220383924044294,
+          "shrinkage_ratio_sparse_vs_true_mu": 14.724542747774546,
+          "source_pilot": "BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601"
+        }
+      ],
+      "policy_role": "recovery_candidate",
+      "world_id": "WORLD-BAYES-H4C-SPARSE-RECOVERY"
+    },
+    {
+      "gate_behavior": {
+        "default": "warn",
+        "expected": "warning_or_restricted",
+        "global_model_failure": false,
+        "note": "Collinearity / weak SNR; not recovery failure."
+      },
+      "metric_summary": {
+        "beta_gc_mae": {
+          "hard_fail_above": null,
+          "max": 0.2843358011752104,
+          "median": 0.2843358011752104,
+          "min": 0.2843358011752104,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.38385333158653406,
+          "report_warn_above": 0.32698617135149194
+        },
+        "mu_c_mae": {
+          "hard_fail_above": null,
+          "max": 0.26796522169382336,
+          "median": 0.26796522169382336,
+          "min": 0.26796522169382336,
+          "mode": "report_only",
+          "n": 1,
+          "report_restricted_above": 0.3617530492866616,
+          "report_warn_above": 0.30816000494789686
+        }
+      },
+      "observations": [
+        {
+          "beta_gc_coverage_90": 0.0,
+          "beta_gc_mae": 0.2843358011752104,
+          "beta_interval_width_90_mean": 0.10697308283295544,
+          "mu_c_mae": 0.26796522169382336,
+          "shrinkage_ratio_sparse": null,
+          "shrinkage_ratio_sparse_vs_true_mu": null,
+          "source_pilot": "BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601"
+        }
+      ],
+      "policy_role": "weak_identification",
+      "world_id": "WORLD-BAYES-H4C-WEAK-SIGNAL"
+    }
+  ]
+}

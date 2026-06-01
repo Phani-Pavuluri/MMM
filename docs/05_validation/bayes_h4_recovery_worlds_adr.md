@@ -138,7 +138,7 @@ Media \(\tilde{x}\) are standardized per channel for numerical stability.
 | Thresholds | **Provisional** — derived from one PyMC pass per world (`draws=200`, `tune=200`, `chains=2`, `target_accept=0.92`, seed `4400`) |
 | Hard gates | **None** — `hard_gate: false` in artifact |
 | Production | **Blocked** — `production_promotion: false`, `approved_for_prod: false` on all rows |
-| INV-071 | **Open** — requires repeated pilots + extended worlds before tightening bands |
+| INV-071 | **Calibrated (report-only)** — [policy JSON](archives/BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601.json); hard gates deferred |
 
 ### Observed bands (2026-06-01 pilot)
 
@@ -173,7 +173,7 @@ Backend choice (PyMC) and recovery metrics remain **research-only**. Passing the
 |---------|--------|
 | Production promotion | **Blocked** — all production flags false |
 | Hard gates | **None** — `interpretation.hard_gate: false` |
-| INV-071 | **Open** — true-effect recovery thresholds (pooling mechanics resolved per INV-H4-001 disposition) |
+| INV-071 | **Calibrated (report-only)** — claim-specific bands; see [INV-071 doc](../06_investigations/INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md) |
 
 ### Sparse shrinkage classification
 
@@ -225,9 +225,8 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 | Diagnostic world variants (4) | **Complete** (research-only) |
 | INV-H4-001b variant sweep | **Closed** |
 | INV-H4-001 disposition | **C+A accepted** — no production promotion |
-| INV-071 true-effect thresholds | **Open** |
+| INV-071 true-effect thresholds | **Calibrated (report-only)** — `h4_recovery_threshold_policy.py` |
 | Bayes-H4c extended pilot | **Complete** (reliability map) — see [H4C JSON](archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json) |
-| INV-071 | **Open** — true-effect recovery thresholds |
 
 ---
 
@@ -245,6 +244,23 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 
 ---
 
+## 12. INV-071 true-effect recovery threshold policy
+
+**Doc:** [INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md](../06_investigations/INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md)  
+**Artifact:** [archives/BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601.json](archives/BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601.json)  
+**Code:** `mmm.research.bayes_h3_sandbox.h4_recovery_threshold_policy`
+
+| Policy | Rule |
+|--------|------|
+| World roles | **recovery_candidate** vs **stress_diagnostic** vs **weak_identification** vs **transform_mismatch** — no single global threshold |
+| Point recovery | `beta_gc_mae`, `mu_c_mae` bands calibrated from recovery_candidate runs only |
+| Pooling | `shrinkage_ratio_sparse` (primary) — **not** a true-effect recovery gate |
+| Stress | `WORLD-BAYES-H4-SPARSE-GEO` — **report_only**, never global model failure |
+| Hard gates | **`hard_gate: false`** — report warn/restricted only |
+| Production | **Blocked** — `approved_for_prod: false`, `production_promotion: false` |
+
+---
+
 ## 14. Consequences
 
 - **Complete (scaffolding):** `recovery_worlds.py`, `recovery_runner.py`, `tests/research/test_bayes_h4_recovery_worlds.py`.  
@@ -252,7 +268,8 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 - **Complete (H4b repeated pilot):** `h4_repeated_pilot.py`, original + [primary-metric refresh JSON](archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json), `tests/research/test_bayes_h4_repeated_pilot.py`.  
 - **Complete (H4b-disposition):** metric policy C + sparse-world posture A accepted.  
 - **Complete (H4c):** `h4c_recovery_worlds.py`, `h4c_extended_recovery_pilot.py`, H4c pilot JSON, `tests/research/test_bayes_h4c_extended_recovery_worlds.py`.  
-- **Next:** Tune sparse/τ per disposition A; calibrate INV-071 true-effect bands.  
+- **Complete (INV-071):** claim-specific report-only threshold policy JSON + `h4_recovery_threshold_policy.py`, `tests/research/test_bayes_h4_recovery_threshold_policy.py`.  
+- **Next:** Tune sparse/τ per disposition A; optional future hard gates after repeated multi-seed stability.  
 - **Not authorized:** Bayes-H3 production promotion, NumPyro backend, prod CI Bayesian jobs without research labeling.
 
 **This ADR does not authorize production Bayesian decisioning.**

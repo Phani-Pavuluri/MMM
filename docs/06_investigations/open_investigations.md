@@ -1830,30 +1830,25 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
-### INV-071 — Bayes-H4 recovery metric thresholds TBD
+### INV-071 — Bayes-H4 true-effect recovery threshold calibration
 
 | Field | Value |
 |-------|-------|
 | **Investigation ID** | INV-071 |
-| **Title** | Calibrate Bayes-H4 recovery pass thresholds (`beta_gc_mae`, coverage, shrinkage) |
+| **Title** | Claim-specific true-effect recovery thresholds (report-only) |
 | **Category** | certification reliability gaps |
 | **Severity** | medium |
-| **Status** | **open** — true-effect recovery threshold calibration (pooling disposition closed) |
+| **Status** | **calibrated (report-only)** — hard gates and production promotion **deferred** |
 | **Platform track** | 4 — Research Sandbox |
-| **First identified in** | Bayes-H4 recovery world scaffolding (2026-06-01) |
-| **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); threshold + [primary-metric repeated](../05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) JSON; `h4_threshold_pilot.py`; `h4_repeated_pilot.py` |
-| **Problem statement** | `beta_gc_mae`, `mu_c_mae`, coverage, and legacy vs \(\mu^\*\) shrinkage do not yet support hard recovery gates on harsh sparse world. |
-| **Why it matters** | Primary pooling metric passes; true-effect recovery is a separate open question from mechanical pooling. |
-| **Risk type** | certification reliability |
-| **Production impact** | None — research-only |
-| **Current behavior** | H4b-refresh primary shrinkage **&lt; 1** on sparse world; legacy **2.57–2.73** tracked separately; true-effect MAE/coverage still open. |
-| **Desired end state** | Documented TBD_v1 thresholds after repeated pilots + extended worlds; optional hard warn bands. |
-| **Blocking dependencies** | Sparse-world / τ tuning (posture A); H4c reliability map complete — thresholds still TBD |
-| **Suggested validation** | Slow pytest + recovery report JSON archive |
-| **Suggested owner area** | `mmm.research.bayes_h3_sandbox.recovery_runner` |
-| **Recommended phase** | After H4 scaffolding stabilizes |
-| **Related investigations** | INV-064, INV-065, INV-069 |
-| **Notes** | INV-H4-001 closed with C+A. Do not use `shrinkage_ratio_sparse` (primary) as truth-recovery gate. |
+| **Doc** | [INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md](INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md) |
+| **Policy artifact** | [BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601.json](../05_validation/archives/BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601.json) |
+| **Code** | `mmm.research.bayes_h3_sandbox.h4_recovery_threshold_policy` |
+| **Evidence sources** | H4a/H4b/H4c pilot JSONs; H4c reliability map |
+| **Outcome** | Claim-specific warn/restricted bands on **recovery_candidate** worlds only; stress/mismatch/weak-ID worlds → warn/restricted/report_only, never global failure |
+| **Production impact** | None — `hard_gate: false`, `approved_for_prod: false`, `production_promotion: false` |
+| **Suggested validation** | `tests/research/test_bayes_h4_recovery_threshold_policy.py` |
+| **Related investigations** | INV-H4-001 (closed) |
+| **Notes** | Does not authorize production Bayesian decisioning. Future hard gates require repeated stable evidence per role. |
 
 ---
 
