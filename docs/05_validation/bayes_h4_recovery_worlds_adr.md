@@ -131,7 +131,7 @@ Media \(\tilde{x}\) are standardized per channel for numerical stability.
 | `beta_gc_mae` | max ≈ **0.47** (warn band ≈ 0.70) | **Report** — monitor trend; no merge fail |
 | `mu_c_mae` | max ≈ **0.39** (warn band ≈ 0.58) | **Report** — toy μ priors not production-calibrated |
 | `beta_gc_coverage_90` | range **0.0–0.5** | **Directional only** — do not require exact 90% on tiny panels |
-| `shrinkage_ratio_sparse` | **2.57** on sparse world (not &lt; 1) | **Warn** — pooling weak under fast MCMC; re-check in slow/extended pilot |
+| `shrinkage_ratio_sparse` (legacy field in H4a JSON) | **2.57** vs true \(\mu^\*\) | **Superseded** — see primary-metric H4b-refresh; was legacy diagnostic, not pooling failure |
 | `conflict_warnings` | **Non-empty** on conflict world | **Required** for conflict world (diagnostic) |
 | Production flags | all **false** | **Fail** if any prod flag true |
 
@@ -157,7 +157,7 @@ Backend choice (PyMC) and recovery metrics remain **research-only**. Passing the
 |---------|--------|
 | Production promotion | **Blocked** — all production flags false |
 | Hard gates | **None** — `interpretation.hard_gate: false` |
-| INV-071 | **Open** — repeated pilot does not stabilize sparse shrinkage |
+| INV-071 | **Open** — true-effect recovery thresholds (pooling mechanics resolved per INV-H4-001 disposition) |
 
 ### Sparse shrinkage classification
 
@@ -183,7 +183,17 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 | `conflict_warning_pass_rate` | **1.0** | conflict world OK |
 | Production flags | all **false** | |
 
-**Interpretation:** Extended sampling **confirms pooling toward learned \(\hat\mu_c\)** on the sparse world (primary). Legacy vs \(\mu_c^\*\) remains poor — judge recovery with `mu_c_mae`, `beta_gc_mae`, coverage, and legacy shrinkage separately. **Do not** treat primary &lt; 1 as proof of true-effect recovery. Defer H4c until INV-H4-001 disposition **C+A**. See [INV-H4-001](../06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md).
+**Interpretation:** Extended sampling **confirms pooling toward learned \(\hat\mu_c\)** on the sparse world (primary). Legacy vs \(\mu_c^\*\) remains poor — judge recovery with `mu_c_mae`, `beta_gc_mae`, coverage, and legacy shrinkage separately. **Do not** treat primary &lt; 1 as proof of true-effect recovery. **Disposition C+A accepted** — see [INV-H4-001 §11](../06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md).
+
+### H4b-disposition — metric and recovery posture (accepted)
+
+| Policy | Rule |
+|--------|------|
+| **Authoritative pooling artifact** | [BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json](archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) supersedes original H4b JSON for **pooling** interpretation |
+| **Primary shrinkage** | Pooling diagnostic only (posterior \(\hat\beta\) vs learned \(\hat\mu_c\)); ratio &lt; 1 = mechanical pooling toward learned center |
+| **Recovery evidence** | `beta_gc_mae`, `mu_c_mae`, `beta_gc_coverage_90`, `shrinkage_ratio_sparse_vs_true_mu` (legacy) |
+| **Sparse world** | `WORLD-BAYES-H4-SPARSE-GEO` remains **report-only / stress-test** until worlds and thresholds recalibrated; **not** a hard recovery gate |
+| **Production** | **Blocked** — no promotion from H4 pilots or disposition |
 
 ---
 
@@ -196,20 +206,21 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 |------|--------|
 | Metric audit (posterior \(\hat\mu_c\) vs true \(\mu_c\)) | **Complete** |
 | Posterior geo/channel index metadata | **Complete** |
-| Diagnostic world variants (4) | **Complete** (research-only, not in `H4_WORLD_IDS`) |
-| INV-H4-001 / 001b variant sweep | **Open** — metric fixed; [sweep JSON](archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json); disposition A–D pending |
-| INV-071 | **Open** |
-
-**Governance:** Repeated pilot is **report-only**. Do not promote Bayesian output, enable prod decisioning, or tighten hard gates until sparse shrinkage is stable across seeds.
+| Diagnostic world variants (4) | **Complete** (research-only) |
+| INV-H4-001b variant sweep | **Closed** |
+| INV-H4-001 disposition | **C+A accepted** — no production promotion |
+| INV-071 true-effect thresholds | **Open** |
+| Bayes-H4c | **Authorized next** — research-only extended worlds only |
 
 ---
 
-## 11. Consequences
+## 12. Consequences
 
 - **Complete (scaffolding):** `recovery_worlds.py`, `recovery_runner.py`, `tests/research/test_bayes_h4_recovery_worlds.py`.  
 - **Complete (H4a pilot):** `h4_threshold_pilot.py`, committed pilot JSON, `tests/research/test_bayes_h4_threshold_pilot.py`.  
 - **Complete (H4b repeated pilot):** `h4_repeated_pilot.py`, original + [primary-metric refresh JSON](archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json), `tests/research/test_bayes_h4_repeated_pilot.py`.  
-- **Next:** INV-H4-001 disposition (C+A); then H4c (blocked).  
+- **Complete (H4b-disposition):** metric policy C + sparse-world posture A accepted.  
+- **Next:** Bayes-H4c extended recovery worlds (research-only; not promotion).  
 - **Not authorized:** Bayes-H3 production promotion, NumPyro backend, prod CI Bayesian jobs without research labeling.
 
 **This ADR does not authorize production Bayesian decisioning.**

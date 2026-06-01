@@ -4,7 +4,7 @@
 |-------|--------|
 | **Investigation ID** | INV-H4-001 |
 | **Title** | Why `WORLD-BAYES-H4-SPARSE-GEO` does not show expected shrinkage toward \(\mu_c\) |
-| **Status** | **Open** — metric/indexing resolved; world/prior disposition pending (blocks H4c) |
+| **Status** | **Closed** — disposition **C+A** accepted (2026-06-01); true-effect recovery remains under INV-071 |
 | **Track** | Bayes-H4 research recovery — research sandbox only |
 | **Related** | INV-071 · [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md) · H4a/H4b pilot JSON |
 | **Implementation** | `sparse_shrinkage_metrics.py` · `sparse_pooling_investigation.py` · `recovery_runner.py` |
@@ -87,17 +87,17 @@ For current sparse world, sorted geo order matches `spec.geo_order` — **H2 unl
 
 ---
 
-## 6. Conclusion (after INV-H4-001b variant sweep)
+## 6. Conclusion (corrected evidence summary)
 
-| Finding | Status |
-|---------|--------|
-| **1. Metric issue** | **Resolved** — H4a/H4b sparse “failure” was **overstated** on legacy vs true \(\mu^\*\); primary vs \(\hat\mu_c\) shows pooling on baseline (≈ 0.55). Keep legacy as recovery diagnostic only. |
-| **2. Indexing risk** | **Mitigated** — `beta_geo_index_order` / `channel_index_order` recorded; baseline `index_order_matches_spec: true`. |
-| **3. Model / world design** | **Still open** — choose among revise sparse world, revise \(\tau\) prior, revise acceptance metrics, or document MVP pooling limits. |
+| Layer | Status | Statement |
+|-------|--------|-----------|
+| **Pooling mechanics** | **Passing** | Primary shrinkage vs \(\hat\mu_c\) stable &lt; 1 (H4b-refresh: 0.63, 0.68, 0.69). Hierarchy pools toward **learned** center as expected. |
+| **True-effect recovery** | **Open** | Legacy vs \(\mu_c^\*\) weak (2.57–2.73); `mu_c_mae`, `beta_gc_mae`, coverage still poor on harsh toy panel. |
+| **Production readiness** | **Blocked** | No promotion; no hard gates; Ridge path unchanged. |
 
-**Roadmap:** Do **not** start **H4c** until disposition on (3). Next gate: **INV-H4-001b** sweep recorded → leadership pick **A/B/C/D** (below).
+**Honest summary:** Do **not** say “Bayes recovers truth.” Say: **the hierarchy is mechanically pooling as expected, but the current sparse world / \(\tau\) prior / data design does not yet recover the synthetic true center well enough** for recovery gating.
 
-**Disposition:** Keep **INV-071** and **INV-H4-001** open for ADR threshold wording and sparse-world redesign. **H4c blocked.**
+**Disposition:** **C+A accepted** (see §11). **INV-071** remains open for true-effect threshold calibration. **H4c** may proceed as **research-only** extended worlds — not production promotion.
 
 ---
 
@@ -155,21 +155,60 @@ The first [BAYES_H4_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYE
 
 ---
 
-## 9. Disposition options (pick one before H4c)
+## 9. Disposition options (historical)
 
-| Option | Action |
-|--------|--------|
-| **A. Revise sparse world design** | Reduce outlier gap and/or increase sparse weeks; re-commit pilot JSON |
-| **B. Revise \(\tau\) prior** | Research default `tau_channel_prior_sigma` (diagnostic variants suggest benefit for legacy recovery) |
-| **C. Revise acceptance metric** | ADR: primary vs \(\hat\mu_c\); legacy vs \(\mu^\*\) report-only; degenerate denominator guards |
-| **D. Document limitation** | MVP partial pooling is diagnostic-only; sparse extreme worlds may not shrink toward \(\mu^\*\) |
-
-**Recommended default:** **C** (already implemented) + **A** (tune official `WORLD-BAYES-H4-SPARSE-GEO` for stable dual-metric behavior) before H4c.
+Options A–D were evaluated in INV-H4-001b. **Accepted: C + A** (recorded §11).
 
 ---
 
-## 10. Next steps
+## 10. H4b-disposition (formal record, 2026-06-01)
 
-1. ADR/registry: primary metric authoritative (**done** — H4b-refresh artifact committed).
-2. Close INV-H4-001 when disposition **A/B/C/D** is recorded (recommended **C+A**).
-3. H4c remains blocked until disposition accepted.
+**Gate:** Bayes-H4b-disposition — accept sparse-pooling metric policy and define recovery posture.  
+**Commit evidence:** H4b-refresh at `647300d` · [BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json)
+
+---
+
+## 11. Final disposition — **C + A accepted**
+
+### INV-H4-001b
+
+**Closed.** Variant sweep and H4b-refresh primary artifact establish corrected pooling vs recovery separation.
+
+### C. Metric policy — **accepted**
+
+| Rule | Detail |
+|------|--------|
+| Primary metric | `shrinkage_ratio_sparse` — pooling **mechanics** only |
+| Pool center | Learned posterior \(\hat\mu_c\) (not generative \(\mu_c^\*\)) |
+| Interpretation | Ratio **&lt; 1** ⇒ sparse \(\hat\beta_{g,c}\) moved toward learned pool center vs generative outlier distance to \(\hat\mu_c\) |
+| Not a gate for | True-effect recovery, production promotion, or “Bayes recovers truth” |
+| Legacy metric | `shrinkage_ratio_sparse_vs_true_mu` — **recovery diagnostic only**; never a pooling hard gate |
+| Supporting recovery evidence | `beta_gc_mae`, `mu_c_mae`, `beta_gc_coverage_90`, legacy shrinkage |
+
+### A. Sparse-world / \(\tau\)-prior posture — **accepted**
+
+| Rule | Detail |
+|------|--------|
+| Official `WORLD-BAYES-H4-SPARSE-GEO` | Remains a **stress test** and report-only world |
+| Hard recovery gate | **Not** authorized on current 3-week sparse + outlier design |
+| Legacy behavior | Weak recovery vs \(\mu_c^\*\) under extreme setting is **expected** until world/prior tuned |
+| Follow-up (research) | Tune sparse severity and/or \(\tau\) prior, or split stress vs recovery worlds **before** hard thresholds |
+| H4c | May start as **research-only** extended recovery worlds — **not** promotion or prod gates |
+
+### What remains open
+
+| Item | Owner |
+|------|--------|
+| True-effect recovery thresholds | **INV-071** |
+| Sparse world / \(\tau\) tuning implementation | Future H4 research commits (not this disposition) |
+| Production Bayesian decisioning | **Blocked** |
+
+### H4c authorization (narrow)
+
+**Bayes-H4c extended recovery worlds** are authorized **only** as:
+
+- research-only synthetic worlds and diagnostics  
+- no `approved_for_prod`, no DecisionSurface, no optimizer connection  
+- no claim that extended worlds fix true-effect recovery until INV-071 closes  
+
+**Not authorized:** production promotion, hard gates, or interpreting primary shrinkage &lt; 1 as truth recovery.

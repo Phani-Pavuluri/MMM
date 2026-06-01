@@ -1811,22 +1811,22 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Title** | Explain/fix sparse-geo shrinkage behavior on `WORLD-BAYES-H4-SPARSE-GEO` |
 | **Category** | certification reliability gaps |
 | **Severity** | medium |
-| **Status** | **open** — primary metric fixed; variant sweep done; disposition A–D blocks H4c |
+| **Status** | **closed** — disposition **C+A** accepted; pooling mechanics passing; true-effect recovery under INV-071 |
 | **Platform track** | 4 — Research Sandbox |
 | **First identified in** | Bayes-H4b repeated pilot (2026-06-01) |
 | **Evidence sources** | [INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](INV-H4-001_SPARSE_POOLING_BEHAVIOR.md); [BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](../05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json); [BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) |
-| **Problem statement** | Legacy vs true \(\mu^\*\) overstated sparse failure; primary vs \(\hat\mu_c\) shows pooling on baseline. Open: official sparse world / τ prior / ADR disposition before H4c. |
-| **Why it matters** | H4c harder worlds and INV-071 thresholds are misleading until sparse pooling is understood or metrics are revised. |
+| **Problem statement** | Legacy vs true \(\mu^\*\) overstated sparse pooling failure; corrected primary metric shows stable pooling toward \(\hat\mu_c\). |
+| **Why it matters** | Separates pooling mechanics from true-effect recovery; prevents mis-promotion from H4 pilots. |
 | **Risk type** | certification reliability |
 | **Production impact** | None — research-only |
 | **Current behavior** | H4b-refresh: primary sparse shrinkage **0.63–0.69** (stable &lt; 1); legacy **2.57–2.73** (recovery diagnostic). Pooling mechanics evidenced; true-effect recovery open. |
-| **Desired end state** | Documented root cause or revised acceptance metrics; stable sparse-world behavior across seeds. |
-| **Blocking dependencies** | None for investigation; **H4c blocked** on this INV |
+| **Desired end state** | **Achieved:** metric policy C + sparse-world posture A documented in [INV-H4-001 §11](INV-H4-001_SPARSE_POOLING_BEHAVIOR.md). |
+| **Blocking dependencies** | None — H4c authorized as research-only per disposition |
 | **Suggested validation** | `tests/research/test_bayes_h4_sparse_pooling_investigation.py`; optional slow variant runs |
 | **Suggested owner area** | `mmm.research.bayes_h3_sandbox.sparse_shrinkage_metrics` |
 | **Recommended phase** | Before H4c |
 | **Related investigations** | INV-071 |
-| **Notes** | H4b ruled out fast-MCMC-only explanation. |
+| **Notes** | Do not claim “Bayes recovers truth.” Pooling passes; recovery vs \(\mu^\*\) open. H4c = research worlds only. |
 
 ---
 
@@ -1838,22 +1838,22 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Title** | Calibrate Bayes-H4 recovery pass thresholds (`beta_gc_mae`, coverage, shrinkage) |
 | **Category** | certification reliability gaps |
 | **Severity** | medium |
-| **Status** | open — H4a + H4b pilots complete with **provisional report-only** bands |
+| **Status** | **open** — true-effect recovery threshold calibration (pooling disposition closed) |
 | **Platform track** | 4 — Research Sandbox |
 | **First identified in** | Bayes-H4 recovery world scaffolding (2026-06-01) |
 | **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); threshold + [primary-metric repeated](../05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) JSON; `h4_threshold_pilot.py`; `h4_repeated_pilot.py` |
-| **Problem statement** | H4 worlds report recovery metrics; promotion pass/fail thresholds need repeated pilots before hard gates. |
-| **Why it matters** | Without stable thresholds, recovery scaffolding must not be misread as production readiness. |
+| **Problem statement** | `beta_gc_mae`, `mu_c_mae`, coverage, and legacy vs \(\mu^\*\) shrinkage do not yet support hard recovery gates on harsh sparse world. |
+| **Why it matters** | Primary pooling metric passes; true-effect recovery is a separate open question from mechanical pooling. |
 | **Risk type** | certification reliability |
 | **Production impact** | None — research-only |
 | **Current behavior** | H4b-refresh primary shrinkage **&lt; 1** on sparse world; legacy **2.57–2.73** tracked separately; true-effect MAE/coverage still open. |
 | **Desired end state** | Documented TBD_v1 thresholds after repeated pilots + extended worlds; optional hard warn bands. |
-| **Blocking dependencies** | INV-H4-001 (sparse pooling); optional extended H4 worlds after INV-H4-001 |
+| **Blocking dependencies** | Sparse-world / τ tuning (posture A); optional H4c research worlds |
 | **Suggested validation** | Slow pytest + recovery report JSON archive |
 | **Suggested owner area** | `mmm.research.bayes_h3_sandbox.recovery_runner` |
 | **Recommended phase** | After H4 scaffolding stabilizes |
 | **Related investigations** | INV-064, INV-065, INV-069 |
-| **Notes** | H4b used legacy metric only. Pick disposition A–D (INV-H4-001 §9); recommended C+A before H4c. |
+| **Notes** | INV-H4-001 closed with C+A. Do not use `shrinkage_ratio_sparse` (primary) as truth-recovery gate. |
 
 ---
 
@@ -1866,4 +1866,4 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** (report-only) |
 | **Evidence** | [BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](../05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) |
 | **Outcome** | Primary metric validates pooling toward \(\hat\mu\) on baseline; more weeks reduces pooling; stronger τ helps legacy recovery vs \(\mu^\*\). |
-| **Next** | Parent INV-H4-001 disposition before H4c. |
+| **Next** | — (parent INV-H4-001 closed; H4c research-only authorized) |
