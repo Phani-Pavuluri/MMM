@@ -49,13 +49,19 @@ def _beta_posterior_intervals(
     if idata is None:
         return {}
     try:
-        beta = idata.posterior["beta"].stack(sample=("chain", "draw")).values
+        beta_da = idata.posterior["beta"].stack(sample=("chain", "draw"))
+        beta = np.asarray(beta_da.values).reshape(-1, beta_da.shape[-2], beta_da.shape[-1])
     except Exception:
         return {}
+    n_geo_post = beta.shape[1]
     out: dict[str, dict[str, tuple[float, float]]] = {}
     for gi, geo in enumerate(spec.geo_order):
+        if gi >= n_geo_post:
+            continue
         out[geo] = {}
         for ci, ch in enumerate(spec.channels):
+            if ci >= beta.shape[2]:
+                continue
             draws = beta[:, gi, ci]
             out[geo][ch] = (float(np.quantile(draws, q_low)), float(np.quantile(draws, q_high)))
     return out

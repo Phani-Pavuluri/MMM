@@ -35,7 +35,8 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | [Bayes-H3 sandbox backend ADR](05_validation/bayes_h3_research_sandbox_backend_adr.md) | 1 | MMM calibration ecosystem | TrustReport (diagnostic) | premature backend churn; dual-stack before recovery | PyMC initial; NumPyro deferred | Architecture | **Accepted** | Bayes-H4 recovery worlds | Yes (sandbox backend policy) | Blocked — backend ≠ prod |
 | Bayes-H3 research sandbox MVP fit | 2 | MMM calibration ecosystem | (sandbox — maps to ABI on promotion) | ungrounded algorithm change | `mmm/research/bayes_h3_sandbox/model.py`; `run_sandbox_fit`; `tests/research/test_bayes_h3_sandbox_mvp_fit.py` | Implementation + sandbox | **Complete** | Bayes-H4 recovery worlds | **Yes** — diagnostic hierarchical fit only | Blocked — not decision-grade |
 | [Bayes-H4 recovery worlds ADR](05_validation/bayes_h4_recovery_worlds_adr.md) | 1 | Reliability / governance | TrustReport (diagnostic) | unfounded prod promotion; unmeasured recovery | H4 ADR + `recovery_worlds` / `recovery_runner` | Architecture | **Accepted** | H4 pilot thresholds + slow CI optional | Yes (validation spec) | Blocked — recovery ≠ prod |
-| Bayes-H4 recovery world scaffolding | 2 | Reliability / governance | TrustReport (diagnostic) | sandbox correctness unproven | `WORLD-BAYES-H4-*`; `tests/research/test_bayes_h4_recovery_worlds.py` | Implementation | **Complete** (scaffolding) | H4 threshold calibration / extended worlds | **Yes** — metrics report-only | Blocked — not decision-grade |
+| Bayes-H4 recovery world scaffolding | 2 | Reliability / governance | TrustReport (diagnostic) | sandbox correctness unproven | `WORLD-BAYES-H4-*`; `tests/research/test_bayes_h4_recovery_worlds.py` | Implementation | **Complete** (scaffolding) | H4a threshold pilot | **Yes** — metrics report-only | Blocked — not decision-grade |
+| Bayes-H4a recovery threshold pilot | 2 | Reliability / governance | TrustReport (diagnostic) | uncalibrated recovery gates | `h4_threshold_pilot.py`; `archives/BAYES_H4_THRESHOLD_PILOT_20260601.json` | Implementation | **Complete** (provisional bands) | H4 repeated pilot / extended worlds | **Yes** — report-only thresholds | Blocked — pilot ≠ prod |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | Bayes-H4+ gates; Promotion Gate; decision trace | Promotion | **Blocked** | not until H4 gates + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -53,7 +54,8 @@ Bayes-H2b ADR ✅
   → Bayes-H3 sandbox guardrails (P0) ✅
   → Bayes-H3 research sandbox MVP fit ✅
   → Bayes-H4 recovery worlds ADR + scaffolding ✅
-  → Bayes-H4 threshold calibration / extended worlds  ← NEXT
+  → Bayes-H4a threshold pilot (provisional JSON) ✅
+  → Bayes-H4 repeated pilot / extended worlds  ← NEXT
   → Bayes-H3 production promotion (blocked)
 ```
 

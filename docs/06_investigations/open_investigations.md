@@ -1811,19 +1811,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Title** | Calibrate Bayes-H4 recovery pass thresholds (`beta_gc_mae`, coverage, shrinkage) |
 | **Category** | certification reliability gaps |
 | **Severity** | medium |
-| **Status** | open |
+| **Status** | open — pilot complete with **provisional report-only** bands |
 | **Platform track** | 4 — Research Sandbox |
 | **First identified in** | Bayes-H4 recovery world scaffolding (2026-06-01) |
-| **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); `mmm.research.bayes_h3_sandbox.recovery_runner` |
-| **Problem statement** | H4 worlds report recovery metrics but promotion pass/fail thresholds are not yet calibrated on pilot runs. |
-| **Why it matters** | Without thresholds, recovery scaffolding must not be misread as production readiness. |
+| **Evidence sources** | [bayes_h4_recovery_worlds_adr.md](../05_validation/bayes_h4_recovery_worlds_adr.md); [BAYES_H4_THRESHOLD_PILOT_20260601.json](../05_validation/archives/BAYES_H4_THRESHOLD_PILOT_20260601.json); `h4_threshold_pilot.py` |
+| **Problem statement** | H4 worlds report recovery metrics; promotion pass/fail thresholds need repeated pilots before hard gates. |
+| **Why it matters** | Without stable thresholds, recovery scaffolding must not be misread as production readiness. |
 | **Risk type** | certification reliability |
 | **Production impact** | None — research-only |
-| **Current behavior** | Metrics emitted; `status: pass` on catalog determinism only. |
-| **Desired end state** | Documented TBD_v1 thresholds after slow-test pilot characterization. |
+| **Current behavior** | Bayes-H4a pilot JSON committed; `provisional_thresholds.report_only=true`; sparse shrinkage **inconclusive** in fast pilot (ratio &gt; 1). |
+| **Desired end state** | Documented TBD_v1 thresholds after repeated pilots + extended worlds; optional hard warn bands. |
 | **Blocking dependencies** | Optional extended H4 worlds |
 | **Suggested validation** | Slow pytest + recovery report JSON archive |
 | **Suggested owner area** | `mmm.research.bayes_h3_sandbox.recovery_runner` |
 | **Recommended phase** | After H4 scaffolding stabilizes |
 | **Related investigations** | INV-064, INV-065, INV-069 |
-| **Notes** | Inconclusive slow runs should be recorded here — not hidden. |
+| **Notes** | H4a pilot: conflict warnings OK; shrinkage direction **not** met under fast MCMC — keep INV open. |

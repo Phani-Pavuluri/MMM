@@ -109,9 +109,41 @@ Media \(\tilde{x}\) are standardized per channel for numerical stability.
 
 ---
 
-## 9. Consequences
+## 9. Initial threshold pilot results (Bayes-H4a)
 
-- **Next implementation:** `recovery_worlds.py`, `recovery_runner.py`, `tests/research/test_bayes_h4_recovery_worlds.py`.  
+**Artifact:** [archives/BAYES_H4_THRESHOLD_PILOT_20260601.json](archives/BAYES_H4_THRESHOLD_PILOT_20260601.json)  
+**Runner:** `mmm.research.bayes_h3_sandbox.h4_threshold_pilot`  
+**Status:** Provisional — **warning/report-only**; does **not** authorize production.
+
+| Pilot fact | Value / rule |
+|------------|----------------|
+| Thresholds | **Provisional** — derived from one PyMC pass per world (`draws=200`, `tune=200`, `chains=2`, `target_accept=0.92`, seed `4400`) |
+| Hard gates | **None** — `hard_gate: false` in artifact |
+| Production | **Blocked** — `production_promotion: false`, `approved_for_prod: false` on all rows |
+| INV-071 | **Open** — requires repeated pilots + extended worlds before tightening bands |
+
+### Observed bands (2026-06-01 pilot)
+
+| Metric | Pilot observation | Provisional use |
+|--------|-------------------|-----------------|
+| `beta_gc_mae` | max ≈ **0.47** (warn band ≈ 0.70) | **Report** — monitor trend; no merge fail |
+| `mu_c_mae` | max ≈ **0.39** (warn band ≈ 0.58) | **Report** — toy μ priors not production-calibrated |
+| `beta_gc_coverage_90` | range **0.0–0.5** | **Directional only** — do not require exact 90% on tiny panels |
+| `shrinkage_ratio_sparse` | **2.57** on sparse world (not &lt; 1) | **Warn** — pooling weak under fast MCMC; re-check in slow/extended pilot |
+| `conflict_warnings` | **Non-empty** on conflict world | **Required** for conflict world (diagnostic) |
+| Production flags | all **false** | **Fail** if any prod flag true |
+
+### Governance reminder
+
+Backend choice (PyMC) and recovery metrics remain **research-only**. Passing the pilot does not amend Bayes-H1/H3 promotion blocks.
+
+---
+
+## 10. Consequences
+
+- **Complete (scaffolding):** `recovery_worlds.py`, `recovery_runner.py`, `tests/research/test_bayes_h4_recovery_worlds.py`.  
+- **Complete (H4a pilot):** `h4_threshold_pilot.py`, committed pilot JSON, `tests/research/test_bayes_h4_threshold_pilot.py`.  
+- **Next:** Repeated pilots, extended worlds, tighten INV-071 after stable shrinkage/coverage behavior.  
 - **Not authorized:** Bayes-H3 production promotion, NumPyro backend, prod CI Bayesian jobs without research labeling.
 
 **This ADR does not authorize production Bayesian decisioning.**

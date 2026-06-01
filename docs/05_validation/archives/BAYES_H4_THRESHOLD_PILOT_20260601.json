@@ -1,0 +1,283 @@
+{
+  "approved_for_prod": false,
+  "backend_defaults": {
+    "WORLD-BAYES-H4-CONFLICTING-EVIDENCE": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4-SIMPLE-POOLING": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4-SPARSE-GEO": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    }
+  },
+  "decision_grade": false,
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "outputs_are_diagnostic_only": true,
+  "pilot_id": "BAYES_H4_THRESHOLD_PILOT_20260601",
+  "pilot_version": "bayes_h4_threshold_pilot_v1",
+  "prod_decisioning_allowed": false,
+  "production_promotion": false,
+  "provisional_thresholds": {
+    "beta_gc_coverage_90": {
+      "mode": "directional_expectation",
+      "note": "Do not require exact 90% on tiny toy panels; use for trend monitoring only.",
+      "pilot_range": [
+        0.0,
+        0.5
+      ]
+    },
+    "beta_gc_mae": {
+      "mode": "report",
+      "note": "No hard fail threshold until repeated pilots and extended worlds.",
+      "pilot_max": 0.46648957952782805,
+      "provisional_warn_above": 0.699734369291742
+    },
+    "conflict_warnings": {
+      "applies_to": "WORLD-BAYES-H4-CONFLICTING-EVIDENCE",
+      "mode": "required_non_empty",
+      "note": "Conflict world must emit at least one diagnostic conflict warning."
+    },
+    "hard_gate": false,
+    "mu_c_mae": {
+      "mode": "report",
+      "note": "Report-only; toy worlds are not calibrated for national-scale \u03bc priors.",
+      "pilot_max": 0.38519555703815095,
+      "provisional_warn_above": 0.5777933355572265
+    },
+    "production_flags": {
+      "approved_for_prod": false,
+      "decision_grade": false,
+      "note": "Must always remain blocked for Bayes-H4 pilot artifacts.",
+      "prod_decisioning_allowed": false
+    },
+    "production_promotion": false,
+    "report_only": true,
+    "shrinkage_ratio_sparse": {
+      "expect_lt": 1.0,
+      "mode": "directional",
+      "note": "Sparse geo posterior should shrink toward \u03bc_c vs generative outlier.",
+      "pilot_values": [
+        2.567658071560661
+      ]
+    }
+  },
+  "research_only": true,
+  "status": "complete",
+  "world_ids": [
+    "WORLD-BAYES-H4-CONFLICTING-EVIDENCE",
+    "WORLD-BAYES-H4-SIMPLE-POOLING",
+    "WORLD-BAYES-H4-SPARSE-GEO"
+  ],
+  "worlds": [
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.5,
+      "beta_gc_mae": 0.3567785333279875,
+      "conflict_warnings": [
+        "conflict:h4-conflict-tv-dma-a: claimed negative lift on dma_a/tv but true_beta_gc=0.550 is positive"
+      ],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 150.0,
+        "rhat_max": 1.03
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "conflict_warning_expected": true
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b"
+        ],
+        "noise_sigma": 0.1,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.18,
+            "tv": 0.55
+          },
+          "dma_b": {
+            "search": 0.22,
+            "tv": 0.38
+          }
+        },
+        "true_mu_c": {
+          "search": 0.2,
+          "tv": 0.4
+        },
+        "true_tau_c": {
+          "search": 0.08,
+          "tv": 0.1
+        }
+      },
+      "mu_c_mae": 0.32125586053481103,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "world_id": "WORLD-BAYES-H4-CONFLICTING-EVIDENCE"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.25,
+      "beta_gc_mae": 0.2918571382116935,
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 179.0,
+        "rhat_max": 1.02
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "pooling_strength": "low",
+        "recovery_expectation": "beta_gc_near_mu_c"
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b",
+          "dma_c"
+        ],
+        "noise_sigma": 0.12,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.2,
+            "tv": 0.38
+          },
+          "dma_b": {
+            "search": 0.24,
+            "tv": 0.33
+          },
+          "dma_c": {
+            "search": 0.21,
+            "tv": 0.36
+          }
+        },
+        "true_mu_c": {
+          "search": 0.22,
+          "tv": 0.35
+        },
+        "true_tau_c": {
+          "search": 0.06,
+          "tv": 0.08
+        }
+      },
+      "mu_c_mae": 0.28342839590780455,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "world_id": "WORLD-BAYES-H4-SIMPLE-POOLING"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.46648957952782805,
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 166.0,
+        "rhat_max": 1.02
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "shrinkage_expected": true,
+        "sparse_geo": "dma_sparse"
+      },
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "noise_sigma": 0.15,
+        "true_beta_gc": {
+          "dma_dense_a": {
+            "search": 0.17,
+            "tv": 0.32
+          },
+          "dma_dense_b": {
+            "search": 0.19,
+            "tv": 0.29
+          },
+          "dma_sparse": {
+            "search": 0.05,
+            "tv": 0.85
+          }
+        },
+        "true_mu_c": {
+          "search": 0.18,
+          "tv": 0.3
+        },
+        "true_tau_c": {
+          "search": 0.2,
+          "tv": 0.25
+        }
+      },
+      "mu_c_mae": 0.38519555703815095,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": 2.567658071560661,
+      "world_id": "WORLD-BAYES-H4-SPARSE-GEO"
+    }
+  ]
+}

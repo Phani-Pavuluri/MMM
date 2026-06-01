@@ -76,7 +76,8 @@ def materialize_recovery_panel(spec: RecoveryWorldSpec) -> pd.DataFrame:
         for t in range(n_weeks):
             row: dict[str, Any] = {"geo_id": geo, "week": t, "y": float(max(y[t], 1e-3))}
             for ch in spec.channels:
-                row[ch] = float(xs[ch][t])
+                # Panel QA requires non-negative spend/exposure columns.
+                row[ch] = float(abs(xs[ch][t]) + 0.5)
             rows.append(row)
     return pd.DataFrame(rows)
 
