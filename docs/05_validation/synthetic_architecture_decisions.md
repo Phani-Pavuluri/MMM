@@ -389,6 +389,28 @@ Binding detail: [bayes_h2d_hierarchical_model_spec_adr.md](bayes_h2d_hierarchica
 
 ---
 
+## Decision 14 — Bayes-H3 research sandbox inference backend (Track 4)
+
+### Decision
+
+**Bayes-H3 uses PyMC as the initial research sandbox backend.** NumPyro is reserved as a candidate backend for later scale/performance phases after H3/H4 establish model correctness and recovery behavior.
+
+Binding detail: [bayes_h3_research_sandbox_backend_adr.md](bayes_h3_research_sandbox_backend_adr.md).
+
+### Rationale
+
+- PyMC best matches the current goal: transparent, auditable, research-only hierarchical MMM diagnostics under strict governance.  
+- Aligns with existing repo code (`pymc_trainer`, `bayes_h3_sandbox.model`) and the PyMC-Marketing MMM ecosystem conceptually.  
+- NumPyro deferred until recovery evidence exists — performance must not outrun correctness.
+
+### Consequences
+
+- Sanctioned fit path remains `run_sandbox_fit` (PyMC in `mmm.research.bayes_h3_sandbox`).  
+- Backend choice is **not** production authorization; all Bayesian outputs stay research-only until promotion gates pass.  
+- NumPyro requires a future ADR amendment after Bayes-H4.
+
+---
+
 ## Supersession
 
 | ADR ID | Supersedes | Status |
@@ -398,6 +420,7 @@ Binding detail: [bayes_h2d_hierarchical_model_spec_adr.md](bayes_h2d_hierarchica
 | `bayes_h2_calibration_signal_mapping_v1` | Informal §3 mapping in refinement doc | Active (Track 4) |
 | `bayes_h2b_hierarchical_experiment_prior_scope_rules_v1` | Informal §3.3 propagation in refinement doc | Active (Track 4) |
 | `bayes_h2d_hierarchical_model_spec_v1` | Informal §2 hierarchy in refinement doc | Active (Track 4) |
+| `bayes_h3_research_sandbox_backend_v1` | Informal backend choice in sandbox code | Active (Track 4) |
 | DR-01 | Phase 1A | Option C bundle — [world_materialization.md](world_materialization.md) |
 | DR-02 | Phase 1A | Three-version policy — [truth_versioning.md](truth_versioning.md) |
 | DR-07 | Feature-centric MMM-only roadmap narrative | [platform_roadmap.md](platform_roadmap.md) |

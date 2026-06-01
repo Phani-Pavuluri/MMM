@@ -1,4 +1,7 @@
-"""Bayes-H3 research sandbox hierarchical Bayesian MMM prototype (H2d-aligned, diagnostic only)."""
+"""Bayes-H3 research sandbox hierarchical Bayesian MMM prototype (H2d-aligned, diagnostic only).
+
+Inference backend: PyMC (see docs/05_validation/bayes_h3_research_sandbox_backend_adr.md).
+"""
 
 from __future__ import annotations
 

@@ -2,6 +2,7 @@
 
 **Date:** 2026-06-01  
 **Scope:** `mmm.research.bayes_h3_sandbox` MVP hierarchical fit (research only)  
+**Backend ADR:** [bayes_h3_research_sandbox_backend_adr.md](../05_validation/bayes_h3_research_sandbox_backend_adr.md) — PyMC initial; NumPyro deferred  
 **Verdict:** **Pass for sandbox MVP** — diagnostic fit runs under fences; **not** production promotion
 
 ## Evidence
