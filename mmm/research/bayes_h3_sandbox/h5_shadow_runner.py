@@ -1,0 +1,548 @@
+"""Bayes-H5f real-panel shadow-run execution harness (research only)."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+from dataclasses import dataclass
+from datetime import date
+from pathlib import Path
+from typing import Any
+
+import pandas as pd
+
+from mmm.config.schema import BayesianBackend, Framework, MMMConfig, ModelForm, PoolingMode, RunEnvironment
+from mmm.data.schema import PanelSchema, validate_panel
+from mmm.research.bayes_h3_sandbox.entrypoint import SANDBOX_ENTRYPOINT, run_sandbox_fit
+from mmm.research.bayes_h3_sandbox.fencing import H5_MODEL_SPEC_VERSION
+from mmm.research.bayes_h3_sandbox.fixtures import (
+    TOY_CALIBRATION_SIGNAL_STUB,
+    TOY_GEO_HIERARCHY,
+    TOY_SEED,
+    toy_sandbox_bundle,
+)
+from mmm.research.bayes_h3_sandbox.h5_shadow_protocol import (
+    FORBIDDEN_OUTPUT_FIELDS,
+    H5ShadowProtocolError,
+    research_production_flags,
+    validate_shadow_run_record,
+    validate_transform_config,
+)
+from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import MAPPING_VERSION as H5D_MAPPING_VERSION
+from mmm.research.bayes_h3_sandbox.labels import RESEARCH_ONLY_LABEL
+
+HARNESS_VERSION = "bayes_h5f_shadow_runner_v1"
+DEFAULT_DRY_RUN_ARTIFACT = Path("docs/05_validation/archives/BAYES_H5F_SHADOW_RUN_DRY_RUN_20260601.json")
+ARCHIVES_DIR = Path("docs/05_validation/archives")
+
+FIXTURE_PANEL_ID = "synthetic_h5_shadow_fixture"
+FIXTURE_DATASET_SNAPSHOT_ID = "synthetic_fixture_only"
+
+DEFAULT_FIXTURE_TRANSFORM_CONFIG: dict[str, Any] = {
+    "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+    "media_transforms_by_channel": {"tv": "identity", "search": "identity"},
+    "transform_params_by_channel": {},
+    "transform_mismatch_mode": "aligned",
+    "policy_note": "Synthetic fixture — not real-panel evidence",
+}
+
+
+class H5ShadowRunnerError(ValueError):
+    """H5 shadow-run harness failed — fail closed."""
+
+
+@dataclass(frozen=True)
+class ShadowRunRequest:
+    panel_id: str
+    dataset_snapshot_id: str
+    transform_config: dict[str, Any]
+    model_spec_version: str = H5_MODEL_SPEC_VERSION
+    enable_h5_sandbox: bool = True
+    research_only: bool = True
+    panel_path: str | Path | None = None
+    panel_df: pd.DataFrame | None = None
+    output_path: str | Path | None = None
+    fast_mcmc: bool = True
+    execute_fit: bool = True
+    artifact_type: str = "real_panel_shadow_artifact"
+    calibration_signals_stub: list[dict[str, Any]] | None = None
+    geo_hierarchy_mapping: dict[str, Any] | None = None
+    ridge_comparison: dict[str, Any] | None = None
+    geox_cls_comparison: dict[str, Any] | None = None
+    run_id: str | None = None
+    requested_production_flags: dict[str, bool] | None = None
+
+
+def _sha256_bytes(payload: bytes) -> str:
+    return f"sha256:{hashlib.sha256(payload).hexdigest()}"
+
+
+def _sha256_panel(df: pd.DataFrame) -> str:
+    return _sha256_bytes(df.to_csv(index=False).encode("utf-8"))
+
+
+def _sha256_config(config: MMMConfig) -> str:
+    payload = json.dumps(config.model_dump(), sort_keys=True, default=str).encode("utf-8")
+    return _sha256_bytes(payload)
+
+
+def load_transform_config(value: str | Path | dict[str, Any]) -> dict[str, Any]:
+    if isinstance(value, dict):
+        return dict(value)
+    p = Path(value)
+    if not p.is_file():
+        raise H5ShadowRunnerError(f"transform_config path not found: {p}")
+    loaded = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(loaded, dict):
+        raise H5ShadowRunnerError("transform_config JSON must be an object")
+    return loaded
+
+
+def load_panel_from_path(path: str | Path) -> pd.DataFrame:
+    p = Path(path)
+    if not p.is_file():
+        raise H5ShadowRunnerError(f"panel path not found: {p}")
+    if p.suffix.lower() == ".parquet":
+        return pd.read_parquet(p)
+    if p.suffix.lower() in (".csv", ".tsv"):
+        return pd.read_csv(p)
+    raise H5ShadowRunnerError(f"unsupported panel format: {p.suffix!r} (use .csv or .parquet)")
+
+
+def reject_requested_production_flags(flags: dict[str, bool] | None) -> None:
+    if not flags:
+        return
+    for key in ("hard_gate", "production_promotion", "approved_for_prod", "prod_decisioning_allowed"):
+        if flags.get(key) is True:
+            raise H5ShadowRunnerError(f"requested production flag {key!r}=true is not allowed for H5 shadow runs")
+
+
+def validate_shadow_run_request(request: ShadowRunRequest) -> None:
+    if not str(request.panel_id or "").strip():
+        raise H5ShadowRunnerError("panel_id is required")
+    if not str(request.dataset_snapshot_id or "").strip():
+        raise H5ShadowRunnerError("dataset_snapshot_id is required")
+    try:
+        validate_transform_config(request.transform_config)
+    except H5ShadowProtocolError as exc:
+        raise H5ShadowRunnerError(str(exc)) from exc
+    if request.model_spec_version != H5_MODEL_SPEC_VERSION:
+        raise H5ShadowRunnerError(f"model_spec_version must be {H5_MODEL_SPEC_VERSION!r}")
+    if request.enable_h5_sandbox is not True:
+        raise H5ShadowRunnerError("enable_h5_sandbox must be true")
+    if request.research_only is not True:
+        raise H5ShadowRunnerError("research_only must be true")
+    if request.panel_df is None and request.panel_path is None and request.artifact_type != "dry_run_shadow_artifact":
+        raise H5ShadowRunnerError("panel_path or panel_df is required")
+    reject_requested_production_flags(request.requested_production_flags)
+
+
+def default_output_path(panel_id: str, *, artifact_type: str, run_date: date | None = None) -> Path:
+    if artifact_type == "dry_run_shadow_artifact":
+        return DEFAULT_DRY_RUN_ARTIFACT
+    d = (run_date or date.today()).strftime("%Y%m%d")
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", panel_id).strip("_") or "panel"
+    return ARCHIVES_DIR / f"BAYES_H5F_SHADOW_RUN_{safe}_{d}.json"
+
+
+def _config_from_panel(
+    df: pd.DataFrame,
+    schema: PanelSchema,
+    *,
+    fast_mcmc: bool,
+    nuts_seed: int = TOY_SEED,
+) -> MMMConfig:
+    bayesian: dict[str, Any] = {
+        "backend": BayesianBackend.PYMC,
+        "nuts_seed": nuts_seed,
+        "prior_predictive_draws": 0,
+        "posterior_predictive_draws": 0,
+    }
+    if fast_mcmc:
+        bayesian.update({"draws": 200, "tune": 200, "chains": 2, "target_accept": 0.92})
+    return MMMConfig(
+        framework=Framework.BAYESIAN,
+        run_environment=RunEnvironment.RESEARCH,
+        model_form=ModelForm.SEMI_LOG,
+        pooling=PoolingMode.PARTIAL,
+        data={
+            "path": None,
+            "geo_column": schema.geo_column,
+            "week_column": schema.week_column,
+            "target_column": schema.target_column,
+            "channel_columns": list(schema.channel_columns),
+            "control_columns": list(schema.control_columns),
+        },
+        bayesian=bayesian,
+    )
+
+
+def _infer_schema(df: pd.DataFrame, transform_config: dict[str, Any]) -> PanelSchema:
+    channels = tuple(transform_config.get("media_transforms_by_channel", {}).keys())
+    if not channels:
+        raise H5ShadowRunnerError("transform_config.media_transforms_by_channel must list channel columns")
+    for col in ("geo_id", "week", "y"):
+        if col not in df.columns:
+            raise H5ShadowRunnerError(f"panel missing required column {col!r}")
+    for ch in channels:
+        if ch not in df.columns:
+            raise H5ShadowRunnerError(f"panel missing channel column {ch!r}")
+    return PanelSchema("geo_id", "week", "y", channels)
+
+
+def build_trust_diagnostics_from_fit(
+    artifact: dict[str, Any],
+    transform_config: dict[str, Any],
+) -> dict[str, Any]:
+    """Research-only TrustReport candidate block from a single shadow fit."""
+    h5_diag = artifact.get("h5_transform_diagnostics") or {}
+    mismatch_mode = str(transform_config.get("transform_mismatch_mode", "aligned"))
+    mismatch_detected = bool(h5_diag.get("transform_mismatch_detected"))
+    codes: list[str] = []
+    if mismatch_detected and mismatch_mode == "intentional_mismatch":
+        for ch_tid in transform_config.get("media_transforms_by_channel", {}).values():
+            if ch_tid == "identity":
+                gen = str(h5_diag.get("generative_transform_expected", ""))
+                if "adstock" in gen or "saturation" in gen:
+                    if "adstock" in gen:
+                        codes.append("h5:transform_mismatch:adstock")
+                    if "saturation" in gen or "hill" in gen:
+                        codes.append("h5:transform_mismatch:saturation")
+                break
+    elif mismatch_detected:
+        codes.append("h5:transform_mismatch:adstock")
+    if not mismatch_detected and mismatch_mode == "aligned":
+        codes.append("h5:recovery_candidate:stable_research_only")
+    codes.append("h5:production:block")
+
+    alignment = "intentional_mismatch" if mismatch_detected else "aligned"
+    post = artifact.get("posterior_summary") or {}
+    conv = artifact.get("convergence_diagnostics") or {}
+
+    return {
+        "mapping_version": H5D_MAPPING_VERSION,
+        "warning_codes": sorted(set(codes)),
+        "trust_report_candidate_fields": {
+            "transform_alignment_status": alignment,
+            "transform_mismatch_detected": mismatch_detected,
+            "beta_gc_mae_mean": None,
+            "mu_c_mae_mean": None,
+            "mu_channel_mean": dict(post.get("mu_channel_mean") or {}),
+            "convergence_rhat_max": conv.get("rhat_max"),
+            "convergence_ess_bulk_min": conv.get("ess_bulk_min"),
+        },
+        "production_trust_report": None,
+        "recommended_interpretation": (
+            f"{RESEARCH_ONLY_LABEL} Shadow-run diagnostic mapping only; not production TrustReport."
+        ),
+    }
+
+
+def build_shadow_run_record(
+    request: ShadowRunRequest,
+    *,
+    fit_artifact: dict[str, Any] | None,
+    schema: PanelSchema,
+    config: MMMConfig,
+    panel_hash: str,
+    config_hash: str,
+) -> dict[str, Any]:
+    run_id = request.run_id or f"BAYES-H5F-SHADOW-{request.panel_id}-{date.today().strftime('%Y%m%d')}"
+    cal_stub = request.calibration_signals_stub if request.calibration_signals_stub is not None else []
+
+    if fit_artifact is not None:
+        posterior = {
+            "outputs_are_diagnostic_only": True,
+            "posterior_summary": fit_artifact.get("posterior_summary"),
+            "convergence_diagnostics": fit_artifact.get("convergence_diagnostics"),
+            "pooling_diagnostics": fit_artifact.get("pooling_diagnostics"),
+            "h5_transform_diagnostics": fit_artifact.get("h5_transform_diagnostics"),
+            "diagnostic_trust_report_kind": (fit_artifact.get("diagnostic_trust_report") or {}).get(
+                "trust_report_kind"
+            ),
+        }
+        trust_diag = build_trust_diagnostics_from_fit(fit_artifact, request.transform_config)
+    else:
+        posterior = {
+            "outputs_are_diagnostic_only": True,
+            "convergence_diagnostics": {"status": "not_executed"},
+            "pooling_diagnostics": {"status": "not_executed"},
+        }
+        trust_diag = {
+            "mapping_version": H5D_MAPPING_VERSION,
+            "warning_codes": ["h5:production:block"],
+            "trust_report_candidate_fields": {"transform_alignment_status": "aligned"},
+            "production_trust_report": None,
+        }
+
+    record: dict[str, Any] = {
+        "run_id": run_id,
+        "dataset_snapshot_id": request.dataset_snapshot_id,
+        "panel_id": request.panel_id,
+        "data_snapshot_hash": panel_hash,
+        "mmm_config_hash": config_hash,
+        "run_environment": RunEnvironment.RESEARCH.value,
+        "sandbox_entrypoint": SANDBOX_ENTRYPOINT,
+        "model_spec_version": request.model_spec_version,
+        "enable_h5_sandbox": True,
+        "research_only": True,
+        "label": RESEARCH_ONLY_LABEL,
+        "transform_config": dict(request.transform_config),
+        "calibration_signal_summary": {
+            "signals_present": list(cal_stub),
+            "likelihood_integrated": False,
+            "stub_slots_only": True,
+        },
+        "posterior_diagnostics": posterior,
+        "recovery_style_diagnostics": {
+            "mode": "report_only",
+            "known_truth_available": False,
+            "note": "Real panels have no synthetic truth; use Ridge/GeoX comparison only",
+        },
+        "trust_report_candidate_diagnostics": trust_diag,
+        "ridge_comparison": request.ridge_comparison
+        or {
+            "ridge_run_id": None,
+            "comparison_mode": "diagnostic_only",
+            "used_for_optimizer": False,
+            "decision_grade": False,
+            "metrics": {"note": "Optional Ridge fit on same dataset_snapshot_id"},
+        },
+        "geox_cls_comparison": request.geox_cls_comparison
+        or {
+            "available": False,
+            "experiment_evidence_refs": [],
+            "note": "Optional historical GeoX/CLS evidence cross-check",
+        },
+        "excluded_fields": sorted(FORBIDDEN_OUTPUT_FIELDS),
+        "production_flags": research_production_flags(),
+        "outputs_are_diagnostic_only": True,
+    }
+    validate_shadow_run_record(record)
+    return record
+
+
+def build_shadow_run_artifact(
+    request: ShadowRunRequest,
+    *,
+    record: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    validate_shadow_run_request(request)
+
+    if request.artifact_type == "dry_run_shadow_artifact":
+        cfg, schema, df = toy_sandbox_bundle(fast_mcmc=request.fast_mcmc)
+        if request.transform_config == DEFAULT_FIXTURE_TRANSFORM_CONFIG:
+            transform_config = DEFAULT_FIXTURE_TRANSFORM_CONFIG
+        else:
+            transform_config = request.transform_config
+        panel_id = request.panel_id or FIXTURE_PANEL_ID
+        snapshot_id = request.dataset_snapshot_id or FIXTURE_DATASET_SNAPSHOT_ID
+        request = ShadowRunRequest(
+            panel_id=panel_id,
+            dataset_snapshot_id=snapshot_id,
+            transform_config=transform_config,
+            model_spec_version=request.model_spec_version,
+            enable_h5_sandbox=request.enable_h5_sandbox,
+            research_only=request.research_only,
+            panel_df=df,
+            output_path=request.output_path,
+            fast_mcmc=request.fast_mcmc,
+            execute_fit=request.execute_fit,
+            artifact_type="dry_run_shadow_artifact",
+            calibration_signals_stub=TOY_CALIBRATION_SIGNAL_STUB,
+            geo_hierarchy_mapping=TOY_GEO_HIERARCHY,
+            ridge_comparison=request.ridge_comparison,
+            geox_cls_comparison=request.geox_cls_comparison,
+            run_id=request.run_id,
+            requested_production_flags=request.requested_production_flags,
+        )
+    else:
+        if request.panel_df is not None:
+            df = request.panel_df.copy()
+        else:
+            df = load_panel_from_path(request.panel_path)  # type: ignore[arg-type]
+        schema = _infer_schema(df, request.transform_config)
+        cfg = _config_from_panel(df, schema, fast_mcmc=request.fast_mcmc)
+
+    df = validate_panel(df, schema, integrity_qa=False, calendar_strict=False)
+    panel_hash = _sha256_panel(df)
+    config_hash = _sha256_config(cfg)
+
+    fit_artifact: dict[str, Any] | None = None
+    if request.execute_fit:
+        overrides = {
+            "media_transforms_by_channel": dict(
+                request.transform_config.get("media_transforms_by_channel") or {}
+            ),
+            "transform_params_by_channel": dict(
+                request.transform_config.get("transform_params_by_channel") or {}
+            ),
+            "h5_generative_transform": "shadow_panel",
+            "h5_transform_mismatch_mode": str(request.transform_config.get("transform_mismatch_mode", "aligned")),
+        }
+        fit_artifact = run_sandbox_fit(
+            cfg,
+            schema,
+            df,
+            geo_hierarchy_mapping=request.geo_hierarchy_mapping,
+            calibration_signals_stub=request.calibration_signals_stub or [],
+            sandbox_model_overrides=overrides,
+            model_spec_version=H5_MODEL_SPEC_VERSION,
+            enable_h5_sandbox=True,
+            research_only=True,
+        )
+
+    shadow_record = record or build_shadow_run_record(
+        request,
+        fit_artifact=fit_artifact,
+        schema=schema,
+        config=cfg,
+        panel_hash=panel_hash,
+        config_hash=config_hash,
+    )
+
+    prod_flags = research_production_flags()
+    artifact: dict[str, Any] = {
+        "harness_version": HARNESS_VERSION,
+        "artifact_type": request.artifact_type,
+        "schema_reference": "BAYES_H5E_SHADOW_RUN_SCHEMA_20260601",
+        "label": RESEARCH_ONLY_LABEL,
+        "research_only": True,
+        "shadow_run": shadow_record,
+        "fast_mcmc_profile": request.fast_mcmc,
+        "execute_fit": request.execute_fit,
+        "note": (
+            "H5f shadow-run harness output — research only. "
+            "Not production TrustReport, optimizer, or DecisionSurface."
+        ),
+        "production_flags": prod_flags,
+        "outputs_are_diagnostic_only": True,
+    }
+    if request.artifact_type == "dry_run_shadow_artifact":
+        artifact["note"] = (
+            "Dry-run shadow artifact on synthetic fixture only — does not constitute real-panel evidence."
+        )
+    return artifact
+
+
+def write_shadow_run_artifact(request: ShadowRunRequest) -> dict[str, Any]:
+    artifact = build_shadow_run_artifact(request)
+    out = Path(
+        request.output_path
+        or default_output_path(request.panel_id, artifact_type=request.artifact_type)
+    )
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(artifact, indent=2, default=str) + "\n", encoding="utf-8")
+    artifact["artifact_path"] = str(out)
+    return artifact
+
+
+def run_fixture_dry_run_shadow(
+    *,
+    execute_fit: bool = True,
+    fast_mcmc: bool = True,
+    output_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Run synthetic fixture shadow path (labeled dry_run — not real-panel evidence)."""
+    return write_shadow_run_artifact(
+        ShadowRunRequest(
+            panel_id=FIXTURE_PANEL_ID,
+            dataset_snapshot_id=FIXTURE_DATASET_SNAPSHOT_ID,
+            transform_config=dict(DEFAULT_FIXTURE_TRANSFORM_CONFIG),
+            artifact_type="dry_run_shadow_artifact",
+            execute_fit=execute_fit,
+            fast_mcmc=fast_mcmc,
+            output_path=output_path or DEFAULT_DRY_RUN_ARTIFACT,
+            calibration_signals_stub=TOY_CALIBRATION_SIGNAL_STUB,
+            geo_hierarchy_mapping=TOY_GEO_HIERARCHY,
+        )
+    )
+
+
+def validate_shadow_run_artifact_file(artifact: dict[str, Any]) -> None:
+    if artifact.get("artifact_type") not in ("dry_run_shadow_artifact", "real_panel_shadow_artifact"):
+        raise H5ShadowRunnerError("invalid artifact_type")
+    flags = artifact.get("production_flags") or {}
+    if not flags:
+        flags = {k: artifact[k] for k in research_production_flags() if k in artifact}
+    for key, val in research_production_flags().items():
+        if flags.get(key) is not val:
+            raise H5ShadowRunnerError(f"artifact production_flags.{key} must be {val!r}")
+    shadow = artifact.get("shadow_run")
+    if not isinstance(shadow, dict):
+        raise H5ShadowRunnerError("shadow_run object required")
+    validate_shadow_run_record(shadow)
+    prod_flag_keys = set(research_production_flags())
+    for forbidden in FORBIDDEN_OUTPUT_FIELDS:
+        if forbidden in prod_flag_keys:
+            if artifact.get(forbidden) is True:
+                raise H5ShadowRunnerError(f"forbidden production flag on envelope: {forbidden!r}=true")
+            continue
+        if forbidden in artifact and artifact.get(forbidden) is not None:
+            raise H5ShadowRunnerError(f"forbidden field on artifact envelope: {forbidden!r}")
+
+
+def _build_cli_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description="Bayes-H5 real-panel shadow-run harness (research only)")
+    p.add_argument("--panel-path", type=str, help="Path to panel CSV or Parquet")
+    p.add_argument("--panel-id", type=str, default=None)
+    p.add_argument("--dataset-snapshot-id", type=str, default=None)
+    p.add_argument(
+        "--transform-config",
+        type=str,
+        default=None,
+        help="JSON object or path to JSON file with media_transforms_by_channel",
+    )
+    p.add_argument("--output-path", type=str, default=None)
+    p.add_argument("--fast-mcmc", action="store_true", help="Use fast MCMC profile (200/200/2)")
+    p.add_argument(
+        "--fixture-dry-run",
+        action="store_true",
+        help="Run synthetic fixture dry-run (not real-panel evidence)",
+    )
+    p.add_argument("--no-fit", action="store_true", help="Build artifact without executing MCMC")
+    return p
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _build_cli_parser().parse_args(argv)
+    if args.fixture_dry_run:
+        artifact = run_fixture_dry_run_shadow(
+            execute_fit=not args.no_fit,
+            fast_mcmc=args.fast_mcmc or True,
+            output_path=args.output_path,
+        )
+    else:
+        missing = [
+            name
+            for name, val in (
+                ("--panel-path", args.panel_path),
+                ("--panel-id", args.panel_id),
+                ("--dataset-snapshot-id", args.dataset_snapshot_id),
+                ("--transform-config", args.transform_config),
+            )
+            if not val
+        ]
+        if missing:
+            raise SystemExit(f"required arguments missing: {', '.join(missing)}")
+        artifact = write_shadow_run_artifact(
+            ShadowRunRequest(
+                panel_path=args.panel_path,
+                panel_id=args.panel_id,
+                dataset_snapshot_id=args.dataset_snapshot_id,
+                transform_config=load_transform_config(args.transform_config),
+                output_path=args.output_path,
+                fast_mcmc=args.fast_mcmc or True,
+                execute_fit=not args.no_fit,
+                artifact_type="real_panel_shadow_artifact",
+            )
+        )
+    validate_shadow_run_artifact_file(artifact)
+    print(artifact["artifact_path"])
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

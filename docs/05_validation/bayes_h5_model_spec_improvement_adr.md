@@ -88,6 +88,16 @@
 | **Code** | `mmm/research/bayes_h3_sandbox/h5_shadow_protocol.py` |
 | **Production** | **Still blocked** — Ridge unchanged; H5 not wired to prod pipelines |
 
+### H5f real-panel shadow-run harness (INV-H5F — research execution)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Harness complete** — fixture dry-run + CLI; real-panel runs require separate authorization |
+| **Investigation** | [INV-H5F](../06_investigations/INV-H5F_REAL_PANEL_SHADOW_RUN_HARNESS.md) |
+| **Code** | `mmm/research/bayes_h3_sandbox/h5_shadow_runner.py` |
+| **Dry-run artifact** | [BAYES_H5F_SHADOW_RUN_DRY_RUN_20260601.json](archives/BAYES_H5F_SHADOW_RUN_DRY_RUN_20260601.json) |
+| **Production** | **Still blocked** — no prod TrustReport, optimizer, DecisionSurface, or Ridge replacement |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)
