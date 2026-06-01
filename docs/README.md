@@ -84,6 +84,7 @@ Operational workflows for analysts and data scientists:
 | INV-H4-001 sparse pooling investigation | [06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) |
 | INV-H4-001b variant sweep JSON | [05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) |
 | Bayesian Geo MMM architecture refinement | [05_validation/bayesian_hierarchical_geo_mmm_refinement.md](05_validation/bayesian_hierarchical_geo_mmm_refinement.md) |
+| Track D research — D5-POW SCM+JK readout | [track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md](track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md) (research lane; not production) |
 | Investigation backlog | [06_investigations/open_investigations.md](06_investigations/open_investigations.md) |
 | Investigation index (by track) | [06_investigations/investigation_index.md](06_investigations/investigation_index.md) |
 | GroundTruthWorld contract | [05_validation/groundtruth_contract.md](05_validation/groundtruth_contract.md) |

@@ -70,3 +70,5 @@ If useful, express separately in MMM language only:
 - Synthetic falsification worlds (Track 2 — already in `synthetic_validation_roadmap.md`)
 
 **Do not** re-import GeoX estimator promotion (SCM, TBRRidge, AugSynth, placebo-as-CI) into this repo without an explicit MMM scope decision.
+
+**Exception (research lane only):** [track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md](track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md) and `mmm/research/track_d/` characterize SCM+JK readout behavior under synthetic panels. This does **not** restore GeoX production estimators or promote SCM+JK to lift detection.

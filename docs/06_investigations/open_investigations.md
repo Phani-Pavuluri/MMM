@@ -1868,6 +1868,22 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### D5-POW — SCM+UnitJackknife power / null-monitor readout (Track D research)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | D5-POW |
+| **Title** | SCM+JK power vs null-monitor characterization (post UnitJackKnife target fix) |
+| **Status** | **complete (research lane)** |
+| **Doc** | [track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md](../track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md) |
+| **Artifact** | [D5_POW_results.json](../track_d/archives/D5_POW_results.json) |
+| **Code** | `mmm.research.track_d.d5_pow` |
+| **Outcome** | Point recovery tracks injection; null-monitor valid; interval-excludes-zero **not** valid for power/MDE |
+| **Production impact** | None — no estimator, inference, TrustReport, or CalibrationSignal changes |
+| **Notes** | GeoX Track D program docs live outside MMM; see quarantine exception for research lane only. |
+
+---
+
 ### INV-H4-001b — Sparse variant sweep (complete)
 
 | Field | Value |

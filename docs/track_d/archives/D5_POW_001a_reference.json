@@ -1,0 +1,13 @@
+{
+  "investigation_id": "D5-POW-001a",
+  "label": "RESEARCH ONLY — reference summary (not committed GeoX artifact)",
+  "note": "Reconstructed reference for D5-POW comparison; authoritative GeoX run lives in unified MIP repo.",
+  "both_paths_null_detection_rate_100pct": true,
+  "point_effects_track_injection_grid": true,
+  "tbr_ridge_kfold_mde_optimistic_for_scm_jk": true,
+  "paths_compared": [
+    "TBRRidge+KFold Geo PowerAnalysis MDE",
+    "SCM+UnitJackKnife interval exclusion"
+  ],
+  "degeneracy_summary": "Pooled interval-excludes-zero detected at null in 100% of runs for both paths while point effects followed the injection grid."
+}
