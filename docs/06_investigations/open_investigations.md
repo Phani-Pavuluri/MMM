@@ -1874,12 +1874,12 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 |-------|-------|
 | **Track item** | Bayes-H5 |
 | **Title** | Next hierarchical sandbox model specification (transforms, priors, diagnostics) |
-| **Status** | **accepted** (2026-06-01) — H5a research sandbox implementation **in progress** (not prod acceptance) |
+| **Status** | **accepted** (2026-06-01) — H5a fast MCMC pilot **complete** (research only; not prod acceptance) |
 | **Doc** | [bayes_h5_model_spec_improvement_adr.md](../05_validation/bayes_h5_model_spec_improvement_adr.md) · [H5 pilot JSON](../05_validation/archives/BAYES_H5_SANDBOX_PILOT_20260601.json) |
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
-| **Outcome** | Spec for media transform registry, prior policy, weak-ID/sparse diagnostics, TrustReport mapping |
+| **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | H5 pilot validation vs H4c limitations; repeated pilots before any promotion review |
+| **Next** | H5b repeated pilots / diagnostic polish; no promotion review until extended evidence |
 
 ---
 

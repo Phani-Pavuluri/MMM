@@ -46,7 +46,7 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | INV-071 true-effect recovery threshold policy | 2 | Reliability / governance | TrustReport (diagnostic) | global thresholds; stress worlds as hard fail | [INV-071](06_investigations/INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md); [policy JSON](05_validation/archives/BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601.json) | Investigation | **Complete** (report-only) | H4d stability pilot | **Yes** | Blocked — no production promotion |
 | Bayes-H4d sparse/τ stability (INV-H4D) | 2 | Reliability / governance | TrustReport (diagnostic) | conflate sparse recovery with sparse stress; prod τ promotion | [INV-H4D](06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md); [H4D fast](05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json); [H4D extended](05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json) | Investigation | **Complete** (fast + extended confirmed) | Bayes-H5 model-spec ADR | **Yes** | Blocked — sandbox τ only |
 | [Bayes-H5 model-spec improvement ADR](05_validation/bayes_h5_model_spec_improvement_adr.md) | 1 | MMM calibration ecosystem | TrustReport (diagnostic) | transform mismatch; weak ID; false prod promotion | H5 ADR accepted 2026-06-01; H4c/H4d evidence | Architecture | **Accepted** | H5 pilot + spec validation | Yes (architecture-only) | Blocked — spec not implementation |
-| Bayes-H5a sandbox validation worlds + gated fit | 2 | Reliability / governance | TrustReport (diagnostic) | prod promotion from sandbox pilot | `h5_validation_worlds.py`; [H5 pilot JSON](05_validation/archives/BAYES_H5_SANDBOX_PILOT_20260601.json) | Implementation | **In progress (H5a)** | H5b spec validation / repeated pilots | **Yes** | Blocked — research only |
+| Bayes-H5a sandbox validation worlds + gated fit | 2 | Reliability / governance | TrustReport (diagnostic) | prod promotion from sandbox pilot | `h5_validation_worlds.py`; [H5 pilot JSON](05_validation/archives/BAYES_H5_SANDBOX_PILOT_20260601.json) (fast MCMC ✅) | Implementation | **Complete (H5a fast pilot)** | H5b repeated pilots / diagnostic polish | **Yes** | Blocked — research only |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | H5 validation + Promotion Gate; decision trace | Promotion | **Blocked** | not until H5 implementation + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -73,7 +73,8 @@ Bayes-H2b ADR ✅
   → INV-071 true-effect threshold calibration (report-only policy) ✅
   → Bayes-H4d sparse/τ stability pilot (INV-H4D) ✅
   → Bayes-H5 model-spec improvement ADR ✅
-  → Bayes-H5a sandbox validation worlds + gated fit ← in progress (research only)
+  → Bayes-H5a sandbox validation worlds + gated fit ✅ (fast MCMC pilot)
+  → Bayes-H5b repeated pilots / spec validation ← next (research only)
   → Bayes-H5 production promotion (blocked)
   → Bayes-H3 production promotion (blocked)
 ```

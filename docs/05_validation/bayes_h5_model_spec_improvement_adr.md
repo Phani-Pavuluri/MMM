@@ -26,10 +26,24 @@
 
 | Field | Value |
 |-------|--------|
-| **Status** | **In progress (H5a)** — gated research implementation; **not** production acceptance |
+| **Status** | **H5a complete (research)** — gated implementation + fast MCMC pilot; **not** production acceptance |
 | **Code** | `mmm/research/bayes_h3_sandbox/h5_validation_worlds.py` · `h5_transforms.py` · `h5_pilot_runner.py`; H5 path in `model.py` / `entrypoint.py` / `fencing.py` (`model_spec_version=bayes_h5_sandbox_spec_v1`, `enable_h5_sandbox=True`) |
 | **Pilot artifact** | [archives/BAYES_H5_SANDBOX_PILOT_20260601.json](archives/BAYES_H5_SANDBOX_PILOT_20260601.json) |
 | **Still blocked** | Production Bayes; Ridge prod path; DecisionSurface; optimizer; recommendations; `approved_for_prod`; hard gates |
+
+### H5a pilot execution status
+
+| Field | Value |
+|-------|--------|
+| **Full pilot executed** | **Yes** — PyMC 5.28.5, `hasattr(pm, "Model")` true (2026-06-01 run) |
+| **Command** | `poetry run python -c "from mmm.research.bayes_h3_sandbox.h5_pilot_runner import run_h5_pilot; run_h5_pilot(fast_mcmc=True)"` |
+| **Sampler** | PyMC NUTS; `draws=200`, `tune=200`, `chains=2`, `target_accept=0.92`, `fast_mcmc_profile=true` |
+| **Artifact** | [BAYES_H5_SANDBOX_PILOT_20260601.json](archives/BAYES_H5_SANDBOX_PILOT_20260601.json) — all 7 H5 worlds with per-world `beta_gc_mae` / `mu_c_mae` |
+| **Aligned vs H4c mismatch baselines** | **Adstock:** H5-ADSTOCK-ALIGNED `beta_gc_mae≈0.264` vs H4c-ADSTOCKED-MEDIA `≈0.279` (modest gain). **Saturation:** H5-SATURATION-ALIGNED `≈0.113` vs H4c-SATURATION `≈0.171` (clear gain). Intentional mismatch worlds match or echo H4c poor recovery (`ADSTOCK-MISMATCH≈0.279`). |
+| **Mismatch diagnostics** | **As expected** — `h5:transform_mismatch` on ADSTOCK-MISMATCH and SATURATION-MISMATCH; policy `transform_mismatch_warning`; `hard_gate=false`. |
+| **Weak-ID diagnostics** | **As expected** — collinearity warning on CORRELATED-CHANNELS (`max_channel_corr≈0.95`); weak-ID policy outcome on CORRELATED / WEAK-SIGNAL. |
+| **Implementation defects** | **None blocking spec** — minor follow-up: `transforms_aligned()` does not treat `linear`/`correlated`/`weak_signal` generative kinds as aligned with `identity` fit, causing benign `h5:unexpected_transform_mismatch` on non-transform probe worlds (diagnostic polish only). |
+| **Production** | **Remains blocked** — pilot is research-only; no optimizer, DecisionSurface, or promotion flags. |
 
 ---
 
