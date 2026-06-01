@@ -44,8 +44,9 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | INV-H4-001b sparse variant sweep | 2 | Reliability / governance | TrustReport (diagnostic) | mis-tuned sparse world; τ prior | [sweep JSON](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) | Investigation | **Closed** | — | **Yes** | Blocked |
 | Bayes-H4c extended recovery worlds | 2 | Reliability / governance | TrustReport (diagnostic) | premature hard gates; prod promotion | `h4c_recovery_worlds.py`; [H4C pilot JSON](05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json) | Implementation | **Complete** (reliability map) | sparse/τ tuning (research) | **Yes** | Blocked — not production ready |
 | INV-071 true-effect recovery threshold policy | 2 | Reliability / governance | TrustReport (diagnostic) | global thresholds; stress worlds as hard fail | [INV-071](06_investigations/INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md); [policy JSON](05_validation/archives/BAYES_H4_RECOVERY_THRESHOLD_POLICY_20260601.json) | Investigation | **Complete** (report-only) | H4d stability pilot | **Yes** | Blocked — no production promotion |
-| Bayes-H4d sparse/τ stability (INV-H4D) | 2 | Reliability / governance | TrustReport (diagnostic) | conflate sparse recovery with sparse stress; prod τ promotion | [INV-H4D](06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md); [H4D fast](05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json); [H4D extended](05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json) | Investigation | **Complete** (fast + extended confirmed) | sparse variant sweep; future hard gates | **Yes** | Blocked — sandbox τ only |
-| Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | Bayes-H4+ gates; Promotion Gate; decision trace | Promotion | **Blocked** | not until H4 gates + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
+| Bayes-H4d sparse/τ stability (INV-H4D) | 2 | Reliability / governance | TrustReport (diagnostic) | conflate sparse recovery with sparse stress; prod τ promotion | [INV-H4D](06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md); [H4D fast](05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_20260601.json); [H4D extended](05_validation/archives/BAYES_H4D_SPARSE_TAU_STABILITY_EXTENDED_20260601.json) | Investigation | **Complete** (fast + extended confirmed) | Bayes-H5 model-spec ADR | **Yes** | Blocked — sandbox τ only |
+| [Bayes-H5 model-spec improvement ADR](05_validation/bayes_h5_model_spec_improvement_adr.md) | 1 | MMM calibration ecosystem | TrustReport (diagnostic) | transform mismatch; weak ID; false prod promotion | H5 ADR proposed; H4c/H4d evidence | Architecture | **Proposed** | H5 worlds + sandbox implementation (gated) | Yes (architecture-only) | Blocked — spec not implementation |
+| Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | H5 validation + Promotion Gate; decision trace | Promotion | **Blocked** | not until H5 implementation + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
 
@@ -70,6 +71,8 @@ Bayes-H2b ADR ✅
   → Bayes-H4c extended recovery worlds (reliability map) ✅
   → INV-071 true-effect threshold calibration (report-only policy) ✅
   → Bayes-H4d sparse/τ stability pilot (INV-H4D) ✅
+  → Bayes-H5 model-spec improvement ADR (proposed) ← current architecture step
+  → Bayes-H5 sandbox implementation + validation (not authorized until gated)
   → Bayes-H3 production promotion (blocked)
 ```
 
