@@ -53,6 +53,50 @@ def _beta_posterior_intervals(
     return out
 
 
+def _panel_max_channel_correlation(df: Any, channels: tuple[str, ...]) -> float | None:
+    import pandas as pd
+
+    if not isinstance(df, pd.DataFrame) or len(channels) < 2:
+        return None
+    cols = [c for c in channels if c in df.columns]
+    if len(cols) < 2:
+        return None
+    corr = df[cols].corr().to_numpy()
+    n = corr.shape[0]
+    off_diag = [abs(corr[i, j]) for i in range(n) for j in range(n) if i != j]
+    return float(max(off_diag)) if off_diag else None
+
+
+def compute_h4c_diagnostic_warnings(
+    artifact: dict[str, Any],
+    spec: RecoveryWorldSpec,
+    *,
+    panel_df: Any | None = None,
+) -> list[str]:
+    """H4c reliability-map warnings (research only — not production gates)."""
+    warnings: list[str] = []
+    exp = spec.expected_diagnostic_behavior
+    kind = str(exp.get("generative_kind", "linear"))
+
+    if exp.get("transform_mismatch_warning_expected") or kind in ("adstock", "saturation"):
+        warnings.append(
+            f"h4c:transform_mismatch:{spec.world_id}: generative={kind} vs MVP semi_log on raw standardized media"
+        )
+    if exp.get("collinearity_warning_expected") and panel_df is not None:
+        max_corr = _panel_max_channel_correlation(panel_df, spec.channels)
+        if max_corr is not None and max_corr > 0.85:
+            warnings.append(f"h4c:collinearity:{spec.world_id}: max_channel_corr={max_corr:.3f}")
+    if exp.get("conflict_warning_expected"):
+        warnings.extend(compute_conflict_warnings(spec))
+
+    rec = artifact.get("h4_recovery") or {}
+    beta_mae = rec.get("beta_gc_mae")
+    if exp.get("h4c_classification") == "weak_identification" and beta_mae is not None and float(beta_mae) > 0.35:
+        warnings.append(f"h4c:weak_identification:{spec.world_id}: beta_gc_mae={float(beta_mae):.3f}")
+
+    return warnings
+
+
 def compute_conflict_warnings(spec: RecoveryWorldSpec) -> list[str]:
     """Detect calibration stub directions that oppose generative truth (diagnostic only)."""
     warnings: list[str] = []
@@ -112,9 +156,21 @@ def compute_recovery_metrics(artifact: dict[str, Any], spec: RecoveryWorldSpec) 
         shrinkage_ratio_sparse_vs_true_mu = sparse_decomp.get("shrinkage_ratio_sparse_vs_true_mu")
 
     conflict_warnings = compute_conflict_warnings(spec)
+    h4c_warnings = compute_h4c_diagnostic_warnings(artifact, spec)
+    all_warnings = list(conflict_warnings) + [w for w in h4c_warnings if w not in conflict_warnings]
+
+    interval_widths: list[float] = []
+    for geo in spec.geo_order:
+        for ch in spec.channels:
+            if geo in intervals and ch in intervals[geo]:
+                lo, hi = intervals[geo][ch]
+                interval_widths.append(float(hi - lo))
+
     trust = artifact.get("diagnostic_trust_report") or {}
-    if conflict_warnings:
-        trust = {**trust, "conflict_warnings": conflict_warnings}
+    if all_warnings:
+        trust = {**trust, "conflict_warnings": all_warnings, "h4c_diagnostic_warnings": h4c_warnings}
+
+    h4c_class = spec.expected_diagnostic_behavior.get("h4c_classification")
 
     return {
         "world_id": spec.world_id,
@@ -131,7 +187,10 @@ def compute_recovery_metrics(artifact: dict[str, Any], spec: RecoveryWorldSpec) 
             "spec_geo_order": list(spec.geo_order),
             "index_order_matches_spec": beta_geo_index_order(artifact, spec) == list(spec.geo_order),
         },
-        "conflict_warnings": conflict_warnings,
+        "beta_interval_width_90_mean": float(np.mean(interval_widths)) if interval_widths else None,
+        "conflict_warnings": all_warnings,
+        "h4c_diagnostic_warnings": h4c_warnings,
+        "h4c_classification": h4c_class,
         "expected_diagnostic_behavior": dict(spec.expected_diagnostic_behavior),
         "convergence_diagnostics": artifact.get("convergence_diagnostics"),
         "diagnostic_trust_excerpt": {
@@ -153,9 +212,12 @@ def build_h4_recovery_report(
     out = dict(artifact)
     out["h4_recovery"] = metrics
     out["world_id"] = spec.world_id
-    if metrics.get("conflict_warnings"):
+    if metrics.get("conflict_warnings") or metrics.get("h4c_diagnostic_warnings"):
         dtr = dict(out.get("diagnostic_trust_report") or {})
-        dtr["conflict_warnings"] = metrics["conflict_warnings"]
+        if metrics.get("conflict_warnings"):
+            dtr["conflict_warnings"] = metrics["conflict_warnings"]
+        if metrics.get("h4c_diagnostic_warnings"):
+            dtr["h4c_diagnostic_warnings"] = metrics["h4c_diagnostic_warnings"]
         out["diagnostic_trust_report"] = dtr
     validate_research_only_artifact(out)
     return out
@@ -194,7 +256,43 @@ def run_h4_recovery_world(
         calibration_signals_stub=list(spec.calibration_signals),
         sandbox_model_overrides=overrides or None,
     )
-    return build_h4_recovery_report(spec, artifact)
+    report = build_h4_recovery_report(spec, artifact)
+    h4c_warn = compute_h4c_diagnostic_warnings(report, spec, panel_df=df)
+    if h4c_warn:
+        rec = dict(report.get("h4_recovery") or {})
+        existing_h4c = list(rec.get("h4c_diagnostic_warnings") or [])
+        rec["h4c_diagnostic_warnings"] = existing_h4c + [w for w in h4c_warn if w not in existing_h4c]
+        rec["conflict_warnings"] = list(rec.get("conflict_warnings") or []) + [
+            w for w in h4c_warn if w not in rec.get("conflict_warnings", [])
+        ]
+        report["h4_recovery"] = rec
+    return report
+
+
+def validate_h4c_world_catalog() -> dict[str, Any]:
+    """Fast validation that all H4c worlds materialize deterministically."""
+    from mmm.research.bayes_h3_sandbox.h4c_recovery_worlds import H4C_WORLD_IDS
+
+    results: list[dict[str, Any]] = []
+    for wid in H4C_WORLD_IDS:
+        spec = get_recovery_world(wid)
+        df1 = materialize_recovery_bundle(spec)[2]
+        df2 = materialize_recovery_bundle(spec)[2]
+        exp = spec.expected_diagnostic_behavior
+        results.append(
+            {
+                "world_id": wid,
+                "rows": len(df1),
+                "deterministic": df1.equals(df2),
+                "has_known_truth": bool(spec.known_truth),
+                "h4c_classification": exp.get("h4c_classification"),
+            }
+        )
+    ok = all(r["deterministic"] and r["has_known_truth"] and r["h4c_classification"] for r in results)
+    return {
+        "status": "pass" if ok else "fail",
+        "worlds": results,
+    }
 
 
 def validate_world_catalog() -> dict[str, Any]:

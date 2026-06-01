@@ -53,8 +53,24 @@ All estimands are **diagnostic** — reported in `h4_recovery` block and TrustRe
 | World ID | Intent |
 |----------|--------|
 | `WORLD-BAYES-H4-SIMPLE-POOLING` | Low heterogeneity; \(\beta_{g,c}\) near \(\mu_c\); baseline recovery |
-| `WORLD-BAYES-H4-SPARSE-GEO` | One sparse DMA; large true local deviation; expect shrinkage toward \(\mu_c\) |
+| `WORLD-BAYES-H4-SPARSE-GEO` | One sparse DMA; large true local deviation; **stress diagnostic** (report-only) |
 | `WORLD-BAYES-H4-CONFLICTING-EVIDENCE` | Generative truth vs conflicting calibration stub; expect conflict diagnostics |
+
+### H4c extended recovery worlds (research reliability map)
+
+| World ID | Role | Expected use |
+|----------|------|----------------|
+| `WORLD-BAYES-H4C-CLEAN-RECOVERY` | recovery_candidate | Good \(\mu_c\), \(\beta_{g,c}\) recovery under favorable conditions |
+| `WORLD-BAYES-H4C-CORRELATED-CHANNELS` | weak_identification | Collinearity warning; weaker channel-level recovery |
+| `WORLD-BAYES-H4C-ADSTOCKED-MEDIA` | transform_mismatch | Outcome adstocked; MVP fits raw media |
+| `WORLD-BAYES-H4C-SATURATION` | transform_mismatch | Outcome saturated; MVP semi_log linear |
+| `WORLD-BAYES-H4C-WEAK-SIGNAL` | weak_identification | Low SNR; poor \(\beta\) recovery expected |
+| `WORLD-BAYES-H4C-SPARSE-RECOVERY` | recovery_candidate | Sparse geo with sufficient weeks; not the H4 stress world |
+
+**Artifact:** [BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json](archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json)  
+**Runner:** `h4c_extended_recovery_pilot.py`
+
+H4c answers: *where does the sandbox recover synthetic truth, and where does it fail?* It does **not** answer whether Bayesian MMM is production-ready.
 
 Each world exposes: panel, geo hierarchy, channels, `true_mu_c`, `true_tau_c`, `true_beta_gc`, noise \(\sigma\), optional calibration stubs, `expected_diagnostic_behavior`.
 
@@ -210,17 +226,33 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 | INV-H4-001b variant sweep | **Closed** |
 | INV-H4-001 disposition | **C+A accepted** — no production promotion |
 | INV-071 true-effect thresholds | **Open** |
-| Bayes-H4c | **Authorized next** — research-only extended worlds only |
+| Bayes-H4c extended pilot | **Complete** (reliability map) — see [H4C JSON](archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json) |
+| INV-071 | **Open** — true-effect recovery thresholds |
 
 ---
 
-## 12. Consequences
+## 13. H4c extended recovery pilot (reliability map)
+
+**Artifact:** [archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json](archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json)
+
+| Metric policy | Rule |
+|---------------|------|
+| Primary shrinkage | Pooling toward \(\hat\mu_c\) only (H4b-disposition) |
+| Legacy shrinkage | True \(\mu_c^\*\) recovery diagnostic — not a pooling gate |
+| Sparse stress | `WORLD-BAYES-H4-SPARSE-GEO` remains **outside** H4c catalog; report-only |
+
+**Pilot role:** Produce a **reliability map** (classifications per world). No hard gates. No production promotion.
+
+---
+
+## 14. Consequences
 
 - **Complete (scaffolding):** `recovery_worlds.py`, `recovery_runner.py`, `tests/research/test_bayes_h4_recovery_worlds.py`.  
 - **Complete (H4a pilot):** `h4_threshold_pilot.py`, committed pilot JSON, `tests/research/test_bayes_h4_threshold_pilot.py`.  
 - **Complete (H4b repeated pilot):** `h4_repeated_pilot.py`, original + [primary-metric refresh JSON](archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json), `tests/research/test_bayes_h4_repeated_pilot.py`.  
 - **Complete (H4b-disposition):** metric policy C + sparse-world posture A accepted.  
-- **Next:** Bayes-H4c extended recovery worlds (research-only; not promotion).  
+- **Complete (H4c):** `h4c_recovery_worlds.py`, `h4c_extended_recovery_pilot.py`, H4c pilot JSON, `tests/research/test_bayes_h4c_extended_recovery_worlds.py`.  
+- **Next:** Tune sparse/τ per disposition A; calibrate INV-071 true-effect bands.  
 - **Not authorized:** Bayes-H3 production promotion, NumPyro backend, prod CI Bayesian jobs without research labeling.
 
 **This ADR does not authorize production Bayesian decisioning.**

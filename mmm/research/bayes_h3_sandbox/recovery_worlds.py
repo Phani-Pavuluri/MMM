@@ -67,6 +67,11 @@ def _standardized_media(rng: np.random.Generator, n: int) -> np.ndarray:
 
 def materialize_recovery_panel(spec: RecoveryWorldSpec, *, panel_seed: int | None = None) -> pd.DataFrame:
     """Build observed panel from known truth (deterministic given spec + panel_seed)."""
+    from mmm.research.bayes_h3_sandbox.h4c_recovery_worlds import H4C_WORLDS, materialize_h4c_panel
+
+    if spec.world_id in H4C_WORLDS:
+        return materialize_h4c_panel(spec, panel_seed=panel_seed)
+
     rng = np.random.default_rng(panel_seed if panel_seed is not None else spec.mcmc_seed)
     rows: list[dict[str, Any]] = []
     for geo in spec.geo_order:
@@ -354,11 +359,15 @@ _DIAGNOSTIC_WORLDS: dict[str, RecoveryWorldSpec] = {
 
 
 def get_recovery_world(world_id: str) -> RecoveryWorldSpec:
+    from mmm.research.bayes_h3_sandbox.h4c_recovery_worlds import H4C_WORLDS
+
     if world_id in _WORLDS:
         return _WORLDS[world_id]
     if world_id in _DIAGNOSTIC_WORLDS:
         return _DIAGNOSTIC_WORLDS[world_id]
-    known = sorted({*_WORLDS, *_DIAGNOSTIC_WORLDS})
+    if world_id in H4C_WORLDS:
+        return H4C_WORLDS[world_id]
+    known = sorted({*_WORLDS, *_DIAGNOSTIC_WORLDS, *H4C_WORLDS})
     raise KeyError(f"unknown Bayes-H4 recovery world: {world_id!r}; known: {known}")
 
 
@@ -376,3 +385,9 @@ def get_sparse_pooling_diagnostic_world(variant: str) -> RecoveryWorldSpec:
 
 def list_recovery_worlds() -> tuple[RecoveryWorldSpec, ...]:
     return tuple(_WORLDS[w] for w in H4_WORLD_IDS)
+
+
+def list_all_recovery_world_ids() -> tuple[str, ...]:
+    from mmm.research.bayes_h3_sandbox.h4c_recovery_worlds import H4C_WORLD_IDS
+
+    return H4_WORLD_IDS + H4C_WORLD_IDS

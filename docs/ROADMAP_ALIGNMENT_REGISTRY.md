@@ -42,7 +42,7 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | Bayes-H4b-disposition (metric + recovery posture) | 2 | Reliability / governance | TrustReport (diagnostic) | conflate pooling with truth recovery | [INV-H4-001 §11](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) | Governance | **Complete** (C+A accepted) | Bayes-H4c research worlds | **Yes** | Blocked — disposition ≠ prod |
 | INV-H4-001 sparse pooling behavior | 2 | Reliability / governance | TrustReport (diagnostic) | wrong shrinkage metric; weak pooling on sparse geo | [INV-H4-001](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) | Investigation | **Closed** (disposition C+A) | sparse world / τ tuning (research) | **Yes** | Blocked — no production promotion |
 | INV-H4-001b sparse variant sweep | 2 | Reliability / governance | TrustReport (diagnostic) | mis-tuned sparse world; τ prior | [sweep JSON](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) | Investigation | **Closed** | — | **Yes** | Blocked |
-| Bayes-H4c extended recovery worlds | 2 | Reliability / governance | TrustReport (diagnostic) | premature hard gates; prod promotion | (not started) | Implementation | **Authorized** (research-only) | H4c scaffolding | **Yes** | Blocked — research worlds only |
+| Bayes-H4c extended recovery worlds | 2 | Reliability / governance | TrustReport (diagnostic) | premature hard gates; prod promotion | `h4c_recovery_worlds.py`; [H4C pilot JSON](05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json) | Implementation | **Complete** (reliability map) | INV-071 calibration; sparse/τ tuning | **Yes** | Blocked — not production ready |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | Bayes-H4+ gates; Promotion Gate; decision trace | Promotion | **Blocked** | not until H4 gates + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -65,7 +65,8 @@ Bayes-H2b ADR ✅
   → INV-H4-001 / 001b (metric + variant sweep) ✅
   → H4b-refresh primary-metric repeated pilot ✅
   → H4b-disposition (C+A accepted) ✅
-  → Bayes-H4c extended recovery worlds  ← NEXT (research-only; not promotion)
+  → Bayes-H4c extended recovery worlds (reliability map) ✅
+  → INV-071 true-effect threshold calibration  ← NEXT
   → Bayes-H3 production promotion (blocked)
 ```
 

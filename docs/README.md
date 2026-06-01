@@ -78,6 +78,7 @@ Operational workflows for analysts and data scientists:
 | Bayes-H4b repeated recovery pilot JSON (legacy field) | [05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json](05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json) |
 | Bayes-H4b-refresh primary-metric repeated pilot | [05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json](05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json) — **authoritative pooling evidence**; supersedes original H4b JSON for shrinkage interpretation |
 | Bayes-H4b-disposition (C+A) | [06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) §11 — pooling passes; true-effect recovery open (INV-071) |
+| Bayes-H4c extended recovery pilot JSON | [05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json](05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json) — reliability map (research only) |
 | INV-H4-001 sparse pooling investigation | [06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) |
 | INV-H4-001b variant sweep JSON | [05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) |
 | Bayesian Geo MMM architecture refinement | [05_validation/bayesian_hierarchical_geo_mmm_refinement.md](05_validation/bayesian_hierarchical_geo_mmm_refinement.md) |

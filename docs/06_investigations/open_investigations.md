@@ -1848,7 +1848,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Production impact** | None — research-only |
 | **Current behavior** | H4b-refresh primary shrinkage **&lt; 1** on sparse world; legacy **2.57–2.73** tracked separately; true-effect MAE/coverage still open. |
 | **Desired end state** | Documented TBD_v1 thresholds after repeated pilots + extended worlds; optional hard warn bands. |
-| **Blocking dependencies** | Sparse-world / τ tuning (posture A); optional H4c research worlds |
+| **Blocking dependencies** | Sparse-world / τ tuning (posture A); H4c reliability map complete — thresholds still TBD |
 | **Suggested validation** | Slow pytest + recovery report JSON archive |
 | **Suggested owner area** | `mmm.research.bayes_h3_sandbox.recovery_runner` |
 | **Recommended phase** | After H4 scaffolding stabilizes |

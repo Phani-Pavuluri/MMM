@@ -116,6 +116,7 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md` | `06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md` | canonical | Bayes-H4 sparse partial-pooling shrinkage investigation |
 | `docs/05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json` | `05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json` | canonical | INV-H4-001b sparse diagnostic variant sweep (research only) |
 | `docs/05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json` | `05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json` | canonical | H4b-refresh extended repeated pilot (primary + legacy shrinkage) |
+| `docs/05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json` | `05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json` | canonical | H4c extended recovery reliability map (research only) |
 | `docs/06_investigations/investigation_index.md` | `06_investigations/investigation_index.md` | canonical | Grouped index by risk area |
 | `docs/planning_artifact_schema.md` | `04_governance/artifact_schema.md` | deprecated | Redirect stub only |
 | `docs/DOCUMENTATION_INVENTORY.md` | `DOCUMENTATION_INVENTORY.md` | canonical | This file |

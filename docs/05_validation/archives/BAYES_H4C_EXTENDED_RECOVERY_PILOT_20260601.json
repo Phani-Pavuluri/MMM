@@ -1,0 +1,698 @@
+{
+  "approved_for_prod": false,
+  "backend_defaults": {
+    "WORLD-BAYES-H4C-ADSTOCKED-MEDIA": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4C-CLEAN-RECOVERY": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4C-CORRELATED-CHANNELS": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4C-SATURATION": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4C-SPARSE-RECOVERY": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    },
+    "WORLD-BAYES-H4C-WEAK-SIGNAL": {
+      "chains": 2,
+      "draws": 200,
+      "fast_mcmc_profile": true,
+      "framework": "bayesian",
+      "inference_backend": "pymc",
+      "model_form": "semi_log",
+      "nuts_seed": 4400,
+      "pooling": "partial",
+      "target_accept": 0.92,
+      "tune": 200,
+      "world_mcmc_seed": 4400
+    }
+  },
+  "decision_grade": false,
+  "fast_mcmc_profile": true,
+  "interpretation": {
+    "hard_gate": false,
+    "not_asking": "Is Bayesian MMM ready for production?",
+    "pooling_mechanics": "understood (H4b-disposition C+A)",
+    "production_promotion": false,
+    "question": "Where does the Bayes-H3 sandbox recover synthetic truth, and where does it fail?",
+    "reliability_map_by_classification": {
+      "recovery_candidate": [
+        "WORLD-BAYES-H4C-CLEAN-RECOVERY",
+        "WORLD-BAYES-H4C-SPARSE-RECOVERY"
+      ],
+      "transform_mismatch": [
+        "WORLD-BAYES-H4C-ADSTOCKED-MEDIA",
+        "WORLD-BAYES-H4C-SATURATION"
+      ],
+      "weak_identification": [
+        "WORLD-BAYES-H4C-CORRELATED-CHANNELS",
+        "WORLD-BAYES-H4C-WEAK-SIGNAL"
+      ]
+    },
+    "report_only": true,
+    "sparse_stress_reference": "WORLD-BAYES-H4-SPARSE-GEO",
+    "sparse_stress_role": "report-only stress diagnostic \u2014 not a global H4c pass/fail gate",
+    "true_effect_recovery": "open under INV-071"
+  },
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "outputs_are_diagnostic_only": true,
+  "pilot_id": "BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601",
+  "pilot_version": "bayes_h4c_extended_recovery_pilot_v1",
+  "prod_decisioning_allowed": false,
+  "production_promotion": false,
+  "research_only": true,
+  "sampler_settings": {
+    "chains": 2,
+    "draws": 200,
+    "target_accept": 0.92,
+    "tune": 200
+  },
+  "status": "complete",
+  "world_ids": [
+    "WORLD-BAYES-H4C-CLEAN-RECOVERY",
+    "WORLD-BAYES-H4C-CORRELATED-CHANNELS",
+    "WORLD-BAYES-H4C-ADSTOCKED-MEDIA",
+    "WORLD-BAYES-H4C-SATURATION",
+    "WORLD-BAYES-H4C-WEAK-SIGNAL",
+    "WORLD-BAYES-H4C-SPARSE-RECOVERY"
+  ],
+  "worlds": [
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.29779619039007077,
+      "beta_geo_index_order": [
+        "dma_a",
+        "dma_b",
+        "dma_c"
+      ],
+      "beta_interval_width_90_mean": 0.0861596752236211,
+      "channel_index_order": [
+        "tv",
+        "search"
+      ],
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 121.0,
+        "rhat_max": 1.02
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "generative_kind": "linear",
+        "h4c_classification": "recovery_candidate",
+        "recovery_expectation": "good_mu_and_beta_recovery"
+      },
+      "h4c_classification": "recovery_candidate",
+      "h4c_diagnostic_warnings": [],
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b",
+          "dma_c"
+        ],
+        "noise_sigma": 0.08,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.19,
+            "tv": 0.34
+          },
+          "dma_b": {
+            "search": 0.19,
+            "tv": 0.34
+          },
+          "dma_c": {
+            "search": 0.19,
+            "tv": 0.34
+          }
+        },
+        "true_mu_c": {
+          "search": 0.2,
+          "tv": 0.32
+        },
+        "true_tau_c": {
+          "search": 0.04,
+          "tv": 0.05
+        }
+      },
+      "mu_c_mae": 0.2834940771301482,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "reliability_map": {
+        "classification": "recovery_candidate",
+        "design_classification": "recovery_candidate",
+        "hard_gate": false,
+        "production_promotion": false,
+        "reason": "beta_gc_mae and mu_c_mae within report-only good band on this pilot run"
+      },
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "shrinkage_ratio_sparse_vs_true_mu": null,
+      "sparse_shrinkage_decomposition": null,
+      "world_id": "WORLD-BAYES-H4C-CLEAN-RECOVERY"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.26810702624751037,
+      "beta_geo_index_order": [
+        "dma_a",
+        "dma_b"
+      ],
+      "beta_interval_width_90_mean": 0.056271848707473565,
+      "channel_index_order": [
+        "tv",
+        "search"
+      ],
+      "conflict_warnings": [
+        "h4c:collinearity:WORLD-BAYES-H4C-CORRELATED-CHANNELS: max_channel_corr=0.953"
+      ],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 199.0,
+        "rhat_max": 1.02
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "collinearity_warning_expected": true,
+        "generative_kind": "correlated",
+        "generative_params": {
+          "rho": 0.92
+        },
+        "h4c_classification": "weak_identification"
+      },
+      "h4c_classification": "weak_identification",
+      "h4c_diagnostic_warnings": [
+        "h4c:collinearity:WORLD-BAYES-H4C-CORRELATED-CHANNELS: max_channel_corr=0.953"
+      ],
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b"
+        ],
+        "noise_sigma": 0.1,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.17,
+            "tv": 0.32
+          },
+          "dma_b": {
+            "search": 0.19,
+            "tv": 0.28
+          }
+        },
+        "true_mu_c": {
+          "search": 0.18,
+          "tv": 0.3
+        },
+        "true_tau_c": {
+          "search": 0.08,
+          "tv": 0.1
+        }
+      },
+      "mu_c_mae": 0.2676939622567796,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "reliability_map": {
+        "classification": "weak_identification",
+        "design_classification": "weak_identification",
+        "hard_gate": false,
+        "production_promotion": false,
+        "reason": "channel collinearity or weak signal limits channel-level recovery"
+      },
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "shrinkage_ratio_sparse_vs_true_mu": null,
+      "sparse_shrinkage_decomposition": null,
+      "world_id": "WORLD-BAYES-H4C-CORRELATED-CHANNELS"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.2792256953538691,
+      "beta_geo_index_order": [
+        "dma_a",
+        "dma_b"
+      ],
+      "beta_interval_width_90_mean": 0.023076667650383336,
+      "channel_index_order": [
+        "tv",
+        "search"
+      ],
+      "conflict_warnings": [
+        "h4c:transform_mismatch:WORLD-BAYES-H4C-ADSTOCKED-MEDIA: generative=adstock vs MVP semi_log on raw standardized media"
+      ],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 111.0,
+        "rhat_max": 1.02
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "generative_kind": "adstock",
+        "generative_params": {
+          "decay": 0.7
+        },
+        "h4c_classification": "transform_mismatch",
+        "model_mismatch": "MVP fits raw media; outcome uses adstock",
+        "transform_mismatch_warning_expected": true
+      },
+      "h4c_classification": "transform_mismatch",
+      "h4c_diagnostic_warnings": [
+        "h4c:transform_mismatch:WORLD-BAYES-H4C-ADSTOCKED-MEDIA: generative=adstock vs MVP semi_log on raw standardized media"
+      ],
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b"
+        ],
+        "noise_sigma": 0.1,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.15,
+            "tv": 0.3
+          },
+          "dma_b": {
+            "search": 0.17,
+            "tv": 0.26
+          }
+        },
+        "true_mu_c": {
+          "search": 0.16,
+          "tv": 0.28
+        },
+        "true_tau_c": {
+          "search": 0.06,
+          "tv": 0.08
+        }
+      },
+      "mu_c_mae": 0.2713154337692605,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "reliability_map": {
+        "classification": "transform_mismatch",
+        "design_classification": "transform_mismatch",
+        "hard_gate": false,
+        "production_promotion": false,
+        "reason": "generative transform differs from MVP semi_log on raw media"
+      },
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "shrinkage_ratio_sparse_vs_true_mu": null,
+      "sparse_shrinkage_decomposition": null,
+      "world_id": "WORLD-BAYES-H4C-ADSTOCKED-MEDIA"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.17106256135771242,
+      "beta_geo_index_order": [
+        "dma_a",
+        "dma_b"
+      ],
+      "beta_interval_width_90_mean": 0.005241826558342861,
+      "channel_index_order": [
+        "tv",
+        "search"
+      ],
+      "conflict_warnings": [
+        "h4c:transform_mismatch:WORLD-BAYES-H4C-SATURATION: generative=saturation vs MVP semi_log on raw standardized media"
+      ],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 63.0,
+        "rhat_max": 1.07
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "generative_kind": "saturation",
+        "generative_params": {
+          "half": 2.0,
+          "slope": 1.5
+        },
+        "h4c_classification": "transform_mismatch",
+        "model_mismatch": "MVP semi_log linear in standardized media; outcome uses saturation",
+        "transform_mismatch_warning_expected": true
+      },
+      "h4c_classification": "transform_mismatch",
+      "h4c_diagnostic_warnings": [
+        "h4c:transform_mismatch:WORLD-BAYES-H4C-SATURATION: generative=saturation vs MVP semi_log on raw standardized media"
+      ],
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b"
+        ],
+        "noise_sigma": 0.1,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.13,
+            "tv": 0.28
+          },
+          "dma_b": {
+            "search": 0.15,
+            "tv": 0.24
+          }
+        },
+        "true_mu_c": {
+          "search": 0.14,
+          "tv": 0.26
+        },
+        "true_tau_c": {
+          "search": 0.05,
+          "tv": 0.07
+        }
+      },
+      "mu_c_mae": 0.16301448892075965,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "reliability_map": {
+        "classification": "transform_mismatch",
+        "design_classification": "transform_mismatch",
+        "hard_gate": false,
+        "production_promotion": false,
+        "reason": "generative transform differs from MVP semi_log on raw media"
+      },
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "shrinkage_ratio_sparse_vs_true_mu": null,
+      "sparse_shrinkage_decomposition": null,
+      "world_id": "WORLD-BAYES-H4C-SATURATION"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.2843358011752104,
+      "beta_geo_index_order": [
+        "dma_a",
+        "dma_b"
+      ],
+      "beta_interval_width_90_mean": 0.10697308283295544,
+      "channel_index_order": [
+        "tv",
+        "search"
+      ],
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 131.0,
+        "rhat_max": 1.02
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "generative_kind": "weak_signal",
+        "generative_params": {
+          "media_scale": 0.2,
+          "noise_sigma": 0.45
+        },
+        "h4c_classification": "weak_identification",
+        "recovery_expectation": "poor_beta_recovery"
+      },
+      "h4c_classification": "weak_identification",
+      "h4c_diagnostic_warnings": [],
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_a",
+          "dma_b"
+        ],
+        "noise_sigma": 0.4,
+        "true_beta_gc": {
+          "dma_a": {
+            "search": 0.14,
+            "tv": 0.27
+          },
+          "dma_b": {
+            "search": 0.16,
+            "tv": 0.23
+          }
+        },
+        "true_mu_c": {
+          "search": 0.15,
+          "tv": 0.25
+        },
+        "true_tau_c": {
+          "search": 0.1,
+          "tv": 0.12
+        }
+      },
+      "mu_c_mae": 0.26796522169382336,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "reliability_map": {
+        "classification": "weak_identification",
+        "design_classification": "weak_identification",
+        "hard_gate": false,
+        "production_promotion": false,
+        "reason": "low SNR / identification stress world"
+      },
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": null,
+      "shrinkage_ratio_sparse_vs_true_mu": null,
+      "sparse_shrinkage_decomposition": null,
+      "world_id": "WORLD-BAYES-H4C-WEAK-SIGNAL"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_coverage_90": 0.0,
+      "beta_gc_mae": 0.26889435621118535,
+      "beta_geo_index_order": [
+        "dma_dense_a",
+        "dma_dense_b",
+        "dma_sparse"
+      ],
+      "beta_interval_width_90_mean": 0.1010308500347577,
+      "channel_index_order": [
+        "tv",
+        "search"
+      ],
+      "conflict_warnings": [],
+      "convergence": {
+        "converged_sanity": true,
+        "ess_bulk_min": 150.0,
+        "rhat_max": 1.04
+      },
+      "decision_grade": false,
+      "expected_diagnostic_behavior": {
+        "generative_kind": "linear",
+        "h4c_classification": "recovery_candidate",
+        "note": "Contrast with WORLD-BAYES-H4-SPARSE-GEO stress world (report-only)",
+        "sparse_role": "recovery_not_stress"
+      },
+      "h4c_classification": "recovery_candidate",
+      "h4c_diagnostic_warnings": [],
+      "has_budget_recommendation": false,
+      "has_decision_surface": false,
+      "has_optimizer_ready_curves": false,
+      "known_truth_ref": {
+        "channels": [
+          "tv",
+          "search"
+        ],
+        "geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "noise_sigma": 0.12,
+        "true_beta_gc": {
+          "dma_dense_a": {
+            "search": 0.17,
+            "tv": 0.31
+          },
+          "dma_dense_b": {
+            "search": 0.19,
+            "tv": 0.29
+          },
+          "dma_sparse": {
+            "search": 0.17,
+            "tv": 0.33
+          }
+        },
+        "true_mu_c": {
+          "search": 0.18,
+          "tv": 0.3
+        },
+        "true_tau_c": {
+          "search": 0.1,
+          "tv": 0.12
+        }
+      },
+      "mu_c_mae": 0.2620381414724353,
+      "prod_decisioning_allowed": false,
+      "production_decision_surface": false,
+      "production_promotion": false,
+      "reliability_map": {
+        "classification": "recovery_candidate",
+        "design_classification": "recovery_candidate",
+        "hard_gate": false,
+        "production_promotion": false,
+        "reason": "beta_gc_mae and mu_c_mae within report-only good band on this pilot run"
+      },
+      "research_only": true,
+      "seed": 4400,
+      "shrinkage_ratio_sparse": 0.07220383924044294,
+      "shrinkage_ratio_sparse_vs_true_mu": 14.724542747774546,
+      "sparse_shrinkage_decomposition": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "by_geo_channel": [
+          {
+            "channel": "tv",
+            "channel_index": 0,
+            "distance_posterior_sparse_to_posterior_mu": 0.010848125308698645,
+            "distance_posterior_sparse_to_true_mu": 0.2927854902093189,
+            "distance_true_sparse_to_posterior_mu": 0.33363361551801757,
+            "distance_true_sparse_to_true_mu": 0.030000000000000027,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": 0.007214509790681084,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.0036336155180175605,
+            "posterior_tau_c_mean": 0.12389510069333264,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.032515084823977525,
+            "shrinkage_ratio_vs_true_mu": 9.75951634031062,
+            "true_beta_gc": 0.33,
+            "true_mu_c": 0.3
+          },
+          {
+            "channel": "search",
+            "channel_index": 1,
+            "distance_posterior_sparse_to_posterior_mu": 0.023546975874468783,
+            "distance_posterior_sparse_to_true_mu": 0.19689569155238437,
+            "distance_true_sparse_to_posterior_mu": 0.21044266742685316,
+            "distance_true_sparse_to_true_mu": 0.009999999999999981,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.01689569155238437,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.04044266742685315,
+            "posterior_tau_c_mean": 0.12841175312478154,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.11189259365690835,
+            "shrinkage_ratio_vs_true_mu": 19.689569155238473,
+            "true_beta_gc": 0.17,
+            "true_mu_c": 0.18
+          }
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "metric_definition": {
+          "interpret_lt_1": "posterior beta closer to pool center than generative outlier was",
+          "legacy_vs_true_mu": "mean(|posterior_beta - true_mu| / |true_beta - true_mu|) \u2014 H4a/H4b pilot definition",
+          "pool_center_primary": "posterior_mu_c",
+          "primary": "mean(|posterior_beta - posterior_mu| / |true_beta - posterior_mu|) over sparse geos"
+        },
+        "shrinkage_ratio_sparse": 0.07220383924044294,
+        "shrinkage_ratio_sparse_vs_true_mu": 14.724542747774546,
+        "sparse_geos": [
+          "dma_sparse"
+        ]
+      },
+      "world_id": "WORLD-BAYES-H4C-SPARSE-RECOVERY"
+    }
+  ]
+}
