@@ -166,7 +166,7 @@ def test_lattice_sweep_report_schema(tmp_path: Path) -> None:
 
 
 def test_failures_not_swallowed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    from mmm.validation.synthetic import behavioral_lattice_sweep as bls
+    import mmm.validation.synthetic.behavioral_lattice_sweep as bls
 
     spec = mvp_behavioral_lattice_specs()[0]
 

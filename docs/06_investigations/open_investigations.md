@@ -1783,19 +1783,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Title** | Resolve pre-existing `mmm.validation` import cycles blocking full pytest collection |
 | **Category** | certification reliability gaps |
 | **Severity** | medium |
-| **Status** | open |
+| **Status** | resolved (2026-06-01) |
 | **Platform track** | 2 — Reliability & Validation |
 | **First identified in** | Bayes-H3 guardrails checkpoint (2026-06-01) |
 | **Evidence sources** | `pytest tests/ -m "not slow"` → `ImportError` on `mmm.validation` ↔ `mmm.models.ridge_bo.trainer` cycle via `certification_runner` / `recovery_certification` |
-| **Problem statement** | Full test collection fails before running tests because `mmm/validation/__init__.py` eagerly imports synthetic modules that pull `RidgeBOMMMTrainer` while `ridge_bo.trainer` is still initializing. |
-| **Why it matters** | CI runs `pytest tests/ -m "not slow"`; collection errors can hide regressions outside focused suites. |
+| **Problem statement** | Full test collection failed because `mmm/validation/__init__.py` and `mmm/validation/synthetic/__init__.py` eagerly imported synthetic runners that pull `RidgeBOMMMTrainer` while `ridge_bo.trainer` was still initializing. |
+| **Why it matters** | CI runs `pytest tests/ -m "not slow"`; collection errors hide regressions outside focused suites. |
 | **Risk type** | certification reliability |
-| **Production impact** | None directly — focused suites (`tests/research/test_bayes_h3_sandbox_guardrails.py`, hierarchy validator) pass. |
-| **Current behavior** | Guardrails and `VAL-BAYES-H2B-SMOKE` run in dedicated CI steps; full-suite collection may error on unrelated modules. |
+| **Production impact** | None — import hygiene only. |
+| **Current behavior** | Lightweight package initializers; consumers import concrete modules directly (e.g. `mmm.validation.synthetic.hierarchy_evidence_validator`). `pytest tests/ --collect-only` and `pytest tests/ -m "not slow"` pass. |
 | **Desired end state** | Lazy imports or split `mmm.validation` package surface so `pytest tests/` collects cleanly. |
-| **Blocking dependencies** | None for Bayes-H3 sandbox fit work |
-| **Suggested validation** | `pytest tests/ --collect-only -q` succeeds; CI matrix unchanged |
+| **Resolution** | Removed eager synthetic/hierarchy exports from `mmm/validation/__init__.py`; emptied `mmm/validation/synthetic/__init__.py`; updated tests using package-level synthetic submodule imports. |
+| **Blocking dependencies** | None |
+| **Suggested validation** | `pytest tests/ --collect-only -q` and `pytest tests/ -m "not slow"` |
 | **Suggested owner area** | `mmm/validation/__init__.py`, `mmm/validation/synthetic/__init__.py` |
-| **Recommended phase** | Next reliability hygiene PR |
+| **Recommended phase** | Closed |
 | **Related investigations** | INV-023, INV-008 |
-| **Notes** | **Follow-up from Bayes-H3 guardrails commit** — do not block H3 sandbox fit on this. |
+| **Notes** | **Fix:** commit `Fix validation package import cycles`. Do not re-export synthetic validators from package `__init__` files. |

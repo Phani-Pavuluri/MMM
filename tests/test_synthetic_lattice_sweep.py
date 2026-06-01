@@ -162,7 +162,7 @@ def test_skipped_validations_summarized_not_counted_as_unexpected_failures(latti
 
 
 def test_failure_preserved_on_materialize_error(lattice_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    from mmm.validation.synthetic import lattice_sweep as ls
+    import mmm.validation.synthetic.lattice_sweep as ls
 
     spec = mvp_lattice_specs()[0]
     bundle = lattice_tmp / spec.world_id
