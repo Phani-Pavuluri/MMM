@@ -171,12 +171,14 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 
 | Metric | Extended pilot (3 seeds) |
 |--------|--------------------------|
-| `shrinkage_ratio_sparse` | **2.57, 2.65, 2.73** (mean ≈ 2.65) — all ≥ 1 |
-| Classification | **`likely_model_prior_or_world_design`** — not resolved by longer sampling |
+| `shrinkage_ratio_sparse_vs_true_mu` (legacy) | **2.57, 2.65, 2.73** — all ≥ 1 |
+| Classification (legacy) | **`likely_model_prior_or_world_design`** under old metric |
 | `conflict_warning_pass_rate` | **1.0** on conflict world |
 | Production flags | all **false** |
 
-**Interpretation:** Sparse shrinkage failure is **not** explained by fast-MCMC alone under the committed extended profile. Keep INV-071 open; defer H4c extended worlds until MVP pooling / metric / sparse-world design is reviewed.
+**Post INV-H4-001 / 001b:** legacy ratios compared to **true** \(\mu_c^\*\); primary metric uses **\(\hat\mu_c\)**. Fast refit baseline primary ≈ **0.55**; variant sweep [JSON](archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json). H4b JSON is **not** a failure of pooling toward \(\hat\mu\) — it is weak recovery vs generative \(\mu^\*\) on a harsh toy world.
+
+**Interpretation:** Defer H4c until INV-H4-001 disposition (sparse world / τ prior / metric policy). See [INV-H4-001](../06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) §8–9.
 
 ---
 
@@ -190,7 +192,7 @@ See artifact `interpretation.sparse_shrinkage_summary.classification` and `spars
 | Metric audit (posterior \(\hat\mu_c\) vs true \(\mu_c\)) | **Complete** |
 | Posterior geo/channel index metadata | **Complete** |
 | Diagnostic world variants (4) | **Complete** (research-only, not in `H4_WORLD_IDS`) |
-| INV-H4-001 | **Open** — blocks H4c |
+| INV-H4-001 / 001b variant sweep | **Open** — metric fixed; [sweep JSON](archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json); disposition A–D pending |
 | INV-071 | **Open** |
 
 **Governance:** Repeated pilot is **report-only**. Do not promote Bayesian output, enable prod decisioning, or tighten hard gates until sparse shrinkage is stable across seeds.

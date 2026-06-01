@@ -1,0 +1,462 @@
+{
+  "approved_for_prod": false,
+  "investigation_id": "INV-H4-001",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "prod_decisioning_allowed": false,
+  "production_promotion": false,
+  "research_only": true,
+  "sampler": "fast (draws=200, tune=200, chains=2)",
+  "sweep_id": "INV-H4-001b",
+  "world_runs": [
+    {
+      "approved_for_prod": false,
+      "beta_gc_mae": 0.46648957952782805,
+      "mu_c_mae": 0.38519555703815095,
+      "posterior_indexing": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "index_order_matches_spec": true,
+        "spec_geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ]
+      },
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "shrinkage_ratio_sparse": 0.5496233111454373,
+      "shrinkage_ratio_sparse_vs_true_mu": 2.567658071560661,
+      "sparse_shrinkage_decomposition": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "by_geo_channel": [
+          {
+            "channel": "tv",
+            "channel_index": 0,
+            "distance_posterior_sparse_to_posterior_mu": 0.07513432693466479,
+            "distance_posterior_sparse_to_true_mu": 0.5092791352089786,
+            "distance_true_sparse_to_posterior_mu": 0.9841448082743138,
+            "distance_true_sparse_to_true_mu": 0.55,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.2092791352089786,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.1341448082743138,
+            "posterior_tau_c_mean": 0.23192974524933438,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.07634478818865278,
+            "shrinkage_ratio_vs_true_mu": 0.9259620640163246,
+            "true_beta_gc": 0.85,
+            "true_mu_c": 0.3
+          },
+          {
+            "channel": "search",
+            "channel_index": 1,
+            "distance_posterior_sparse_to_posterior_mu": 0.21096972448166146,
+            "distance_posterior_sparse_to_true_mu": 0.5472160302836497,
+            "distance_true_sparse_to_posterior_mu": 0.20624630580198822,
+            "distance_true_sparse_to_true_mu": 0.13,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.3672160302836497,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.15624630580198823,
+            "posterior_tau_c_mean": 0.27441157135629896,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 1.0229018341022218,
+            "shrinkage_ratio_vs_true_mu": 4.2093540791049975,
+            "true_beta_gc": 0.05,
+            "true_mu_c": 0.18
+          }
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "metric_definition": {
+          "interpret_lt_1": "posterior beta closer to pool center than generative outlier was",
+          "legacy_vs_true_mu": "mean(|posterior_beta - true_mu| / |true_beta - true_mu|) \u2014 H4a/H4b pilot definition",
+          "pool_center_primary": "posterior_mu_c",
+          "primary": "mean(|posterior_beta - posterior_mu| / |true_beta - posterior_mu|) over sparse geos"
+        },
+        "shrinkage_ratio_sparse": 0.5496233111454373,
+        "shrinkage_ratio_sparse_vs_true_mu": 2.567658071560661,
+        "sparse_geos": [
+          "dma_sparse"
+        ]
+      },
+      "variant": null,
+      "world_id": "WORLD-BAYES-H4-SPARSE-GEO"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_mae": 0.29526314254749986,
+      "mu_c_mae": 0.2798019148761574,
+      "posterior_indexing": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "index_order_matches_spec": true,
+        "spec_geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ]
+      },
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "shrinkage_ratio_sparse": 0.2068432049438858,
+      "shrinkage_ratio_sparse_vs_true_mu": 32.866049547709146,
+      "sparse_shrinkage_decomposition": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "by_geo_channel": [
+          {
+            "channel": "tv",
+            "channel_index": 0,
+            "distance_posterior_sparse_to_posterior_mu": 0.03900212755998452,
+            "distance_posterior_sparse_to_true_mu": 0.39795856035199745,
+            "distance_true_sparse_to_posterior_mu": 0.36895643279201296,
+            "distance_true_sparse_to_true_mu": 0.010000000000000009,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.09795856035199746,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.05895643279201294,
+            "posterior_tau_c_mean": 0.2067340704172683,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.10570930357506651,
+            "shrinkage_ratio_vs_true_mu": 39.79585603519971,
+            "true_beta_gc": 0.31,
+            "true_mu_c": 0.3
+          },
+          {
+            "channel": "search",
+            "channel_index": 1,
+            "distance_posterior_sparse_to_posterior_mu": 0.05871503364188339,
+            "distance_posterior_sparse_to_true_mu": 0.2593624306021853,
+            "distance_true_sparse_to_posterior_mu": 0.19064739696030192,
+            "distance_true_sparse_to_true_mu": 0.009999999999999981,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.0793624306021853,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.020647396960301906,
+            "posterior_tau_c_mean": 0.18675637106887905,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.3079771063127051,
+            "shrinkage_ratio_vs_true_mu": 25.936243060218576,
+            "true_beta_gc": 0.17,
+            "true_mu_c": 0.18
+          }
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "metric_definition": {
+          "interpret_lt_1": "posterior beta closer to pool center than generative outlier was",
+          "legacy_vs_true_mu": "mean(|posterior_beta - true_mu| / |true_beta - true_mu|) \u2014 H4a/H4b pilot definition",
+          "pool_center_primary": "posterior_mu_c",
+          "primary": "mean(|posterior_beta - posterior_mu| / |true_beta - posterior_mu|) over sparse geos"
+        },
+        "shrinkage_ratio_sparse": 0.2068432049438858,
+        "shrinkage_ratio_sparse_vs_true_mu": 32.866049547709146,
+        "sparse_geos": [
+          "dma_sparse"
+        ]
+      },
+      "variant": "sparse_no_outlier",
+      "world_id": "WORLD-BAYES-H4-SPARSE-DIAG-NO-OUTLIER"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_mae": 0.36189225506427586,
+      "mu_c_mae": 0.3315182792298177,
+      "posterior_indexing": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "index_order_matches_spec": true,
+        "spec_geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ]
+      },
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "shrinkage_ratio_sparse": 0.27069396395346346,
+      "shrinkage_ratio_sparse_vs_true_mu": 3.1972837333455058,
+      "sparse_shrinkage_decomposition": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "by_geo_channel": [
+          {
+            "channel": "tv",
+            "channel_index": 0,
+            "distance_posterior_sparse_to_posterior_mu": 0.04015786978393,
+            "distance_posterior_sparse_to_true_mu": 0.42270844590475076,
+            "distance_true_sparse_to_posterior_mu": 0.6325505761208209,
+            "distance_true_sparse_to_true_mu": 0.25000000000000006,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.1227084459047508,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.0825505761208208,
+            "posterior_tau_c_mean": 0.2250818692673132,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.0634856267623723,
+            "shrinkage_ratio_vs_true_mu": 1.6908337836190026,
+            "true_beta_gc": 0.55,
+            "true_mu_c": 0.3
+          },
+          {
+            "channel": "search",
+            "channel_index": 1,
+            "distance_posterior_sparse_to_posterior_mu": 0.09581271230694603,
+            "distance_posterior_sparse_to_true_mu": 0.3762986946457606,
+            "distance_true_sparse_to_posterior_mu": 0.2004859823388146,
+            "distance_true_sparse_to_true_mu": 0.07999999999999999,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.19629869464576064,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.1004859823388146,
+            "posterior_tau_c_mean": 0.2322849584422942,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.4779023011445546,
+            "shrinkage_ratio_vs_true_mu": 4.7037336830720085,
+            "true_beta_gc": 0.1,
+            "true_mu_c": 0.18
+          }
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "metric_definition": {
+          "interpret_lt_1": "posterior beta closer to pool center than generative outlier was",
+          "legacy_vs_true_mu": "mean(|posterior_beta - true_mu| / |true_beta - true_mu|) \u2014 H4a/H4b pilot definition",
+          "pool_center_primary": "posterior_mu_c",
+          "primary": "mean(|posterior_beta - posterior_mu| / |true_beta - posterior_mu|) over sparse geos"
+        },
+        "shrinkage_ratio_sparse": 0.27069396395346346,
+        "shrinkage_ratio_sparse_vs_true_mu": 3.1972837333455058,
+        "sparse_geos": [
+          "dma_sparse"
+        ]
+      },
+      "variant": "sparse_outlier_moderate",
+      "world_id": "WORLD-BAYES-H4-SPARSE-DIAG-OUTLIER-MODERATE"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_mae": 0.4288852649292408,
+      "mu_c_mae": 0.3495740950855988,
+      "posterior_indexing": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "index_order_matches_spec": true,
+        "spec_geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ]
+      },
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "shrinkage_ratio_sparse": 0.2778923038811398,
+      "shrinkage_ratio_sparse_vs_true_mu": 1.8998745711131377,
+      "sparse_shrinkage_decomposition": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "by_geo_channel": [
+          {
+            "channel": "tv",
+            "channel_index": 0,
+            "distance_posterior_sparse_to_posterior_mu": 0.018802247047654458,
+            "distance_posterior_sparse_to_true_mu": 0.41481510048380976,
+            "distance_true_sparse_to_posterior_mu": 0.9460128534361553,
+            "distance_true_sparse_to_true_mu": 0.55,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.11481510048380979,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.09601285343615533,
+            "posterior_tau_c_mean": 0.10154824547336146,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.01987525537244023,
+            "shrinkage_ratio_vs_true_mu": 0.7542092736069268,
+            "true_beta_gc": 0.85,
+            "true_mu_c": 0.3
+          },
+          {
+            "channel": "search",
+            "channel_index": 1,
+            "distance_posterior_sparse_to_posterior_mu": 0.0927848461854732,
+            "distance_posterior_sparse_to_true_mu": 0.39592018292051534,
+            "distance_true_sparse_to_posterior_mu": 0.17313533673504217,
+            "distance_true_sparse_to_true_mu": 0.13,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.21592018292051535,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.12313533673504215,
+            "posterior_tau_c_mean": 0.12287046076951533,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.5359093523898393,
+            "shrinkage_ratio_vs_true_mu": 3.0455398686193487,
+            "true_beta_gc": 0.05,
+            "true_mu_c": 0.18
+          }
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "metric_definition": {
+          "interpret_lt_1": "posterior beta closer to pool center than generative outlier was",
+          "legacy_vs_true_mu": "mean(|posterior_beta - true_mu| / |true_beta - true_mu|) \u2014 H4a/H4b pilot definition",
+          "pool_center_primary": "posterior_mu_c",
+          "primary": "mean(|posterior_beta - posterior_mu| / |true_beta - posterior_mu|) over sparse geos"
+        },
+        "shrinkage_ratio_sparse": 0.2778923038811398,
+        "shrinkage_ratio_sparse_vs_true_mu": 1.8998745711131377,
+        "sparse_geos": [
+          "dma_sparse"
+        ]
+      },
+      "variant": "sparse_stronger_tau_prior",
+      "world_id": "WORLD-BAYES-H4-SPARSE-DIAG-STRONGER-TAU"
+    },
+    {
+      "approved_for_prod": false,
+      "beta_gc_mae": 0.3496820037995579,
+      "mu_c_mae": 0.21968518804854373,
+      "posterior_indexing": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "index_order_matches_spec": true,
+        "spec_geo_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ]
+      },
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "shrinkage_ratio_sparse": 1.1196525939427395,
+      "shrinkage_ratio_sparse_vs_true_mu": 0.6180492791249599,
+      "sparse_shrinkage_decomposition": {
+        "beta_geo_index_order": [
+          "dma_dense_a",
+          "dma_dense_b",
+          "dma_sparse"
+        ],
+        "by_geo_channel": [
+          {
+            "channel": "tv",
+            "channel_index": 0,
+            "distance_posterior_sparse_to_posterior_mu": 0.026642456643928725,
+            "distance_posterior_sparse_to_true_mu": 0.3973090644666768,
+            "distance_true_sparse_to_posterior_mu": 0.9206666078227481,
+            "distance_true_sparse_to_true_mu": 0.55,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": -0.09730906446667681,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": -0.07066660782274808,
+            "posterior_tau_c_mean": 0.20234212573306323,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 0.02893822412755311,
+            "shrinkage_ratio_vs_true_mu": 0.7223801172121396,
+            "true_beta_gc": 0.85,
+            "true_mu_c": 0.3
+          },
+          {
+            "channel": "search",
+            "channel_index": 1,
+            "distance_posterior_sparse_to_posterior_mu": 0.13548716560925078,
+            "distance_posterior_sparse_to_true_mu": 0.06678339733491143,
+            "distance_true_sparse_to_posterior_mu": 0.06129623172566065,
+            "distance_true_sparse_to_true_mu": 0.13,
+            "geo": "dma_sparse",
+            "geo_index": 2,
+            "posterior_beta_gc_mean": 0.24678339733491142,
+            "posterior_beta_interval_width_90": null,
+            "posterior_mu_c_mean": 0.11129623172566065,
+            "posterior_tau_c_mean": 0.23409108574559098,
+            "shrinkage_expected": true,
+            "shrinkage_ratio_vs_posterior_mu": 2.210366963757926,
+            "shrinkage_ratio_vs_true_mu": 0.5137184410377802,
+            "true_beta_gc": 0.05,
+            "true_mu_c": 0.18
+          }
+        ],
+        "channel_index_order": [
+          "tv",
+          "search"
+        ],
+        "metric_definition": {
+          "interpret_lt_1": "posterior beta closer to pool center than generative outlier was",
+          "legacy_vs_true_mu": "mean(|posterior_beta - true_mu| / |true_beta - true_mu|) \u2014 H4a/H4b pilot definition",
+          "pool_center_primary": "posterior_mu_c",
+          "primary": "mean(|posterior_beta - posterior_mu| / |true_beta - posterior_mu|) over sparse geos"
+        },
+        "shrinkage_ratio_sparse": 1.1196525939427395,
+        "shrinkage_ratio_sparse_vs_true_mu": 0.6180492791249599,
+        "sparse_geos": [
+          "dma_sparse"
+        ]
+      },
+      "variant": "sparse_more_weeks",
+      "world_id": "WORLD-BAYES-H4-SPARSE-DIAG-MORE-WEEKS"
+    }
+  ]
+}

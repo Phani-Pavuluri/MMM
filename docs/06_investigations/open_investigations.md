@@ -1811,15 +1811,15 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Title** | Explain/fix sparse-geo shrinkage behavior on `WORLD-BAYES-H4-SPARSE-GEO` |
 | **Category** | certification reliability gaps |
 | **Severity** | medium |
-| **Status** | **open** — blocks Bayes-H4c extended worlds |
+| **Status** | **open** — primary metric fixed; variant sweep done; disposition A–D blocks H4c |
 | **Platform track** | 4 — Research Sandbox |
 | **First identified in** | Bayes-H4b repeated pilot (2026-06-01) |
-| **Evidence sources** | [INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](INV-H4-001_SPARSE_POOLING_BEHAVIOR.md); [BAYES_H4_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json); `sparse_shrinkage_metrics.py` |
-| **Problem statement** | Legacy `shrinkage_ratio_sparse` &gt; 1 persists under extended sampling; partial pooling toward \(\mu_c\) not observed on sparse toy world. |
+| **Evidence sources** | [INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](INV-H4-001_SPARSE_POOLING_BEHAVIOR.md); [BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](../05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json); [BAYES_H4_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H4_REPEATED_PILOT_20260601.json) |
+| **Problem statement** | Legacy vs true \(\mu^\*\) overstated sparse failure; primary vs \(\hat\mu_c\) shows pooling on baseline. Open: official sparse world / τ prior / ADR disposition before H4c. |
 | **Why it matters** | H4c harder worlds and INV-071 thresholds are misleading until sparse pooling is understood or metrics are revised. |
 | **Risk type** | certification reliability |
 | **Production impact** | None — research-only |
-| **Current behavior** | Metric audit + decomposition + 4 diagnostic variants; primary ratio uses posterior \(\hat\mu_c\). |
+| **Current behavior** | INV-H4-001b sweep complete: baseline primary ≈ 0.55; `sparse_more_weeks` primary &gt; 1; stronger τ improves legacy ratio. |
 | **Desired end state** | Documented root cause or revised acceptance metrics; stable sparse-world behavior across seeds. |
 | **Blocking dependencies** | None for investigation; **H4c blocked** on this INV |
 | **Suggested validation** | `tests/research/test_bayes_h4_sparse_pooling_investigation.py`; optional slow variant runs |
@@ -1853,4 +1853,17 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Suggested owner area** | `mmm.research.bayes_h3_sandbox.recovery_runner` |
 | **Recommended phase** | After H4 scaffolding stabilizes |
 | **Related investigations** | INV-064, INV-065, INV-069 |
-| **Notes** | H4b: extended MCMC did **not** restore shrinkage &lt; 1; not a fast-MCMC-only artifact. Review MVP partial pooling / sparse world / metric before H4c. |
+| **Notes** | H4b used legacy metric only. Pick disposition A–D (INV-H4-001 §9); recommended C+A before H4c. |
+
+---
+
+### INV-H4-001b — Sparse variant sweep (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H4-001b |
+| **Title** | Diagnostic variant sweep for sparse pooling |
+| **Status** | **closed** (report-only) |
+| **Evidence** | [BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](../05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) |
+| **Outcome** | Primary metric validates pooling toward \(\hat\mu\) on baseline; more weeks reduces pooling; stronger τ helps legacy recovery vs \(\mu^\*\). |
+| **Next** | Parent INV-H4-001 disposition before H4c. |
