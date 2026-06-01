@@ -45,6 +45,18 @@
 | **Implementation defects** | **None blocking spec** — minor follow-up: `transforms_aligned()` does not treat `linear`/`correlated`/`weak_signal` generative kinds as aligned with `identity` fit, causing benign `h5:unexpected_transform_mismatch` on non-transform probe worlds (diagnostic polish only). |
 | **Production** | **Remains blocked** — pilot is research-only; no optimizer, DecisionSurface, or promotion flags. |
 
+### H5b pilot execution status (diagnostic polish + repeated pilot)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete (H5b)** — diagnostic alignment fix + 3-seed repeated fast MCMC |
+| **Investigation** | [INV-H5B](../06_investigations/INV-H5B_REPEATED_PILOT_AND_DIAGNOSTICS.md) |
+| **Repeated artifact** | [BAYES_H5B_REPEATED_PILOT_20260601.json](archives/BAYES_H5B_REPEATED_PILOT_20260601.json) |
+| **Diagnostic fix** | `transforms_aligned()` recognizes linear/correlated/weak_signal + identity; no false `unexpected_transform_mismatch` |
+| **Stability** | Saturation-aligned Δ≈−0.057 vs H4c stable across seeds; adstock-aligned Δ≈−0.015 stable |
+| **Mismatch warnings** | 100% rate on intentional mismatch worlds |
+| **Production** | **Still blocked** |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

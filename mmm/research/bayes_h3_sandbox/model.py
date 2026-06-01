@@ -198,6 +198,7 @@ def fit_h5_sandbox_hierarchical(
     from mmm.research.bayes_h3_sandbox.h5_transforms import (
         TRANSFORM_REGISTRY_ID,
         apply_media_transforms_matrix,
+        compute_transform_mismatch_detected,
         transforms_aligned,
     )
 
@@ -238,7 +239,11 @@ def fit_h5_sandbox_hierarchical(
     fitted_uniform = {ch: transforms_by_channel.get(ch, "identity") for ch in channels}
     fitted_id = next(iter(fitted_uniform.values()), "identity")
     aligned = transforms_aligned(gen_transform, fitted_id)
-    transform_mismatch_detected = mismatch_mode == "intentional_mismatch" or not aligned
+    transform_mismatch_detected = compute_transform_mismatch_detected(
+        gen_transform,
+        fitted_id,
+        transform_mismatch_mode=mismatch_mode,
+    )
 
     with pm.Model() as model:
         alpha_geo = pm.Normal("alpha_geo", mu=0.0, sigma=1.0, shape=n_geo)

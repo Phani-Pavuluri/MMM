@@ -15,6 +15,28 @@ TRANSFORM_IDS: tuple[str, ...] = (
     "adstock_then_saturation",
 )
 
+# Generative world kinds where H5 fit uses identity on observed media (not a transform probe).
+GENERATIVE_KINDS_IDENTITY_FIT: frozenset[str] = frozenset(
+    {
+        "identity",
+        "linear",
+        "correlated",
+        "weak_signal",
+    }
+)
+
+# Registry transform ids used in aligned transform-probe worlds.
+MEDIA_TRANSFORM_IDS: frozenset[str] = frozenset(
+    {
+        "identity",
+        "geometric_adstock",
+        "hill_saturation",
+        "adstock_then_saturation",
+        "adstock",
+        "saturation",
+    }
+)
+
 
 def _standardize(x: np.ndarray) -> np.ndarray:
     x = np.asarray(x, dtype=float)
@@ -91,17 +113,37 @@ def apply_media_transforms_matrix(
 
 
 def transforms_aligned(generative_transform: str, fitted_transform_id: str) -> bool:
-    """Whether generative and fitted transform ids are considered aligned for H5 diagnostics."""
-    if generative_transform == fitted_transform_id:
+    """Whether generative outcome and fitted media transform are aligned for H5 diagnostics."""
+    gen = str(generative_transform)
+    fitted = str(fitted_transform_id)
+    if gen == fitted:
         return True
-    if generative_transform == "adstock_then_saturation" and fitted_transform_id == "geometric_adstock":
+    if gen in GENERATIVE_KINDS_IDENTITY_FIT and fitted == "identity":
+        return True
+    if gen == "adstock_then_saturation" and fitted == "geometric_adstock":
         return False
-    return (
-        generative_transform in ("adstock", "geometric_adstock")
-        and fitted_transform_id == "geometric_adstock"
-    ) or (
-        generative_transform in ("saturation", "hill_saturation")
-        and fitted_transform_id == "hill_saturation"
+    return (gen in ("adstock", "geometric_adstock") and fitted == "geometric_adstock") or (
+        gen in ("saturation", "hill_saturation") and fitted == "hill_saturation"
+    )
+
+
+def compute_transform_mismatch_detected(
+    generative_transform: str,
+    fitted_transform_id: str,
+    *,
+    transform_mismatch_mode: str = "aligned",
+) -> bool:
+    """Whether the fit should flag transform mismatch (intentional probe or true misalignment)."""
+    if transform_mismatch_mode == "intentional_mismatch":
+        return True
+    return not transforms_aligned(generative_transform, fitted_transform_id)
+
+
+def is_transform_probe_generative(generative_transform: str) -> bool:
+    """True when generative transform is a media-transform probe (not linear/weak-ID kind)."""
+    return str(generative_transform) in MEDIA_TRANSFORM_IDS or str(generative_transform) in (
+        "adstock",
+        "saturation",
     )
 
 

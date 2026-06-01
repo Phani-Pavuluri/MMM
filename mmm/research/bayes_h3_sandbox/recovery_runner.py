@@ -78,9 +78,11 @@ def compute_h4c_diagnostic_warnings(
     """H4c reliability-map warnings (research only — not production gates)."""
     warnings: list[str] = []
     exp = spec.expected_diagnostic_behavior
-    kind = str(exp.get("generative_kind", "linear"))
+    kind = str(exp.get("generative_transform", exp.get("generative_kind", "linear")))
 
-    if exp.get("transform_mismatch_warning_expected") or kind in ("adstock", "saturation"):
+    if exp.get("h5_classification"):
+        pass  # H5 worlds use compute_h5_diagnostic_warnings for transform probes
+    elif exp.get("transform_mismatch_warning_expected") or kind in ("adstock", "saturation"):
         warnings.append(
             f"h4c:transform_mismatch:{spec.world_id}: generative={kind} vs MVP semi_log on raw standardized media"
         )
@@ -123,6 +125,7 @@ def compute_h5_diagnostic_warnings(
         exp.get("transform_mismatch_mode") == "aligned"
         and h5_diag.get("transform_mismatch_detected")
         and not transforms_aligned(gen, fitted)
+        and exp.get("h5_classification") != "weak_identification"
     ):
         warnings.append(f"h5:unexpected_transform_mismatch:{spec.world_id}")
 
@@ -133,8 +136,11 @@ def compute_h5_diagnostic_warnings(
 
     rec = artifact.get("h4_recovery") or artifact.get("h5_recovery") or {}
     beta_mae = rec.get("beta_gc_mae")
-    if exp.get("h5_classification") == "weak_identification" and beta_mae is not None and float(beta_mae) > 0.35:
-        warnings.append(f"h5:weak_identification:{spec.world_id}: beta_gc_mae={float(beta_mae):.3f}")
+    if exp.get("h5_classification") == "weak_identification":
+        if exp.get("generative_transform") == "weak_signal":
+            warnings.append(f"h5:weak_identification:{spec.world_id}: weak_signal_generative")
+        elif beta_mae is not None and float(beta_mae) > 0.35:
+            warnings.append(f"h5:weak_identification:{spec.world_id}: beta_gc_mae={float(beta_mae):.3f}")
 
     return warnings
 

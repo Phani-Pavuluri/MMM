@@ -1874,12 +1874,25 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 |-------|-------|
 | **Track item** | Bayes-H5 |
 | **Title** | Next hierarchical sandbox model specification (transforms, priors, diagnostics) |
-| **Status** | **accepted** (2026-06-01) — H5a fast MCMC pilot **complete** (research only; not prod acceptance) |
-| **Doc** | [bayes_h5_model_spec_improvement_adr.md](../05_validation/bayes_h5_model_spec_improvement_adr.md) · [H5 pilot JSON](../05_validation/archives/BAYES_H5_SANDBOX_PILOT_20260601.json) |
+| **Status** | **accepted** (2026-06-01) — H5a/H5b research pilots **complete** (not prod acceptance) |
+| **Doc** | [bayes_h5_model_spec_improvement_adr.md](../05_validation/bayes_h5_model_spec_improvement_adr.md) · [H5a pilot](../05_validation/archives/BAYES_H5_SANDBOX_PILOT_20260601.json) · [INV-H5B](../06_investigations/INV-H5B_REPEATED_PILOT_AND_DIAGNOSTICS.md) |
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | H5b repeated pilots / diagnostic polish; no promotion review until extended evidence |
+| **Next** | Optional H5c extended MCMC; no promotion review |
+
+---
+
+### INV-H5B — Bayes-H5 repeated pilot and diagnostic polish
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5B |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5B_REPEATED_PILOT_AND_DIAGNOSTICS.md](INV-H5B_REPEATED_PILOT_AND_DIAGNOSTICS.md) |
+| **Artifact** | [BAYES_H5B_REPEATED_PILOT_20260601.json](../05_validation/archives/BAYES_H5B_REPEATED_PILOT_20260601.json) |
+| **Outcome** | Fixed false transform-mismatch noise; 3-seed stability confirms H5a conclusions |
+| **Production impact** | None |
 
 ---
 

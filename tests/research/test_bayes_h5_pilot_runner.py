@@ -6,11 +6,15 @@ import json
 from typing import Any
 from unittest.mock import patch
 
+import pytest
+
 from mmm.research.bayes_h3_sandbox.fencing import H5_MODEL_SPEC_VERSION
 from mmm.research.bayes_h3_sandbox.h5_pilot_runner import (
     DEFAULT_ARTIFACT_PATH,
     build_h5_pilot_summary,
+    build_h5_repeated_pilot_summary,
     validate_h5_pilot_schema,
+    validate_h5_repeated_pilot_schema,
 )
 from mmm.research.bayes_h3_sandbox.h5_validation_worlds import H5_WORLD_IDS, h5_world_production_flags
 
@@ -75,3 +79,81 @@ def test_run_h5_pilot_writes_artifact(mock_run, tmp_path) -> None:
 
 def test_default_artifact_path_constant() -> None:
     assert DEFAULT_ARTIFACT_PATH.name == "BAYES_H5_SANDBOX_PILOT_20260601.json"
+
+
+def test_repeated_pilot_schema_valid() -> None:
+    per_run = [
+        {
+            "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
+            "nuts_seed": 4400,
+            "beta_gc_mae": 0.26,
+            "h5_diagnostic_warnings": [],
+            **h5_world_production_flags(),
+            "decision_surface": None,
+            "optimizer_ready_curves": None,
+            "budget_recommendation": None,
+            "recommendation": None,
+        },
+        {
+            "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
+            "nuts_seed": 4400,
+            "beta_gc_mae": 0.28,
+            "h5_diagnostic_warnings": ["h5:transform_mismatch:WORLD-BAYES-H5-ADSTOCK-MISMATCH: x"],
+            **h5_world_production_flags(),
+            "decision_surface": None,
+            "optimizer_ready_curves": None,
+            "budget_recommendation": None,
+            "recommendation": None,
+        },
+    ]
+    summary = build_h5_repeated_pilot_summary(
+        per_run,
+        seeds=(4400,),
+        h4c_baselines={"WORLD-BAYES-H4C-ADSTOCKED-MEDIA": 0.279},
+    )
+    validate_h5_repeated_pilot_schema(summary)
+    assert summary["hard_gate"] is False
+    assert summary["aggregate_by_world"]["WORLD-BAYES-H5-ADSTOCK-ALIGNED"]["beta_gc_mae"]["mean"] == 0.26
+
+
+@patch("mmm.research.bayes_h3_sandbox.h5_pilot_runner.run_h5_recovery_world")
+def test_run_h5_repeated_pilot(mock_run, tmp_path) -> None:
+    def _fake(wid: str, **kwargs: object) -> dict[str, object]:
+        seed = int(kwargs.get("nuts_seed", 4400))
+        return {
+            "h4_recovery": {
+                "beta_gc_mae": 0.2 + seed * 1e-6,
+                "h5_diagnostic_warnings": [],
+            },
+            "h5_transform_diagnostics": {},
+        }
+
+    mock_run.side_effect = _fake
+    from mmm.research.bayes_h3_sandbox.h5_pilot_runner import run_h5_repeated_pilot
+
+    out = tmp_path / "repeated.json"
+    summary = run_h5_repeated_pilot(
+        seeds=(4400, 4401),
+        world_ids=H5_WORLD_IDS[:1],
+        fast_mcmc=True,
+        artifact_path=out,
+    )
+    validate_h5_repeated_pilot_schema(summary)
+    assert summary["aggregate_by_world"]["WORLD-BAYES-H5-ADSTOCK-ALIGNED"]["n_runs"] == 2
+
+
+@pytest.mark.slow
+@pytest.mark.pymc
+def test_repeated_pilot_smoke_two_worlds_two_seeds() -> None:
+    from mmm.research.bayes_h3_sandbox.h5_pilot_runner import run_h5_repeated_pilot
+
+    summary = run_h5_repeated_pilot(
+        seeds=(4400, 4401),
+        world_ids=(
+            "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
+            "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
+        ),
+        fast_mcmc=True,
+    )
+    validate_h5_repeated_pilot_schema(summary)
+    assert summary["aggregate_by_world"]["WORLD-BAYES-H5-ADSTOCK-MISMATCH"]["transform_mismatch_warning_rate"] == 1.0

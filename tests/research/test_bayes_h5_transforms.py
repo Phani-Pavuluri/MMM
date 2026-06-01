@@ -8,6 +8,7 @@ from mmm.research.bayes_h3_sandbox.h5_transforms import (
     TRANSFORM_IDS,
     apply_channel_transform,
     apply_media_transforms_matrix,
+    compute_transform_mismatch_detected,
     list_transform_registry,
     transforms_aligned,
 )
@@ -43,3 +44,15 @@ def test_transforms_aligned_helper() -> None:
     assert transforms_aligned("geometric_adstock", "geometric_adstock")
     assert not transforms_aligned("geometric_adstock", "identity")
     assert transforms_aligned("hill_saturation", "hill_saturation")
+    assert transforms_aligned("linear", "identity")
+    assert transforms_aligned("correlated", "identity")
+    assert not compute_transform_mismatch_detected(
+        "linear",
+        "identity",
+        transform_mismatch_mode="aligned",
+    )
+    assert compute_transform_mismatch_detected(
+        "geometric_adstock",
+        "identity",
+        transform_mismatch_mode="intentional_mismatch",
+    )
