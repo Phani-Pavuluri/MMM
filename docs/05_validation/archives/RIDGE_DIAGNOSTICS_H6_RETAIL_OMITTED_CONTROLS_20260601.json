@@ -1,0 +1,304 @@
+{
+  "artifact_kind": "RIDGE_PRODUCTION_DIAGNOSTICS",
+  "milestone": "H7",
+  "world_metadata": {
+    "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+    "vertical": "retail",
+    "control_variant": "omitted_controls",
+    "scale": "pilot"
+  },
+  "ridge_diagnostics": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "artifact_kind": "RIDGE_PRODUCTION_DIAGNOSTICS",
+    "milestone": "H7",
+    "model_id": "ridge_bo",
+    "run_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS-h6",
+    "dataset_snapshot_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS-h6",
+    "run_environment": "research",
+    "media_columns": [
+      "tv",
+      "search",
+      "social",
+      "display",
+      "ctv",
+      "radio",
+      "local_flyer"
+    ],
+    "control_columns": [
+      "competitor_price_index",
+      "weather_index"
+    ],
+    "transform_diagnostics": {
+      "transform_config": {
+        "adstock_type": "geometric",
+        "saturation_type": "hill",
+        "framework": "ridge_bo"
+      },
+      "selected_adstock_saturation": {
+        "decay": 0.6559140851113047,
+        "hill_half": 2.4499189178222287,
+        "hill_slope": 1.551318381339807,
+        "log_alpha": 1.7125917412308524,
+        "transform_search_selected": true
+      },
+      "raw_media_columns": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "transformed_media_columns": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "post_transform_summary": {
+        "n_features": 9,
+        "feature_lineage_keys": [
+          "controls",
+          "media",
+          "target"
+        ]
+      },
+      "metadata_complete": true,
+      "warnings": []
+    },
+    "control_completeness": {
+      "vertical_id": "retail",
+      "required_controls_by_vertical": [
+        "promo_flag",
+        "holiday",
+        "unemployment_index"
+      ],
+      "optional_controls_by_vertical": [
+        "competitor_price_index",
+        "weather_index"
+      ],
+      "controls_present": [
+        "competitor_price_index",
+        "weather_index"
+      ],
+      "missing_controls": [
+        "holiday",
+        "promo_flag",
+        "unemployment_index"
+      ],
+      "missing_required_controls": [
+        "holiday",
+        "promo_flag",
+        "unemployment_index"
+      ],
+      "missing_optional_controls": [],
+      "omitted_control_risk": true,
+      "media_correlated_controls": false,
+      "warnings": [
+        "control_completeness:missing_required:['holiday', 'promo_flag', 'unemployment_index']"
+      ]
+    },
+    "collinearity": {
+      "max_abs_correlation": 0.9722864384403749,
+      "weak_identification_risk": true,
+      "collinear_channel_groups": [
+        {
+          "channels": [
+            "ctv",
+            "display"
+          ],
+          "max_abs_corr_threshold": 0.95
+        }
+      ],
+      "calibration_evidence_available": false,
+      "warnings": [
+        "collinearity:weak_identification_risk:max_abs_corr=0.972"
+      ]
+    },
+    "sparse_channels": {
+      "near_zero_threshold": 0.99,
+      "by_channel": {
+        "tv": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "search": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "social": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "display": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "ctv": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "radio": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "local_flyer": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        }
+      },
+      "sparse_channel_extreme": [],
+      "silent_drop_occurred": false,
+      "warnings": []
+    },
+    "fold_stability": {
+      "n_cv_splits": 2,
+      "geo_fold_rmse": [
+        17155.73231054398,
+        60590.00167494713,
+        15992.572549810715
+      ],
+      "geo_fold_rmse_mean": 31246.102178433943,
+      "geo_fold_rmse_std": 20754.7032967365,
+      "fold_stability_ok": false,
+      "warnings": []
+    },
+    "coefficient_stability": {
+      "available": true,
+      "media_coef_by_channel": {
+        "tv": -0.00043613431448166106,
+        "search": 0.06052640137403197,
+        "social": 0.01673227143632008,
+        "display": 0.08290513416187895,
+        "ctv": 0.07461930713011669,
+        "radio": 0.04796614708701739,
+        "local_flyer": 0.06028322953142544
+      },
+      "sign_by_channel": {
+        "tv": -1.0,
+        "search": 1.0,
+        "social": 1.0,
+        "display": 1.0,
+        "ctv": 1.0,
+        "radio": 1.0,
+        "local_flyer": 1.0
+      },
+      "warnings": []
+    },
+    "sign_plausibility": {
+      "available": true,
+      "sign_match_rate_vs_known_mu": 0.8571428571428571,
+      "warnings": []
+    },
+    "response_curve_plausibility": {
+      "decay": 0.6559140851113047,
+      "hill_half": 2.4499189178222287,
+      "hill_slope": 1.551318381339807,
+      "warnings": []
+    },
+    "lift_simulation_stability": {
+      "lift_simulation_run": false,
+      "note": "Lift simulation stability is report-only; optimizer not invoked.",
+      "best_score_available": true,
+      "calibration_detail_keys": [
+        "evaluate_wall_time_ms",
+        "normalization_profile",
+        "normalized",
+        "objective_normalization",
+        "params",
+        "raw",
+        "total"
+      ],
+      "warnings": []
+    },
+    "truth_recovery": {
+      "known_truth_available": true,
+      "coef_mu_mae_vs_true_mu": 0.29391480622767013,
+      "sign_match_rate_vs_known_mu": 0.8571428571428571
+    },
+    "forbidden_claims": [
+      "collinear_group_ctv_display:forbid_isolated_channel_lift_claims",
+      "no_budget_reallocation_claim_based_only_on_this_run",
+      "no_channel_level_causal_claim_without_caveat",
+      "no_clean_media_attribution_claim",
+      "no_clean_separate_channel_effect_claim_without_external_calibration"
+    ],
+    "diagnostic_severity": "high",
+    "warnings": [
+      "collinearity:weak_identification_risk:max_abs_corr=0.972",
+      "control_completeness:missing_required:['holiday', 'promo_flag', 'unemployment_index']"
+    ],
+    "production_flags": {
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "optimizer_enabled": false,
+      "decision_surface_enabled": false,
+      "recommendations_enabled": false,
+      "ridge_remains_production_baseline": true,
+      "bayes_h5_research_only": true,
+      "production_bayes_blocked": true,
+      "diagnostics_are_not_hard_gates": true,
+      "allowed_outputs": [
+        "coefficients",
+        "diagnostics",
+        "trust_warnings",
+        "model_metrics"
+      ],
+      "forbidden_outputs": [
+        "budget_recommendation",
+        "decision_surface",
+        "optimizer_output",
+        "optimizer_ready_curves",
+        "production_decision_surface",
+        "recommendation"
+      ]
+    },
+    "outputs_are_diagnostic_only": true,
+    "world_metadata": {
+      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+      "stress_variant": "omitted_controls"
+    }
+  },
+  "ridge_benchmark_excerpt": {
+    "model": "ridge_bo",
+    "run_environment": "research",
+    "prediction_rmse": 36854.320695762224,
+    "prediction_wmape": 0.397751736341098,
+    "geo_fold_rmse_mean": 31246.102178433943,
+    "geo_fold_stability_n_folds": 3,
+    "max_channel_correlation": 0.9722864384403749,
+    "collinearity_sensitive": true,
+    "sparse_channels": [
+      "radio",
+      "local_flyer"
+    ],
+    "ridge_coef_recovery": {
+      "coef_recovery_available": true,
+      "coef_mu_mae_vs_true_mu": 0.29391480622767013,
+      "coef_sign_match_rate_vs_mu": 0.8571428571428571
+    },
+    "ridge_lift_recovery": {
+      "lift_recovery_available": true,
+      "lift_sign_match_rate_vs_true_beta": 0.8571428571428571,
+      "lift_mae_vs_geo_mean_beta": 0.3242642078409065
+    },
+    "forbidden_claims": [
+      "do_not_attribute_omitted_control_lift_to_media",
+      "do_not_publish_incrementality_without_required_controls"
+    ],
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "optimizer_enabled": false,
+    "decision_surface_enabled": false,
+    "outputs_are_diagnostic_only": true
+  },
+  "production_boundary": {
+    "ridge_remains_production_baseline": true,
+    "bayes_h5_research_only": true,
+    "diagnostics_are_not_hard_gates": true
+  }
+}

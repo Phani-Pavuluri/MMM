@@ -2126,6 +2126,24 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H7 — Ridge production diagnostic hardening (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H7 |
+| **Title** | Ridge production diagnostic hardening (transform, controls, sparsity, collinearity) |
+| **Category** | certification reliability gaps |
+| **Severity** | medium |
+| **Status** | **closed** (H7 delivered) |
+| **First identified in** | Post-H6f synthetic benchmark matrix (`7028acb`) |
+| **Evidence** | [ridge_production_diagnostics_contract.md](../05_validation/ridge_production_diagnostics_contract.md); `mmm/diagnostics/ridge_diagnostics.py`; [RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json](../05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json) |
+| **Outcome** | Production Ridge path can emit governed diagnostics (forbidden claims, transform reporting, vertical control completeness) without optimizer/DecisionSurface changes. Bayes-H5 remains research-only. |
+| **Production impact** | Metadata only — diagnostics are not hard gates unless explicitly documented elsewhere. |
+| **Next** | Operator UX surfacing of `ridge_production_diagnostics_report` on train artifacts. |
+| **Related** | [INV-H6F](INV-H6F_RIDGE_H5_SYNTHETIC_BENCHMARK_MATRIX.md); [H6 ADR](../05_validation/bayes_h6_synthetic_lane_adr.md) |
+
+---
+
 ### INV-H4-001b — Sparse variant sweep (complete)
 
 | Field | Value |

@@ -89,6 +89,15 @@ Investigation: `docs/06_investigations/INV-H6F_RIDGE_H5_SYNTHETIC_BENCHMARK_MATR
 
 Implemented in `h5_shadow_policy_recommender.py` (`CHANNEL_DROP_SPARSE`).
 
+## H7 — Ridge production diagnostics (2026-06-01)
+
+H6f recommended hardening the **production Ridge baseline** before further H5 transform work.
+
+- Contract: [ridge_production_diagnostics_contract.md](ridge_production_diagnostics_contract.md)
+- Module: `mmm/diagnostics/ridge_diagnostics.py`
+- Vertical profiles (shared): `mmm/config/vertical_control_profiles.py`
+- Example artifact: `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json`
+
 ## References
 
 - `mmm/research/h6_synthetic/production_shapes.py`

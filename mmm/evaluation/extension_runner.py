@@ -234,6 +234,35 @@ def run_post_fit_extensions(
         ctx.out["replay_refit_prod_governance"] = replay_note
     _patch_model_release_replay_gap(ctx)
     _run_research_extension_reports(ctx)
+    _attach_ridge_production_diagnostics(ctx)
     if store:
         store.log_dict("extension_report", ctx.out)
     return ctx.out
+
+
+def _attach_ridge_production_diagnostics(ctx: ExtensionContext) -> None:
+    """H7: attach Ridge decision-safety diagnostics (no optimizer / DecisionSurface changes)."""
+    if ctx.config.framework != Framework.RIDGE_BO:
+        return
+    vertical_id: str | None = None
+    product = getattr(ctx.ext, "product", None)
+    if isinstance(product, dict):
+        vertical_id = product.get("vertical_id")
+    try:
+        from mmm.diagnostics.ridge_diagnostics import attach_ridge_diagnostics_to_extension_report
+
+        trainer = ctx.fit_out.get("_ridge_trainer")
+        ctx.out = attach_ridge_diagnostics_to_extension_report(
+            ctx.out,
+            ctx.panel_s,
+            ctx.schema,
+            ctx.config,
+            ctx.fit_out,
+            trainer=trainer,
+            vertical_id=vertical_id,
+            calibration_evidence_available=bool(
+                ctx.config.calibration.enabled and ctx.config.calibration.use_replay_calibration
+            ),
+        )
+    except Exception:
+        ctx.out.setdefault("ridge_production_diagnostics_report", {"status": "unavailable"})

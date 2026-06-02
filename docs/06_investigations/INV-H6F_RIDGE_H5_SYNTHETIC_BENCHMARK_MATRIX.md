@@ -97,4 +97,6 @@ All H6f artifacts: `approved_for_prod=false`, `prod_decisioning_allowed=false`, 
 
 ## Recommended next step
 
-**Harden Ridge production diagnostics first** (transform alignment reporting, sparse-channel flags, control completeness checks) — Ridge remains the decision path while H5 shadow matures.
+**H7 Ridge production diagnostic hardening** — see [ridge production diagnostics contract](../05_validation/ridge_production_diagnostics_contract.md) and `mmm/diagnostics/ridge_diagnostics.py`.
+
+**Harden Ridge production diagnostics first** (in progress via H7) (transform alignment reporting, sparse-channel flags, control completeness checks) — Ridge remains the decision path while H5 shadow matures.
