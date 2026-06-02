@@ -10,6 +10,7 @@ import pytest
 from mmm.research.bayes_h3_sandbox.h5_shadow_policy_recommender import (
     CHANNEL_COMPOSITE,
     CHANNEL_DROP_COLLINEAR,
+    CHANNEL_DROP_SPARSE,
     CHANNEL_DO_NOT_RUN,
     CHANNEL_EXTERNAL_CALIBRATION,
     CHANNEL_KEEP_ALL_WEAK_ID,
@@ -58,6 +59,36 @@ def _inp(
         business_metadata=business,
         frozen_policy_reference=frozen,
     )
+
+
+def test_recommends_drop_sparse_over_keep_all_when_near_zero() -> None:
+    art = recommend_shadow_policy(
+        _inp(
+            max_corr=0.4,
+            sparsity={
+                "by_channel": {
+                    "radio": {"near_zero_share": 0.995},
+                    "search": {"near_zero_share": 0.1},
+                    "tv": {"near_zero_share": 0.2},
+                }
+            },
+            experiments=[
+                {
+                    "variant_id": "ok",
+                    "convergence_status": "converged_diagnostic_only",
+                    "hierarchy_faithful": True,
+                }
+            ],
+        )
+    )
+    rec = art["recommended_shadow_policy"]
+    assert rec["channel_recommendation_id"] == CHANNEL_DROP_SPARSE
+    assert rec["channel_policy"]["mode"] == "drop_sparse_channels"
+    assert "radio" in rec["channel_policy"]["dropped_channels"]
+    assert art["evidence_status"]["evidence_promotion_allowed"] is False
+    fc = " ".join(art["forbidden_claims"])
+    assert "drop_sparse_channels" in fc or "near_zero_share" in fc
+    assert "Calibration stubs are diagnostic only" in fc
 
 
 def test_recommends_keep_all_when_no_collinearity() -> None:

@@ -1,0 +1,172 @@
+{
+  "artifact_kind": "BAYES_H6_CONFOUNDING_STRESS",
+  "lane": "bayes_h6_synthetic",
+  "world_comparisons": [
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+      "stress_variant": "full_controls",
+      "vertical_id": "retail",
+      "active_controls": [
+        "promo_flag",
+        "holiday",
+        "unemployment_index",
+        "competitor_price_index",
+        "weather_index"
+      ],
+      "omitted_controls": [],
+      "forbidden_claims": [],
+      "ridge_benchmark": {
+        "model": "ridge_bo",
+        "run_environment": "research",
+        "prediction_rmse": 29252.89577194657,
+        "geo_fold_rmse_mean": 28083.385070474822,
+        "geo_fold_stability_n_folds": 3,
+        "max_channel_correlation": 0.9778480696909423,
+        "collinearity_sensitive": true,
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "ridge_coef_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.241431188211719,
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "approved_for_prod": false,
+        "prod_decisioning_allowed": false,
+        "optimizer_enabled": false,
+        "decision_surface_enabled": false,
+        "outputs_are_diagnostic_only": true
+      }
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+      "stress_variant": "omitted_controls",
+      "vertical_id": "retail",
+      "active_controls": [
+        "competitor_price_index",
+        "weather_index"
+      ],
+      "omitted_controls": [
+        "promo_flag",
+        "holiday",
+        "unemployment_index"
+      ],
+      "forbidden_claims": [
+        "do_not_attribute_omitted_control_lift_to_media",
+        "do_not_publish_incrementality_without_required_controls"
+      ],
+      "ridge_benchmark": {
+        "model": "ridge_bo",
+        "run_environment": "research",
+        "prediction_rmse": 36855.667372353506,
+        "geo_fold_rmse_mean": 31225.88583021518,
+        "geo_fold_stability_n_folds": 3,
+        "max_channel_correlation": 0.9722864384403749,
+        "collinearity_sensitive": true,
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "ridge_coef_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.29388818170164155,
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "approved_for_prod": false,
+        "prod_decisioning_allowed": false,
+        "optimizer_enabled": false,
+        "decision_surface_enabled": false,
+        "outputs_are_diagnostic_only": true
+      }
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS",
+      "stress_variant": "media_correlated_controls",
+      "vertical_id": "retail",
+      "active_controls": [
+        "promo_flag",
+        "holiday",
+        "unemployment_index",
+        "competitor_price_index",
+        "weather_index"
+      ],
+      "omitted_controls": [],
+      "forbidden_claims": [],
+      "ridge_benchmark": {
+        "model": "ridge_bo",
+        "run_environment": "research",
+        "prediction_rmse": 31892.203639965606,
+        "geo_fold_rmse_mean": 30109.317505883108,
+        "geo_fold_stability_n_folds": 3,
+        "max_channel_correlation": 0.9778598851825973,
+        "collinearity_sensitive": true,
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "ridge_coef_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.27259614752697237,
+          "coef_sign_match_rate_vs_mu": 0.7142857142857143
+        },
+        "approved_for_prod": false,
+        "prod_decisioning_allowed": false,
+        "optimizer_enabled": false,
+        "decision_surface_enabled": false,
+        "outputs_are_diagnostic_only": true
+      }
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS",
+      "stress_variant": "omitted_controls",
+      "vertical_id": "auto",
+      "active_controls": [
+        "competitor_conquest_spend",
+        "interest_rate_proxy"
+      ],
+      "omitted_controls": [
+        "incentive_index",
+        "fuel_price",
+        "unemployment_index"
+      ],
+      "forbidden_claims": [
+        "do_not_attribute_omitted_control_lift_to_media",
+        "do_not_publish_incrementality_without_required_controls"
+      ],
+      "ridge_benchmark": {
+        "model": "ridge_bo",
+        "run_environment": "research",
+        "prediction_rmse": 33443.82113211074,
+        "geo_fold_rmse_mean": 32283.762871236177,
+        "geo_fold_stability_n_folds": 3,
+        "max_channel_correlation": 0.9739054457293188,
+        "collinearity_sensitive": true,
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "ridge_coef_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.31907735645335805,
+          "coef_sign_match_rate_vs_mu": 1.0
+        },
+        "approved_for_prod": false,
+        "prod_decisioning_allowed": false,
+        "optimizer_enabled": false,
+        "decision_surface_enabled": false,
+        "outputs_are_diagnostic_only": true
+      }
+    }
+  ],
+  "interpretation_notes": [
+    "Compare Ridge coef sign/recovery across stress variants \u2014 media must not absorb omitted control lift.",
+    "When required controls are omitted, forbidden_claims apply; no incrementality promotion."
+  ],
+  "production_flags": {
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "recommendations_enabled": false
+  },
+  "outputs_are_diagnostic_only": true
+}

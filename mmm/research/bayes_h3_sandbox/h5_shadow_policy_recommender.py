@@ -29,6 +29,7 @@ from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
 from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
     CHANNEL_POLICY_COMPOSITE,
     CHANNEL_POLICY_DROP_COLLINEAR,
+    CHANNEL_POLICY_DROP_SPARSE,
     CHANNEL_POLICY_KEEP_ALL,
     CHANNEL_POLICY_POOLED,
     CHANNEL_POLICY_SINGLE,
@@ -66,6 +67,7 @@ STATUS_DO_NOT_RUN = "do_not_run"
 
 CHANNEL_KEEP_ALL_WEAK_ID = "keep_all_channels_with_weak_id_warning"
 CHANNEL_DROP_COLLINEAR = "drop_collinear_channels"
+CHANNEL_DROP_SPARSE = "drop_sparse_channels"
 CHANNEL_COMPOSITE = "composite_media_channel"
 CHANNEL_SINGLE_DIAGNOSTIC = "single_channel_diagnostic"
 CHANNEL_EXTERNAL_CALIBRATION = "external_calibration_required"
@@ -331,8 +333,9 @@ def recommend_shadow_policy(inp: ShadowPolicyRecommendationInput) -> dict[str, A
     )
     only_ablation_converged = bool(ablation_converged) and not faithful_converged
 
-    # --- SPARSITY ---
+    # --- SPARSITY (H5r/H6f: prefer drop_sparse or do_not_run over keep_all) ---
     sparse_channels: list[str] = []
+    drop_sparse_policy: dict[str, Any] | None = None
     for ch, stats in (sparsity.get("by_channel") or {}).items():
         nz = float(stats.get("near_zero_share") or 0.0)
         if nz >= SPARSE_NEAR_ZERO_THRESHOLD:
@@ -340,6 +343,37 @@ def recommend_shadow_policy(inp: ShadowPolicyRecommendationInput) -> dict[str, A
             forbidden_claims.append(
                 f"Channel {ch!r} has near-zero variation: block separate coefficient claim."
             )
+
+    if sparse_channels:
+        forbidden_claims.append(
+            "Extreme near_zero_share: prefer drop_sparse_channels or do_not_run over keep_all "
+            "unless explicitly justified with convergence evidence."
+        )
+        forbidden_claims.append(
+            "Calibration stubs are diagnostic only and do not automatically recover sparse-channel effects."
+        )
+        for ch in sparse_channels:
+            forbidden_claims.append(f"No separate {ch} channel effect claim after explicit sparse drop.")
+        drop_sparse_policy = {
+            "mode": CHANNEL_POLICY_DROP_SPARSE,
+            "dropped_channels": list(sparse_channels),
+            "kept_channels": [c for c in channels if c not in sparse_channels],
+            "reason": "sparse_drop",
+            "no_silent_dropping": True,
+        }
+        allowed.append(
+            _recommendation_option(
+                CHANNEL_DROP_SPARSE,
+                STATUS_RECOMMENDED if not high_collinearity else STATUS_ALLOWED_ALTERNATIVE,
+                rationale=(
+                    f"Near-zero variation on {sparse_channels} (≥{SPARSE_NEAR_ZERO_THRESHOLD} share) — "
+                    "explicit sparse drop preferred over keep_all (H5r triangulation pattern)."
+                ),
+                channel_policy=drop_sparse_policy,
+                evidence_promotion_allowed=False,
+                hierarchy_faithful=True,
+            )
+        )
 
     if sparse_channels and not high_collinearity:
         allowed.append(
@@ -354,6 +388,15 @@ def recommend_shadow_policy(inp: ShadowPolicyRecommendationInput) -> dict[str, A
                 },
                 evidence_promotion_allowed=False,
                 hierarchy_faithful=True,
+            )
+        )
+        blocked.append(
+            _recommendation_option(
+                CHANNEL_KEEP_ALL_WEAK_ID,
+                STATUS_BLOCKED,
+                rationale="keep_all blocked when extreme near_zero_share without explicit justification.",
+                channel_policy={"mode": CHANNEL_POLICY_KEEP_ALL, "no_silent_dropping": True},
+                evidence_promotion_allowed=False,
             )
         )
 
@@ -420,19 +463,30 @@ def recommend_shadow_policy(inp: ShadowPolicyRecommendationInput) -> dict[str, A
                 rationale="Max |ρ| below threshold — keep all channels with routine weak-ID monitoring.",
                 channel_policy=keep_policy,
                 h5_geometry_config=primary_geometry,
-                evidence_promotion_allowed=bool(faithful_converged),
+                evidence_promotion_allowed=bool(faithful_converged) and not sparse_channels,
                 hierarchy_faithful=True,
             )
         )
         if not separation_critical and not inseparable:
-            primary_channel_policy = keep_policy
-            primary_status = STATUS_RECOMMENDED
-            primary_id = CHANNEL_KEEP_ALL_WEAK_ID
-            rationale = f"Collinearity below threshold (max |ρ|={max_corr:.3f} < {threshold})."
-            evidence_status["evidence_promotion_allowed"] = evidence_promotion_allowed(
-                "converged_diagnostic_only" if faithful_converged else "weak_convergence"
-            )
-            evidence_status["hierarchy_faithful"] = True
+            if sparse_channels and drop_sparse_policy:
+                primary_channel_policy = drop_sparse_policy
+                primary_status = STATUS_RECOMMENDED
+                primary_id = CHANNEL_DROP_SPARSE
+                rationale = (
+                    f"Sparse channel(s) {sparse_channels} with near_zero_share ≥ {SPARSE_NEAR_ZERO_THRESHOLD}; "
+                    "prefer explicit drop_sparse_channels over keep_all."
+                )
+                evidence_status["evidence_promotion_allowed"] = False
+                evidence_status["hierarchy_faithful"] = True
+            else:
+                primary_channel_policy = keep_policy
+                primary_status = STATUS_RECOMMENDED
+                primary_id = CHANNEL_KEEP_ALL_WEAK_ID
+                rationale = f"Collinearity below threshold (max |ρ|={max_corr:.3f} < {threshold})."
+                evidence_status["evidence_promotion_allowed"] = evidence_promotion_allowed(
+                    "converged_diagnostic_only" if faithful_converged else "weak_convergence"
+                )
+                evidence_status["hierarchy_faithful"] = True
 
     elif governed_drop_converged or inp.frozen_policy_reference:
         ref = inp.frozen_policy_reference or {}

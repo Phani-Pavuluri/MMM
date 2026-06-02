@@ -1,0 +1,364 @@
+{
+  "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+  "lane": "bayes_h6_synthetic_benchmark",
+  "truth_artifact": {
+    "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+    "lane": "bayes_h6_synthetic",
+    "known_truth": {
+      "true_mu_c": {
+        "tv": 0.28,
+        "search": 0.32,
+        "social": 0.36000000000000004,
+        "display": 0.4,
+        "ctv": 0.44000000000000006,
+        "radio": 0.28,
+        "local_flyer": 0.32
+      },
+      "true_tau_c": {
+        "tv": 0.07,
+        "search": 0.07,
+        "social": 0.07,
+        "display": 0.07,
+        "ctv": 0.07,
+        "radio": 0.12,
+        "local_flyer": 0.12
+      },
+      "true_beta_gc": {
+        "DMA_000": {
+          "tv": 0.239130044457538,
+          "search": 0.3140773343464688,
+          "social": 0.2890214040580856,
+          "display": 0.48650263977380487,
+          "ctv": 0.402475046972493,
+          "radio": 0.22737706307526712,
+          "local_flyer": 0.5013286570071428
+        },
+        "DMA_001": {
+          "tv": 0.17995003083245903,
+          "search": 0.36236520994965465,
+          "social": 0.30184695285591034,
+          "display": 0.4593134295536664,
+          "ctv": 0.30779126409931845,
+          "radio": 0.36954071853326503,
+          "local_flyer": 0.19390728801641677
+        },
+        "DMA_002": {
+          "tv": 0.4375909213817697,
+          "search": 0.32313760073945963,
+          "social": 0.31178351822333494,
+          "display": 0.46667681376167525,
+          "ctv": 0.4287685756992209,
+          "radio": 0.255806774733545,
+          "local_flyer": 0.4190551750658361
+        },
+        "DMA_003": {
+          "tv": 0.25013313636463813,
+          "search": 0.2658014874069309,
+          "social": 0.3262837638890243,
+          "display": 0.25555755797644664,
+          "ctv": 0.4951541963880208,
+          "radio": 0.3954181253149951,
+          "local_flyer": 0.1660579345729811
+        },
+        "DMA_004": {
+          "tv": 0.1465850790795887,
+          "search": 0.3420189365060604,
+          "social": 0.26167355475158394,
+          "display": 0.3079213183789587,
+          "ctv": 0.48037466712026206,
+          "radio": 0.32139307569520054,
+          "local_flyer": 0.5166515333306851
+        },
+        "DMA_005": {
+          "tv": 0.18612446316348075,
+          "search": 0.4398142356093935,
+          "social": 0.3477155268606074,
+          "display": 0.35916645850707324,
+          "ctv": 0.3797022097457709,
+          "radio": 0.4280351670015957,
+          "local_flyer": 0.1689375893620989
+        },
+        "DMA_006": {
+          "tv": 0.22073167680511535,
+          "search": 0.44858056936613866,
+          "social": 0.28124372153463795,
+          "display": 0.2923482004770752,
+          "ctv": 0.3264037815090407,
+          "radio": 0.32235344180633174,
+          "local_flyer": 0.44321421090878754
+        },
+        "DMA_007": {
+          "tv": 0.2684528828938672,
+          "search": 0.28137025772378726,
+          "social": 0.4888168943663136,
+          "display": 0.419389462415704,
+          "ctv": 0.42189637887221676,
+          "radio": 0.3068367740220688,
+          "local_flyer": 0.3127126681717463
+        },
+        "DMA_008": {
+          "tv": 0.28109107604962824,
+          "search": 0.39119394373605076,
+          "social": 0.34145288778523186,
+          "display": 0.4203889082662775,
+          "ctv": 0.39450057723899173,
+          "radio": 0.1963024618217006,
+          "local_flyer": 0.47429163693472204
+        },
+        "DMA_009": {
+          "tv": 0.24517527256020422,
+          "search": 0.2636988194312205,
+          "social": 0.273550771719834,
+          "display": 0.3600080239958458,
+          "ctv": 0.40900611474035126,
+          "radio": 0.30635775747733046,
+          "local_flyer": 0.257586277747842
+        },
+        "DMA_010": {
+          "tv": 0.29366736747535455,
+          "search": 0.4342428028788423,
+          "social": 0.3250034451577604,
+          "display": 0.31115564576913746,
+          "ctv": 0.419034532322045,
+          "radio": 0.6169434516851431,
+          "local_flyer": 0.29171039704527085
+        },
+        "DMA_011": {
+          "tv": 0.3253624149694604,
+          "search": 0.34462979847286307,
+          "social": 0.3138594492823221,
+          "display": 0.38038363719751855,
+          "ctv": 0.46655400219114307,
+          "radio": 0.23249769656321684,
+          "local_flyer": 0.35926007912976005
+        },
+        "DMA_012": {
+          "tv": 0.2479159807890404,
+          "search": 0.1696221079270466,
+          "social": 0.44729245694583786,
+          "display": 0.3672543068971435,
+          "ctv": 0.5116787201884267,
+          "radio": 0.3138106340641374,
+          "local_flyer": 0.1894262590540711
+        },
+        "DMA_013": {
+          "tv": 0.28827687515174594,
+          "search": 0.27991883804426587,
+          "social": 0.35283310461164125,
+          "display": 0.40753118126695803,
+          "ctv": 0.40114335722587846,
+          "radio": 0.5775408268120164,
+          "local_flyer": 0.11030274207140822
+        },
+        "DMA_014": {
+          "tv": 0.32741003791085505,
+          "search": 0.2804152790735906,
+          "social": 0.3527121389829133,
+          "display": 0.25037587535232936,
+          "ctv": 0.5070858096193591,
+          "radio": 0.4060293110282663,
+          "local_flyer": 0.23335015198063389
+        },
+        "DMA_015": {
+          "tv": 0.2476377993571846,
+          "search": 0.23498831019280192,
+          "social": 0.3128681686585588,
+          "display": 0.33712002906011995,
+          "ctv": 0.3129389885016369,
+          "radio": 0.3932292868029793,
+          "local_flyer": 0.5915853760901315
+        },
+        "DMA_016": {
+          "tv": 0.29599090771476316,
+          "search": 0.3008097842871484,
+          "social": 0.4245649345523637,
+          "display": 0.2930273175391925,
+          "ctv": 0.40820523688780347,
+          "radio": 0.5253584749986348,
+          "local_flyer": 1.0484888627128157
+        },
+        "DMA_017": {
+          "tv": 0.32254764875248504,
+          "search": 0.46791770639854346,
+          "social": 0.47544572210929675,
+          "display": 0.45671075180530046,
+          "ctv": 0.4704200826221776,
+          "radio": 0.5989883581603628,
+          "local_flyer": 0.7058184299250367
+        },
+        "DMA_018": {
+          "tv": 0.10571641840959795,
+          "search": 0.2436830041422116,
+          "social": 0.26982977421304993,
+          "display": 0.3769019641583705,
+          "ctv": 0.5050045903692735,
+          "radio": 0.6644183983816405,
+          "local_flyer": 0.4943983984558498
+        },
+        "DMA_019": {
+          "tv": 0.30247279382342723,
+          "search": 0.3127632779673895,
+          "social": 0.4144853092459685,
+          "display": 0.40252766375270954,
+          "ctv": 0.3254334359965755,
+          "radio": 0.6697652948064361,
+          "local_flyer": 0.6287655448065397
+        }
+      },
+      "true_alpha_g": {
+        "DMA_000": 8.5,
+        "DMA_001": 8.65,
+        "DMA_002": 8.8,
+        "DMA_003": 8.95,
+        "DMA_004": 9.1,
+        "DMA_005": 9.25,
+        "DMA_006": 9.4,
+        "DMA_007": 9.55,
+        "DMA_008": 9.7,
+        "DMA_009": 9.85,
+        "DMA_010": 8.5,
+        "DMA_011": 8.65,
+        "DMA_012": 8.8,
+        "DMA_013": 8.95,
+        "DMA_014": 9.1,
+        "DMA_015": 9.25,
+        "DMA_016": 9.4,
+        "DMA_017": 9.55,
+        "DMA_018": 9.7,
+        "DMA_019": 9.85
+      },
+      "noise_sigma": 0.14,
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "control_truth": {
+        "vertical_id": "retail",
+        "required_controls": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index"
+        ],
+        "optional_controls": [
+          "competitor_price_index",
+          "weather_index"
+        ],
+        "active_controls": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index",
+          "competitor_price_index",
+          "weather_index"
+        ],
+        "control_effects_log": {
+          "promo_flag": 0.12,
+          "holiday": 0.08,
+          "unemployment_index": -0.05,
+          "competitor_price_index": -0.03,
+          "weather_index": 0.02
+        },
+        "omitted_controls": []
+      },
+      "collinearity_blocks": {
+        "digital_block": [
+          "display",
+          "ctv"
+        ]
+      },
+      "national_channels": [
+        "tv"
+      ],
+      "sparse_channels": [
+        "radio",
+        "local_flyer"
+      ],
+      "stress_variant": "full_controls",
+      "vertical_id": "retail",
+      "scale": "pilot"
+    },
+    "production_flags": {
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "optimizer_enabled": false,
+      "decision_surface_enabled": false,
+      "recommendations_enabled": false
+    },
+    "panel_shape": {
+      "n_geos": 20,
+      "n_weeks": 52,
+      "n_channels": 7,
+      "n_controls": 5
+    },
+    "forbidden_claims": [],
+    "outputs_are_diagnostic_only": true
+  },
+  "panel_rows": 1040,
+  "ridge_benchmark": {
+    "model": "ridge_bo",
+    "run_environment": "research",
+    "prediction_rmse": 29252.89577194657,
+    "geo_fold_rmse_mean": 28083.385070474822,
+    "geo_fold_stability_n_folds": 3,
+    "max_channel_correlation": 0.9778480696909423,
+    "collinearity_sensitive": true,
+    "sparse_channels": [
+      "radio",
+      "local_flyer"
+    ],
+    "ridge_coef_recovery": {
+      "coef_recovery_available": true,
+      "coef_mu_mae_vs_true_mu": 0.241431188211719,
+      "coef_sign_match_rate_vs_mu": 0.8571428571428571
+    },
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "optimizer_enabled": false,
+    "decision_surface_enabled": false,
+    "outputs_are_diagnostic_only": true
+  },
+  "h5_benchmark": null,
+  "production_flags": {
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "optimizer_enabled": false,
+    "decision_surface_enabled": false,
+    "recommendations_enabled": false,
+    "ridge_remains_production_baseline": true,
+    "bayes_h5_research_only": true
+  },
+  "outputs_are_diagnostic_only": true,
+  "artifact_kind": "BAYES_H6_SYNTHETIC_BENCHMARK"
+}

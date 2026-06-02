@@ -1,0 +1,738 @@
+{
+  "artifact_kind": "BAYES_H6F_RIDGE_H5_SYNTHETIC_BENCHMARK_MATRIX",
+  "lane": "bayes_h6f_synthetic_benchmark_matrix",
+  "milestone": "H6f",
+  "worlds_tested": [
+    "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+    "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+    "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS",
+    "WORLD-H6-PILOT-CPG-FULL-CONTROLS",
+    "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS"
+  ],
+  "h5_worlds_ran": [],
+  "matrix_rows": [
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+      "vertical": "retail",
+      "control_variant": "full_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index",
+          "competitor_price_index",
+          "weather_index"
+        ],
+        "omitted": [],
+        "omitted_required": [],
+        "mis_specified": false,
+        "media_correlated": false
+      },
+      "forbidden_claims": [],
+      "panel_rows": 1040,
+      "ridge": {
+        "prediction_rmse": 29210.50263011686,
+        "prediction_wmape": 0.34027193205814804,
+        "geo_fold_rmse_mean": 28039.215594296056,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.24143281810852715,
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 0.8571428571428571,
+          "lift_mae_vs_geo_mean_beta": 0.2603183944752097
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9778480696909423,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "h5": null,
+      "h5_ran": false
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+      "vertical": "retail",
+      "control_variant": "omitted_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "competitor_price_index",
+          "weather_index"
+        ],
+        "omitted": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index"
+        ],
+        "omitted_required": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index"
+        ],
+        "mis_specified": false,
+        "media_correlated": false
+      },
+      "forbidden_claims": [
+        "do_not_attribute_omitted_control_lift_to_media",
+        "do_not_publish_incrementality_without_required_controls"
+      ],
+      "panel_rows": 1040,
+      "ridge": {
+        "prediction_rmse": 36851.53942887783,
+        "prediction_wmape": 0.39769751867075104,
+        "geo_fold_rmse_mean": 31237.958614956387,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.29392203015224655,
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 0.8571428571428571,
+          "lift_mae_vs_geo_mean_beta": 0.32427143176548284
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9722864384403749,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [
+          "do_not_attribute_omitted_control_lift_to_media",
+          "do_not_publish_incrementality_without_required_controls"
+        ],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "h5": null,
+      "h5_ran": false
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS",
+      "vertical": "retail",
+      "control_variant": "media_correlated_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index",
+          "competitor_price_index",
+          "weather_index"
+        ],
+        "omitted": [],
+        "omitted_required": [],
+        "mis_specified": false,
+        "media_correlated": true
+      },
+      "forbidden_claims": [
+        "media_correlated_controls_may_inflate_attribution_to_tv"
+      ],
+      "panel_rows": 1040,
+      "ridge": {
+        "prediction_rmse": 31926.98869999545,
+        "prediction_wmape": 0.3423835956883288,
+        "geo_fold_rmse_mean": 30118.2123620848,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.27264711588063767,
+          "coef_sign_match_rate_vs_mu": 0.7142857142857143
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 0.7142857142857143,
+          "lift_mae_vs_geo_mean_beta": 0.3122785582930471
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 0.7142857142857143
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9778598851825973,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [
+          "media_correlated_controls_may_inflate_attribution_to_tv"
+        ],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "h5": null,
+      "h5_ran": false
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-CPG-FULL-CONTROLS",
+      "vertical": "cpg",
+      "control_variant": "full_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "promo_depth",
+          "distribution_index",
+          "cpi_food",
+          "competitive_sov"
+        ],
+        "omitted": [],
+        "omitted_required": [],
+        "mis_specified": false,
+        "media_correlated": false
+      },
+      "forbidden_claims": [],
+      "panel_rows": 1040,
+      "ridge": {
+        "prediction_rmse": 46391.018366394965,
+        "prediction_wmape": 0.40967184630848397,
+        "geo_fold_rmse_mean": 38496.92768332052,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.30196447219849276,
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 0.8571428571428571,
+          "lift_mae_vs_geo_mean_beta": 0.33214325962135594
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9747191442439016,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "h5": null,
+      "h5_ran": false
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS",
+      "vertical": "auto",
+      "control_variant": "omitted_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "competitor_conquest_spend",
+          "interest_rate_proxy"
+        ],
+        "omitted": [
+          "incentive_index",
+          "fuel_price",
+          "unemployment_index"
+        ],
+        "omitted_required": [
+          "incentive_index",
+          "fuel_price",
+          "unemployment_index"
+        ],
+        "mis_specified": false,
+        "media_correlated": false
+      },
+      "forbidden_claims": [
+        "do_not_attribute_omitted_control_lift_to_media",
+        "do_not_publish_incrementality_without_required_controls"
+      ],
+      "panel_rows": 1040,
+      "ridge": {
+        "prediction_rmse": 33432.417114067764,
+        "prediction_wmape": 0.3401882714135147,
+        "geo_fold_rmse_mean": 32271.834892601342,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.31906895318344625,
+          "coef_sign_match_rate_vs_mu": 1.0
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 1.0,
+          "lift_mae_vs_geo_mean_beta": 0.3528300200731738
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 1.0
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9739054457293188,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [
+          "do_not_attribute_omitted_control_lift_to_media",
+          "do_not_publish_incrementality_without_required_controls"
+        ],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "h5": null,
+      "h5_ran": false
+    }
+  ],
+  "interpretation_axes": [
+    "model_issue",
+    "transform_specification_issue",
+    "control_omission_issue",
+    "identification_issue"
+  ],
+  "production_flags": {
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "optimizer_enabled": false,
+    "decision_surface_enabled": false,
+    "recommendations_enabled": false,
+    "ridge_remains_production_baseline": true,
+    "bayes_h5_research_only": true,
+    "production_bayes_blocked": true
+  },
+  "outputs_are_diagnostic_only": true,
+  "synthetic_success_is_not_real_world_proof": true
+}

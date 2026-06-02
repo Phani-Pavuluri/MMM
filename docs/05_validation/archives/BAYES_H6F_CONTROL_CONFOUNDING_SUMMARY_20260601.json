@@ -1,0 +1,1902 @@
+{
+  "artifact_kind": "BAYES_H6F_CONTROL_CONFOUNDING_SUMMARY",
+  "lane": "bayes_h6f_control_confounding",
+  "milestone": "H6f",
+  "world_comparisons": [
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+      "vertical": "retail",
+      "control_variant": "full_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index",
+          "competitor_price_index",
+          "weather_index"
+        ],
+        "omitted": [],
+        "omitted_required": [],
+        "mis_specified": false,
+        "media_correlated": false
+      },
+      "forbidden_claims": [],
+      "ridge": {
+        "prediction_rmse": 29210.50263011686,
+        "prediction_wmape": 0.34027193205814804,
+        "geo_fold_rmse_mean": 28039.215594296056,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.24143281810852715,
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 0.8571428571428571,
+          "lift_mae_vs_geo_mean_beta": 0.2603183944752097
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9778480696909423,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "truth_artifact": {
+        "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+        "lane": "bayes_h6_synthetic",
+        "known_truth": {
+          "true_mu_c": {
+            "tv": 0.28,
+            "search": 0.32,
+            "social": 0.36000000000000004,
+            "display": 0.4,
+            "ctv": 0.44000000000000006,
+            "radio": 0.28,
+            "local_flyer": 0.32
+          },
+          "true_tau_c": {
+            "tv": 0.07,
+            "search": 0.07,
+            "social": 0.07,
+            "display": 0.07,
+            "ctv": 0.07,
+            "radio": 0.12,
+            "local_flyer": 0.12
+          },
+          "true_beta_gc": {
+            "DMA_000": {
+              "tv": 0.239130044457538,
+              "search": 0.3140773343464688,
+              "social": 0.2890214040580856,
+              "display": 0.48650263977380487,
+              "ctv": 0.402475046972493,
+              "radio": 0.22737706307526712,
+              "local_flyer": 0.5013286570071428
+            },
+            "DMA_001": {
+              "tv": 0.17995003083245903,
+              "search": 0.36236520994965465,
+              "social": 0.30184695285591034,
+              "display": 0.4593134295536664,
+              "ctv": 0.30779126409931845,
+              "radio": 0.36954071853326503,
+              "local_flyer": 0.19390728801641677
+            },
+            "DMA_002": {
+              "tv": 0.4375909213817697,
+              "search": 0.32313760073945963,
+              "social": 0.31178351822333494,
+              "display": 0.46667681376167525,
+              "ctv": 0.4287685756992209,
+              "radio": 0.255806774733545,
+              "local_flyer": 0.4190551750658361
+            },
+            "DMA_003": {
+              "tv": 0.25013313636463813,
+              "search": 0.2658014874069309,
+              "social": 0.3262837638890243,
+              "display": 0.25555755797644664,
+              "ctv": 0.4951541963880208,
+              "radio": 0.3954181253149951,
+              "local_flyer": 0.1660579345729811
+            },
+            "DMA_004": {
+              "tv": 0.1465850790795887,
+              "search": 0.3420189365060604,
+              "social": 0.26167355475158394,
+              "display": 0.3079213183789587,
+              "ctv": 0.48037466712026206,
+              "radio": 0.32139307569520054,
+              "local_flyer": 0.5166515333306851
+            },
+            "DMA_005": {
+              "tv": 0.18612446316348075,
+              "search": 0.4398142356093935,
+              "social": 0.3477155268606074,
+              "display": 0.35916645850707324,
+              "ctv": 0.3797022097457709,
+              "radio": 0.4280351670015957,
+              "local_flyer": 0.1689375893620989
+            },
+            "DMA_006": {
+              "tv": 0.22073167680511535,
+              "search": 0.44858056936613866,
+              "social": 0.28124372153463795,
+              "display": 0.2923482004770752,
+              "ctv": 0.3264037815090407,
+              "radio": 0.32235344180633174,
+              "local_flyer": 0.44321421090878754
+            },
+            "DMA_007": {
+              "tv": 0.2684528828938672,
+              "search": 0.28137025772378726,
+              "social": 0.4888168943663136,
+              "display": 0.419389462415704,
+              "ctv": 0.42189637887221676,
+              "radio": 0.3068367740220688,
+              "local_flyer": 0.3127126681717463
+            },
+            "DMA_008": {
+              "tv": 0.28109107604962824,
+              "search": 0.39119394373605076,
+              "social": 0.34145288778523186,
+              "display": 0.4203889082662775,
+              "ctv": 0.39450057723899173,
+              "radio": 0.1963024618217006,
+              "local_flyer": 0.47429163693472204
+            },
+            "DMA_009": {
+              "tv": 0.24517527256020422,
+              "search": 0.2636988194312205,
+              "social": 0.273550771719834,
+              "display": 0.3600080239958458,
+              "ctv": 0.40900611474035126,
+              "radio": 0.30635775747733046,
+              "local_flyer": 0.257586277747842
+            },
+            "DMA_010": {
+              "tv": 0.29366736747535455,
+              "search": 0.4342428028788423,
+              "social": 0.3250034451577604,
+              "display": 0.31115564576913746,
+              "ctv": 0.419034532322045,
+              "radio": 0.6169434516851431,
+              "local_flyer": 0.29171039704527085
+            },
+            "DMA_011": {
+              "tv": 0.3253624149694604,
+              "search": 0.34462979847286307,
+              "social": 0.3138594492823221,
+              "display": 0.38038363719751855,
+              "ctv": 0.46655400219114307,
+              "radio": 0.23249769656321684,
+              "local_flyer": 0.35926007912976005
+            },
+            "DMA_012": {
+              "tv": 0.2479159807890404,
+              "search": 0.1696221079270466,
+              "social": 0.44729245694583786,
+              "display": 0.3672543068971435,
+              "ctv": 0.5116787201884267,
+              "radio": 0.3138106340641374,
+              "local_flyer": 0.1894262590540711
+            },
+            "DMA_013": {
+              "tv": 0.28827687515174594,
+              "search": 0.27991883804426587,
+              "social": 0.35283310461164125,
+              "display": 0.40753118126695803,
+              "ctv": 0.40114335722587846,
+              "radio": 0.5775408268120164,
+              "local_flyer": 0.11030274207140822
+            },
+            "DMA_014": {
+              "tv": 0.32741003791085505,
+              "search": 0.2804152790735906,
+              "social": 0.3527121389829133,
+              "display": 0.25037587535232936,
+              "ctv": 0.5070858096193591,
+              "radio": 0.5972720098936337,
+              "local_flyer": 0.2607777716606037
+            },
+            "DMA_015": {
+              "tv": 0.2476377993571846,
+              "search": 0.23498831019280192,
+              "social": 0.3128681686585588,
+              "display": 0.33712002906011995,
+              "ctv": 0.3129389885016369,
+              "radio": 0.3932292868029793,
+              "local_flyer": 0.5915853760901315
+            },
+            "DMA_016": {
+              "tv": 0.29599090771476316,
+              "search": 0.3008097842871484,
+              "social": 0.4245649345523637,
+              "display": 0.2930273175391925,
+              "ctv": 0.40820523688780347,
+              "radio": 0.4410241785001127,
+              "local_flyer": 1.0154251140610708
+            },
+            "DMA_017": {
+              "tv": 0.32254764875248504,
+              "search": 0.46791770639854346,
+              "social": 0.47544572210929675,
+              "display": 0.45671075180530046,
+              "ctv": 0.4704200826221776,
+              "radio": 0.6984593917964329,
+              "local_flyer": 0.278461088455761
+            },
+            "DMA_018": {
+              "tv": 0.10571641840959795,
+              "search": 0.2436830041422116,
+              "social": 0.26982977421304993,
+              "display": 0.3769019641583705,
+              "ctv": 0.5050045903692735,
+              "radio": 0.6492816612440924,
+              "local_flyer": 0.9548194885768705
+            },
+            "DMA_019": {
+              "tv": 0.30247279382342723,
+              "search": 0.3127632779673895,
+              "social": 0.4144853092459685,
+              "display": 0.40252766375270954,
+              "ctv": 0.3254334359965755,
+              "radio": 0.47852259594106866,
+              "local_flyer": 0.6013379251265699
+            }
+          },
+          "true_alpha_g": {
+            "DMA_000": 8.5,
+            "DMA_001": 8.65,
+            "DMA_002": 8.8,
+            "DMA_003": 8.95,
+            "DMA_004": 9.1,
+            "DMA_005": 9.25,
+            "DMA_006": 9.4,
+            "DMA_007": 9.55,
+            "DMA_008": 9.7,
+            "DMA_009": 9.85,
+            "DMA_010": 8.5,
+            "DMA_011": 8.65,
+            "DMA_012": 8.8,
+            "DMA_013": 8.95,
+            "DMA_014": 9.1,
+            "DMA_015": 9.25,
+            "DMA_016": 9.4,
+            "DMA_017": 9.55,
+            "DMA_018": 9.7,
+            "DMA_019": 9.85
+          },
+          "noise_sigma": 0.14,
+          "transform_truth": {
+            "tv": {
+              "decay": 0.5,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "search": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "social": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "display": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "ctv": {
+              "decay": 0.5,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "radio": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "local_flyer": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            }
+          },
+          "control_truth": {
+            "vertical_id": "retail",
+            "required_controls": [
+              "promo_flag",
+              "holiday",
+              "unemployment_index"
+            ],
+            "optional_controls": [
+              "competitor_price_index",
+              "weather_index"
+            ],
+            "active_controls": [
+              "promo_flag",
+              "holiday",
+              "unemployment_index",
+              "competitor_price_index",
+              "weather_index"
+            ],
+            "control_effects_log": {
+              "promo_flag": 0.12,
+              "holiday": 0.08,
+              "unemployment_index": -0.05,
+              "competitor_price_index": -0.03,
+              "weather_index": 0.02
+            },
+            "omitted_controls": []
+          },
+          "collinearity_blocks": {
+            "digital_block": [
+              "display",
+              "ctv"
+            ]
+          },
+          "national_channels": [
+            "tv"
+          ],
+          "sparse_channels": [
+            "radio",
+            "local_flyer"
+          ],
+          "stress_variant": "full_controls",
+          "vertical_id": "retail",
+          "scale": "pilot"
+        },
+        "production_flags": {
+          "approved_for_prod": false,
+          "prod_decisioning_allowed": false,
+          "optimizer_enabled": false,
+          "decision_surface_enabled": false,
+          "recommendations_enabled": false
+        },
+        "panel_shape": {
+          "n_geos": 20,
+          "n_weeks": 52,
+          "n_channels": 7,
+          "n_controls": 5
+        },
+        "forbidden_claims": [],
+        "outputs_are_diagnostic_only": true
+      }
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+      "vertical": "retail",
+      "control_variant": "omitted_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "competitor_price_index",
+          "weather_index"
+        ],
+        "omitted": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index"
+        ],
+        "omitted_required": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index"
+        ],
+        "mis_specified": false,
+        "media_correlated": false
+      },
+      "forbidden_claims": [
+        "do_not_attribute_omitted_control_lift_to_media",
+        "do_not_publish_incrementality_without_required_controls"
+      ],
+      "ridge": {
+        "prediction_rmse": 36851.53942887783,
+        "prediction_wmape": 0.39769751867075104,
+        "geo_fold_rmse_mean": 31237.958614956387,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.29392203015224655,
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 0.8571428571428571,
+          "lift_mae_vs_geo_mean_beta": 0.32427143176548284
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 0.8571428571428571
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9722864384403749,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [
+          "do_not_attribute_omitted_control_lift_to_media",
+          "do_not_publish_incrementality_without_required_controls"
+        ],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "truth_artifact": {
+        "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+        "lane": "bayes_h6_synthetic",
+        "known_truth": {
+          "true_mu_c": {
+            "tv": 0.28,
+            "search": 0.32,
+            "social": 0.36000000000000004,
+            "display": 0.4,
+            "ctv": 0.44000000000000006,
+            "radio": 0.28,
+            "local_flyer": 0.32
+          },
+          "true_tau_c": {
+            "tv": 0.07,
+            "search": 0.07,
+            "social": 0.07,
+            "display": 0.07,
+            "ctv": 0.07,
+            "radio": 0.12,
+            "local_flyer": 0.12
+          },
+          "true_beta_gc": {
+            "DMA_000": {
+              "tv": 0.2694434920793939,
+              "search": 0.35260604141852536,
+              "social": 0.4463947030100587,
+              "display": 0.3792648593401058,
+              "ctv": 0.5054138413347301,
+              "radio": 0.13637988314173166,
+              "local_flyer": 0.5107000156078785
+            },
+            "DMA_001": {
+              "tv": 0.19094038257727886,
+              "search": 0.3041398622529929,
+              "social": 0.4999634011541597,
+              "display": 0.33916483215679233,
+              "ctv": 0.47062627053625916,
+              "radio": 0.3224449615251392,
+              "local_flyer": 0.24986308159194529
+            },
+            "DMA_002": {
+              "tv": 0.2775889228972757,
+              "search": 0.3108963826646337,
+              "social": 0.428164997461705,
+              "display": 0.5400354562920215,
+              "ctv": 0.3653781549470815,
+              "radio": 0.3834420710321308,
+              "local_flyer": 0.5400577769328125
+            },
+            "DMA_003": {
+              "tv": 0.4064863695739221,
+              "search": 0.2944480844867566,
+              "social": 0.27230685796182935,
+              "display": 0.39948705772227106,
+              "ctv": 0.436290245659102,
+              "radio": 0.19873533696152312,
+              "local_flyer": 0.39957683668126115
+            },
+            "DMA_004": {
+              "tv": 0.21215346660261664,
+              "search": 0.34593591726052764,
+              "social": 0.31430950422799203,
+              "display": 0.36729605656574904,
+              "ctv": 0.4175249529386249,
+              "radio": 0.13940269816163722,
+              "local_flyer": 0.26617948088528015
+            },
+            "DMA_005": {
+              "tv": 0.252796561748171,
+              "search": 0.3082647095225755,
+              "social": 0.3354076064275871,
+              "display": 0.4440678953256331,
+              "ctv": 0.468002889331401,
+              "radio": 0.18265607742512335,
+              "local_flyer": 0.38198119921993096
+            },
+            "DMA_006": {
+              "tv": 0.24347346863911698,
+              "search": 0.30639655998226756,
+              "social": 0.39402957499940416,
+              "display": 0.4472286086191234,
+              "ctv": 0.44818968901664136,
+              "radio": 0.24739912190740634,
+              "local_flyer": 0.45708126306219676
+            },
+            "DMA_007": {
+              "tv": 0.3690729594501999,
+              "search": 0.4040516664906273,
+              "social": 0.37974745676796934,
+              "display": 0.37061637979767065,
+              "ctv": 0.5113738161327818,
+              "radio": 0.46040660427826713,
+              "local_flyer": 0.34911842358250633
+            },
+            "DMA_008": {
+              "tv": 0.24209573582301272,
+              "search": 0.328315796507342,
+              "social": 0.3341078373589178,
+              "display": 0.3680947537977325,
+              "ctv": 0.5434871427169038,
+              "radio": 0.26435728516224877,
+              "local_flyer": 0.25002063687872333
+            },
+            "DMA_009": {
+              "tv": 0.28365657553506074,
+              "search": 0.28021689180158815,
+              "social": 0.4160206184317544,
+              "display": 0.356439253117433,
+              "ctv": 0.4095570013597201,
+              "radio": 0.4080273294604209,
+              "local_flyer": 0.12288647847737871
+            },
+            "DMA_010": {
+              "tv": 0.2409320906272156,
+              "search": 0.3349380739307455,
+              "social": 0.21797860631311014,
+              "display": 0.4269117674101176,
+              "ctv": 0.3929360782763374,
+              "radio": 0.19024461383407376,
+              "local_flyer": 0.34493445040099857
+            },
+            "DMA_011": {
+              "tv": 0.32026309841867884,
+              "search": 0.26212769275875863,
+              "social": 0.3728684465033032,
+              "display": 0.34097035876405596,
+              "ctv": 0.4287540631941946,
+              "radio": 0.24229157947788102,
+              "local_flyer": 0.20057951706830313
+            },
+            "DMA_012": {
+              "tv": 0.18224217920766228,
+              "search": 0.39322724947827786,
+              "social": 0.3605943635893649,
+              "display": 0.41628688965919725,
+              "ctv": 0.43446670218815464,
+              "radio": 0.3355638375074,
+              "local_flyer": 0.3474592039933051
+            },
+            "DMA_013": {
+              "tv": 0.2719667902452448,
+              "search": 0.21576679537518956,
+              "social": 0.3451287440839181,
+              "display": 0.4492496297258379,
+              "ctv": 0.3244146588369393,
+              "radio": 0.22036829006454023,
+              "local_flyer": 0.26171681167229843
+            },
+            "DMA_014": {
+              "tv": 0.15252167860351631,
+              "search": 0.38525789215942163,
+              "social": 0.2415676307311584,
+              "display": 0.44318930785031274,
+              "ctv": 0.4079190053753097,
+              "radio": 0.4319687229164556,
+              "local_flyer": 1.001175544055249
+            },
+            "DMA_015": {
+              "tv": 0.35061435521626094,
+              "search": 0.28471685638544647,
+              "social": 0.38266186645467004,
+              "display": 0.3887526461976841,
+              "ctv": 0.3401519781015473,
+              "radio": 0.5890069229821863,
+              "local_flyer": 0.9268282234449841
+            },
+            "DMA_016": {
+              "tv": 0.23370638807322516,
+              "search": 0.2156003317605737,
+              "social": 0.23236528636706133,
+              "display": 0.42440866009275297,
+              "ctv": 0.44377553019355437,
+              "radio": 0.8467562833773468,
+              "local_flyer": 0.43307155745979864
+            },
+            "DMA_017": {
+              "tv": 0.2182001760802213,
+              "search": 0.3256570748269688,
+              "social": 0.3828223522960065,
+              "display": 0.3841495348856913,
+              "ctv": 0.4321750429351385,
+              "radio": 0.6902770328290961,
+              "local_flyer": 0.735978207837032
+            },
+            "DMA_018": {
+              "tv": 0.32918671588003023,
+              "search": 0.4843313833614157,
+              "social": 0.33264750062039045,
+              "display": 0.2706594078385875,
+              "ctv": 0.3970061283800766,
+              "radio": 0.6461175979704573,
+              "local_flyer": 0.8464322030276867
+            },
+            "DMA_019": {
+              "tv": 0.2503208654201993,
+              "search": 0.3754981516277605,
+              "social": 0.34327994609911827,
+              "display": 0.39746530469379365,
+              "ctv": 0.4134510889317288,
+              "radio": 0.6958326995561779,
+              "local_flyer": 0.6045404365533
+            }
+          },
+          "true_alpha_g": {
+            "DMA_000": 8.5,
+            "DMA_001": 8.65,
+            "DMA_002": 8.8,
+            "DMA_003": 8.95,
+            "DMA_004": 9.1,
+            "DMA_005": 9.25,
+            "DMA_006": 9.4,
+            "DMA_007": 9.55,
+            "DMA_008": 9.7,
+            "DMA_009": 9.85,
+            "DMA_010": 8.5,
+            "DMA_011": 8.65,
+            "DMA_012": 8.8,
+            "DMA_013": 8.95,
+            "DMA_014": 9.1,
+            "DMA_015": 9.25,
+            "DMA_016": 9.4,
+            "DMA_017": 9.55,
+            "DMA_018": 9.7,
+            "DMA_019": 9.85
+          },
+          "noise_sigma": 0.14,
+          "transform_truth": {
+            "tv": {
+              "decay": 0.5,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "search": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "social": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "display": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "ctv": {
+              "decay": 0.5,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "radio": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "local_flyer": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            }
+          },
+          "control_truth": {
+            "vertical_id": "retail",
+            "required_controls": [
+              "promo_flag",
+              "holiday",
+              "unemployment_index"
+            ],
+            "optional_controls": [
+              "competitor_price_index",
+              "weather_index"
+            ],
+            "active_controls": [
+              "competitor_price_index",
+              "weather_index"
+            ],
+            "control_effects_log": {
+              "competitor_price_index": -0.03,
+              "weather_index": 0.02
+            },
+            "omitted_controls": [
+              "promo_flag",
+              "holiday",
+              "unemployment_index"
+            ],
+            "omitted_required_controls": [
+              "promo_flag",
+              "holiday",
+              "unemployment_index"
+            ]
+          },
+          "collinearity_blocks": {
+            "digital_block": [
+              "display",
+              "ctv"
+            ]
+          },
+          "national_channels": [
+            "tv"
+          ],
+          "sparse_channels": [
+            "radio",
+            "local_flyer"
+          ],
+          "stress_variant": "omitted_controls",
+          "vertical_id": "retail",
+          "scale": "pilot"
+        },
+        "production_flags": {
+          "approved_for_prod": false,
+          "prod_decisioning_allowed": false,
+          "optimizer_enabled": false,
+          "decision_surface_enabled": false,
+          "recommendations_enabled": false
+        },
+        "panel_shape": {
+          "n_geos": 20,
+          "n_weeks": 52,
+          "n_channels": 7,
+          "n_controls": 2
+        },
+        "forbidden_claims": [
+          "do_not_attribute_omitted_control_lift_to_media",
+          "do_not_publish_incrementality_without_required_controls"
+        ],
+        "outputs_are_diagnostic_only": true
+      }
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS",
+      "vertical": "retail",
+      "control_variant": "media_correlated_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "promo_flag",
+          "holiday",
+          "unemployment_index",
+          "competitor_price_index",
+          "weather_index"
+        ],
+        "omitted": [],
+        "omitted_required": [],
+        "mis_specified": false,
+        "media_correlated": true
+      },
+      "forbidden_claims": [
+        "media_correlated_controls_may_inflate_attribution_to_tv"
+      ],
+      "ridge": {
+        "prediction_rmse": 31926.98869999545,
+        "prediction_wmape": 0.3423835956883288,
+        "geo_fold_rmse_mean": 30118.2123620848,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.27264711588063767,
+          "coef_sign_match_rate_vs_mu": 0.7142857142857143
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 0.7142857142857143,
+          "lift_mae_vs_geo_mean_beta": 0.3122785582930471
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 0.7142857142857143
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9778598851825973,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [
+          "media_correlated_controls_may_inflate_attribution_to_tv"
+        ],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "truth_artifact": {
+        "world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS",
+        "lane": "bayes_h6_synthetic",
+        "known_truth": {
+          "true_mu_c": {
+            "tv": 0.28,
+            "search": 0.32,
+            "social": 0.36000000000000004,
+            "display": 0.4,
+            "ctv": 0.44000000000000006,
+            "radio": 0.28,
+            "local_flyer": 0.32
+          },
+          "true_tau_c": {
+            "tv": 0.07,
+            "search": 0.07,
+            "social": 0.07,
+            "display": 0.07,
+            "ctv": 0.07,
+            "radio": 0.12,
+            "local_flyer": 0.12
+          },
+          "true_beta_gc": {
+            "DMA_000": {
+              "tv": 0.1708475149233431,
+              "search": 0.14619682035027087,
+              "social": 0.26179571962984705,
+              "display": 0.43526354756862556,
+              "ctv": 0.4937499422388738,
+              "radio": 0.2849465926511243,
+              "local_flyer": 0.23168797832364413
+            },
+            "DMA_001": {
+              "tv": 0.27401140040178734,
+              "search": 0.2749397814669394,
+              "social": 0.32672296538804546,
+              "display": 0.36452102955576793,
+              "ctv": 0.4694439470781643,
+              "radio": 0.23424403047114067,
+              "local_flyer": 0.4937852769740274
+            },
+            "DMA_002": {
+              "tv": 0.2423499141910366,
+              "search": 0.42236580522518186,
+              "social": 0.39871727119284167,
+              "display": 0.3814369663053516,
+              "ctv": 0.5459838252482309,
+              "radio": 0.5281045662053744,
+              "local_flyer": 0.265037899305271
+            },
+            "DMA_003": {
+              "tv": 0.35162129473441184,
+              "search": 0.3082017010122537,
+              "social": 0.3302604415301416,
+              "display": 0.5376864539172905,
+              "ctv": 0.42066879020531006,
+              "radio": 0.28552840385694944,
+              "local_flyer": 0.34882661658745295
+            },
+            "DMA_004": {
+              "tv": 0.22441025379192228,
+              "search": 0.4141383733820009,
+              "social": 0.26892253220490514,
+              "display": 0.6118081483199532,
+              "ctv": 0.48910698926009194,
+              "radio": 0.38251334154881256,
+              "local_flyer": 0.28229435325407776
+            },
+            "DMA_005": {
+              "tv": 0.21655893930610065,
+              "search": 0.2797500794594475,
+              "social": 0.311751267219478,
+              "display": 0.43695839117683427,
+              "ctv": 0.5247296618345373,
+              "radio": 0.2654258735549935,
+              "local_flyer": 0.5013916754279104
+            },
+            "DMA_006": {
+              "tv": 0.1868964766280965,
+              "search": 0.2539406574838268,
+              "social": 0.2623769566776596,
+              "display": 0.4667191316041165,
+              "ctv": 0.4952994875675388,
+              "radio": 0.1034810664499573,
+              "local_flyer": 0.38173207199589726
+            },
+            "DMA_007": {
+              "tv": 0.16999567204840532,
+              "search": 0.3891924872872765,
+              "social": 0.35803702470249377,
+              "display": 0.5132247197919775,
+              "ctv": 0.34871129370719406,
+              "radio": 0.4819742711195797,
+              "local_flyer": 0.09471616745561046
+            },
+            "DMA_008": {
+              "tv": 0.23273867646627044,
+              "search": 0.37343352929721063,
+              "social": 0.3409814606471607,
+              "display": 0.3592425097619483,
+              "ctv": 0.36297923429459406,
+              "radio": 0.20922035097738456,
+              "local_flyer": 0.3084042533080106
+            },
+            "DMA_009": {
+              "tv": 0.3189272851234988,
+              "search": 0.3796585541943899,
+              "social": 0.41130245702913226,
+              "display": 0.3553241167825467,
+              "ctv": 0.4674045202127246,
+              "radio": 0.17077504267168103,
+              "local_flyer": 0.18950277999408166
+            },
+            "DMA_010": {
+              "tv": 0.27536687147920813,
+              "search": 0.34964757757484716,
+              "social": 0.3869361542839769,
+              "display": 0.43448794757776565,
+              "ctv": 0.407499173242577,
+              "radio": 0.24313584921826845,
+              "local_flyer": 0.30150474487208323
+            },
+            "DMA_011": {
+              "tv": 0.32498105553616863,
+              "search": 0.2543290137399548,
+              "social": 0.3329780444474083,
+              "display": 0.3947580571531898,
+              "ctv": 0.5300422844300748,
+              "radio": 0.29807971176087167,
+              "local_flyer": 0.43111758390756166
+            },
+            "DMA_012": {
+              "tv": 0.24847403590848524,
+              "search": 0.29215968315519614,
+              "social": 0.3720890441681702,
+              "display": 0.3833859447718279,
+              "ctv": 0.3914158820082202,
+              "radio": 0.09525220262239761,
+              "local_flyer": 0.34486475150716756
+            },
+            "DMA_013": {
+              "tv": 0.17270363302736863,
+              "search": 0.3342032884940039,
+              "social": 0.3644002916728364,
+              "display": 0.47743210338354114,
+              "ctv": 0.5747619246701562,
+              "radio": 0.30858779737017267,
+              "local_flyer": 0.4122702458390686
+            },
+            "DMA_014": {
+              "tv": 0.3336880183185715,
+              "search": 0.25838834607157063,
+              "social": 0.39076670017272286,
+              "display": 0.32550110814046307,
+              "ctv": 0.5852315655710324,
+              "radio": 0.4196066077335946,
+              "local_flyer": 0.8326616314116072
+            },
+            "DMA_015": {
+              "tv": 0.35381237971523183,
+              "search": 0.36131800497999556,
+              "social": 0.3663403328605653,
+              "display": 0.43473588943707003,
+              "ctv": 0.4300317616225616,
+              "radio": 0.5721950025808207,
+              "local_flyer": 0.7456830033618906
+            },
+            "DMA_016": {
+              "tv": 0.3187403009936415,
+              "search": 0.14648510389724034,
+              "social": 0.3366515291606165,
+              "display": 0.5063726470451443,
+              "ctv": 0.3455981744181169,
+              "radio": 0.8217021609027563,
+              "local_flyer": 0.44075342769951764
+            },
+            "DMA_017": {
+              "tv": 0.3682563734419404,
+              "search": 0.3262167699937067,
+              "social": 0.48755778229852065,
+              "display": 0.3913384999235289,
+              "ctv": 0.5926970361407233,
+              "radio": 0.753434829836723,
+              "local_flyer": 0.6776832483287603
+            },
+            "DMA_018": {
+              "tv": 0.3754474863961502,
+              "search": 0.39652809116469717,
+              "social": 0.4310898929436402,
+              "display": 0.3688261864017869,
+              "ctv": 0.4364060815719786,
+              "radio": 0.6354182264774442,
+              "local_flyer": 0.7300125213055491
+            },
+            "DMA_019": {
+              "tv": 0.29416712163092795,
+              "search": 0.34124923003550495,
+              "social": 0.357941029269101,
+              "display": 0.3376043784590911,
+              "ctv": 0.5653187444520207,
+              "radio": 0.9961096306458014,
+              "local_flyer": 0.5970715515423913
+            }
+          },
+          "true_alpha_g": {
+            "DMA_000": 8.5,
+            "DMA_001": 8.65,
+            "DMA_002": 8.8,
+            "DMA_003": 8.95,
+            "DMA_004": 9.1,
+            "DMA_005": 9.25,
+            "DMA_006": 9.4,
+            "DMA_007": 9.55,
+            "DMA_008": 9.7,
+            "DMA_009": 9.85,
+            "DMA_010": 8.5,
+            "DMA_011": 8.65,
+            "DMA_012": 8.8,
+            "DMA_013": 8.95,
+            "DMA_014": 9.1,
+            "DMA_015": 9.25,
+            "DMA_016": 9.4,
+            "DMA_017": 9.55,
+            "DMA_018": 9.7,
+            "DMA_019": 9.85
+          },
+          "noise_sigma": 0.14,
+          "transform_truth": {
+            "tv": {
+              "decay": 0.5,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "search": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "social": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "display": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "ctv": {
+              "decay": 0.5,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "radio": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "local_flyer": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            }
+          },
+          "control_truth": {
+            "vertical_id": "retail",
+            "required_controls": [
+              "promo_flag",
+              "holiday",
+              "unemployment_index"
+            ],
+            "optional_controls": [
+              "competitor_price_index",
+              "weather_index"
+            ],
+            "active_controls": [
+              "promo_flag",
+              "holiday",
+              "unemployment_index",
+              "competitor_price_index",
+              "weather_index"
+            ],
+            "control_effects_log": {
+              "promo_flag": 0.12,
+              "holiday": 0.08,
+              "unemployment_index": -0.05,
+              "competitor_price_index": -0.03,
+              "weather_index": 0.02
+            },
+            "omitted_controls": [],
+            "media_correlation_target": "tv"
+          },
+          "collinearity_blocks": {
+            "digital_block": [
+              "display",
+              "ctv"
+            ]
+          },
+          "national_channels": [
+            "tv"
+          ],
+          "sparse_channels": [
+            "radio",
+            "local_flyer"
+          ],
+          "stress_variant": "media_correlated_controls",
+          "vertical_id": "retail",
+          "scale": "pilot"
+        },
+        "production_flags": {
+          "approved_for_prod": false,
+          "prod_decisioning_allowed": false,
+          "optimizer_enabled": false,
+          "decision_surface_enabled": false,
+          "recommendations_enabled": false
+        },
+        "panel_shape": {
+          "n_geos": 20,
+          "n_weeks": 52,
+          "n_channels": 7,
+          "n_controls": 5
+        },
+        "forbidden_claims": [
+          "media_correlated_controls_may_inflate_attribution_to_tv"
+        ],
+        "outputs_are_diagnostic_only": true
+      }
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS",
+      "vertical": "auto",
+      "control_variant": "omitted_controls",
+      "scale": "pilot",
+      "geos": 20,
+      "weeks": 52,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "known_truth_summary": {
+        "noise_sigma": 0.14,
+        "true_mu_c": {
+          "tv": 0.28,
+          "search": 0.32,
+          "social": 0.36000000000000004,
+          "display": 0.4,
+          "ctv": 0.44000000000000006,
+          "radio": 0.28,
+          "local_flyer": 0.32
+        },
+        "sparse_channels": [
+          "radio",
+          "local_flyer"
+        ],
+        "national_channels": [
+          "tv"
+        ],
+        "collinearity_blocks": {
+          "digital_block": [
+            "display",
+            "ctv"
+          ]
+        }
+      },
+      "transform_truth": {
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "controls": {
+        "present": [
+          "competitor_conquest_spend",
+          "interest_rate_proxy"
+        ],
+        "omitted": [
+          "incentive_index",
+          "fuel_price",
+          "unemployment_index"
+        ],
+        "omitted_required": [
+          "incentive_index",
+          "fuel_price",
+          "unemployment_index"
+        ],
+        "mis_specified": false,
+        "media_correlated": false
+      },
+      "forbidden_claims": [
+        "do_not_attribute_omitted_control_lift_to_media",
+        "do_not_publish_incrementality_without_required_controls"
+      ],
+      "ridge": {
+        "prediction_rmse": 33432.417114067764,
+        "prediction_wmape": 0.3401882714135147,
+        "geo_fold_rmse_mean": 32271.834892601342,
+        "geo_fold_stability_n_folds": 3,
+        "coefficient_recovery": {
+          "coef_recovery_available": true,
+          "coef_mu_mae_vs_true_mu": 0.31906895318344625,
+          "coef_sign_match_rate_vs_mu": 1.0
+        },
+        "lift_recovery": {
+          "lift_recovery_available": true,
+          "lift_sign_match_rate_vs_true_beta": 1.0,
+          "lift_mae_vs_geo_mean_beta": 0.3528300200731738
+        },
+        "sign_plausibility": {
+          "coef_sign_match_rate_vs_mu": 1.0
+        },
+        "collinearity": {
+          "max_channel_correlation": 0.9739054457293188,
+          "collinearity_sensitive": true
+        },
+        "sparse_channel_diagnostics": {
+          "by_channel": {
+            "radio": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            },
+            "local_flyer": {
+              "near_zero_share": 0.3,
+              "geos_with_activity_share": 0.7
+            }
+          },
+          "sparse_channels_flagged": []
+        },
+        "forbidden_claims": [
+          "do_not_attribute_omitted_control_lift_to_media",
+          "do_not_publish_incrementality_without_required_controls"
+        ],
+        "recommendations_emitted": false,
+        "optimizer_emitted": false,
+        "decision_surface_emitted": false
+      },
+      "truth_artifact": {
+        "world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS",
+        "lane": "bayes_h6_synthetic",
+        "known_truth": {
+          "true_mu_c": {
+            "tv": 0.28,
+            "search": 0.32,
+            "social": 0.36000000000000004,
+            "display": 0.4,
+            "ctv": 0.44000000000000006,
+            "radio": 0.28,
+            "local_flyer": 0.32
+          },
+          "true_tau_c": {
+            "tv": 0.07,
+            "search": 0.07,
+            "social": 0.07,
+            "display": 0.07,
+            "ctv": 0.07,
+            "radio": 0.12,
+            "local_flyer": 0.12
+          },
+          "true_beta_gc": {
+            "DMA_000": {
+              "tv": 0.2977507116542508,
+              "search": 0.27991558971511027,
+              "social": 0.2870760359046013,
+              "display": 0.44164829293819974,
+              "ctv": 0.4124017156955461,
+              "radio": 0.21559409427910456,
+              "local_flyer": 0.2307641023232368
+            },
+            "DMA_001": {
+              "tv": 0.2907064288756315,
+              "search": 0.2852026087089044,
+              "social": 0.44773316974620625,
+              "display": 0.35814017074702764,
+              "ctv": 0.4680139100410663,
+              "radio": 0.1646509147881436,
+              "local_flyer": 0.25689891174419743
+            },
+            "DMA_002": {
+              "tv": 0.40638446506002046,
+              "search": 0.3111801433219056,
+              "social": 0.34564647770553053,
+              "display": 0.39297521474738395,
+              "ctv": 0.5331535798338118,
+              "radio": 0.255232236335388,
+              "local_flyer": 0.10988211997987737
+            },
+            "DMA_003": {
+              "tv": 0.3956133878570633,
+              "search": 0.47966968655105685,
+              "social": 0.3516232888365728,
+              "display": 0.31088589714090364,
+              "ctv": 0.3897741177784281,
+              "radio": 0.37738759276385203,
+              "local_flyer": 0.41726225127824673
+            },
+            "DMA_004": {
+              "tv": 0.17502282858532905,
+              "search": 0.3184746619101237,
+              "social": 0.42439972736612963,
+              "display": 0.36861029507142784,
+              "ctv": 0.43682140402548547,
+              "radio": 0.2990812123936974,
+              "local_flyer": 0.38233314327442147
+            },
+            "DMA_005": {
+              "tv": 0.20535698867253355,
+              "search": 0.42087986766769314,
+              "social": 0.3897398781138763,
+              "display": 0.4685837298964555,
+              "ctv": 0.4151444864160842,
+              "radio": 0.2069787631522247,
+              "local_flyer": 0.6593406900289348
+            },
+            "DMA_006": {
+              "tv": 0.23588614703976354,
+              "search": 0.30850569290177265,
+              "social": 0.31602007157335216,
+              "display": 0.2652092953387008,
+              "ctv": 0.3798331040969941,
+              "radio": 0.18024575621303013,
+              "local_flyer": 0.4811229489313631
+            },
+            "DMA_007": {
+              "tv": 0.3708190698418854,
+              "search": 0.26098825905643486,
+              "social": 0.4228431346285494,
+              "display": 0.4206945626514005,
+              "ctv": 0.3985927415790097,
+              "radio": 0.28245198179488357,
+              "local_flyer": 0.23413497400990135
+            },
+            "DMA_008": {
+              "tv": 0.2752200300273338,
+              "search": 0.42037986325854226,
+              "social": 0.3854787996732451,
+              "display": 0.38904776470295843,
+              "ctv": 0.5232546974440834,
+              "radio": 0.11870897589064308,
+              "local_flyer": 0.34792583544373
+            },
+            "DMA_009": {
+              "tv": 0.2510771253376785,
+              "search": 0.3671807893971996,
+              "social": 0.3145880735521101,
+              "display": 0.3650223911125094,
+              "ctv": 0.45599998327491803,
+              "radio": 0.2581777399694022,
+              "local_flyer": 0.30518290607812604
+            },
+            "DMA_010": {
+              "tv": 0.2871317888773124,
+              "search": 0.33505848168916097,
+              "social": 0.38619894674217353,
+              "display": 0.4411858604758596,
+              "ctv": 0.36713924875521753,
+              "radio": 0.17990968280218972,
+              "local_flyer": 0.42150718595968795
+            },
+            "DMA_011": {
+              "tv": 0.36596238280335525,
+              "search": 0.22233352897178302,
+              "social": 0.37203018761523243,
+              "display": 0.5055359649350168,
+              "ctv": 0.45376520177373075,
+              "radio": 0.24113054437839754,
+              "local_flyer": 0.2703987893248959
+            },
+            "DMA_012": {
+              "tv": 0.3568429603193557,
+              "search": 0.31739278866654125,
+              "social": 0.25625634283054094,
+              "display": 0.42276026760706675,
+              "ctv": 0.5097587429116853,
+              "radio": 0.4301940553844765,
+              "local_flyer": 0.41499973147241453
+            },
+            "DMA_013": {
+              "tv": 0.2803131245860388,
+              "search": 0.40203431653513444,
+              "social": 0.3173139185146953,
+              "display": 0.5247155487429891,
+              "ctv": 0.49268865434715714,
+              "radio": 0.3627539074788288,
+              "local_flyer": 0.41482942886214325
+            },
+            "DMA_014": {
+              "tv": 0.3075651928371458,
+              "search": 0.21387662417476438,
+              "social": 0.35880379338066504,
+              "display": 0.5054673575882983,
+              "ctv": 0.41134616354517434,
+              "radio": 0.7494646838969504,
+              "local_flyer": 0.4292887347691551
+            },
+            "DMA_015": {
+              "tv": 0.21231488381082692,
+              "search": 0.4027520608825199,
+              "social": 0.3304297625423654,
+              "display": 0.5258109985539426,
+              "ctv": 0.47437310834592544,
+              "radio": 1.033625917798608,
+              "local_flyer": 0.8368624756448142
+            },
+            "DMA_016": {
+              "tv": 0.29383417808053053,
+              "search": 0.41302200649854515,
+              "social": 0.37727533927972184,
+              "display": 0.4361925085821041,
+              "ctv": 0.47198040617590753,
+              "radio": 0.5987805362776755,
+              "local_flyer": 0.671435164137321
+            },
+            "DMA_017": {
+              "tv": 0.333612572779119,
+              "search": 0.356956158689645,
+              "social": 0.3716763702796853,
+              "display": 0.3916995468094575,
+              "ctv": 0.449320919604194,
+              "radio": 0.7278783230166275,
+              "local_flyer": 0.5777050668809343
+            },
+            "DMA_018": {
+              "tv": 0.26022667660264154,
+              "search": 0.3025895445404004,
+              "social": 0.2320163504837603,
+              "display": 0.4128987415846271,
+              "ctv": 0.40732553892739765,
+              "radio": 0.39424258588378336,
+              "local_flyer": 0.5382423749301071
+            },
+            "DMA_019": {
+              "tv": 0.2505436475770602,
+              "search": 0.24126683589358924,
+              "social": 0.40994795920346927,
+              "display": 0.3336571128628914,
+              "ctv": 0.3526143748037126,
+              "radio": 0.6995119979263565,
+              "local_flyer": 0.25744567737114943
+            }
+          },
+          "true_alpha_g": {
+            "DMA_000": 8.5,
+            "DMA_001": 8.65,
+            "DMA_002": 8.8,
+            "DMA_003": 8.95,
+            "DMA_004": 9.1,
+            "DMA_005": 9.25,
+            "DMA_006": 9.4,
+            "DMA_007": 9.55,
+            "DMA_008": 9.7,
+            "DMA_009": 9.85,
+            "DMA_010": 8.5,
+            "DMA_011": 8.65,
+            "DMA_012": 8.8,
+            "DMA_013": 8.95,
+            "DMA_014": 9.1,
+            "DMA_015": 9.25,
+            "DMA_016": 9.4,
+            "DMA_017": 9.55,
+            "DMA_018": 9.7,
+            "DMA_019": 9.85
+          },
+          "noise_sigma": 0.14,
+          "transform_truth": {
+            "tv": {
+              "decay": 0.5,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "search": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "social": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "display": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "ctv": {
+              "decay": 0.5,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "radio": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            },
+            "local_flyer": {
+              "decay": 0.3,
+              "hill_half": 2.5,
+              "hill_slope": 1.8
+            }
+          },
+          "control_truth": {
+            "vertical_id": "auto",
+            "required_controls": [
+              "incentive_index",
+              "fuel_price",
+              "unemployment_index"
+            ],
+            "optional_controls": [
+              "competitor_conquest_spend",
+              "interest_rate_proxy"
+            ],
+            "active_controls": [
+              "competitor_conquest_spend",
+              "interest_rate_proxy"
+            ],
+            "control_effects_log": {
+              "competitor_conquest_spend": -0.04,
+              "interest_rate_proxy": -0.03
+            },
+            "omitted_controls": [
+              "incentive_index",
+              "fuel_price",
+              "unemployment_index"
+            ],
+            "omitted_required_controls": [
+              "incentive_index",
+              "fuel_price",
+              "unemployment_index"
+            ]
+          },
+          "collinearity_blocks": {
+            "digital_block": [
+              "display",
+              "ctv"
+            ]
+          },
+          "national_channels": [
+            "tv"
+          ],
+          "sparse_channels": [
+            "radio",
+            "local_flyer"
+          ],
+          "stress_variant": "omitted_controls",
+          "vertical_id": "auto",
+          "scale": "pilot"
+        },
+        "production_flags": {
+          "approved_for_prod": false,
+          "prod_decisioning_allowed": false,
+          "optimizer_enabled": false,
+          "decision_surface_enabled": false,
+          "recommendations_enabled": false
+        },
+        "panel_shape": {
+          "n_geos": 20,
+          "n_weeks": 52,
+          "n_channels": 7,
+          "n_controls": 2
+        },
+        "forbidden_claims": [
+          "do_not_attribute_omitted_control_lift_to_media",
+          "do_not_publish_incrementality_without_required_controls"
+        ],
+        "outputs_are_diagnostic_only": true
+      }
+    }
+  ],
+  "interpretation": {
+    "ridge_coef_recovery_degrades_under_omitted_controls": false,
+    "full_controls_coef_mu_mae": null,
+    "omitted_controls_coef_mu_mae": null,
+    "media_correlated_coef_mu_mae": null,
+    "ridge_may_attribute_omitted_control_to_media": false,
+    "forbidden_claims_required_when_controls_missing": false,
+    "vertical_controls_necessary_for_credible_mmm": true,
+    "mis_specified_controls_in_pilot_registry": false,
+    "notes": [
+      "Compare coef_mu_mae and sign_match across stress variants.",
+      "Omitted required controls must emit forbidden_claims \u2014 no incrementality promotion.",
+      "Media-correlated controls stress tests false attribution risk to national TV."
+    ]
+  },
+  "production_flags": {
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "optimizer_enabled": false,
+    "decision_surface_enabled": false,
+    "recommendations_enabled": false,
+    "ridge_remains_production_baseline": true,
+    "bayes_h5_research_only": true,
+    "production_bayes_blocked": true
+  },
+  "outputs_are_diagnostic_only": true
+}
