@@ -161,6 +161,19 @@ def train(config: Path) -> None:
     gov = ext.get("governance") if isinstance(ext, dict) else {}
     if isinstance(gov, dict) and gov.get("baseline_beat_waiver_active"):
         typer.secho(BASELINE_BEAT_WAIVER_MESSAGE, fg=typer.colors.RED, err=True)
+    if isinstance(ext, dict):
+        from mmm.diagnostics.ridge_diagnostic_summary import format_ridge_diagnostics_cli_block
+
+        ridge_report = ext.get("ridge_production_diagnostics_report")
+        if ridge_report:
+            badge = str(ridge_report.get("diagnostic_severity") or "none")
+            color = typer.colors.GREEN
+            if badge in ("medium",):
+                color = typer.colors.YELLOW
+            elif badge in ("high",):
+                color = typer.colors.RED
+            for line in format_ridge_diagnostics_cli_block(ridge_report):
+                typer.secho(line, fg=color, err=True)
 
 
 @app.command()

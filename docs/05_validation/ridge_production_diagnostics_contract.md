@@ -113,9 +113,20 @@ Extreme sparse channels add forbidden claims: `no_separate_channel_effect_claim_
 ## Implementation
 
 - Module: `mmm/diagnostics/ridge_diagnostics.py`
+- Operator summary (H8): `mmm/diagnostics/ridge_diagnostic_summary.py`
 - Vertical profiles: `mmm/config/vertical_control_profiles.py`
-- H6 regression: `tests/diagnostics/test_ridge_production_diagnostics.py`
-- Example artifact: `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json`
+- Train bundle: `persist_training_artifacts()` exports JSON + Markdown; `mmm train` prints CLI block
+- Tests: `tests/diagnostics/test_ridge_production_diagnostics.py`, `tests/diagnostics/test_ridge_diagnostic_summary.py`
+
+## Operator artifacts (H8)
+
+| Train run file | Role |
+|----------------|------|
+| `ridge_production_diagnostics_report.json` | Full diagnostic report |
+| `ridge_production_diagnostics_summary.md` | Operator Markdown summary |
+| `extension_report.json` | Embeds report + structured summary |
+
+Reference: `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_REPORT_20260601.json`, `RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SUMMARY_20260601.md`
 
 ## Related
 

@@ -36,6 +36,10 @@ def persist_training_artifacts(
     if isinstance(bundle, dict):
         store.log_dict("decision_bundle", bundle)
         written["decision_bundle"] = "decision_bundle.json"
+    from mmm.diagnostics.ridge_diagnostic_summary import export_ridge_diagnostic_artifacts
+
+    ridge_written = export_ridge_diagnostic_artifacts(store, extension_report)
+    written.update(ridge_written)
     store.log_dict("extension_report", extension_report)
     written["extension_report"] = "extension_report.json"
     if model_card_md is not None:

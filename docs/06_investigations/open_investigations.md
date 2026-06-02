@@ -2126,6 +2126,22 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H8 — Ridge diagnostics operator artifact surfacing (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H8 |
+| **Title** | Surface Ridge diagnostics in train artifacts and CLI |
+| **Category** | certification reliability gaps |
+| **Severity** | low |
+| **Status** | **closed** (H8 delivered) |
+| **Evidence** | `mmm/diagnostics/ridge_diagnostic_summary.py`; [summary MD](../05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SUMMARY_20260601.md) |
+| **Outcome** | Train runs export `ridge_production_diagnostics_report.json` + `ridge_production_diagnostics_summary.md`; `mmm train` prints severity and forbidden claims. |
+| **Production impact** | UX only — no fitting, optimizer, or gate changes. |
+| **Related** | [INV-H7](#inv-h7--ridge-production-diagnostic-hardening-complete) |
+
+---
+
 ### INV-H7 — Ridge production diagnostic hardening (complete)
 
 | Field | Value |
@@ -2139,7 +2155,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Evidence** | [ridge_production_diagnostics_contract.md](../05_validation/ridge_production_diagnostics_contract.md); `mmm/diagnostics/ridge_diagnostics.py`; [RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json](../05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json) |
 | **Outcome** | Production Ridge path can emit governed diagnostics (forbidden claims, transform reporting, vertical control completeness) without optimizer/DecisionSurface changes. Bayes-H5 remains research-only. |
 | **Production impact** | Metadata only — diagnostics are not hard gates unless explicitly documented elsewhere. |
-| **Next** | Operator UX surfacing of `ridge_production_diagnostics_report` on train artifacts. |
+| **Next** | — (H8 operator surfacing complete) |
 | **Related** | [INV-H6F](INV-H6F_RIDGE_H5_SYNTHETIC_BENCHMARK_MATRIX.md); [H6 ADR](../05_validation/bayes_h6_synthetic_lane_adr.md) |
 
 ---

@@ -158,25 +158,25 @@
     "fold_stability": {
       "n_cv_splits": 2,
       "geo_fold_rmse": [
-        17155.73231054398,
-        60590.00167494713,
-        15992.572549810715
+        17154.695967446358,
+        60590.85220005918,
+        15944.038175423944
       ],
-      "geo_fold_rmse_mean": 31246.102178433943,
-      "geo_fold_rmse_std": 20754.7032967365,
+      "geo_fold_rmse_mean": 31229.862114309828,
+      "geo_fold_rmse_std": 20767.237453642374,
       "fold_stability_ok": false,
       "warnings": []
     },
     "coefficient_stability": {
       "available": true,
       "media_coef_by_channel": {
-        "tv": -0.00043613431448166106,
-        "search": 0.06052640137403197,
-        "social": 0.01673227143632008,
-        "display": 0.08290513416187895,
-        "ctv": 0.07461930713011669,
-        "radio": 0.04796614708701739,
-        "local_flyer": 0.06028322953142544
+        "tv": -0.00044209160185879656,
+        "search": 0.06025757340307278,
+        "social": 0.01676953094927233,
+        "display": 0.08289148505360393,
+        "ctv": 0.07457789750172585,
+        "radio": 0.04821752991441955,
+        "local_flyer": 0.060436014371813215
       },
       "sign_by_channel": {
         "tv": -1.0,
@@ -217,7 +217,7 @@
     },
     "truth_recovery": {
       "known_truth_available": true,
-      "coef_mu_mae_vs_true_mu": 0.29391480622767013,
+      "coef_mu_mae_vs_true_mu": 0.29389886577256447,
       "sign_match_rate_vs_known_mu": 0.8571428571428571
     },
     "forbidden_claims": [
@@ -266,9 +266,9 @@
   "ridge_benchmark_excerpt": {
     "model": "ridge_bo",
     "run_environment": "research",
-    "prediction_rmse": 36854.320695762224,
-    "prediction_wmape": 0.397751736341098,
-    "geo_fold_rmse_mean": 31246.102178433943,
+    "prediction_rmse": 36855.844202325796,
+    "prediction_wmape": 0.39775932563518934,
+    "geo_fold_rmse_mean": 31229.862114309828,
     "geo_fold_stability_n_folds": 3,
     "max_channel_correlation": 0.9722864384403749,
     "collinearity_sensitive": true,
@@ -278,13 +278,13 @@
     ],
     "ridge_coef_recovery": {
       "coef_recovery_available": true,
-      "coef_mu_mae_vs_true_mu": 0.29391480622767013,
+      "coef_mu_mae_vs_true_mu": 0.29389886577256447,
       "coef_sign_match_rate_vs_mu": 0.8571428571428571
     },
     "ridge_lift_recovery": {
       "lift_recovery_available": true,
       "lift_sign_match_rate_vs_true_beta": 0.8571428571428571,
-      "lift_mae_vs_geo_mean_beta": 0.3242642078409065
+      "lift_mae_vs_geo_mean_beta": 0.32424826738580076
     },
     "forbidden_claims": [
       "do_not_attribute_omitted_control_lift_to_media",

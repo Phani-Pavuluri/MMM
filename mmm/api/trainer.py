@@ -101,6 +101,8 @@ class MMMTrainer:
         else:
             trainer = BayesianMMMTrainer(self.config, self.schema)
         fit_out = trainer.fit(panel_work)
+        if self.config.framework == Framework.RIDGE_BO and isinstance(fit_out, dict):
+            fit_out["_ridge_trainer"] = trainer
         yhat = trainer.predict(panel_work)
         resid = panel_work[self.config.data.target_column].to_numpy(dtype=float) - yhat
         store.log_metrics({"mae": float(np.mean(np.abs(resid)))})
