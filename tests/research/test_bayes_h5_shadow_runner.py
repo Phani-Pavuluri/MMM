@@ -223,8 +223,24 @@ def test_frozen_policy_no_fit_includes_policy_metadata() -> None:
     )
     artifact = build_shadow_run_artifact(request)
     assert artifact.get("policy_id") == "bayes_h5m_sample_panel_shadow_policy_v1"
-    assert artifact.get("geometry_config_applied", {}).get("sigma_policy") == "sigma_floor"
+    assert artifact.get("h5_geometry_config_applied", {}).get("sigma_policy") == "sigma_floor"
     assert artifact.get("sampler_profile_applied", {}).get("draws") == 600
+    assert artifact["channel_policy_applied"]["kept_channels"] == ["search", "social"]
+    assert artifact["production_flags"]["approved_for_prod"] is False
+
+
+def test_policy_path_cli_rejects_conflicting_args() -> None:
+    from mmm.research.bayes_h3_sandbox.h5_shadow_runner import main
+
+    with pytest.raises(SystemExit, match="policy-path fully specifies"):
+        main(
+            [
+                "--policy-path",
+                "docs/06_investigations/h5m_sample_panel_shadow_policy.json",
+                "--panel-path",
+                "examples/sample_panel.csv",
+            ]
+        )
 
 
 def test_convergence_status_classification() -> None:

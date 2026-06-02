@@ -161,6 +161,19 @@ def validate_collinearity_config(channel_policy: dict[str, Any] | None) -> None:
         if not str(channel_policy.get("channel") or "").strip():
             raise H5RealPanelPreprocessingError("single_channel requires channel_policy.channel")
     elif mode == CHANNEL_POLICY_DROP_COLLINEAR:
+        dropped = channel_policy.get("dropped_channels") or channel_policy.get(
+            "explicit_dropped_channels"
+        )
+        kept = channel_policy.get("kept_channels") or channel_policy.get("explicit_kept_channels")
+        if dropped:
+            if not isinstance(dropped, list) or not dropped:
+                raise H5RealPanelPreprocessingError(
+                    "drop_collinear_channels requires non-empty dropped_channels when explicit"
+                )
+            if not isinstance(kept, list) or not kept:
+                raise H5RealPanelPreprocessingError(
+                    "drop_collinear_channels requires non-empty kept_channels when explicit"
+                )
         thr = channel_policy.get("max_abs_corr_threshold")
         if thr is None or not (0.0 < float(thr) < 1.0):
             raise H5RealPanelPreprocessingError(
@@ -238,6 +251,52 @@ def build_drop_collinear_panel(
         "dropped_channels": to_drop_info,
         "kept_channels": kept,
         "ablation_only": True,
+    }
+    return out_df, out_schema, record
+
+
+def build_explicit_channel_drop_panel(
+    df: pd.DataFrame,
+    schema: PanelSchema,
+    *,
+    dropped_channels: list[str],
+    kept_channels: list[str] | None = None,
+    reason: str = "explicit_frozen_policy_drop",
+) -> tuple[pd.DataFrame, PanelSchema, dict[str, Any]]:
+    """Drop explicitly listed channels — no heuristic silent dropping."""
+    drop_set = {str(ch) for ch in dropped_channels}
+    unknown = drop_set - set(schema.channel_columns)
+    if unknown:
+        raise H5RealPanelPreprocessingError(
+            f"explicit dropped_channels not in panel: {sorted(unknown)!r}"
+        )
+    kept = [ch for ch in schema.channel_columns if ch not in drop_set]
+    if kept_channels is not None:
+        expected = list(kept_channels)
+        if set(kept) != set(expected):
+            raise H5RealPanelPreprocessingError(
+                f"explicit kept_channels {expected!r} does not match drop list (got {kept!r})"
+            )
+        kept = expected
+    if not kept:
+        raise H5RealPanelPreprocessingError(
+            "explicit channel drop would remove all media channels — fail closed"
+        )
+    cols = [schema.geo_column, schema.week_column, schema.target_column, *kept, *schema.control_columns]
+    out_df = df[cols].copy()
+    out_schema = PanelSchema(
+        schema.geo_column,
+        schema.week_column,
+        schema.target_column,
+        tuple(kept),
+        schema.control_columns,
+    )
+    record = {
+        "mode": CHANNEL_POLICY_DROP_COLLINEAR,
+        "dropped_channels": [{"channel": ch, "reason": reason} for ch in sorted(drop_set)],
+        "kept_channels": kept,
+        "explicit_drop": True,
+        "ablation_only": False,
     }
     return out_df, out_schema, record
 
@@ -342,11 +401,23 @@ def apply_channel_policy(
         ch = str(policy["channel"])
         out_df, out_schema, record = build_single_channel_panel(df, schema, ch)
     elif mode == CHANNEL_POLICY_DROP_COLLINEAR:
-        out_df, out_schema, record = build_drop_collinear_panel(
-            df,
-            schema,
-            max_abs_corr_threshold=float(policy["max_abs_corr_threshold"]),
-        )
+        explicit_drop = policy.get("dropped_channels")
+        if explicit_drop:
+            out_df, out_schema, record = build_explicit_channel_drop_panel(
+                df,
+                schema,
+                dropped_channels=list(explicit_drop),
+                kept_channels=list(policy["kept_channels"]) if policy.get("kept_channels") else None,
+                reason=str(policy.get("reason") or "explicit_frozen_policy_drop"),
+            )
+            record["max_abs_corr_threshold"] = policy.get("max_abs_corr_threshold")
+            record["no_silent_dropping"] = policy.get("no_silent_dropping", True)
+        else:
+            out_df, out_schema, record = build_drop_collinear_panel(
+                df,
+                schema,
+                max_abs_corr_threshold=float(policy["max_abs_corr_threshold"]),
+            )
     elif mode == CHANNEL_POLICY_COMPOSITE:
         out_df, out_schema, record = build_composite_media_panel(
             df,

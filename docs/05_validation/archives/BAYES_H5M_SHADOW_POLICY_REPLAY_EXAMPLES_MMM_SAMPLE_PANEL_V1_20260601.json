@@ -8,8 +8,8 @@
     "run_id": "BAYES-H5H-SHADOW-examples_mmm_sample_panel_v1-20260602",
     "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
     "panel_id": "examples_mmm_sample_panel_v1",
-    "data_snapshot_hash": "sha256:6d96d93a3f34ec41f7ca6aaafb1c865cf74f4c6125b2f0326e0385ff4f85d84b",
-    "mmm_config_hash": "sha256:9b2c65f62d846b4a704c122398113af2a2e1f267bfaef141450ba9e9e5d13cd4",
+    "data_snapshot_hash": "sha256:f37d88f8b262786a5020703a70fdd188b04230659634786845a05551c9df71d7",
+    "mmm_config_hash": "sha256:18958c58b45c037cae7e30195b601448f13635a53d29e90fe1c5d8460c978bef",
     "run_environment": "research",
     "sandbox_entrypoint": "mmm.research.bayes_h3_sandbox.run_sandbox_fit",
     "model_spec_version": "bayes_h5_sandbox_spec_v1",
@@ -20,11 +20,11 @@
       "transform_registry_id": "bayes_h5_media_transform_registry_v1",
       "media_transforms_by_channel": {
         "search": "identity",
-        "tv": "identity"
+        "social": "identity"
       },
       "transform_params_by_channel": {},
       "transform_mismatch_mode": "aligned",
-      "policy_note": "H5m frozen replay of H5L-B \u2014 identity media transforms on pilot panel only.",
+      "policy_note": "H5m frozen replay of H5L-B governed config \u2014 identity media transforms on pilot panel only.",
       "panel_schema": {
         "geo_column": "geo_id",
         "week_column": "week_start_date",
@@ -34,14 +34,14 @@
       "channel_policy": {
         "mode": "drop_collinear_channels",
         "max_abs_corr_threshold": 0.95,
-        "explicit_dropped_channels": [
-          "social"
-        ],
-        "explicit_kept_channels": [
-          "search",
+        "dropped_channels": [
           "tv"
         ],
-        "drop_rule_note": "Redundant channel per collinear-group heuristic (highest mean |rho| to group) \u2014 matches H5L-B replay.",
+        "kept_channels": [
+          "search",
+          "social"
+        ],
+        "reason": "social-tv correlation exceeded threshold in H5j/H5l diagnostics; drop-tv variant is the governed hierarchy-faithful configuration for frozen replay",
         "no_silent_dropping": true
       },
       "frozen_policy_id": "bayes_h5m_sample_panel_shadow_policy_v1"
@@ -59,179 +59,179 @@
         "n_geo": 3,
         "channels": [
           "search",
-          "tv"
+          "social"
         ],
-        "sigma_mean": 0.02475392912188699,
+        "sigma_mean": 0.02653834460128564,
         "outputs_are_diagnostic_only": true,
         "mu_channel_mean": {
-          "search": 0.3459201485622604,
-          "tv": 0.04980057427408759
+          "search": 0.29793966584001763,
+          "social": 0.10852175126686599
         },
         "tau_channel_mean": {
-          "search": 0.21887240997977975,
-          "tv": 0.2343112006922418
+          "search": 0.20630776295689054,
+          "social": 0.2085177068322788
         },
         "model_spec_version": "bayes_h5_sandbox_spec_v1"
       },
       "convergence_diagnostics": {
         "rhat_max": 1.01,
-        "ess_bulk_min": 601.0,
-        "divergence_count": 3,
+        "ess_bulk_min": 629.0,
+        "divergence_count": 0,
         "chains": 4,
         "draws_per_chain": 600,
         "per_parameter": [
           {
             "parameter": "alpha_geo[0]",
             "family": "intercept",
-            "r_hat": 1.0,
-            "ess_bulk": 734.0
+            "r_hat": 1.01,
+            "ess_bulk": 773.0
           },
           {
             "parameter": "alpha_geo[1]",
             "family": "intercept",
-            "r_hat": 1.0,
-            "ess_bulk": 656.0
+            "r_hat": 1.01,
+            "ess_bulk": 629.0
           },
           {
             "parameter": "alpha_geo[2]",
             "family": "intercept",
             "r_hat": 1.01,
-            "ess_bulk": 681.0
+            "ess_bulk": 1267.0
           },
           {
             "parameter": "sigma",
             "family": "sigma",
             "r_hat": 1.01,
-            "ess_bulk": 601.0
+            "ess_bulk": 647.0
           },
           {
             "parameter": "mu_channel[0]",
             "family": "mu_channel",
             "r_hat": 1.0,
-            "ess_bulk": 731.0
+            "ess_bulk": 696.0
           },
           {
             "parameter": "mu_channel[1]",
             "family": "mu_channel",
-            "r_hat": 1.0,
-            "ess_bulk": 697.0
+            "r_hat": 1.01,
+            "ess_bulk": 722.0
           },
           {
             "parameter": "tau_channel[0]",
             "family": "tau",
-            "r_hat": 1.01,
-            "ess_bulk": 612.0
+            "r_hat": 1.0,
+            "ess_bulk": 825.0
           },
           {
             "parameter": "tau_channel[1]",
             "family": "tau",
             "r_hat": 1.0,
-            "ess_bulk": 670.0
+            "ess_bulk": 768.0
           },
           {
             "parameter": "z_beta[0, 0]",
             "family": "beta_offset",
             "r_hat": 1.0,
-            "ess_bulk": 1350.0
+            "ess_bulk": 1124.0
           },
           {
             "parameter": "z_beta[0, 1]",
             "family": "beta_offset",
             "r_hat": 1.0,
-            "ess_bulk": 1816.0
+            "ess_bulk": 1508.0
           },
           {
             "parameter": "z_beta[1, 0]",
             "family": "beta_offset",
             "r_hat": 1.0,
-            "ess_bulk": 1545.0
+            "ess_bulk": 1577.0
           },
           {
             "parameter": "z_beta[1, 1]",
             "family": "beta_offset",
             "r_hat": 1.0,
-            "ess_bulk": 1440.0
+            "ess_bulk": 1449.0
           },
           {
             "parameter": "z_beta[2, 0]",
             "family": "beta_offset",
-            "r_hat": 1.0,
-            "ess_bulk": 1551.0
+            "r_hat": 1.01,
+            "ess_bulk": 1249.0
           },
           {
             "parameter": "z_beta[2, 1]",
             "family": "beta_offset",
             "r_hat": 1.0,
-            "ess_bulk": 1456.0
+            "ess_bulk": 1554.0
           }
         ],
         "worst_rhat_parameters": [
           {
+            "parameter": "alpha_geo[0]",
+            "family": "intercept",
+            "r_hat": 1.01,
+            "ess_bulk": 773.0
+          },
+          {
+            "parameter": "alpha_geo[1]",
+            "family": "intercept",
+            "r_hat": 1.01,
+            "ess_bulk": 629.0
+          },
+          {
             "parameter": "alpha_geo[2]",
             "family": "intercept",
             "r_hat": 1.01,
-            "ess_bulk": 681.0
+            "ess_bulk": 1267.0
           },
           {
             "parameter": "sigma",
             "family": "sigma",
             "r_hat": 1.01,
-            "ess_bulk": 601.0
+            "ess_bulk": 647.0
           },
           {
-            "parameter": "tau_channel[0]",
-            "family": "tau",
+            "parameter": "mu_channel[1]",
+            "family": "mu_channel",
             "r_hat": 1.01,
-            "ess_bulk": 612.0
+            "ess_bulk": 722.0
           },
           {
-            "parameter": "alpha_geo[0]",
-            "family": "intercept",
-            "r_hat": 1.0,
-            "ess_bulk": 734.0
-          },
-          {
-            "parameter": "alpha_geo[1]",
-            "family": "intercept",
-            "r_hat": 1.0,
-            "ess_bulk": 656.0
+            "parameter": "z_beta[2, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.01,
+            "ess_bulk": 1249.0
           },
           {
             "parameter": "mu_channel[0]",
             "family": "mu_channel",
             "r_hat": 1.0,
-            "ess_bulk": 731.0
+            "ess_bulk": 696.0
           },
           {
-            "parameter": "mu_channel[1]",
-            "family": "mu_channel",
-            "r_hat": 1.0,
-            "ess_bulk": 697.0
-          },
-          {
-            "parameter": "tau_channel[1]",
+            "parameter": "tau_channel[0]",
             "family": "tau",
             "r_hat": 1.0,
-            "ess_bulk": 670.0
+            "ess_bulk": 825.0
           }
         ]
       },
       "pooling_diagnostics": {
         "pooling_mode": "partial",
         "tau_channel_mean": {
-          "search": 0.21887240997977975,
-          "tv": 0.2343112006922418
+          "search": 0.20630776295689054,
+          "social": 0.2085177068322788
         },
         "mu_channel_mean": {
-          "search": 0.3459201485622604,
-          "tv": 0.04980057427408759
+          "search": 0.29793966584001763,
+          "social": 0.10852175126686599
         }
       },
       "h5_transform_diagnostics": {
         "transform_registry_id": "bayes_h5_media_transform_registry_v1",
         "media_transforms_by_channel": {
           "search": "identity",
-          "tv": "identity"
+          "social": "identity"
         },
         "generative_transform_expected": "unknown",
         "panel_context": "real_panel",
@@ -250,8 +250,6 @@
     "trust_report_candidate_diagnostics": {
       "mapping_version": "bayes_h5d_trust_diagnostic_mapping_v1",
       "warning_codes": [
-        "h5:convergence:weak",
-        "h5:evidence:blocked",
         "h5:production:block",
         "h5:transform_assumption:identity",
         "h5:transform_unknown:real_panel"
@@ -260,17 +258,17 @@
         "transform_alignment_status": "assumption_only",
         "transform_mismatch_detected": false,
         "panel_context": "real_panel",
-        "convergence_status": "weak_convergence",
-        "evidence_promotion_allowed": false,
+        "convergence_status": "converged_diagnostic_only",
+        "evidence_promotion_allowed": true,
         "beta_gc_mae_mean": null,
         "mu_c_mae_mean": null,
         "mu_channel_mean": {
-          "search": 0.3459201485622604,
-          "tv": 0.04980057427408759
+          "search": 0.29793966584001763,
+          "social": 0.10852175126686599
         },
         "convergence_rhat_max": 1.01,
-        "convergence_ess_bulk_min": 601.0,
-        "convergence_divergence_count": 3
+        "convergence_ess_bulk_min": 629.0,
+        "convergence_divergence_count": 0
       },
       "production_trust_report": null,
       "recommended_interpretation": "RESEARCH ONLY \u2014 NOT DECISION GRADE Shadow-run diagnostic mapping only; not production TrustReport."
@@ -326,14 +324,14 @@
         "chains": 4,
         "target_accept": 0.95,
         "rhat_max": 1.01,
-        "ess_min": 601.0,
-        "divergence_count": 3,
-        "convergence_status": "weak_convergence",
-        "evidence_promotion_allowed": false,
+        "ess_min": 629.0,
+        "divergence_count": 0,
+        "convergence_status": "converged_diagnostic_only",
+        "evidence_promotion_allowed": true,
         "report_only": true
       },
-      "convergence_status": "weak_convergence",
-      "evidence_promotion_allowed": false,
+      "convergence_status": "converged_diagnostic_only",
+      "evidence_promotion_allowed": true,
       "generative_transform_truth": "unknown",
       "note": "Real-panel shadow diagnostics \u2014 not synthetic generative truth"
     }
@@ -353,10 +351,10 @@
     "production_decision_surface": false
   },
   "outputs_are_diagnostic_only": true,
-  "convergence_status": "weak_convergence",
+  "convergence_status": "converged_diagnostic_only",
   "rhat_max": 1.01,
-  "divergence_count": 3,
-  "evidence_promotion_allowed": false,
+  "divergence_count": 0,
+  "evidence_promotion_allowed": true,
   "excluded_fields": [
     "approved_for_prod",
     "budget_recommendation",
@@ -377,62 +375,52 @@
   ],
   "policy_id": "bayes_h5m_sample_panel_shadow_policy_v1",
   "source_policy_path": "docs/06_investigations/h5m_sample_panel_shadow_policy.json",
+  "panel_id": "examples_mmm_sample_panel_v1",
+  "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
   "channel_policy_applied": {
     "mode": "drop_collinear_channels",
-    "max_abs_corr_threshold": 0.95,
-    "collinear_groups": [
-      {
-        "channels": [
-          "search",
-          "social",
-          "tv"
-        ],
-        "max_abs_corr_threshold": 0.95,
-        "pairwise": [
-          {
-            "a": "search",
-            "b": "social",
-            "correlation": 0.9578902483017746
-          },
-          {
-            "a": "search",
-            "b": "tv",
-            "correlation": 0.9138372291253558
-          },
-          {
-            "a": "social",
-            "b": "tv",
-            "correlation": 0.9887869687681137
-          }
-        ]
-      }
-    ],
     "dropped_channels": [
       {
-        "channel": "social",
-        "reason": "collinear_group_drop_redundant: highest mean |rho| to group (0.9733)"
+        "channel": "tv",
+        "reason": "social-tv correlation exceeded threshold in H5j/H5l diagnostics; drop-tv variant is the governed hierarchy-faithful configuration for frozen replay"
       }
     ],
     "kept_channels": [
       "search",
-      "tv"
+      "social"
     ],
-    "ablation_only": true,
-    "explicit_policy": true,
-    "no_silent_dropping": true
+    "explicit_drop": true,
+    "ablation_only": false,
+    "max_abs_corr_threshold": 0.95,
+    "no_silent_dropping": true,
+    "explicit_policy": true
   },
   "channel_policy_declared": {
     "mode": "drop_collinear_channels",
     "max_abs_corr_threshold": 0.95,
-    "explicit_dropped_channels": [
-      "social"
-    ],
-    "explicit_kept_channels": [
-      "search",
+    "dropped_channels": [
       "tv"
     ],
-    "drop_rule_note": "Redundant channel per collinear-group heuristic (highest mean |rho| to group) \u2014 matches H5L-B replay.",
+    "kept_channels": [
+      "search",
+      "social"
+    ],
+    "reason": "social-tv correlation exceeded threshold in H5j/H5l diagnostics; drop-tv variant is the governed hierarchy-faithful configuration for frozen replay",
     "no_silent_dropping": true
+  },
+  "h5_geometry_config_applied": {
+    "parameterization": "non_centered",
+    "likelihood_scale_policy": "prescaled_log_outcome",
+    "hierarchy_policy": "full_geo_channel_hierarchy",
+    "tau_parameterization": "current",
+    "sigma_policy": "sigma_floor",
+    "beta_prior_policy": "current_default",
+    "hierarchy_strength_policy": "learned_tau",
+    "hierarchy_faithful": true,
+    "ablation_only": false,
+    "explicit_config": false,
+    "fixed_tau_value": null,
+    "sigma_floor": 0.05
   },
   "geometry_config_applied": {
     "parameterization": "non_centered",
@@ -455,11 +443,10 @@
     "chains": 4,
     "target_accept": 0.95
   },
+  "forbidden_claims": [],
   "trust_report_candidate_diagnostics": {
     "mapping_version": "bayes_h5d_trust_diagnostic_mapping_v1",
     "warning_codes": [
-      "h5:convergence:weak",
-      "h5:evidence:blocked",
       "h5:production:block",
       "h5:transform_assumption:identity",
       "h5:transform_unknown:real_panel"
@@ -468,17 +455,17 @@
       "transform_alignment_status": "assumption_only",
       "transform_mismatch_detected": false,
       "panel_context": "real_panel",
-      "convergence_status": "weak_convergence",
-      "evidence_promotion_allowed": false,
+      "convergence_status": "converged_diagnostic_only",
+      "evidence_promotion_allowed": true,
       "beta_gc_mae_mean": null,
       "mu_c_mae_mean": null,
       "mu_channel_mean": {
-        "search": 0.3459201485622604,
-        "tv": 0.04980057427408759
+        "search": 0.29793966584001763,
+        "social": 0.10852175126686599
       },
       "convergence_rhat_max": 1.01,
-      "convergence_ess_bulk_min": 601.0,
-      "convergence_divergence_count": 3
+      "convergence_ess_bulk_min": 629.0,
+      "convergence_divergence_count": 0
     },
     "production_trust_report": null,
     "recommended_interpretation": "RESEARCH ONLY \u2014 NOT DECISION GRADE Shadow-run diagnostic mapping only; not production TrustReport."

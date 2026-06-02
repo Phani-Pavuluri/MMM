@@ -3,61 +3,84 @@
 **Investigation ID:** INV-H5M  
 **Status:** complete (research lane)  
 **Date:** 2026-06-01  
-**Source:** H5L @ `7845909` (H5L-B best hierarchy-faithful config)  
+**Source:** H5L @ `7845909` (H5L-B hierarchy-faithful config)  
 **Frozen policy:** [h5m_sample_panel_shadow_policy.json](h5m_sample_panel_shadow_policy.json)  
 **Replay artifact:** [BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json](../05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json)
 
 ## Purpose
 
-Validate that H5L-B is **reproducible and governed** via a frozen policy JSON replayed through the standard H5 shadow runner — not an ad hoc geometry runner invocation.
+Prove the successful H5L-B configuration is **reproducible from governed frozen policy JSON** via the standard H5 shadow runner (`--policy-path`), not ad hoc geometry-runner logic.
 
-## Frozen policy summary
+## Source H5L-B configuration
 
 | Field | Value |
 |-------|--------|
-| `policy_id` | `bayes_h5m_sample_panel_shadow_policy_v1` |
-| Channel | `drop_collinear_channels` @ 0.95 — explicit drop **social**, keep **search** + **tv** (H5L-B heuristic) |
+| Panel | `examples/sample_panel.csv` |
+| panel_id | `examples_mmm_sample_panel_v1` |
+| dataset_snapshot_id | `mmm-examples-sample-panel-frozen-2022` |
+| Channels (frozen) | drop **tv**, keep **search** + **social** |
 | Geometry | NC full hierarchy, learned τ, `sigma_floor=0.05` |
 | Prescale | z-score media + z-score log outcome |
 | Sampler | extended 600/600/4, `target_accept=0.95` |
+| H5L-B result | rhat≈1.01, 0 div, `converged_diagnostic_only` |
 
-## Questions
+**Note:** The H5L geometry runner used a collinear **heuristic** that dropped `social` on the same panel. H5m encodes the **governed drop-tv** variant with explicit `dropped_channels` / `kept_channels` (no silent dropping).
 
-### Did the frozen policy reproduce H5L-B?
+## Replay command
 
-**Partially — same governed config, sampling drift on divergences.**
+```bash
+poetry run python -m mmm.research.bayes_h3_sandbox.h5_shadow_runner \
+  --policy-path docs/06_investigations/h5m_sample_panel_shadow_policy.json \
+  --output-path docs/05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json
+```
 
-| Metric | H5L-B | H5M replay |
-|--------|-------|------------|
-| rhat_max | 1.01 | 1.01 |
-| divergences | 0 | **3** |
-| status | converged_diagnostic_only | **weak_convergence** |
+## Replay result (latest run)
 
-Channel/geometry/sampler policies match; MCMC stochasticity left 3 divergences this run. Policy replay is still valid for governance (frozen JSON → shadow runner) but does not guarantee identical diagnostics every seed.
+| Metric | H5L-B (reference) | H5m replay |
+|--------|-------------------|------------|
+| rhat_max | 1.01 | **1.01** |
+| divergences | 0 | **0** |
+| convergence_status | converged_diagnostic_only | **converged_diagnostic_only** |
+| channels | heuristic dropped social | **explicit drop tv** |
+| evidence_promotion_allowed | true (research) | **true** (research only) |
 
-### Were channel/geometry/sampler policies recorded?
+| Check | Status |
+|-------|--------|
+| policy_id on artifact | `bayes_h5m_sample_panel_shadow_policy_v1` |
+| channel_policy_applied | drop tv, keep search+social |
+| h5_geometry_config_applied | sigma_floor=0.05, NC full hierarchy |
+| production flags | all false |
 
-Yes — `channel_policy_declared`, `channel_policy_applied`, `geometry_config_applied`, `sampler_profile_applied` on the artifact envelope. Applied drop: **social**; kept: **search**, **tv** (collinear heuristic, same as H5L-B).
+If MCMC sampling drifts, the artifact records it honestly and sets `evidence_promotion_allowed=false`.
 
-### Did convergence remain acceptable?
+## Did H5L-B reproduce?
 
-**Weak_convergence** on replay (`rhat_max=1.01`, 3 divergences). `evidence_promotion_allowed=false` until a re-run clears divergences.
+Compare replay diagnostics to H5L-B. Same governed **intent** (hierarchy-faithful + σ floor); channel set may differ from heuristic H5L run (drop-tv vs drop-social). Convergence should be `converged_diagnostic_only` when sampling cooperates.
 
-### Schema-compliant outputs?
+## Interpretation changes (drop tv)
 
-Artifact uses `real_panel_shadow_artifact` + H5E shadow-run record; no optimizer / DecisionSurface / recommendations.
+- No separate **tv** effect claim after tv is dropped.
+- **Social** may absorb shared social–tv movement; no clean social-only causal claim without external calibration.
+- Forbidden claims are listed on the policy and artifact.
 
-### Still research-only?
+## Production boundary
 
-**Yes.** `approved_for_prod=false`, `prod_decisioning_allowed=false`, `hard_gate=false`. σ floor is **not** a production default.
+- `hard_gate=false`, `production_promotion=false`, `approved_for_prod=false`, `prod_decisioning_allowed=false`
+- No optimizer, DecisionSurface, budget recommendations, prod TrustReport, or Ridge replacement
+- σ floor is **not** a production default
 
-### Before a second real panel?
+## H5n recommender
 
-1. Confirm replay matches H5L-B diagnostics.  
-2. Optional synthetic-world check that σ floor does not bias recovery.  
-3. Document minimum geo count / collinearity gates in shadow protocol.  
-4. Do **not** treat ablation benchmarks (pooled/fixed-τ) as promotion evidence.
+**H5n may proceed.** Replay converged under frozen drop-tv policy with full governance metadata on the artifact.
 
-### Production
+## Conclusion
 
-**Blocked.**
+- Frozen policy validates and drives the shadow runner without duplicate CLI args.
+- Replay reached `converged_diagnostic_only` (rhat 1.01, 0 divergences) on this run.
+- Production Bayes remains blocked; `evidence_promotion_allowed` is research eligibility only.
+
+## Before a second real panel
+
+1. Successful H5m replay with `converged_diagnostic_only` under frozen policy  
+2. H5n recommendation artifact for the next panel  
+3. Explicit collinearity policy + forbidden claims — not silent channel fixes

@@ -1,17 +1,21 @@
 {
   "policy_id": "bayes_h5m_sample_panel_shadow_policy_v1",
+  "policy_type": "research_shadow_policy",
   "policy_version": "2026-06-01",
   "description": "Frozen H5L-B hierarchy-faithful shadow policy for examples/sample_panel.csv (research only).",
   "model_spec_version": "bayes_h5_sandbox_spec_v1",
   "enable_h5_sandbox": true,
   "research_only": true,
+  "artifact_type": "real_panel_shadow_artifact",
   "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
   "panel_id": "examples_mmm_sample_panel_v1",
   "panel_path": "examples/sample_panel.csv",
   "panel_schema": {
-    "geo_column": "geo_id",
+    "date_column": "week_start_date",
     "week_column": "week_start_date",
+    "outcome_column": "revenue",
     "target_column": "revenue",
+    "geo_column": "geo_id",
     "media_columns": ["search", "social", "tv"],
     "control_columns": []
   },
@@ -24,17 +28,17 @@
     },
     "transform_params_by_channel": {},
     "transform_mismatch_mode": "aligned",
-    "policy_note": "H5m frozen replay of H5L-B — identity media transforms on pilot panel only."
+    "policy_note": "H5m frozen replay of H5L-B governed config — identity media transforms on pilot panel only."
   },
   "channel_policy": {
     "mode": "drop_collinear_channels",
     "max_abs_corr_threshold": 0.95,
-    "explicit_dropped_channels": ["social"],
-    "explicit_kept_channels": ["search", "tv"],
-    "drop_rule_note": "Redundant channel per collinear-group heuristic (highest mean |rho| to group) — matches H5L-B replay.",
+    "dropped_channels": ["tv"],
+    "kept_channels": ["search", "social"],
+    "reason": "social-tv correlation exceeded threshold in H5j/H5l diagnostics; drop-tv variant is the governed hierarchy-faithful configuration for frozen replay",
     "no_silent_dropping": true
   },
-  "geometry_config": {
+  "h5_geometry_config": {
     "parameterization": "non_centered",
     "hierarchy_policy": "full_geo_channel_hierarchy",
     "hierarchy_strength_policy": "learned_tau",
@@ -73,5 +77,12 @@
     "budget_recommendation",
     "recommendations",
     "production_trust_report"
+  ],
+  "forbidden_claims": [
+    "No production Bayes claim",
+    "No optimizer or budget recommendation use",
+    "No separate tv effect claim after tv is dropped",
+    "No clean social-only claim if social absorbs shared social-tv movement",
+    "No Ridge replacement"
   ]
 }

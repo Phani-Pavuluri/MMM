@@ -93,6 +93,7 @@ class ShadowRunRequest:
     sampler_profile_applied: dict[str, Any] | None = None
     channel_policy_declared: dict[str, Any] | None = None
     channel_policy_applied: dict[str, Any] | None = None
+    forbidden_claims: list[str] | None = None
 
 
 def _sha256_bytes(payload: bytes) -> str:
@@ -459,6 +460,7 @@ def build_shadow_run_artifact(
             sampler_profile_applied=request.sampler_profile_applied,
             channel_policy_declared=request.channel_policy_declared,
             channel_policy_applied=policy_record,
+            forbidden_claims=request.forbidden_claims,
         )
         cfg, sampler_profile = _config_from_panel(
             df,
@@ -558,11 +560,15 @@ def build_shadow_run_artifact(
 
         artifact["policy_id"] = request.policy_id
         artifact["source_policy_path"] = request.source_policy_path
+        artifact["panel_id"] = request.panel_id
+        artifact["dataset_snapshot_id"] = request.dataset_snapshot_id
         artifact["channel_policy_applied"] = request.channel_policy_applied
         artifact["channel_policy_declared"] = request.channel_policy_declared
         geom = request.geometry_config or {}
-        artifact["geometry_config_applied"] = geometry_record_for_artifact(geom)
+        artifact["h5_geometry_config_applied"] = geometry_record_for_artifact(geom)
+        artifact["geometry_config_applied"] = artifact["h5_geometry_config_applied"]
         artifact["sampler_profile_applied"] = request.sampler_profile_applied
+        artifact["forbidden_claims"] = list(request.forbidden_claims or [])
         artifact["trust_report_candidate_diagnostics"] = shadow_record.get(
             "trust_report_candidate_diagnostics"
         )
@@ -677,6 +683,20 @@ def main(argv: list[str] | None = None) -> int:
             policy_to_shadow_request,
         )
 
+        conflicting = [
+            name
+            for name, val in (
+                ("--panel-path", args.panel_path),
+                ("--panel-id", args.panel_id),
+                ("--dataset-snapshot-id", args.dataset_snapshot_id),
+                ("--transform-config", args.transform_config),
+            )
+            if val
+        ]
+        if conflicting:
+            raise SystemExit(
+                f"--policy-path fully specifies the run; do not pass {', '.join(conflicting)}"
+            )
         policy = load_shadow_policy(args.policy_path)
         request = policy_to_shadow_request(
             policy,
