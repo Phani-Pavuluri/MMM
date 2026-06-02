@@ -187,6 +187,21 @@ Bayes-H5n adds a **research-only shadow-policy recommender** that maps collinear
 
 **H5o gate:** second real panel only after H5n recommendation artifacts exist; collinearity governed via explicit policy, interpretation changes, and forbidden claims — not silent fixes.
 
+### H5o second real-panel shadow run (INV-H5O)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — one second panel via H5n recommender → frozen policy → `--policy-path` replay |
+| **Investigation** | [INV-H5O](../06_investigations/INV-H5O_SECOND_REAL_PANEL_SHADOW_RUN.md) |
+| **Panel** | `examples/benchmark_geo_panel_v1.csv` (`examples_mmm_benchmark_geo_panel_v1`) |
+| **Recommendation** | [BAYES_H5O_SHADOW_POLICY_RECOMMENDATION_…](../05_validation/archives/BAYES_H5O_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json) |
+| **Policy** | [h5o_examples_mmm_benchmark_geo_panel_v1_shadow_policy.json](../06_investigations/h5o_examples_mmm_benchmark_geo_panel_v1_shadow_policy.json) |
+| **Shadow artifact** | [BAYES_H5O_SHADOW_RUN_…](../05_validation/archives/BAYES_H5O_SHADOW_RUN_EXAMPLES_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json) |
+| **Outcome** | keep-all + σ-floor; `converged_diagnostic_only` (rhat 1.0, 0 div) — contrasts H5m drop-tv on collinear sample panel |
+| **Production** | **Still blocked** |
+
+Do **not** batch additional panels without a new milestone and manifest.
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

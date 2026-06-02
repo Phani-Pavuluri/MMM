@@ -291,6 +291,92 @@ def policy_to_shadow_runner_args(
     }
 
 
+def shadow_policy_from_recommendation(
+    recommendation_artifact: dict[str, Any],
+    *,
+    policy_id: str,
+    panel_path: str | Path,
+    panel_id: str,
+    dataset_snapshot_id: str,
+    panel_schema: dict[str, Any],
+    transform_config: dict[str, Any],
+    description: str = "",
+    policy_version: str = "2026-06-01",
+) -> dict[str, Any]:
+    """Freeze a runnable H5n recommendation into a research shadow policy JSON object."""
+    rec = recommendation_artifact.get("recommended_shadow_policy") or {}
+    status = rec.get("status")
+    if status in ("do_not_run", "requires_external_calibration"):
+        raise H5ShadowPolicyError(
+            f"cannot freeze shadow policy when recommendation status is {status!r}"
+        )
+    channel_policy = rec.get("channel_policy")
+    geometry = rec.get("h5_geometry_config")
+    sampler = rec.get("sampler_profile")
+    if not channel_policy or not geometry or not sampler:
+        raise H5ShadowPolicyError(
+            "recommended_shadow_policy must include channel_policy, h5_geometry_config, sampler_profile"
+        )
+
+    forbidden = list(recommendation_artifact.get("forbidden_claims") or [])
+    policy: dict[str, Any] = {
+        "policy_id": policy_id,
+        "policy_type": POLICY_TYPE_RESEARCH,
+        "policy_version": policy_version,
+        "description": description or f"H5o frozen policy for {panel_id} (research only).",
+        "model_spec_version": H5_MODEL_SPEC_VERSION,
+        "enable_h5_sandbox": True,
+        "research_only": True,
+        "artifact_type": "real_panel_shadow_artifact",
+        "dataset_snapshot_id": dataset_snapshot_id,
+        "panel_id": panel_id,
+        "panel_path": str(panel_path),
+        "panel_schema": dict(panel_schema),
+        "transform_config": dict(transform_config),
+        "channel_policy": dict(channel_policy),
+        "h5_geometry_config": dict(geometry),
+        "prescale": dict(rec.get("prescale") or {"media_prescale": "zscore_panel", "outcome_prescale": "zscore_log"}),
+        "sampler_profile": dict(sampler),
+        "production_flags": {
+            **{k: research_production_flags()[k] for k in PRODUCTION_FLAG_KEYS},
+            "research_only": True,
+            "decision_grade": False,
+            "production_decision_surface": False,
+        },
+        "excluded_fields": list(
+            recommendation_artifact.get("excluded_fields")
+            or [
+                "optimizer",
+                "optimizer_ready_curves",
+                "optimizer_input",
+                "decision_surface",
+                "DecisionSurface",
+                "budget_recommendation",
+                "recommendations",
+                "production_trust_report",
+            ]
+        ),
+        "forbidden_claims": forbidden,
+        "recommendation_artifact_id": recommendation_artifact.get("artifact_id"),
+        "recommendation_status": status,
+    }
+    validate_shadow_policy(policy)
+    return policy
+
+
+def write_shadow_policy_from_recommendation(
+    recommendation_artifact: dict[str, Any],
+    policy_path: str | Path,
+    **kwargs: Any,
+) -> dict[str, Any]:
+    policy = shadow_policy_from_recommendation(recommendation_artifact, **kwargs)
+    path = Path(policy_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(policy, indent=2) + "\n", encoding="utf-8")
+    policy["policy_path"] = str(path)
+    return policy
+
+
 def policy_to_shadow_request(
     policy: dict[str, Any],
     *,

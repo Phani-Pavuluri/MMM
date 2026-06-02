@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import argparse
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -97,6 +98,19 @@ class ShadowPolicyRecommendationInput:
     frozen_policy_reference: dict[str, Any] | None = None
     corr_threshold: float = DEFAULT_CORR_THRESHOLD
     collinear_groups: list[dict[str, Any]] | None = None
+    artifact_id: str | None = None
+
+
+def panel_recommendation_artifact_id(panel_id: str, *, date_suffix: str = "20260601") -> str:
+    """Stable archive artifact id for a panel recommendation."""
+    slug = panel_id.upper().replace("-", "_")
+    return f"BAYES_H5O_SHADOW_POLICY_RECOMMENDATION_{slug}_{date_suffix}"
+
+
+def recommendation_is_runnable(artifact: dict[str, Any]) -> bool:
+    """True when recommender permits a shadow run (not do_not_run)."""
+    status = (artifact.get("recommended_shadow_policy") or {}).get("status")
+    return status not in (STATUS_DO_NOT_RUN, STATUS_REQUIRES_EXTERNAL_CALIBRATION)
 
 
 def _require_non_empty_dict(val: Any, name: str) -> dict[str, Any]:
@@ -406,9 +420,7 @@ def recommend_shadow_policy(inp: ShadowPolicyRecommendationInput) -> dict[str, A
                 rationale="Max |ρ| below threshold — keep all channels with routine weak-ID monitoring.",
                 channel_policy=keep_policy,
                 h5_geometry_config=primary_geometry,
-                evidence_promotion_allowed=bool(
-                    faithful_converged or not experiments
-                ),
+                evidence_promotion_allowed=bool(faithful_converged),
                 hierarchy_faithful=True,
             )
         )
@@ -589,8 +601,9 @@ def recommend_shadow_policy(inp: ShadowPolicyRecommendationInput) -> dict[str, A
             "policy_id"
         )
 
+    artifact_id = inp.artifact_id or ARTIFACT_ID
     return {
-        "artifact_id": ARTIFACT_ID,
+        "artifact_id": artifact_id,
         "investigation_id": INVESTIGATION_ID,
         "panel_id": inp.panel_id,
         "dataset_snapshot_id": inp.dataset_snapshot_id,
@@ -660,19 +673,45 @@ def load_prior_experiment_results(
     return rows
 
 
-def build_sample_panel_recommendation(
+def _default_panel_schema() -> dict[str, Any]:
+    return {
+        "geo_column": "geo_id",
+        "week_column": "week_start_date",
+        "date_column": "week_start_date",
+        "outcome_column": "revenue",
+        "target_column": "revenue",
+        "media_columns": ["search", "social", "tv"],
+        "control_columns": [],
+    }
+
+
+def build_panel_recommendation(
     *,
-    panel_path: str | Path = DEFAULT_PANEL_PATH,
-    frozen_policy_path: str | Path = DEFAULT_H5M_POLICY,
+    panel_path: str | Path,
+    panel_id: str,
+    dataset_snapshot_id: str,
+    panel_schema: dict[str, Any] | None = None,
+    frozen_policy_path: str | Path | None = None,
     corr_threshold: float = DEFAULT_CORR_THRESHOLD,
+    include_sample_panel_prior_evidence: bool = False,
+    calibration_evidence_available: bool = False,
+    business_metadata: dict[str, Any] | None = None,
+    artifact_id: str | None = None,
 ) -> dict[str, Any]:
-    """Build recommendation artifact for the examples sample panel."""
+    """Build recommendation artifact for an arbitrary in-repo real panel."""
     from mmm.research.bayes_h3_sandbox.h5_shadow_runner import load_panel_from_path
 
     path = Path(panel_path)
-    df = load_panel_from_path(path)
-    frozen = load_shadow_policy(frozen_policy_path) if Path(frozen_policy_path).is_file() else None
-    schema_raw = (frozen or {}).get("panel_schema") or {}
+    if not path.is_file():
+        raise H5ShadowPolicyRecommenderError(f"panel not found: {path}")
+
+    frozen: dict[str, Any] | None = None
+    if frozen_policy_path and Path(frozen_policy_path).is_file():
+        frozen = load_shadow_policy(frozen_policy_path)
+        if frozen.get("panel_id") and frozen.get("panel_id") != panel_id:
+            frozen = None
+
+    schema_raw = dict(panel_schema or frozen.get("panel_schema") if frozen else _default_panel_schema())
     channels = tuple(schema_raw.get("media_columns") or ["search", "social", "tv"])
     schema = PanelSchema(
         schema_raw.get("geo_column", "geo_id"),
@@ -681,6 +720,7 @@ def build_sample_panel_recommendation(
         channels,
         tuple(schema_raw.get("control_columns") or ()),
     )
+    df = load_panel_from_path(path)
     df = validate_panel(df, schema, integrity_qa=False, calendar_strict=False)
 
     col_diag = inspect_collinearity_diagnostics(df, schema)
@@ -689,34 +729,57 @@ def build_sample_panel_recommendation(
     )
     col_diag["media_correlation_matrix"] = compute_media_correlation_matrix(df, channels)
 
+    experiments: list[dict[str, Any]] = []
+    if include_sample_panel_prior_evidence:
+        experiments = load_prior_experiment_results()
+
     inp = ShadowPolicyRecommendationInput(
-        panel_id=PANEL_ID,
-        dataset_snapshot_id=DATASET_SNAPSHOT_ID,
-        panel_schema=dict(schema_raw) if schema_raw else {
-            "geo_column": schema.geo_column,
-            "week_column": schema.week_column,
-            "target_column": schema.target_column,
-            "media_columns": list(channels),
-        },
+        panel_id=panel_id,
+        dataset_snapshot_id=dataset_snapshot_id,
+        panel_schema=schema_raw,
         collinearity_diagnostics=col_diag,
         sparsity_diagnostics=inspect_sparsity_diagnostics(df, schema),
-        panel_diagnostics={"n_rows": len(df), "n_geos": df[schema.geo_column].nunique()},
-        convergence_experiment_results=load_prior_experiment_results(),
-        calibration_evidence_available=False,
+        panel_diagnostics={"n_rows": len(df), "n_geos": int(df[schema.geo_column].nunique())},
+        convergence_experiment_results=experiments,
+        calibration_evidence_available=calibration_evidence_available,
         frozen_policy_reference=frozen,
         corr_threshold=corr_threshold,
         collinear_groups=col_diag.get("collinear_groups"),
+        business_metadata=business_metadata,
+        artifact_id=artifact_id or panel_recommendation_artifact_id(panel_id),
     )
     artifact = recommend_shadow_policy(inp)
-    artifact["source_evidence"] = {
-        "h5j_artifact": str(DEFAULT_H5J_ARTIFACT),
-        "h5l_artifact": str(DEFAULT_H5L_ARTIFACT),
-        "h5m_replay_artifact": str(DEFAULT_H5M_REPLAY),
-        "h5m_frozen_policy": str(frozen_policy_path),
-        "panel_path": str(path),
-    }
+    artifact["source_evidence"] = {"panel_path": str(path)}
+    if include_sample_panel_prior_evidence:
+        artifact["source_evidence"].update(
+            {
+                "h5j_artifact": str(DEFAULT_H5J_ARTIFACT),
+                "h5l_artifact": str(DEFAULT_H5L_ARTIFACT),
+                "h5m_replay_artifact": str(DEFAULT_H5M_REPLAY),
+            }
+        )
     if frozen:
         artifact["recommended_frozen_policy_id"] = frozen.get("policy_id")
+        artifact["source_evidence"]["frozen_policy"] = str(frozen_policy_path)
+    return artifact
+
+
+def build_sample_panel_recommendation(
+    *,
+    panel_path: str | Path = DEFAULT_PANEL_PATH,
+    frozen_policy_path: str | Path = DEFAULT_H5M_POLICY,
+    corr_threshold: float = DEFAULT_CORR_THRESHOLD,
+) -> dict[str, Any]:
+    """Build recommendation artifact for the examples sample panel (H5n default)."""
+    artifact = build_panel_recommendation(
+        panel_path=panel_path,
+        panel_id=PANEL_ID,
+        dataset_snapshot_id=DATASET_SNAPSHOT_ID,
+        frozen_policy_path=frozen_policy_path,
+        corr_threshold=corr_threshold,
+        include_sample_panel_prior_evidence=True,
+        artifact_id=ARTIFACT_ID,
+    )
     return artifact
 
 
@@ -743,6 +806,32 @@ def validate_recommendation_artifact(artifact: dict[str, Any]) -> None:
         raise H5ShadowPolicyRecommenderError("do_not_run cannot have evidence_promotion_allowed")
 
 
+def write_panel_recommendation_artifact(
+    *,
+    panel_path: str | Path,
+    panel_id: str,
+    dataset_snapshot_id: str,
+    output_path: str | Path,
+    panel_schema: dict[str, Any] | None = None,
+    frozen_policy_path: str | Path | None = None,
+    include_sample_panel_prior_evidence: bool = False,
+) -> dict[str, Any]:
+    artifact = build_panel_recommendation(
+        panel_path=panel_path,
+        panel_id=panel_id,
+        dataset_snapshot_id=dataset_snapshot_id,
+        panel_schema=panel_schema,
+        frozen_policy_path=frozen_policy_path,
+        include_sample_panel_prior_evidence=include_sample_panel_prior_evidence,
+    )
+    validate_recommendation_artifact(artifact)
+    out = Path(output_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(artifact, indent=2, default=str) + "\n", encoding="utf-8")
+    artifact["artifact_path"] = str(out)
+    return artifact
+
+
 def write_sample_panel_recommendation_artifact(
     output_path: str | Path | None = None,
 ) -> dict[str, Any]:
@@ -755,9 +844,53 @@ def write_sample_panel_recommendation_artifact(
     return artifact
 
 
-def main() -> int:
-    artifact = write_sample_panel_recommendation_artifact()
+def _build_cli_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description="Bayes-H5n shadow-policy recommender (research only)")
+    p.add_argument("--panel-path", type=str, default=None)
+    p.add_argument("--panel-id", type=str, default=None)
+    p.add_argument("--dataset-snapshot-id", type=str, default=None)
+    p.add_argument("--output-path", type=str, default=None)
+    p.add_argument(
+        "--include-sample-panel-prior-evidence",
+        action="store_true",
+        help="Attach H5j/H5l/H5m experiment rows (sample panel only)",
+    )
+    p.add_argument(
+        "--frozen-policy-path",
+        type=str,
+        default=None,
+        help="Optional frozen policy when panel_id matches",
+    )
+    return p
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _build_cli_parser().parse_args(argv)
+    if args.panel_path and args.panel_id and args.dataset_snapshot_id:
+        out = args.output_path or (
+            f"docs/05_validation/archives/"
+            f"{panel_recommendation_artifact_id(args.panel_id)}.json"
+        )
+        artifact = write_panel_recommendation_artifact(
+            panel_path=args.panel_path,
+            panel_id=args.panel_id,
+            dataset_snapshot_id=args.dataset_snapshot_id,
+            output_path=out,
+            frozen_policy_path=args.frozen_policy_path,
+            include_sample_panel_prior_evidence=args.include_sample_panel_prior_evidence,
+        )
+    else:
+        artifact = write_sample_panel_recommendation_artifact(
+            output_path=args.output_path,
+        )
     print(artifact["artifact_path"])
+    if not recommendation_is_runnable(artifact):
+        print(
+            "STOP: recommended_shadow_policy status="
+            f"{artifact['recommended_shadow_policy']['status']!r} — do not force shadow run",
+            file=__import__('sys').stderr,
+        )
+        return 2
     return 0
 
 

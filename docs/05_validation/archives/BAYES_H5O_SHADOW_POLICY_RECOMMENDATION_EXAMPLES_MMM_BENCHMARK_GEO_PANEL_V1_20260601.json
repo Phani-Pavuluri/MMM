@@ -1,0 +1,133 @@
+{
+  "artifact_id": "BAYES_H5O_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_BENCHMARK_GEO_PANEL_V1_20260601",
+  "investigation_id": "INV-H5N_SHADOW_POLICY_RECOMMENDER",
+  "panel_id": "examples_mmm_benchmark_geo_panel_v1",
+  "dataset_snapshot_id": "mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+  "model_spec_version": "bayes_h5_sandbox_spec_v1",
+  "recommender_version": "bayes_h5n_shadow_policy_recommender_v1",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "collinearity_summary": {
+    "max_abs_correlation": 0.060670394683298774,
+    "threshold": 0.95,
+    "high_collinearity": false,
+    "collinear_groups": []
+  },
+  "sparsity_summary": {
+    "by_channel": {
+      "search": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 0.3204581958084257
+      },
+      "social": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 0.3727492653506857
+      },
+      "tv": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 0.4144239071146542
+      }
+    },
+    "any_hard_zeros": false
+  },
+  "recommended_shadow_policy": {
+    "channel_recommendation_id": "keep_all_channels_with_weak_id_warning",
+    "channel_policy": {
+      "mode": "keep_all_channels",
+      "no_silent_dropping": true
+    },
+    "geometry_recommendation_id": "full_hierarchy_non_centered_sigma_floor",
+    "h5_geometry_config": {
+      "parameterization": "non_centered",
+      "hierarchy_policy": "full_geo_channel_hierarchy",
+      "hierarchy_strength_policy": "learned_tau",
+      "tau_parameterization": "current",
+      "beta_prior_policy": "current_default",
+      "sigma_policy": "sigma_floor",
+      "sigma_floor": 0.05,
+      "likelihood_scale_policy": "prescaled_log_outcome"
+    },
+    "sampler_profile": {
+      "profile": "extended_mcmc",
+      "draws": 600,
+      "tune": 600,
+      "chains": 4,
+      "target_accept": 0.95
+    },
+    "prescale": {
+      "media_prescale": "zscore_panel",
+      "outcome_prescale": "zscore_log"
+    },
+    "status": "recommended",
+    "rationale": "Collinearity below threshold (max |\u03c1|=0.061 < 0.95)."
+  },
+  "allowed_alternatives": [
+    {
+      "recommendation_id": "keep_all_channels_with_weak_id_warning",
+      "status": "recommended",
+      "rationale": "Max |\u03c1| below threshold \u2014 keep all channels with routine weak-ID monitoring.",
+      "channel_policy": {
+        "mode": "keep_all_channels",
+        "no_silent_dropping": true
+      },
+      "h5_geometry_config": {
+        "parameterization": "non_centered",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "hierarchy_strength_policy": "learned_tau",
+        "tau_parameterization": "current",
+        "beta_prior_policy": "current_default",
+        "sigma_policy": "sigma_floor",
+        "sigma_floor": 0.05,
+        "likelihood_scale_policy": "prescaled_log_outcome"
+      },
+      "evidence_promotion_allowed": true,
+      "hierarchy_faithful": true
+    }
+  ],
+  "blocked_options": [
+    {
+      "recommendation_id": "do_not_use_ablation_for_promotion",
+      "status": "blocked",
+      "rationale": "Pooled/fixed-\u03c4 ablations must not be recommended as promotable shadow policies.",
+      "evidence_promotion_allowed": false,
+      "hierarchy_faithful": false
+    }
+  ],
+  "interpretation_changes": [
+    "Keep-all under collinearity or weak ID: forbid channel-level budget or causal decision use."
+  ],
+  "forbidden_claims": [
+    "No DecisionSurface or budget recommendations",
+    "No Ridge replacement",
+    "No optimizer or budget recommendation use",
+    "No production Bayes claim",
+    "Shadow policy recommendations are not business decisions"
+  ],
+  "evidence_status": {
+    "evidence_promotion_allowed": false,
+    "hierarchy_faithful": true,
+    "convergence_status": null,
+    "note": "research_only \u2014 not production promotion"
+  },
+  "calibration_evidence_available": false,
+  "hard_gate": false,
+  "production_promotion": false,
+  "approved_for_prod": false,
+  "prod_decisioning_allowed": false,
+  "research_only": true,
+  "decision_grade": false,
+  "production_decision_surface": false,
+  "outputs_are_diagnostic_only": true,
+  "excluded_fields": [
+    "DecisionSurface",
+    "budget_recommendation",
+    "decision_surface",
+    "optimizer",
+    "recommendations"
+  ],
+  "source_evidence": {
+    "panel_path": "examples/benchmark_geo_panel_v1.csv"
+  }
+}

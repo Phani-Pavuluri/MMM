@@ -209,7 +209,16 @@ All items below are **future** reliability-program requirements (Track 2), not s
 | `h5_shadow_policy_recommender.py` + sample-panel artifact | **Complete** — [INV-H5N](../06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md) |
 | Production Bayes / optimizer / DecisionSurface | **Not in scope** |
 
-Maps collinearity, sparsity, convergence, weak ID, and calibration availability into explicit channel + geometry + sampler policy recommendations with rationale, forbidden claims, and blocked options. Sample panel recommends H5m drop-tv frozen policy. **H5o+** second real panel unblocked on H5n artifacts. See [H5 ADR § H5n](bayes_h5_model_spec_improvement_adr.md#h5n-shadow-policy-recommender-inv-h5n).
+Maps collinearity, sparsity, convergence, weak ID, and calibration availability into explicit channel + geometry + sampler policy recommendations with rationale, forbidden claims, and blocked options. Sample panel recommends H5m drop-tv frozen policy. See [H5 ADR § H5n](bayes_h5_model_spec_improvement_adr.md#h5n-shadow-policy-recommender-inv-h5n).
+
+### Bayes-H5o — Second real-panel shadow ✅
+
+| Deliverable | Status |
+|-------------|--------|
+| `benchmark_geo_panel_v1` + recommender → freeze → replay | **Complete** — [INV-H5O](../06_investigations/INV-H5O_SECOND_REAL_PANEL_SHADOW_RUN.md) |
+| Production Bayes | **Not in scope** |
+
+One panel only (`examples_mmm_benchmark_geo_panel_v1`); keep-all policy under low collinearity; converged replay. Do not batch panels.
 
 ### Bayes-H5 — Production candidacy review
 

@@ -187,3 +187,75 @@ def test_output_artifact_includes_policy_metadata(mock_fit, tmp_path) -> None:
     assert artifact["production_flags"]["approved_for_prod"] is False
     for forbidden in ("decision_surface", "optimizer_ready_curves", "budget_recommendation"):
         assert artifact.get(forbidden) is None
+
+
+def test_shadow_policy_from_recommendation_keep_all() -> None:
+    from mmm.research.bayes_h3_sandbox.h5_shadow_policy import shadow_policy_from_recommendation
+    from mmm.research.bayes_h3_sandbox.h5_shadow_runner import load_transform_config
+
+    rec = {
+        "artifact_id": "TEST-REC",
+        "forbidden_claims": ["No production Bayes claim"],
+        "recommended_shadow_policy": {
+            "status": "recommended",
+            "channel_policy": {"mode": "keep_all_channels", "no_silent_dropping": True},
+            "h5_geometry_config": {
+                "parameterization": "non_centered",
+                "hierarchy_policy": "full_geo_channel_hierarchy",
+                "hierarchy_strength_policy": "learned_tau",
+                "tau_parameterization": "current",
+                "beta_prior_policy": "current_default",
+                "sigma_policy": "sigma_floor",
+                "sigma_floor": 0.05,
+                "likelihood_scale_policy": "prescaled_log_outcome",
+            },
+            "sampler_profile": {
+                "profile": "extended_mcmc",
+                "draws": 600,
+                "tune": 600,
+                "chains": 4,
+                "target_accept": 0.95,
+            },
+        },
+    }
+    transform = load_transform_config(
+        "docs/06_investigations/h5o_benchmark_geo_panel_transform_config.json"
+    )
+    policy = shadow_policy_from_recommendation(
+        rec,
+        policy_id="test_h5o_policy_v1",
+        panel_path="examples/benchmark_geo_panel_v1.csv",
+        panel_id="examples_mmm_benchmark_geo_panel_v1",
+        dataset_snapshot_id="mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+        panel_schema={
+            "geo_column": "geo_id",
+            "week_column": "week_start_date",
+            "target_column": "revenue",
+            "media_columns": ["search", "social", "tv"],
+            "control_columns": [],
+        },
+        transform_config=transform,
+    )
+    validate_shadow_policy(policy)
+    assert policy["channel_policy"]["mode"] == "keep_all_channels"
+
+
+def test_shadow_policy_from_do_not_run_fails() -> None:
+    from mmm.research.bayes_h3_sandbox.h5_shadow_policy import shadow_policy_from_recommendation
+
+    with pytest.raises(H5ShadowPolicyError, match="do_not_run"):
+        shadow_policy_from_recommendation(
+            {
+                "forbidden_claims": ["x"],
+                "recommended_shadow_policy": {"status": "do_not_run"},
+            },
+            policy_id="x",
+            panel_path="p.csv",
+            panel_id="p",
+            dataset_snapshot_id="s",
+            panel_schema={"media_columns": ["a"]},
+            transform_config={
+                "media_transforms_by_channel": {"a": "identity"},
+                "transform_mismatch_mode": "aligned",
+            },
+        )

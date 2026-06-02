@@ -1898,6 +1898,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H5O — Bayes-H5 second real-panel shadow run
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5O |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5O_SECOND_REAL_PANEL_SHADOW_RUN.md](INV-H5O_SECOND_REAL_PANEL_SHADOW_RUN.md) |
+| **Panel** | `examples/benchmark_geo_panel_v1.csv` |
+| **Outcome** | H5n keep-all recommendation → frozen policy → converged_diagnostic_only shadow replay |
+| **Production impact** | None — one panel only; do not batch |
+
+---
+
 ### INV-H5M — Bayes-H5 frozen shadow-policy replay
 
 | Field | Value |

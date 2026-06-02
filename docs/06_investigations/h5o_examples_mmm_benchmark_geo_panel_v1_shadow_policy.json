@@ -1,0 +1,87 @@
+{
+  "policy_id": "bayes_h5o_examples_mmm_benchmark_geo_panel_v1_shadow_policy_v1",
+  "policy_type": "research_shadow_policy",
+  "policy_version": "2026-06-01",
+  "description": "H5o recommender-assisted frozen policy for benchmark_geo_panel_v1 (research only).",
+  "model_spec_version": "bayes_h5_sandbox_spec_v1",
+  "enable_h5_sandbox": true,
+  "research_only": true,
+  "artifact_type": "real_panel_shadow_artifact",
+  "dataset_snapshot_id": "mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+  "panel_id": "examples_mmm_benchmark_geo_panel_v1",
+  "panel_path": "examples/benchmark_geo_panel_v1.csv",
+  "panel_schema": {
+    "geo_column": "geo_id",
+    "week_column": "week_start_date",
+    "date_column": "week_start_date",
+    "outcome_column": "revenue",
+    "target_column": "revenue",
+    "media_columns": [
+      "search",
+      "social",
+      "tv"
+    ],
+    "control_columns": []
+  },
+  "transform_config": {
+    "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+    "media_transforms_by_channel": {
+      "search": "identity",
+      "social": "identity",
+      "tv": "identity"
+    },
+    "transform_params_by_channel": {},
+    "transform_mismatch_mode": "aligned",
+    "policy_note": "H5o second real-panel shadow: identity H5 media transforms on benchmark_geo_panel_v1 (research only)."
+  },
+  "channel_policy": {
+    "mode": "keep_all_channels",
+    "no_silent_dropping": true
+  },
+  "h5_geometry_config": {
+    "parameterization": "non_centered",
+    "hierarchy_policy": "full_geo_channel_hierarchy",
+    "hierarchy_strength_policy": "learned_tau",
+    "tau_parameterization": "current",
+    "beta_prior_policy": "current_default",
+    "sigma_policy": "sigma_floor",
+    "sigma_floor": 0.05,
+    "likelihood_scale_policy": "prescaled_log_outcome"
+  },
+  "prescale": {
+    "media_prescale": "zscore_panel",
+    "outcome_prescale": "zscore_log"
+  },
+  "sampler_profile": {
+    "profile": "extended_mcmc",
+    "draws": 600,
+    "tune": 600,
+    "chains": 4,
+    "target_accept": 0.95
+  },
+  "production_flags": {
+    "hard_gate": false,
+    "prod_decisioning_allowed": false,
+    "production_promotion": false,
+    "approved_for_prod": false,
+    "research_only": true,
+    "decision_grade": false,
+    "production_decision_surface": false
+  },
+  "excluded_fields": [
+    "DecisionSurface",
+    "budget_recommendation",
+    "decision_surface",
+    "optimizer",
+    "recommendations"
+  ],
+  "forbidden_claims": [
+    "No DecisionSurface or budget recommendations",
+    "No Ridge replacement",
+    "No optimizer or budget recommendation use",
+    "No production Bayes claim",
+    "Shadow policy recommendations are not business decisions"
+  ],
+  "recommendation_artifact_id": "BAYES_H5O_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_BENCHMARK_GEO_PANEL_V1_20260601",
+  "recommendation_status": "recommended"
+}

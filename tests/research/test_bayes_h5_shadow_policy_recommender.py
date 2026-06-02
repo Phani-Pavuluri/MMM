@@ -20,7 +20,10 @@ from mmm.research.bayes_h3_sandbox.h5_shadow_policy_recommender import (
     STATUS_DO_NOT_RUN,
     STATUS_RECOMMENDED,
     STATUS_REQUIRES_EXTERNAL_CALIBRATION,
+    build_panel_recommendation,
     build_sample_panel_recommendation,
+    panel_recommendation_artifact_id,
+    recommendation_is_runnable,
     recommend_shadow_policy,
     validate_recommendation_artifact,
     write_sample_panel_recommendation_artifact,
@@ -231,3 +234,31 @@ def test_write_artifact_file(tmp_path) -> None:
     art = write_sample_panel_recommendation_artifact(out)
     assert out.is_file()
     assert art["artifact_id"]
+
+
+def test_benchmark_panel_recommends_keep_all() -> None:
+    bench = Path("examples/benchmark_geo_panel_v1.csv")
+    if not bench.is_file():
+        pytest.skip("benchmark panel missing")
+    art = build_panel_recommendation(
+        panel_path=bench,
+        panel_id="examples_mmm_benchmark_geo_panel_v1",
+        dataset_snapshot_id="mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+    )
+    validate_recommendation_artifact(art)
+    assert recommendation_is_runnable(art)
+    rec = art["recommended_shadow_policy"]
+    assert rec["status"] == STATUS_RECOMMENDED
+    assert rec["channel_policy"]["mode"] == "keep_all_channels"
+    assert art["collinearity_summary"]["high_collinearity"] is False
+    assert art["artifact_id"] == panel_recommendation_artifact_id(
+        "examples_mmm_benchmark_geo_panel_v1"
+    )
+
+
+def test_do_not_run_not_runnable() -> None:
+    art = recommend_shadow_policy(
+        _inp(max_corr=0.99, experiments=[]),
+    )
+    assert art["recommended_shadow_policy"]["status"] == STATUS_DO_NOT_RUN
+    assert recommendation_is_runnable(art) is False

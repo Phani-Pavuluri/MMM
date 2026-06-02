@@ -1,0 +1,11 @@
+{
+  "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+  "media_transforms_by_channel": {
+    "search": "identity",
+    "social": "identity",
+    "tv": "identity"
+  },
+  "transform_params_by_channel": {},
+  "transform_mismatch_mode": "aligned",
+  "policy_note": "H5o second real-panel shadow: identity H5 media transforms on benchmark_geo_panel_v1 (research only)."
+}
