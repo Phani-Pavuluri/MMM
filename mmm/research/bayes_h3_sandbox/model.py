@@ -46,15 +46,26 @@ def _summary_var_names_for_geometry(geometry: dict[str, Any]) -> list[str]:
         HIERARCHY_FULL_GEO_CHANNEL,
         HIERARCHY_POOLED_CHANNEL,
         PARAMETERIZATION_NON_CENTERED,
+        TAU_PARAM_LOG_TAU,
+        TAU_PARAM_NONCENTERED_LOG_TAU,
     )
 
     hier = geometry.get("hierarchy_policy", HIERARCHY_FULL_GEO_CHANNEL)
     param = geometry.get("parameterization", PARAMETERIZATION_NON_CENTERED)
+    tau_param = geometry.get("tau_parameterization", "current")
     names = ["alpha_geo", "sigma"]
     if hier == HIERARCHY_POOLED_CHANNEL:
         names.append("beta_channel")
         return names
-    names.extend(["mu_channel", "tau_channel"])
+    names.append("mu_channel")
+    if hier == HIERARCHY_FIXED_TAU:
+        names.append("tau_channel")
+    elif tau_param == TAU_PARAM_LOG_TAU:
+        names.append("log_tau_channel")
+    elif tau_param == TAU_PARAM_NONCENTERED_LOG_TAU:
+        names.extend(["mu_log_tau", "z_log_tau"])
+    else:
+        names.append("tau_channel")
     if param == PARAMETERIZATION_NON_CENTERED:
         names.append("z_beta")
     else:
@@ -298,20 +309,22 @@ def fit_h5_sandbox_hierarchical(
     channels = list(schema.channel_columns)
     n_c = len(channels)
     from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
+        BETA_PRIOR_CHANNEL_SCALED,
         HIERARCHY_FIXED_TAU,
         HIERARCHY_FULL_GEO_CHANNEL,
         HIERARCHY_POOLED_CHANNEL,
-        LIKELIHOOD_SIGMA_FLOOR,
+        HIERARCHY_STRENGTH_FIXED_TAU,
         PARAMETERIZATION_CENTERED,
         PARAMETERIZATION_NON_CENTERED,
-        apply_likelihood_scale_policy,
+        TAU_PARAM_LOG_TAU,
+        TAU_PARAM_NONCENTERED_LOG_TAU,
+        apply_geometry_priors,
         geometry_record_for_artifact,
         resolve_geometry_config,
     )
 
     overrides = dict(sandbox_model_overrides or {})
     geometry = resolve_geometry_config(overrides)
-    overrides = apply_likelihood_scale_policy(overrides, geometry)
     transforms_by_channel: dict[str, str] = dict(overrides.get("media_transforms_by_channel") or {})
     if not transforms_by_channel:
         transforms_by_channel = {ch: "identity" for ch in channels}
@@ -332,6 +345,8 @@ def fit_h5_sandbox_hierarchical(
         transforms_by_channel,
         transform_params_by_channel=transform_params_by_channel,
     )
+    channel_scales = (np.std(x, axis=0) + 1e-6).tolist()
+    overrides = apply_geometry_priors(overrides, geometry, channel_scales=channel_scales)
 
     y = work[schema.target_column].to_numpy(dtype=float)
     if config.model_form == ModelForm.SEMI_LOG:
@@ -347,7 +362,11 @@ def fit_h5_sandbox_hierarchical(
     nuts_seed = int(config.bayesian.nuts_seed)
     tau_prior_sigma = float(overrides.get("tau_channel_prior_sigma", 0.5))
     mu_prior_sigma = float(overrides.get("mu_channel_prior_sigma", 0.5))
+    z_beta_sigma = float(overrides.get("z_beta_prior_sigma", 1.0))
     sigma_prior_sigma = float(overrides.get("sigma_prior_sigma", 1.0))
+    beta_channel_scales = np.asarray(overrides.get("beta_channel_scales") or [1.0] * n_c, dtype=float)
+    if len(beta_channel_scales) != n_c:
+        beta_channel_scales = np.ones(n_c, dtype=float)
 
     from mmm.research.bayes_h3_sandbox.h5_transforms import is_real_panel_generative
 
@@ -372,7 +391,10 @@ def fit_h5_sandbox_hierarchical(
 
     hier_policy = geometry.get("hierarchy_policy", HIERARCHY_FULL_GEO_CHANNEL)
     param = geometry.get("parameterization", PARAMETERIZATION_NON_CENTERED)
+    tau_param = geometry.get("tau_parameterization", "current")
+    strength = geometry.get("hierarchy_strength_policy", "learned_tau")
     sigma_floor = float(overrides.get("sigma_floor", 0.0))
+    use_fixed_tau = hier_policy == HIERARCHY_FIXED_TAU or strength == HIERARCHY_STRENGTH_FIXED_TAU
 
     with pm.Model() as model:
         alpha_geo = pm.Normal("alpha_geo", mu=0.0, sigma=1.0, shape=n_geo)
@@ -387,16 +409,33 @@ def fit_h5_sandbox_hierarchical(
             mu = alpha_geo[geo_idx] + (x * beta_ch).sum(axis=-1)
         else:
             mu_c = pm.Normal("mu_channel", mu=0.0, sigma=mu_prior_sigma, shape=n_c)
-            if hier_policy == HIERARCHY_FIXED_TAU:
+            if use_fixed_tau:
                 tau_fixed = float(geometry.get("fixed_tau_value", 0.2))
                 tau_c = pm.Deterministic("tau_channel", pm.math.ones(n_c) * tau_fixed)
+            elif tau_param == TAU_PARAM_LOG_TAU:
+                log_tau = pm.Normal(
+                    "log_tau_channel",
+                    mu=float(np.log(max(tau_prior_sigma, 0.05))),
+                    sigma=0.5,
+                    shape=n_c,
+                )
+                tau_c = pm.Deterministic("tau_channel", pm.math.exp(log_tau))
+            elif tau_param == TAU_PARAM_NONCENTERED_LOG_TAU:
+                mu_log = pm.Normal("mu_log_tau", mu=float(np.log(max(tau_prior_sigma, 0.05))), sigma=0.3)
+                z_log = pm.Normal("z_log_tau", mu=0.0, sigma=1.0, shape=n_c)
+                log_tau = mu_log + 0.5 * z_log
+                tau_c = pm.Deterministic("tau_channel", pm.math.exp(log_tau))
             else:
                 tau_c = pm.HalfNormal("tau_channel", sigma=tau_prior_sigma, shape=n_c)
-            if param == PARAMETERIZATION_CENTERED:
-                beta = pm.Normal("beta", mu=mu_c, sigma=tau_c, shape=(n_geo, n_c))
+            if geometry.get("beta_prior_policy") == BETA_PRIOR_CHANNEL_SCALED:
+                scale_vec = pm.math.constant(beta_channel_scales)
             else:
-                z = pm.Normal("z_beta", mu=0.0, sigma=1.0, shape=(n_geo, n_c))
-                beta = pm.Deterministic("beta", mu_c + z * tau_c)
+                scale_vec = 1.0
+            if param == PARAMETERIZATION_CENTERED:
+                beta = pm.Normal("beta", mu=mu_c, sigma=tau_c / scale_vec, shape=(n_geo, n_c))
+            else:
+                z = pm.Normal("z_beta", mu=0.0, sigma=z_beta_sigma, shape=(n_geo, n_c))
+                beta = pm.Deterministic("beta", mu_c + (z * tau_c) / scale_vec)
             mu = alpha_geo[geo_idx] + (x * beta[geo_idx]).sum(axis=-1)
 
         pm.Normal("y_obs", mu=mu, sigma=sigma_like, observed=y_obs)

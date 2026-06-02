@@ -148,6 +148,16 @@
 | **Outcome** | Full hierarchy still weak (4 div); **pooled** and **fixed-τ** ablations → `converged_diagnostic_only` on pilot — research eligibility only |
 | **Production** | **Still blocked** |
 
+### H5l hierarchy-faithful geometry refinement (INV-H5L)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — `tau_parameterization`, `sigma_policy`, `beta_prior_policy`, `hierarchy_strength_policy` + faithful vs ablation labeling |
+| **Investigation** | [INV-H5L](../06_investigations/INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md) |
+| **Artifact** | [BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json](archives/BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json) |
+| **Outcome** | **H5L-B/E** hierarchy-faithful `converged_diagnostic_only` with `sigma_floor` + full pooling; ablation benchmarks non-promotable |
+| **Production** | **Still blocked** |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

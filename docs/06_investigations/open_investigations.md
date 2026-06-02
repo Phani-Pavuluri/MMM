@@ -1883,6 +1883,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H5L — Bayes-H5 hierarchy-faithful geometry refinement
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5L |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md](INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md) |
+| **Artifact** | [BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json](../05_validation/archives/BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json) |
+| **Outcome** | Faithful geometry matrix + ablation benchmarks; see artifact for faithful convergence |
+| **Production impact** | None — ablation passes not promotion evidence |
+
+---
+
 ### INV-H5K — Bayes-H5 geometry stabilization (non-centered / hierarchy)
 
 | Field | Value |
@@ -1892,7 +1905,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Doc** | [INV-H5K_GEOMETRY_STABILIZATION.md](INV-H5K_GEOMETRY_STABILIZATION.md) |
 | **Artifact** | [BAYES_H5K_GEOMETRY_STABILIZATION_20260601.json](../05_validation/archives/BAYES_H5K_GEOMETRY_STABILIZATION_20260601.json) |
 | **Outcome** | Pooled + fixed-τ ablations → `converged_diagnostic_only` on pilot; full partial pooling still weak |
-| **Production impact** | None — prod Bayes still blocked; pilot eligibility under explicit ablation policy only |
+| **Production impact** | None — superseded by H5l for faithful next steps |
 
 ---
 
