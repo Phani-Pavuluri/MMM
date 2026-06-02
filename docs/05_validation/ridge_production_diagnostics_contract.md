@@ -96,7 +96,9 @@ Extreme sparse channels add forbidden claims: `no_separate_channel_effect_claim_
 | Field | Description |
 |-------|-------------|
 | `forbidden_claims` | Sorted list of blocked business claims |
-| `diagnostic_severity` | `none` \| `low` \| `medium` \| `high` |
+| `severity` | H9 policy level: `clean` \| `info` \| `warning` \| `restricted_interpretation` \| `diagnostic_only` \| `blocked_for_decision_use` |
+| `output_eligibility` | Allowed/forbidden uses, human review, triggers (see [severity policy](ridge_diagnostic_severity_policy.md)) |
+| `diagnostic_severity` | Legacy alias (`none` / `low` / `medium` / `high`) mapped from policy severity |
 | `warnings` | Aggregated diagnostic warnings |
 | `production_flags` | `approved_for_prod` always false on this report |
 | `outputs_are_diagnostic_only` | true |
@@ -127,6 +129,12 @@ Extreme sparse channels add forbidden claims: `no_separate_channel_effect_claim_
 | `extension_report.json` | Embeds report + structured summary |
 
 Reference: `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_REPORT_20260601.json`, `RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SUMMARY_20260601.md`
+
+## Severity policy (H9)
+
+- Policy: [ridge_diagnostic_severity_policy.md](ridge_diagnostic_severity_policy.md)
+- Module: `mmm/diagnostics/ridge_severity_policy.py`
+- Archive: `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SEVERITY_20260601.json`
 
 ## Related
 

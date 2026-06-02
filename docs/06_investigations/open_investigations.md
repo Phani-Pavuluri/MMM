@@ -2126,6 +2126,21 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H9 — Ridge diagnostic severity policy (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H9 |
+| **Title** | Governed severity levels and output eligibility for Ridge diagnostics |
+| **Category** | certification reliability gaps |
+| **Severity** | low |
+| **Status** | **closed** (H9 delivered) |
+| **Evidence** | [ridge_diagnostic_severity_policy.md](../05_validation/ridge_diagnostic_severity_policy.md); `mmm/diagnostics/ridge_severity_policy.py` |
+| **Outcome** | Reports include `severity`, `output_eligibility`, allowed/forbidden uses; H8 summaries render them. Not hard gates. |
+| **Related** | [INV-H8](#inv-h8--ridge-diagnostics-operator-artifact-surfacing-complete) |
+
+---
+
 ### INV-H8 — Ridge diagnostics operator artifact surfacing (complete)
 
 | Field | Value |
@@ -2155,7 +2170,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Evidence** | [ridge_production_diagnostics_contract.md](../05_validation/ridge_production_diagnostics_contract.md); `mmm/diagnostics/ridge_diagnostics.py`; [RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json](../05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json) |
 | **Outcome** | Production Ridge path can emit governed diagnostics (forbidden claims, transform reporting, vertical control completeness) without optimizer/DecisionSurface changes. Bayes-H5 remains research-only. |
 | **Production impact** | Metadata only — diagnostics are not hard gates unless explicitly documented elsewhere. |
-| **Next** | — (H8 operator surfacing complete) |
+| **Next** | — (H9 severity policy complete) |
 | **Related** | [INV-H6F](INV-H6F_RIDGE_H5_SYNTHETIC_BENCHMARK_MATRIX.md); [H6 ADR](../05_validation/bayes_h6_synthetic_lane_adr.md) |
 
 ---

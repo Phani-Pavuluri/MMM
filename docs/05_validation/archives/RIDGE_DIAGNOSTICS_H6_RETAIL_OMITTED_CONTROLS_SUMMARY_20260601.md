@@ -1,6 +1,13 @@
 # Ridge production diagnostics
 
-**Severity:** CRITICAL (`high`)
+**Severity:** DIAGNOSTIC_ONLY (`diagnostic_only`)
+
+## Output eligibility (H9)
+- Allowed uses: ['model_fit_review', 'qa_regression_review', 'methodology_benchmark']
+- Forbidden uses: ['budget_reallocation_claim', 'channel_level_causal_claim', 'clean_channel_attribution', 'clean_channel_lift_claim', 'clean_media_attribution', 'production_incrementality_claim']
+- Human review required: **True**
+- Diagnostic-only reason: Required vertical controls missing — diagnostic QA only.
+- Classification triggers: ['claims:forbidden_claims_present', 'collinearity:weak_identification_without_calibration', 'control:missing_required_vertical_controls', 'fold:severe_instability']
 
 ## Control completeness
 - Vertical: `retail`
@@ -22,7 +29,7 @@
 
 ## Stability
 - Fold stability OK: False
-- Geo-fold RMSE mean: 31229.862114309828
+- Geo-fold RMSE mean: 31240.327287520515
 - Coefficient stability available: True
 
 ## Forbidden claims

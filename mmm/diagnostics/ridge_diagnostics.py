@@ -495,12 +495,6 @@ def compose_ridge_diagnostic_report(
     ):
         all_warnings.extend(block.get("warnings") or [])
 
-    severity = _diagnostic_severity(
-        warnings=all_warnings,
-        forbidden_claims=forbidden_claims,
-        omitted_control_risk=bool(control_diag.get("omitted_control_risk")),
-    )
-
     recovery_block: dict[str, Any] | None = None
     if known_truth and coef_diag.get("available"):
         mu = known_truth.get("true_mu_c") or {}
@@ -533,7 +527,6 @@ def compose_ridge_diagnostic_report(
         "lift_simulation_stability": lift_diag,
         "truth_recovery": recovery_block,
         "forbidden_claims": forbidden_claims,
-        "diagnostic_severity": severity,
         "warnings": sorted(set(all_warnings)),
         "production_flags": _production_flags(config),
         "outputs_are_diagnostic_only": True,
@@ -545,7 +538,9 @@ def compose_ridge_diagnostic_report(
         if forbidden in report and report.get(forbidden):
             raise ValueError(f"ridge diagnostics must not emit {forbidden!r}")
 
-    return report
+    from mmm.diagnostics.ridge_severity_policy import apply_severity_policy_to_report
+
+    return apply_severity_policy_to_report(report)
 
 
 def attach_ridge_diagnostics_to_extension_report(

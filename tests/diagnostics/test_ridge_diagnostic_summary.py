@@ -114,7 +114,8 @@ def test_production_boundary_rendered() -> None:
 def test_clean_report_summary() -> None:
     report = _report_for_world(WORLD_H6_PILOT_RETAIL_FULL, vertical_id="retail")
     summary = summarize_ridge_diagnostics(report)
-    assert summary["severity_badge"] in ("OK", "INFO", "WARNING", "CRITICAL")
+    assert summary["severity_badge"] not in ("BLOCKED", "UNAVAILABLE")
+    assert summary.get("allowed_uses")
     assert not summary.get("omitted_control_risk")
 
 
@@ -156,7 +157,9 @@ def test_persist_training_artifacts_backward_compatible(tmp_path: Path) -> None:
     assert "ridge_production_diagnostics_report.json" in written.values()
     er = json.loads((store.run_path / "extension_report.json").read_text(encoding="utf-8"))
     assert er.get("governance")
-    assert er.get("ridge_production_diagnostics_summary")
+    summary = er.get("ridge_production_diagnostics_summary") or {}
+    assert summary.get("allowed_uses") is not None
+    assert "severity" in summary or er.get("ridge_production_diagnostics_report", {}).get("severity")
     store.end_run()
 
 

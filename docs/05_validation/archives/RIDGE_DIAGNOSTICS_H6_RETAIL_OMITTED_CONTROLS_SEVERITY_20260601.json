@@ -1,12 +1,6 @@
 {
-  "artifact_kind": "RIDGE_PRODUCTION_DIAGNOSTICS",
-  "milestone": "H7",
-  "world_metadata": {
-    "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
-    "vertical": "retail",
-    "control_variant": "omitted_controls",
-    "scale": "pilot"
-  },
+  "artifact_kind": "RIDGE_PRODUCTION_DIAGNOSTICS_SEVERITY",
+  "milestone": "H9",
   "ridge_diagnostics": {
     "report_version": "mmm_ridge_production_diagnostics_v1",
     "artifact_kind": "RIDGE_PRODUCTION_DIAGNOSTICS",
@@ -190,8 +184,8 @@
       "warnings": []
     },
     "sign_plausibility": {
-      "available": true,
-      "sign_match_rate_vs_known_mu": 0.8571428571428571,
+      "available": false,
+      "sign_match_rate": null,
       "warnings": []
     },
     "response_curve_plausibility": {
@@ -215,11 +209,7 @@
       ],
       "warnings": []
     },
-    "truth_recovery": {
-      "known_truth_available": true,
-      "coef_mu_mae_vs_true_mu": 0.2939158284030176,
-      "sign_match_rate_vs_known_mu": 0.8571428571428571
-    },
+    "truth_recovery": null,
     "forbidden_claims": [
       "collinear_group_ctv_display:forbid_isolated_channel_lift_claims",
       "no_budget_reallocation_claim_based_only_on_this_run",
@@ -257,10 +247,6 @@
       ]
     },
     "outputs_are_diagnostic_only": true,
-    "world_metadata": {
-      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
-      "stress_variant": "omitted_controls"
-    },
     "severity_policy_version": "mmm_ridge_severity_policy_v1",
     "severity": "diagnostic_only",
     "output_eligibility": {
@@ -293,42 +279,32 @@
     },
     "diagnostic_severity": "high"
   },
-  "ridge_benchmark_excerpt": {
-    "model": "ridge_bo",
-    "run_environment": "research",
-    "prediction_rmse": 36852.99932575662,
-    "prediction_wmape": 0.3977280970693822,
-    "geo_fold_rmse_mean": 31240.327287520515,
-    "geo_fold_stability_n_folds": 3,
-    "max_channel_correlation": 0.9722864384403749,
-    "collinearity_sensitive": true,
-    "sparse_channels": [
-      "radio",
-      "local_flyer"
+  "output_eligibility": {
+    "severity_policy_version": "mmm_ridge_severity_policy_v1",
+    "severity": "diagnostic_only",
+    "allowed_uses": [
+      "model_fit_review",
+      "qa_regression_review",
+      "methodology_benchmark"
     ],
-    "ridge_coef_recovery": {
-      "coef_recovery_available": true,
-      "coef_mu_mae_vs_true_mu": 0.2939158284030176,
-      "coef_sign_match_rate_vs_mu": 0.8571428571428571
-    },
-    "ridge_lift_recovery": {
-      "lift_recovery_available": true,
-      "lift_sign_match_rate_vs_true_beta": 0.8571428571428571,
-      "lift_mae_vs_geo_mean_beta": 0.3242652300162538
-    },
-    "forbidden_claims": [
-      "do_not_attribute_omitted_control_lift_to_media",
-      "do_not_publish_incrementality_without_required_controls"
+    "forbidden_uses": [
+      "budget_reallocation_claim",
+      "channel_level_causal_claim",
+      "clean_channel_attribution",
+      "clean_channel_lift_claim",
+      "clean_media_attribution",
+      "production_incrementality_claim"
     ],
-    "approved_for_prod": false,
-    "prod_decisioning_allowed": false,
-    "optimizer_enabled": false,
-    "decision_surface_enabled": false,
-    "outputs_are_diagnostic_only": true
-  },
-  "production_boundary": {
-    "ridge_remains_production_baseline": true,
-    "bayes_h5_research_only": true,
-    "diagnostics_are_not_hard_gates": true
+    "human_review_required": true,
+    "diagnostic_only_reason": "Required vertical controls missing \u2014 diagnostic QA only.",
+    "classification_triggers": [
+      "claims:forbidden_claims_present",
+      "collinearity:weak_identification_without_calibration",
+      "control:missing_required_vertical_controls",
+      "fold:severe_instability"
+    ],
+    "optimizer_decision_surface_unchanged": true,
+    "diagnostics_are_not_hard_gates": true,
+    "legacy_diagnostic_severity": "high"
   }
 }

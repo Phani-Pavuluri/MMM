@@ -52,6 +52,17 @@ def extract_top_warnings(report: dict[str, Any] | None, *, limit: int = 12) -> l
 def severity_badge(report: dict[str, Any] | None) -> str:
     if not report or report.get("status") == "unavailable":
         return "UNAVAILABLE"
+    policy = str(report.get("severity") or "").lower()
+    policy_badges = {
+        "clean": "OK",
+        "info": "INFO",
+        "warning": "WARNING",
+        "restricted_interpretation": "RESTRICTED",
+        "diagnostic_only": "DIAGNOSTIC_ONLY",
+        "blocked_for_decision_use": "BLOCKED",
+    }
+    if policy in policy_badges:
+        return policy_badges[policy]
     severity = str(report.get("diagnostic_severity") or "none").lower()
     return {
         "none": "OK",
@@ -77,6 +88,7 @@ def summarize_ridge_diagnostics(report: dict[str, Any] | None) -> dict[str, Any]
     fold = report.get("fold_stability") or {}
     coef = report.get("coefficient_stability") or {}
     flags = report.get("production_flags") or {}
+    eligibility = report.get("output_eligibility") or {}
 
     sparse_extreme = list(sparse.get("sparse_channel_extreme") or [])
     collinear_groups = [
@@ -86,7 +98,14 @@ def summarize_ridge_diagnostics(report: dict[str, Any] | None) -> dict[str, Any]
     return {
         "status": "ok",
         "severity_badge": severity_badge(report),
-        "overall_severity": report.get("diagnostic_severity"),
+        "severity": report.get("severity"),
+        "overall_severity": report.get("severity") or report.get("diagnostic_severity"),
+        "legacy_diagnostic_severity": report.get("diagnostic_severity"),
+        "allowed_uses": list(eligibility.get("allowed_uses") or []),
+        "forbidden_uses": list(eligibility.get("forbidden_uses") or []),
+        "human_review_required": bool(eligibility.get("human_review_required")),
+        "diagnostic_only_reason": eligibility.get("diagnostic_only_reason"),
+        "classification_triggers": list(eligibility.get("classification_triggers") or []),
         "run_id": report.get("run_id"),
         "dataset_snapshot_id": report.get("dataset_snapshot_id"),
         "vertical_id": control.get("vertical_id"),
@@ -132,7 +151,19 @@ def format_ridge_diagnostics_markdown(
     lines = [
         "# Ridge production diagnostics",
         "",
-        f"**Severity:** {summary['severity_badge']} (`{summary.get('overall_severity')}`)",
+        f"**Severity:** {summary['severity_badge']} (`{summary.get('severity') or summary.get('overall_severity')}`)",
+        "",
+        "## Output eligibility (H9)",
+        f"- Allowed uses: {summary.get('allowed_uses') or 'none'}",
+        f"- Forbidden uses: {summary.get('forbidden_uses') or 'none'}",
+        f"- Human review required: **{summary.get('human_review_required')}**",
+    ]
+    if summary.get("diagnostic_only_reason"):
+        lines.append(f"- Diagnostic-only reason: {summary['diagnostic_only_reason']}")
+    if summary.get("classification_triggers"):
+        lines.append(f"- Classification triggers: {summary['classification_triggers']}")
+    lines.extend(
+        [
         "",
         "## Control completeness",
         f"- Vertical: `{summary.get('vertical_id') or 'not specified'}`",
@@ -152,7 +183,8 @@ def format_ridge_diagnostics_markdown(
         "## Transform",
         f"- Metadata complete: **{summary.get('transform_metadata_complete')}**",
         f"- Selected params: `{summary.get('selected_adstock_saturation')}`",
-    ]
+        ],
+    )
     if summary.get("transform_warnings"):
         lines.append(f"- Transform warnings: {summary['transform_warnings']}")
 
@@ -207,7 +239,19 @@ def format_ridge_diagnostics_cli_block(report: dict[str, Any] | None) -> list[st
     if summary.get("status") == "unavailable":
         return ["Ridge diagnostics: UNAVAILABLE"]
 
-    lines = [f"Ridge diagnostics: {summary['severity_badge']}"]
+    lines = [
+        f"Ridge diagnostics: {summary['severity_badge']} ({summary.get('severity') or 'unknown'})"
+    ]
+    if summary.get("human_review_required"):
+        lines.append("- Human review required before business interpretation")
+    allowed = summary.get("allowed_uses") or []
+    if allowed:
+        lines.append(f"- Allowed uses: {', '.join(allowed[:4])}{'...' if len(allowed) > 4 else ''}")
+    forbidden_uses = summary.get("forbidden_uses") or []
+    if forbidden_uses:
+        lines.append(f"- Forbidden uses: {', '.join(forbidden_uses[:3])}{'...' if len(forbidden_uses) > 3 else ''}")
+    if summary.get("diagnostic_only_reason"):
+        lines.append(f"- Diagnostic-only: {summary['diagnostic_only_reason']}")
     missing = summary.get("missing_required_controls") or []
     if missing:
         lines.append(f"- Missing required {summary.get('vertical_id') or ''} controls: {', '.join(missing)}")
