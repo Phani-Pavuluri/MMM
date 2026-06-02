@@ -1,0 +1,490 @@
+{
+  "artifact_id": "BAYES_H5I_CONVERGENCE_EXPERIMENT_MATRIX_20260601",
+  "investigation_id": "INV-H5I_REAL_PANEL_CONVERGENCE_DIAGNOSTICS",
+  "panel_id": "examples_mmm_sample_panel_v1",
+  "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
+  "experiments": [
+    {
+      "variant_id": "H5I-REF-H5G-FAST",
+      "changed_factor": "reference_artifact",
+      "sampler_profile": "fast",
+      "rhat_max": 2.09,
+      "divergence_count": null,
+      "convergence_status": "failed_convergence",
+      "notes": "From committed H5g shadow artifact (not re-run)",
+      "recommendation": "report_only_fail"
+    },
+    {
+      "variant_id": "H5I-REF-H5H-EXTENDED",
+      "changed_factor": "reference_artifact",
+      "sampler_profile": "extended",
+      "rhat_max": 1.69,
+      "divergence_count": 74,
+      "convergence_status": "failed_convergence",
+      "notes": "From committed H5h shadow artifact (not re-run)",
+      "recommendation": "report_only_fail"
+    },
+    {
+      "variant_id": "H5I-BASELINE-FAST-REPLAY",
+      "changed_factor": "baseline_sampler",
+      "sampler_profile": "fast",
+      "sampler_settings": {
+        "draws": 200,
+        "tune": 200,
+        "chains": 2,
+        "target_accept": 0.92
+      },
+      "model_overrides": {
+        "h5_panel_context": "real_panel",
+        "h5_real_panel": true
+      },
+      "channel_subset": null,
+      "rhat_max": 2.37,
+      "ess_bulk_min": 3.0,
+      "divergence_count": 9,
+      "convergence_status": "failed_convergence",
+      "evidence_promotion_allowed": false,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "z_beta[1, 0]",
+          "family": "beta_offset",
+          "r_hat": 2.37,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "tau_channel[2]",
+          "family": "tau",
+          "r_hat": 2.09,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 2.07,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "tau_channel[1]",
+          "family": "tau",
+          "r_hat": 2.03,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "mu_channel[2]",
+          "family": "mu_channel",
+          "r_hat": 1.96,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[0, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.95,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "alpha_geo[2]",
+          "family": "intercept",
+          "r_hat": 1.87,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "mu_channel[1]",
+          "family": "mu_channel",
+          "r_hat": 1.86,
+          "ess_bulk": 3.0
+        }
+      ],
+      "sigma_mean": 0.0017564373255093584,
+      "notes": "Replay H5g-style fast profile on sample panel for matrix comparison",
+      "recommendation": "report_only_fail \u2014 does not clear evidence bar"
+    },
+    {
+      "variant_id": "H5I-SCALING-ZSCORE-PRESCALE",
+      "changed_factor": "scaling_prescale",
+      "sampler_profile": "fast",
+      "sampler_settings": {
+        "draws": 200,
+        "tune": 200,
+        "chains": 2,
+        "target_accept": 0.92
+      },
+      "model_overrides": {
+        "h5_panel_context": "real_panel",
+        "h5_real_panel": true,
+        "media_prescale": "zscore_panel",
+        "outcome_prescale": "zscore_log"
+      },
+      "channel_subset": null,
+      "rhat_max": 1.46,
+      "ess_bulk_min": 4.0,
+      "divergence_count": 0,
+      "convergence_status": "failed_convergence",
+      "evidence_promotion_allowed": false,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "tau_channel[0]",
+          "family": "tau",
+          "r_hat": 1.46,
+          "ess_bulk": 4.0
+        },
+        {
+          "parameter": "tau_channel[1]",
+          "family": "tau",
+          "r_hat": 1.3,
+          "ess_bulk": 6.0
+        },
+        {
+          "parameter": "z_beta[0, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.24,
+          "ess_bulk": 7.0
+        },
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 1.21,
+          "ess_bulk": 11.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 1.16,
+          "ess_bulk": 9.0
+        },
+        {
+          "parameter": "z_beta[1, 1]",
+          "family": "beta_offset",
+          "r_hat": 1.13,
+          "ess_bulk": 15.0
+        },
+        {
+          "parameter": "tau_channel[2]",
+          "family": "tau",
+          "r_hat": 1.09,
+          "ess_bulk": 21.0
+        },
+        {
+          "parameter": "z_beta[1, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.09,
+          "ess_bulk": 28.0
+        }
+      ],
+      "sigma_mean": 0.011092303022902716,
+      "notes": "Z-score raw media + z-score log outcome before identity transform",
+      "recommendation": "report_only_fail \u2014 does not clear evidence bar"
+    },
+    {
+      "variant_id": "H5I-SAMPLER-TARGET-099",
+      "changed_factor": "sampler_target_accept",
+      "sampler_profile": "fast_target_099",
+      "sampler_settings": {
+        "draws": 200,
+        "tune": 400,
+        "chains": 2,
+        "target_accept": 0.99
+      },
+      "model_overrides": {
+        "h5_panel_context": "real_panel",
+        "h5_real_panel": true
+      },
+      "channel_subset": null,
+      "rhat_max": 2.51,
+      "ess_bulk_min": 3.0,
+      "divergence_count": 0,
+      "convergence_status": "failed_convergence",
+      "evidence_promotion_allowed": false,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "z_beta[0, 0]",
+          "family": "beta_offset",
+          "r_hat": 2.51,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[1, 0]",
+          "family": "beta_offset",
+          "r_hat": 2.44,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[1, 1]",
+          "family": "beta_offset",
+          "r_hat": 2.43,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[2, 2]",
+          "family": "beta_offset",
+          "r_hat": 2.28,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "tau_channel[0]",
+          "family": "tau",
+          "r_hat": 2.26,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "mu_channel[1]",
+          "family": "mu_channel",
+          "r_hat": 2.24,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[0, 1]",
+          "family": "beta_offset",
+          "r_hat": 2.24,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[0, 2]",
+          "family": "beta_offset",
+          "r_hat": 2.21,
+          "ess_bulk": 3.0
+        }
+      ],
+      "sigma_mean": 0.00177879651061791,
+      "notes": "Higher target_accept \u2014 sampler-only probe",
+      "recommendation": "report_only_fail \u2014 does not clear evidence bar"
+    },
+    {
+      "variant_id": "H5I-PRIOR-TIGHT-TAU",
+      "changed_factor": "prior_tau_tightening",
+      "sampler_profile": "fast",
+      "sampler_settings": {
+        "draws": 200,
+        "tune": 200,
+        "chains": 2,
+        "target_accept": 0.92
+      },
+      "model_overrides": {
+        "h5_panel_context": "real_panel",
+        "h5_real_panel": true,
+        "tau_channel_prior_sigma": 0.15
+      },
+      "channel_subset": null,
+      "rhat_max": 2.5,
+      "ess_bulk_min": 3.0,
+      "divergence_count": 4,
+      "convergence_status": "failed_convergence",
+      "evidence_promotion_allowed": false,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "z_beta[2, 0]",
+          "family": "beta_offset",
+          "r_hat": 2.5,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "mu_channel[2]",
+          "family": "mu_channel",
+          "r_hat": 2.26,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 2.24,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "alpha_geo[0]",
+          "family": "intercept",
+          "r_hat": 1.91,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "tau_channel[1]",
+          "family": "tau",
+          "r_hat": 1.83,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[1, 1]",
+          "family": "beta_offset",
+          "r_hat": 1.8,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[0, 1]",
+          "family": "beta_offset",
+          "r_hat": 1.77,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "tau_channel[0]",
+          "family": "tau",
+          "r_hat": 1.65,
+          "ess_bulk": 3.0
+        }
+      ],
+      "sigma_mean": 0.001766015778494444,
+      "notes": "Tighter tau_channel HalfNormal(0.15)",
+      "recommendation": "report_only_fail \u2014 does not clear evidence bar"
+    },
+    {
+      "variant_id": "H5I-PRIOR-TIGHT-TAU-MU",
+      "changed_factor": "prior_tau_mu_tightening",
+      "sampler_profile": "fast",
+      "sampler_settings": {
+        "draws": 200,
+        "tune": 200,
+        "chains": 2,
+        "target_accept": 0.92
+      },
+      "model_overrides": {
+        "h5_panel_context": "real_panel",
+        "h5_real_panel": true,
+        "tau_channel_prior_sigma": 0.15,
+        "mu_channel_prior_sigma": 0.2,
+        "sigma_prior_sigma": 0.5
+      },
+      "channel_subset": null,
+      "rhat_max": 1.98,
+      "ess_bulk_min": 3.0,
+      "divergence_count": 2,
+      "convergence_status": "failed_convergence",
+      "evidence_promotion_allowed": false,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "z_beta[1, 2]",
+          "family": "beta_offset",
+          "r_hat": 1.98,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "tau_channel[2]",
+          "family": "tau",
+          "r_hat": 1.89,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[1, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.86,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[0, 2]",
+          "family": "beta_offset",
+          "r_hat": 1.78,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[2, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.73,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 1.71,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 1.61,
+          "ess_bulk": 3.0
+        },
+        {
+          "parameter": "z_beta[2, 1]",
+          "family": "beta_offset",
+          "r_hat": 1.6,
+          "ess_bulk": 4.0
+        }
+      ],
+      "sigma_mean": 0.0017519766737375193,
+      "notes": "Tighter tau and mu_channel priors + smaller sigma prior",
+      "recommendation": "report_only_fail \u2014 does not clear evidence bar"
+    },
+    {
+      "variant_id": "H5I-SINGLE-CHANNEL-SEARCH",
+      "changed_factor": "model_simplified_channels",
+      "sampler_profile": "fast",
+      "sampler_settings": {
+        "draws": 200,
+        "tune": 200,
+        "chains": 2,
+        "target_accept": 0.92
+      },
+      "model_overrides": {
+        "h5_panel_context": "real_panel",
+        "h5_real_panel": true
+      },
+      "channel_subset": [
+        "search"
+      ],
+      "rhat_max": 1.41,
+      "ess_bulk_min": 4.0,
+      "divergence_count": 6,
+      "convergence_status": "failed_convergence",
+      "evidence_promotion_allowed": false,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "z_beta[1, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.41,
+          "ess_bulk": 4.0
+        },
+        {
+          "parameter": "z_beta[0, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.4,
+          "ess_bulk": 5.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 1.35,
+          "ess_bulk": 5.0
+        },
+        {
+          "parameter": "z_beta[2, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.29,
+          "ess_bulk": 6.0
+        },
+        {
+          "parameter": "tau_channel[0]",
+          "family": "tau",
+          "r_hat": 1.15,
+          "ess_bulk": 13.0
+        },
+        {
+          "parameter": "alpha_geo[2]",
+          "family": "intercept",
+          "r_hat": 1.03,
+          "ess_bulk": 406.0
+        },
+        {
+          "parameter": "sigma",
+          "family": "sigma",
+          "r_hat": 1.02,
+          "ess_bulk": 400.0
+        },
+        {
+          "parameter": "alpha_geo[0]",
+          "family": "intercept",
+          "r_hat": 1.01,
+          "ess_bulk": 441.0
+        }
+      ],
+      "sigma_mean": 0.0019118680693231643,
+      "notes": "Single media channel to localize geometry / collinearity",
+      "recommendation": "report_only_fail \u2014 does not clear evidence bar"
+    }
+  ],
+  "matrix_notes": "Research-only convergence probes on examples/sample_panel.csv only. Fast profile used for matrix comparability; H5h extended reference included from artifact.",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "hard_gate": false,
+  "production_promotion": false,
+  "approved_for_prod": false,
+  "prod_decisioning_allowed": false,
+  "research_only": true,
+  "decision_grade": false,
+  "production_decision_surface": false,
+  "outputs_are_diagnostic_only": true
+}

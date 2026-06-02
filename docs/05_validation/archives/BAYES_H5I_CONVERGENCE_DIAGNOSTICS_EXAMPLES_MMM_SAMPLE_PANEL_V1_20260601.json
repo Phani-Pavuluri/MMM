@@ -1,0 +1,203 @@
+{
+  "artifact_id": "BAYES_H5I_CONVERGENCE_DIAGNOSTICS_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601",
+  "investigation_id": "INV-H5I_REAL_PANEL_CONVERGENCE_DIAGNOSTICS",
+  "panel_id": "examples_mmm_sample_panel_v1",
+  "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
+  "panel_path": "examples/sample_panel.csv",
+  "source_artifacts": {
+    "h5h_shadow_run": "docs/05_validation/archives/BAYES_H5H_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json",
+    "h5g_shadow_run": "docs/05_validation/archives/BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json"
+  },
+  "reference_runs": {
+    "h5g_fast": {
+      "sampler_profile": null,
+      "fast_mcmc_profile": true,
+      "extended_mcmc_profile": null,
+      "rhat_max": 2.09,
+      "divergence_count": null,
+      "convergence_status": null
+    },
+    "h5h_extended": {
+      "sampler_profile": "extended",
+      "fast_mcmc_profile": false,
+      "extended_mcmc_profile": true,
+      "rhat_max": 1.69,
+      "divergence_count": 74,
+      "convergence_status": "failed_convergence"
+    }
+  },
+  "panel_summary": {
+    "n_rows": 123,
+    "n_geos": 3,
+    "n_weeks_unique": 41,
+    "geo_ids": [
+      "G0",
+      "G1",
+      "G2"
+    ],
+    "rows_per_geo": {
+      "G0": 41,
+      "G1": 41,
+      "G2": 41
+    },
+    "missingness": {
+      "revenue": 0,
+      "search": 0,
+      "social": 0,
+      "tv": 0
+    }
+  },
+  "scale_diagnostics": {
+    "outcome_level": {
+      "min": 402.1,
+      "max": 700.0,
+      "mean": 551.7276422764228,
+      "std": 86.53710919845243
+    },
+    "outcome_log": {
+      "min": 5.996700813903228,
+      "max": 6.551080335043404,
+      "mean": 6.300470378383628,
+      "std": 0.1596583485663216
+    },
+    "media_level_by_channel": {
+      "search": {
+        "min": 398.1,
+        "max": 700.0,
+        "mean": 549.9463414634146,
+        "std": 72.06290645411903,
+        "cv": 0.13103625030439814
+      },
+      "social": {
+        "min": 330.3,
+        "max": 600.0,
+        "mean": 447.50081300813014,
+        "std": 70.74162709619469,
+        "cv": 0.15808156106020613
+      },
+      "tv": {
+        "min": 181.3,
+        "max": 420.0,
+        "mean": 276.99430894308944,
+        "std": 68.43960758443212,
+        "cv": 0.24707947194051008
+      }
+    },
+    "likelihood_note": "semi_log uses log(outcome) with Normal likelihood; sigma scale must match log-y residual"
+  },
+  "collinearity_diagnostics": {
+    "pairwise_correlations": {
+      "search|social": 0.9578902483017746,
+      "search|tv": 0.9138372291253558,
+      "social|tv": 0.9887869687681137
+    },
+    "max_abs_correlation": 0.9887869687681137
+  },
+  "sparsity_diagnostics": {
+    "by_channel": {
+      "search": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 398.1
+      },
+      "social": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 330.3
+      },
+      "tv": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 181.3
+      }
+    },
+    "any_hard_zeros": false
+  },
+  "geo_sample_diagnostics": {
+    "min_rows_per_geo": 41,
+    "max_rows_per_geo": 41,
+    "counts_by_geo": {
+      "G0": 41,
+      "G1": 41,
+      "G2": 41
+    }
+  },
+  "transform_output_scale": {
+    "post_transform_by_channel": {
+      "search": {
+        "transform_id": "identity",
+        "mean": 9.423356404135476e-16,
+        "std": 0.9999999861232355,
+        "min": -2.107135929258641,
+        "max": 2.0822592903585178
+      },
+      "social": {
+        "transform_id": "identity",
+        "mean": -7.870849410350704e-16,
+        "std": 0.9999999858640517,
+        "min": -1.6567446376659594,
+        "max": 2.1557206286587154
+      },
+      "tv": {
+        "transform_id": "identity",
+        "mean": -9.026203452237045e-17,
+        "std": 0.999999985388578,
+        "min": -1.3982299274116086,
+        "max": 2.089516495122678
+      }
+    },
+    "note": "identity transform applies per-column standardization in H5 registry"
+  },
+  "posterior_diagnostic_summary": {
+    "sampler_profile": "extended",
+    "rhat_max": 1.69,
+    "ess_bulk_min": 6.0,
+    "divergence_count": 74,
+    "chains": 4,
+    "draws_per_chain": 600,
+    "convergence_status": "failed_convergence",
+    "evidence_promotion_allowed": false,
+    "sigma_mean": 0.0017479666906035547,
+    "worst_rhat_parameters": [],
+    "parameters_by_family": {}
+  },
+  "suspected_failure_modes": [
+    {
+      "mode": "media_collinearity",
+      "severity": "high",
+      "note": "Max |channel correlation|=0.989 \u2014 weak identification for geo-specific betas"
+    },
+    {
+      "mode": "overparameterized_for_panel_size",
+      "severity": "high",
+      "note": "3 geos \u00d7 3 channels with partial pooling \u2014 many hierarchical offsets per row"
+    },
+    {
+      "mode": "tight_likelihood_scale",
+      "severity": "medium",
+      "note": "Posterior sigma_mean\u22480.0017 on log scale \u2014 funnel / sampler stress"
+    },
+    {
+      "mode": "nuts_divergences",
+      "severity": "high",
+      "note": "74 divergences \u2014 often tau/beta geometry or step size; not fixed by label semantics alone"
+    }
+  ],
+  "recommended_next_experiments": [
+    "Do not run additional real panels until a variant reaches converged_diagnostic_only or documented weak_convergence.",
+    "Prefer geometry fixes (scaling, collinearity reduction, simpler hierarchy) before aggressive sampler tuning alone.",
+    "Try single-channel or orthogonalized media subsets to localize collinearity impact.",
+    "Try pooled/no-geo-offset probe or fewer channels; 3 geos is marginal for partial pooling.",
+    "Try outcome/media prescale experiment and tighter tau priors; monitor sigma posterior.",
+    "Best matrix variant so far: H5I-SINGLE-CHANNEL-SEARCH (rhat_max=1.41, divergences=6)."
+  ],
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "hard_gate": false,
+  "production_promotion": false,
+  "approved_for_prod": false,
+  "prod_decisioning_allowed": false,
+  "research_only": true,
+  "decision_grade": false,
+  "production_decision_surface": false,
+  "outputs_are_diagnostic_only": true
+}

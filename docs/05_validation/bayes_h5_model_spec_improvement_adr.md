@@ -118,6 +118,16 @@
 | **Outcome** | Sample panel still `failed_convergence` — do not batch more panels until fixed |
 | **Production** | **Still blocked** |
 
+### H5i real-panel convergence diagnostics (INV-H5I)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — static + posterior diagnostics; controlled experiment matrix on sample panel only |
+| **Investigation** | [INV-H5I](../06_investigations/INV-H5I_REAL_PANEL_CONVERGENCE_DIAGNOSTICS.md) |
+| **Artifacts** | [H5I diagnostics JSON](archives/BAYES_H5I_CONVERGENCE_DIAGNOSTICS_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) · [H5I experiment matrix](archives/BAYES_H5I_CONVERGENCE_EXPERIMENT_MATRIX_20260601.json) |
+| **Outcome** | Collinearity + hierarchical geometry primary; scaling/single-channel probes help but do not pass evidence bar |
+| **Production** | **Still blocked** |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

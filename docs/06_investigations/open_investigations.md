@@ -1879,7 +1879,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | Convergence fix before more real panels; Promotion Gate for prod |
+| **Next** | Model geometry fixes (H5i); Promotion Gate for prod |
+
+---
+
+### INV-H5I — Bayes-H5 real-panel convergence diagnostics
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5I |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5I_REAL_PANEL_CONVERGENCE_DIAGNOSTICS.md](INV-H5I_REAL_PANEL_CONVERGENCE_DIAGNOSTICS.md) |
+| **Artifacts** | [H5I diagnostics](../05_validation/archives/BAYES_H5I_CONVERGENCE_DIAGNOSTICS_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) · [H5I matrix](../05_validation/archives/BAYES_H5I_CONVERGENCE_EXPERIMENT_MATRIX_20260601.json) |
+| **Outcome** | Collinearity (ρ≈0.99) + partial pooling geometry; scaling/single-channel probes insufficient for evidence bar |
+| **Production impact** | None — do not batch real panels |
 
 ---
 

@@ -21,6 +21,23 @@ H5_MODEL_SPEC_VERSION = "bayes_h5_sandbox_spec_v1"
 H5_MODEL_KIND = "bayes_h5_hierarchical_sandbox_v1"
 
 
+def _convergence_parameter_family(parameter: str) -> str:
+    name = str(parameter)
+    if name.startswith("alpha_geo"):
+        return "intercept"
+    if name.startswith("tau_channel"):
+        return "tau"
+    if name.startswith("mu_channel"):
+        return "mu_channel"
+    if name.startswith("sigma"):
+        return "sigma"
+    if name.startswith("z_beta"):
+        return "beta_offset"
+    if name.startswith("beta"):
+        return "beta"
+    return "other"
+
+
 def fit_h3_sandbox_hierarchical(
     config: MMMConfig,
     schema: PanelSchema,
@@ -110,9 +127,24 @@ def _package_mvp_fit(
 ) -> dict[str, Any]:
     import arviz as az  # type: ignore
 
-    summary = az.summary(idata, var_names=["mu_channel", "tau_channel", "sigma", "alpha_geo"])
+    summary = az.summary(idata, var_names=["mu_channel", "tau_channel", "sigma", "alpha_geo", "z_beta"])
     rhat_max = float(summary["r_hat"].max()) if "r_hat" in summary.columns and len(summary) else float("nan")
     ess_min = float(summary["ess_bulk"].min()) if "ess_bulk" in summary.columns and len(summary) else float("nan")
+    per_parameter: list[dict[str, Any]] = []
+    for param_name, row in summary.iterrows():
+        per_parameter.append(
+            {
+                "parameter": str(param_name),
+                "family": _convergence_parameter_family(str(param_name)),
+                "r_hat": float(row["r_hat"]) if "r_hat" in row and pd.notna(row["r_hat"]) else None,
+                "ess_bulk": float(row["ess_bulk"]) if "ess_bulk" in row and pd.notna(row["ess_bulk"]) else None,
+            }
+        )
+    worst_rhat = sorted(
+        [p for p in per_parameter if p.get("r_hat") is not None],
+        key=lambda p: float(p["r_hat"]),
+        reverse=True,
+    )[:8]
 
     mu_post = idata.posterior["mu_channel"].mean(dim=("chain", "draw")).values
     tau_post = idata.posterior["tau_channel"].mean(dim=("chain", "draw")).values
@@ -142,6 +174,8 @@ def _package_mvp_fit(
         "divergence_count": divergence_count,
         "chains": int(idata.posterior.sizes.get("chain", 0)),
         "draws_per_chain": int(idata.posterior.sizes.get("draw", 0)),
+        "per_parameter": per_parameter,
+        "worst_rhat_parameters": worst_rhat,
     }
 
     hierarchy_evidence_diagnostics: dict[str, Any] = {
@@ -225,7 +259,13 @@ def fit_h5_sandbox_hierarchical(
         overrides.get("transform_params_by_channel") or {}
     )
 
-    raw_x = df[list(channels)].to_numpy(dtype=float)
+    work = df.copy()
+    if overrides.get("media_prescale") == "zscore_panel":
+        for ch in channels:
+            col = work[ch].to_numpy(dtype=float)
+            work[ch] = (col - col.mean()) / (col.std() + 1e-6)
+
+    raw_x = work[list(channels)].to_numpy(dtype=float)
     x = apply_media_transforms_matrix(
         raw_x,
         channels,
@@ -233,14 +273,21 @@ def fit_h5_sandbox_hierarchical(
         transform_params_by_channel=transform_params_by_channel,
     )
 
-    y = df[schema.target_column].to_numpy(dtype=float)
-    y_obs = safe_log(y) if config.model_form == ModelForm.SEMI_LOG else y.astype(float)
+    y = work[schema.target_column].to_numpy(dtype=float)
+    if config.model_form == ModelForm.SEMI_LOG:
+        y_obs = safe_log(y)
+    else:
+        y_obs = y.astype(float)
+    if overrides.get("outcome_prescale") == "zscore_log":
+        y_obs = (y_obs - float(np.mean(y_obs))) / (float(np.std(y_obs)) + 1e-6)
 
     draws = int(config.bayesian.draws)
     tune = int(config.bayesian.tune)
     chains = int(config.bayesian.chains)
     nuts_seed = int(config.bayesian.nuts_seed)
     tau_prior_sigma = float(overrides.get("tau_channel_prior_sigma", 0.5))
+    mu_prior_sigma = float(overrides.get("mu_channel_prior_sigma", 0.5))
+    sigma_prior_sigma = float(overrides.get("sigma_prior_sigma", 1.0))
 
     from mmm.research.bayes_h3_sandbox.h5_transforms import is_real_panel_generative
 
@@ -265,8 +312,8 @@ def fit_h5_sandbox_hierarchical(
 
     with pm.Model() as model:
         alpha_geo = pm.Normal("alpha_geo", mu=0.0, sigma=1.0, shape=n_geo)
-        sigma = pm.HalfNormal("sigma", sigma=1.0)
-        mu_c = pm.Normal("mu_channel", mu=0.0, sigma=0.5, shape=n_c)
+        sigma = pm.HalfNormal("sigma", sigma=sigma_prior_sigma)
+        mu_c = pm.Normal("mu_channel", mu=0.0, sigma=mu_prior_sigma, shape=n_c)
         tau_c = pm.HalfNormal("tau_channel", sigma=tau_prior_sigma, shape=n_c)
         z = pm.Normal("z_beta", mu=0.0, sigma=1.0, shape=(n_geo, n_c))
         beta = pm.Deterministic("beta", mu_c + z * tau_c)
@@ -289,7 +336,7 @@ def fit_h5_sandbox_hierarchical(
         channels=channels,
         geo_idx=geo_idx,
         n_geo=n_geo,
-        n_obs=len(df),
+        n_obs=len(work),
         geo_hierarchy_mapping=geo_hierarchy_mapping or {},
         calibration_signals_stub=calibration_signals_stub or [],
         beta_geo_index_order=beta_geo_index_order,
