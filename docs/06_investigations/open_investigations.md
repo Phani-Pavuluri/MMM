@@ -1879,7 +1879,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | Model geometry fixes (H5i); Promotion Gate for prod |
+| **Next** | NCP / pooled ablation; Promotion Gate for prod |
+
+---
+
+### INV-H5J — Bayes-H5 collinearity geometry ablations
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5J |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5J_COLLINEARITY_GEOMETRY_ABLATIONS.md](INV-H5J_COLLINEARITY_GEOMETRY_ABLATIONS.md) |
+| **Artifact** | [BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json](../05_validation/archives/BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json) |
+| **Outcome** | Explicit channel_policy; best H5J-D weak_convergence (drop tv + prescale + extended) |
+| **Production impact** | None — no additional real panels until pilot eligible |
 
 ---
 

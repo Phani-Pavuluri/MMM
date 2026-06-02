@@ -37,6 +37,11 @@ from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
     build_sampler_diagnostics,
     build_shadow_trust_diagnostics,
 )
+from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
+    H5RealPanelPreprocessingError,
+    apply_channel_policy,
+    validate_collinearity_config,
+)
 from mmm.research.bayes_h3_sandbox.labels import RESEARCH_ONLY_LABEL
 from mmm.research.bayes_h3_sandbox.recovery_worlds import SAMPLER_EXTENDED, SAMPLER_FAST
 
@@ -134,7 +139,8 @@ def validate_shadow_run_request(request: ShadowRunRequest) -> None:
         raise H5ShadowRunnerError("dataset_snapshot_id is required")
     try:
         validate_transform_config(request.transform_config)
-    except H5ShadowProtocolError as exc:
+        validate_collinearity_config(request.transform_config.get("channel_policy"))
+    except (H5ShadowProtocolError, H5ShadowRunnerError, H5RealPanelPreprocessingError) as exc:
         raise H5ShadowRunnerError(str(exc)) from exc
     if request.model_spec_version != H5_MODEL_SPEC_VERSION:
         raise H5ShadowRunnerError(f"model_spec_version must be {H5_MODEL_SPEC_VERSION!r}")
@@ -224,6 +230,16 @@ def _infer_schema(df: pd.DataFrame, transform_config: dict[str, Any]) -> PanelSc
         if ctrl not in df.columns:
             raise H5ShadowRunnerError(f"panel missing control column {ctrl!r}")
     return PanelSchema(geo_col, week_col, target_col, channels, controls)
+
+
+def _resolve_real_panel_inputs(
+    df: pd.DataFrame,
+    transform_config: dict[str, Any],
+) -> tuple[pd.DataFrame, PanelSchema, dict[str, Any]]:
+    schema = _infer_schema(df, transform_config)
+    if transform_config.get("channel_policy"):
+        df, schema, transform_config, _policy = apply_channel_policy(df, schema, transform_config)
+    return df, schema, transform_config
 
 
 def _panel_context_for_request(request: ShadowRunRequest) -> str:
@@ -384,7 +400,29 @@ def build_shadow_run_artifact(
             df = request.panel_df.copy()
         else:
             df = load_panel_from_path(request.panel_path)  # type: ignore[arg-type]
-        schema = _infer_schema(df, request.transform_config)
+        transform_config = dict(request.transform_config)
+        df, schema, transform_config = _resolve_real_panel_inputs(df, transform_config)
+        request = ShadowRunRequest(
+            panel_id=request.panel_id,
+            dataset_snapshot_id=request.dataset_snapshot_id,
+            transform_config=transform_config,
+            model_spec_version=request.model_spec_version,
+            enable_h5_sandbox=request.enable_h5_sandbox,
+            research_only=request.research_only,
+            panel_path=request.panel_path,
+            panel_df=df,
+            output_path=request.output_path,
+            fast_mcmc=request.fast_mcmc,
+            extended_mcmc=request.extended_mcmc,
+            execute_fit=request.execute_fit,
+            artifact_type=request.artifact_type,
+            calibration_signals_stub=request.calibration_signals_stub,
+            geo_hierarchy_mapping=request.geo_hierarchy_mapping,
+            ridge_comparison=request.ridge_comparison,
+            geox_cls_comparison=request.geox_cls_comparison,
+            run_id=request.run_id,
+            requested_production_flags=request.requested_production_flags,
+        )
         cfg, sampler_profile = _config_from_panel(
             df,
             schema,

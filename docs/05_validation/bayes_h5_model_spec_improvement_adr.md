@@ -128,6 +128,16 @@
 | **Outcome** | Collinearity + hierarchical geometry primary; scaling/single-channel probes help but do not pass evidence bar |
 | **Production** | **Still blocked** |
 
+### H5j collinearity geometry ablations (INV-H5J)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — explicit `channel_policy` + sample-panel geometry ablation matrix |
+| **Investigation** | [INV-H5J](../06_investigations/INV-H5J_COLLINEARITY_GEOMETRY_ABLATIONS.md) |
+| **Artifact** | [BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json](archives/BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json) |
+| **Outcome** | Drop-collinear + prescale + extended → **weak_convergence** only; pilot not eligible for more panels |
+| **Production** | **Still blocked** |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)
