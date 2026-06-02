@@ -240,6 +240,20 @@ def test_shadow_policy_from_recommendation_keep_all() -> None:
     assert policy["channel_policy"]["mode"] == "keep_all_channels"
 
 
+def test_h5r_sparse_radio_policy_validates() -> None:
+    from mmm.research.bayes_h3_sandbox.h5_shadow_policy import load_shadow_policy
+
+    path = Path("docs/06_investigations/h5r_examples_mmm_triangulation_geo_panel_v1_sparse_radio_policy.json")
+    if not path.is_file():
+        pytest.skip("H5r policy missing")
+    policy = load_shadow_policy(path)
+    validate_shadow_policy(policy)
+    assert policy["channel_policy"]["mode"] == "drop_sparse_channels"
+    assert policy["channel_policy"]["dropped_channels"] == ["radio"]
+    assert policy["production_flags"]["approved_for_prod"] is False
+    assert "radio" in " ".join(policy["forbidden_claims"]).lower()
+
+
 def test_shadow_policy_from_do_not_run_fails() -> None:
     from mmm.research.bayes_h3_sandbox.h5_shadow_policy import shadow_policy_from_recommendation
 

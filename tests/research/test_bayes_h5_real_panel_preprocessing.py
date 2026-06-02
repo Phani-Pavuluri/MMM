@@ -2,15 +2,19 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 import pytest
 
 from mmm.data.schema import PanelSchema
 from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
+    CHANNEL_POLICY_DROP_SPARSE,
     H5RealPanelPreprocessingError,
     apply_channel_policy,
     build_composite_media_panel,
     build_drop_collinear_panel,
+    build_sparse_channel_drop_panel,
     detect_collinear_channel_groups,
     validate_collinearity_config,
 )
@@ -74,4 +78,37 @@ def test_invalid_config_fail_closed() -> None:
         validate_collinearity_config(
             {"mode": "composite_media_channel", "source_channels": ["a"], "method": "bad", "output_channel": "x"}
         )
+    with pytest.raises(H5RealPanelPreprocessingError, match="reason"):
+        validate_collinearity_config(
+            {
+                "mode": CHANNEL_POLICY_DROP_SPARSE,
+                "dropped_channels": ["radio"],
+                "kept_channels": ["search"],
+                "no_silent_dropping": True,
+            }
+        )
+
+
+def test_sparse_channel_drop_requires_explicit_lists_and_reason() -> None:
+    path = Path("examples/triangulation_geo_panel_v1.csv")
+    if not path.is_file():
+        pytest.skip("triangulation panel missing")
+    df = load_panel_from_path(path)
+    schema = PanelSchema(
+        "geo_id",
+        "week_start_date",
+        "revenue",
+        ("search", "social", "display", "radio"),
+        (),
+    )
+    _, out_schema, record = build_sparse_channel_drop_panel(
+        df,
+        schema,
+        dropped_channels=["radio"],
+        kept_channels=["search", "social", "display"],
+        reason="radio near_zero_share ~0.99 — sparse governed drop",
+    )
+    assert record["mode"] == CHANNEL_POLICY_DROP_SPARSE
+    assert "radio" not in out_schema.channel_columns
+    assert "sparse" in record["sparse_drop_reason"].lower()
 

@@ -229,6 +229,13 @@ One panel only (`examples_mmm_benchmark_geo_panel_v1`); keep-all policy under lo
 
 Checkpoint before H5q+ panel expansion: recommender → freeze → replay discipline; stop on `do_not_run` / failed convergence.
 
+### Bayes-H5r — Sparse-channel remedy replay ✅
+
+| Deliverable | Status |
+|-------------|--------|
+| Same triangulation panel; drop_sparse_channels (radio) | **Complete** — [INV-H5R](../06_investigations/INV-H5R_SPARSE_CHANNEL_REMEDY_REPLAY.md) |
+| H5q failed → H5r converged | **Documented** in [comparison JSON](../05_validation/archives/BAYES_H5R_REMEDY_COMPARISON_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601.json) |
+
 ### Bayes-H5q — Third real-panel shadow ✅
 
 | Deliverable | Status |

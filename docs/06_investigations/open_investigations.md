@@ -1937,6 +1937,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H5R — Bayes-H5 sparse-channel remedy replay
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5R |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5R_SPARSE_CHANNEL_REMEDY_REPLAY.md](INV-H5R_SPARSE_CHANNEL_REMEDY_REPLAY.md) |
+| **Panel** | Same `examples_mmm_triangulation_geo_panel_v1` as H5q |
+| **Outcome** | `drop_sparse_channels` (radio) → converged_diagnostic_only (0 div); H5q failed honestly |
+| **Production impact** | None |
+
+---
+
 ### INV-H5M — Bayes-H5 frozen shadow-policy replay
 
 | Field | Value |

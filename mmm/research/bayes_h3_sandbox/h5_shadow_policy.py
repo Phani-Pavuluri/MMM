@@ -15,6 +15,7 @@ from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
 )
 from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
     CHANNEL_POLICY_DROP_COLLINEAR,
+    CHANNEL_POLICY_DROP_SPARSE,
     CHANNEL_POLICY_MODES,
     validate_collinearity_config,
 )
@@ -96,12 +97,20 @@ def _validate_channel_policy_explicit(channel_policy: dict[str, Any]) -> None:
     mode = channel_policy.get("mode")
     if mode not in CHANNEL_POLICY_MODES:
         raise H5ShadowPolicyError(f"unsupported channel_policy.mode: {mode!r}")
-    if mode == CHANNEL_POLICY_DROP_COLLINEAR:
+    if mode in (CHANNEL_POLICY_DROP_COLLINEAR, CHANNEL_POLICY_DROP_SPARSE):
         if channel_policy.get("no_silent_dropping") is not True:
             raise H5ShadowPolicyError(
-                "drop_collinear_channels policy requires no_silent_dropping=true"
+                f"{mode} policy requires no_silent_dropping=true"
             )
         _channel_lists(channel_policy)
+        if mode == CHANNEL_POLICY_DROP_SPARSE:
+            reason = str(
+                channel_policy.get("reason") or channel_policy.get("sparse_drop_reason") or ""
+            ).strip()
+            if not reason:
+                raise H5ShadowPolicyError(
+                    "drop_sparse_channels requires documented sparse_drop reason"
+                )
 
 
 def _validate_geometry_not_ablation_promotable(geometry: dict[str, Any]) -> None:
@@ -214,7 +223,7 @@ def assert_channel_policy_matches_explicit(
     channel_policy: dict[str, Any],
 ) -> None:
     """Verify preprocessing dropped/kept exactly what the frozen policy declares."""
-    if channel_policy.get("mode") != CHANNEL_POLICY_DROP_COLLINEAR:
+    if channel_policy.get("mode") not in (CHANNEL_POLICY_DROP_COLLINEAR, CHANNEL_POLICY_DROP_SPARSE):
         return
     expected_drop = set(_channel_lists(channel_policy)[0])
     expected_keep = set(_channel_lists(channel_policy)[1])

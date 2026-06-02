@@ -202,6 +202,17 @@ Bayes-H5n adds a **research-only shadow-policy recommender** that maps collinear
 
 Do **not** batch additional panels without a new milestone and manifest.
 
+### H5r sparse-channel remedy replay (INV-H5R)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — same H5q panel; `drop_sparse_channels` (radio); **converged_diagnostic_only** |
+| **Investigation** | [INV-H5R](../06_investigations/INV-H5R_SPARSE_CHANNEL_REMEDY_REPLAY.md) |
+| **Policy** | [h5r_examples_mmm_triangulation_geo_panel_v1_sparse_radio_policy.json](../06_investigations/h5r_examples_mmm_triangulation_geo_panel_v1_sparse_radio_policy.json) |
+| **Comparison** | [BAYES_H5R_REMEDY_COMPARISON_…](../05_validation/archives/BAYES_H5R_REMEDY_COMPARISON_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601.json) |
+| **Outcome** | H5q keep-all: 14 div / failed → H5r drop radio: 0 div / converged |
+| **Production** | **Still blocked** |
+
 ### H5q third real-panel shadow run (INV-H5Q)
 
 | Field | Value |

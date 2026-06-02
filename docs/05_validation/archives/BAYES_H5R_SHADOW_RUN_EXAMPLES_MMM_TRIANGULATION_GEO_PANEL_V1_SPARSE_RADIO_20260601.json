@@ -1,0 +1,667 @@
+{
+  "harness_version": "bayes_h5m_shadow_runner_v1",
+  "artifact_type": "real_panel_shadow_artifact",
+  "schema_reference": "BAYES_H5E_SHADOW_RUN_SCHEMA_20260601",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "research_only": true,
+  "shadow_run": {
+    "run_id": "BAYES-H5H-SHADOW-examples_mmm_triangulation_geo_panel_v1-20260602",
+    "dataset_snapshot_id": "mmm-examples-triangulation-geo-panel-frozen-2022-v1",
+    "panel_id": "examples_mmm_triangulation_geo_panel_v1",
+    "data_snapshot_hash": "sha256:3c3c0f0a3b1556087439cb7aebe2a281d128250966639998a36bce7d1b256a68",
+    "mmm_config_hash": "sha256:55214cb2fb353ea866d13a667bdfea82d51352e17aad4f7fde5c516a3fd91267",
+    "run_environment": "research",
+    "sandbox_entrypoint": "mmm.research.bayes_h3_sandbox.run_sandbox_fit",
+    "model_spec_version": "bayes_h5_sandbox_spec_v1",
+    "enable_h5_sandbox": true,
+    "research_only": true,
+    "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+    "transform_config": {
+      "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+      "media_transforms_by_channel": {
+        "search": "identity",
+        "social": "identity",
+        "display": "identity"
+      },
+      "transform_params_by_channel": {},
+      "transform_mismatch_mode": "aligned",
+      "policy_note": "H5r sparse-radio remedy \u2014 identity transforms; radio dropped before fit per channel_policy.",
+      "panel_schema": {
+        "geo_column": "geo_id",
+        "week_column": "week_start_date",
+        "target_column": "revenue"
+      },
+      "control_columns": [],
+      "channel_policy": {
+        "mode": "drop_sparse_channels",
+        "dropped_channels": [
+          "radio"
+        ],
+        "kept_channels": [
+          "search",
+          "social",
+          "display"
+        ],
+        "sparse_drop_reason": "radio near_zero_share ~0.99 in H5q diagnostics; separate radio effect weakly identified under 8\u00d74 hierarchy",
+        "reason": "radio is ~99% near-zero in H5q diagnostics; governed sparse-channel drop (not collinearity heuristic)",
+        "no_silent_dropping": true
+      },
+      "frozen_policy_id": "bayes_h5r_triangulation_sparse_radio_policy_v1"
+    },
+    "calibration_signal_summary": {
+      "signals_present": [
+        {
+          "calibration_evidence_id": "h5q_triangulation_geox_cls_stub_v1",
+          "evidence_type": "research_calibration_stub",
+          "likelihood_integrated": false,
+          "experiment_evidence_refs": [
+            {
+              "source": "GeoX-CLS-stub",
+              "experiment_id": "H5Q-TRIANGULATION-STUB-E1",
+              "channels": [
+                "search",
+                "social",
+                "display"
+              ],
+              "note": "Illustrative triangulation anchor \u2014 diagnostic only; radio excluded after sparse drop"
+            }
+          ],
+          "conflict_warnings": [],
+          "note": "Research-only calibration metadata; likelihood not integrated"
+        }
+      ],
+      "likelihood_integrated": false,
+      "stub_slots_only": true
+    },
+    "posterior_diagnostics": {
+      "outputs_are_diagnostic_only": true,
+      "posterior_summary": {
+        "model_kind": "bayes_h5_hierarchical_sandbox_v1",
+        "n_obs": 416,
+        "n_geo": 8,
+        "channels": [
+          "search",
+          "social",
+          "display"
+        ],
+        "sigma_mean": 0.19795290223740153,
+        "outputs_are_diagnostic_only": true,
+        "mu_channel_mean": {
+          "search": 0.40893737404406894,
+          "social": 0.3362630825714113,
+          "display": 0.248811628213188
+        },
+        "tau_channel_mean": {
+          "search": 0.017406234151753158,
+          "social": 0.01509640668181935,
+          "display": 0.015085350171938836
+        },
+        "model_spec_version": "bayes_h5_sandbox_spec_v1"
+      },
+      "convergence_diagnostics": {
+        "rhat_max": 1.01,
+        "ess_bulk_min": 981.0,
+        "divergence_count": 0,
+        "chains": 4,
+        "draws_per_chain": 600,
+        "per_parameter": [
+          {
+            "parameter": "alpha_geo[0]",
+            "family": "intercept",
+            "r_hat": 1.01,
+            "ess_bulk": 4392.0
+          },
+          {
+            "parameter": "alpha_geo[1]",
+            "family": "intercept",
+            "r_hat": 1.01,
+            "ess_bulk": 5842.0
+          },
+          {
+            "parameter": "alpha_geo[2]",
+            "family": "intercept",
+            "r_hat": 1.0,
+            "ess_bulk": 5744.0
+          },
+          {
+            "parameter": "alpha_geo[3]",
+            "family": "intercept",
+            "r_hat": 1.0,
+            "ess_bulk": 5362.0
+          },
+          {
+            "parameter": "alpha_geo[4]",
+            "family": "intercept",
+            "r_hat": 1.01,
+            "ess_bulk": 4916.0
+          },
+          {
+            "parameter": "alpha_geo[5]",
+            "family": "intercept",
+            "r_hat": 1.0,
+            "ess_bulk": 4934.0
+          },
+          {
+            "parameter": "alpha_geo[6]",
+            "family": "intercept",
+            "r_hat": 1.0,
+            "ess_bulk": 6122.0
+          },
+          {
+            "parameter": "alpha_geo[7]",
+            "family": "intercept",
+            "r_hat": 1.0,
+            "ess_bulk": 3948.0
+          },
+          {
+            "parameter": "sigma",
+            "family": "sigma",
+            "r_hat": 1.0,
+            "ess_bulk": 4859.0
+          },
+          {
+            "parameter": "mu_channel[0]",
+            "family": "mu_channel",
+            "r_hat": 1.0,
+            "ess_bulk": 2402.0
+          },
+          {
+            "parameter": "mu_channel[1]",
+            "family": "mu_channel",
+            "r_hat": 1.0,
+            "ess_bulk": 2493.0
+          },
+          {
+            "parameter": "mu_channel[2]",
+            "family": "mu_channel",
+            "r_hat": 1.0,
+            "ess_bulk": 2246.0
+          },
+          {
+            "parameter": "tau_channel[0]",
+            "family": "tau",
+            "r_hat": 1.0,
+            "ess_bulk": 981.0
+          },
+          {
+            "parameter": "tau_channel[1]",
+            "family": "tau",
+            "r_hat": 1.0,
+            "ess_bulk": 1315.0
+          },
+          {
+            "parameter": "tau_channel[2]",
+            "family": "tau",
+            "r_hat": 1.0,
+            "ess_bulk": 1316.0
+          },
+          {
+            "parameter": "z_beta[0, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3431.0
+          },
+          {
+            "parameter": "z_beta[0, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3533.0
+          },
+          {
+            "parameter": "z_beta[0, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 5627.0
+          },
+          {
+            "parameter": "z_beta[1, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3731.0
+          },
+          {
+            "parameter": "z_beta[1, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3197.0
+          },
+          {
+            "parameter": "z_beta[1, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 5096.0
+          },
+          {
+            "parameter": "z_beta[2, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 2542.0
+          },
+          {
+            "parameter": "z_beta[2, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 5067.0
+          },
+          {
+            "parameter": "z_beta[2, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 4379.0
+          },
+          {
+            "parameter": "z_beta[3, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3866.0
+          },
+          {
+            "parameter": "z_beta[3, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.01,
+            "ess_bulk": 3962.0
+          },
+          {
+            "parameter": "z_beta[3, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 4633.0
+          },
+          {
+            "parameter": "z_beta[4, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3414.0
+          },
+          {
+            "parameter": "z_beta[4, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 4238.0
+          },
+          {
+            "parameter": "z_beta[4, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3951.0
+          },
+          {
+            "parameter": "z_beta[5, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3440.0
+          },
+          {
+            "parameter": "z_beta[5, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 5386.0
+          },
+          {
+            "parameter": "z_beta[5, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.01,
+            "ess_bulk": 5498.0
+          },
+          {
+            "parameter": "z_beta[6, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 2897.0
+          },
+          {
+            "parameter": "z_beta[6, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 3860.0
+          },
+          {
+            "parameter": "z_beta[6, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 4391.0
+          },
+          {
+            "parameter": "z_beta[7, 0]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 4489.0
+          },
+          {
+            "parameter": "z_beta[7, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.01,
+            "ess_bulk": 4559.0
+          },
+          {
+            "parameter": "z_beta[7, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.0,
+            "ess_bulk": 5341.0
+          }
+        ],
+        "worst_rhat_parameters": [
+          {
+            "parameter": "alpha_geo[0]",
+            "family": "intercept",
+            "r_hat": 1.01,
+            "ess_bulk": 4392.0
+          },
+          {
+            "parameter": "alpha_geo[1]",
+            "family": "intercept",
+            "r_hat": 1.01,
+            "ess_bulk": 5842.0
+          },
+          {
+            "parameter": "alpha_geo[4]",
+            "family": "intercept",
+            "r_hat": 1.01,
+            "ess_bulk": 4916.0
+          },
+          {
+            "parameter": "z_beta[3, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.01,
+            "ess_bulk": 3962.0
+          },
+          {
+            "parameter": "z_beta[5, 2]",
+            "family": "beta_offset",
+            "r_hat": 1.01,
+            "ess_bulk": 5498.0
+          },
+          {
+            "parameter": "z_beta[7, 1]",
+            "family": "beta_offset",
+            "r_hat": 1.01,
+            "ess_bulk": 4559.0
+          },
+          {
+            "parameter": "alpha_geo[2]",
+            "family": "intercept",
+            "r_hat": 1.0,
+            "ess_bulk": 5744.0
+          },
+          {
+            "parameter": "alpha_geo[3]",
+            "family": "intercept",
+            "r_hat": 1.0,
+            "ess_bulk": 5362.0
+          }
+        ]
+      },
+      "pooling_diagnostics": {
+        "pooling_mode": "partial",
+        "tau_channel_mean": {
+          "search": 0.017406234151753158,
+          "social": 0.01509640668181935,
+          "display": 0.015085350171938836
+        },
+        "mu_channel_mean": {
+          "search": 0.40893737404406894,
+          "social": 0.3362630825714113,
+          "display": 0.248811628213188
+        }
+      },
+      "h5_transform_diagnostics": {
+        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+        "media_transforms_by_channel": {
+          "search": "identity",
+          "social": "identity",
+          "display": "identity"
+        },
+        "generative_transform_expected": "unknown",
+        "panel_context": "real_panel",
+        "transform_mismatch_mode": "aligned",
+        "transform_mismatch_detected": false,
+        "transforms_aligned": null,
+        "research_only": true
+      },
+      "diagnostic_trust_report_kind": "bayes_h3_diagnostic_stub"
+    },
+    "recovery_style_diagnostics": {
+      "mode": "report_only",
+      "known_truth_available": false,
+      "note": "Real panels have no synthetic truth; use Ridge/GeoX comparison only"
+    },
+    "trust_report_candidate_diagnostics": {
+      "mapping_version": "bayes_h5d_trust_diagnostic_mapping_v1",
+      "warning_codes": [
+        "h5:production:block",
+        "h5:transform_assumption:identity",
+        "h5:transform_unknown:real_panel"
+      ],
+      "trust_report_candidate_fields": {
+        "transform_alignment_status": "assumption_only",
+        "transform_mismatch_detected": false,
+        "panel_context": "real_panel",
+        "convergence_status": "converged_diagnostic_only",
+        "evidence_promotion_allowed": true,
+        "beta_gc_mae_mean": null,
+        "mu_c_mae_mean": null,
+        "mu_channel_mean": {
+          "search": 0.40893737404406894,
+          "social": 0.3362630825714113,
+          "display": 0.248811628213188
+        },
+        "convergence_rhat_max": 1.01,
+        "convergence_ess_bulk_min": 981.0,
+        "convergence_divergence_count": 0
+      },
+      "production_trust_report": null,
+      "recommended_interpretation": "RESEARCH ONLY \u2014 NOT DECISION GRADE Shadow-run diagnostic mapping only; not production TrustReport."
+    },
+    "ridge_comparison": {
+      "ridge_run_id": null,
+      "comparison_mode": "diagnostic_only",
+      "used_for_optimizer": false,
+      "decision_grade": false,
+      "metrics": {
+        "note": "Optional Ridge fit on same dataset_snapshot_id"
+      }
+    },
+    "geox_cls_comparison": {
+      "available": true,
+      "experiment_evidence_refs": [
+        {
+          "source": "GeoX-CLS-stub",
+          "experiment_id": "H5Q-TRIANGULATION-STUB-E1",
+          "channels": [
+            "search",
+            "social",
+            "display"
+          ],
+          "note": "Diagnostic cross-check on retained channels only"
+        }
+      ],
+      "note": "Research stub \u2014 diagnostic cross-check only",
+      "likelihood_integrated": false
+    },
+    "excluded_fields": [
+      "approved_for_prod",
+      "budget_recommendation",
+      "budget_recommendation_payload",
+      "decision_grade",
+      "decision_surface",
+      "hard_gate",
+      "idata",
+      "linear_coef_draws",
+      "optimizer_input",
+      "optimizer_ready_curves",
+      "prod_decisioning_allowed",
+      "production_decision_surface",
+      "production_promotion",
+      "production_recommendation",
+      "production_trust_report",
+      "recommendation"
+    ],
+    "production_flags": {
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false
+    },
+    "outputs_are_diagnostic_only": true,
+    "real_panel_diagnostics": {
+      "panel_context": "real_panel",
+      "sampler_diagnostics": {
+        "sampler_profile": "extended_mcmc",
+        "draws": 600,
+        "tune": 600,
+        "chains": 4,
+        "target_accept": 0.95,
+        "rhat_max": 1.01,
+        "ess_min": 981.0,
+        "divergence_count": 0,
+        "convergence_status": "converged_diagnostic_only",
+        "evidence_promotion_allowed": true,
+        "report_only": true
+      },
+      "convergence_status": "converged_diagnostic_only",
+      "evidence_promotion_allowed": true,
+      "generative_transform_truth": "unknown",
+      "note": "Real-panel shadow diagnostics \u2014 not synthetic generative truth"
+    }
+  },
+  "sampler_profile": "extended_mcmc",
+  "fast_mcmc_profile": false,
+  "extended_mcmc_profile": true,
+  "execute_fit": true,
+  "note": "H5 shadow-run harness output \u2014 research only. Not production TrustReport, optimizer, or DecisionSurface.",
+  "production_flags": {
+    "hard_gate": false,
+    "production_promotion": false,
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "research_only": true,
+    "decision_grade": false,
+    "production_decision_surface": false
+  },
+  "outputs_are_diagnostic_only": true,
+  "convergence_status": "converged_diagnostic_only",
+  "rhat_max": 1.01,
+  "divergence_count": 0,
+  "evidence_promotion_allowed": true,
+  "excluded_fields": [
+    "approved_for_prod",
+    "budget_recommendation",
+    "budget_recommendation_payload",
+    "decision_grade",
+    "decision_surface",
+    "hard_gate",
+    "idata",
+    "linear_coef_draws",
+    "optimizer_input",
+    "optimizer_ready_curves",
+    "prod_decisioning_allowed",
+    "production_decision_surface",
+    "production_promotion",
+    "production_recommendation",
+    "production_trust_report",
+    "recommendation"
+  ],
+  "policy_id": "bayes_h5r_triangulation_sparse_radio_policy_v1",
+  "source_policy_path": "docs/06_investigations/h5r_examples_mmm_triangulation_geo_panel_v1_sparse_radio_policy.json",
+  "panel_id": "examples_mmm_triangulation_geo_panel_v1",
+  "dataset_snapshot_id": "mmm-examples-triangulation-geo-panel-frozen-2022-v1",
+  "channel_policy_applied": {
+    "mode": "drop_sparse_channels",
+    "dropped_channels": [
+      {
+        "channel": "radio",
+        "reason": "radio is ~99% near-zero in H5q diagnostics; governed sparse-channel drop (not collinearity heuristic)"
+      }
+    ],
+    "kept_channels": [
+      "search",
+      "social",
+      "display"
+    ],
+    "explicit_drop": true,
+    "ablation_only": false,
+    "sparse_drop_reason": "radio is ~99% near-zero in H5q diagnostics; governed sparse-channel drop (not collinearity heuristic)",
+    "no_silent_dropping": true,
+    "explicit_policy": true
+  },
+  "channel_policy_declared": {
+    "mode": "drop_sparse_channels",
+    "dropped_channels": [
+      "radio"
+    ],
+    "kept_channels": [
+      "search",
+      "social",
+      "display"
+    ],
+    "sparse_drop_reason": "radio near_zero_share ~0.99 in H5q diagnostics; separate radio effect weakly identified under 8\u00d74 hierarchy",
+    "reason": "radio is ~99% near-zero in H5q diagnostics; governed sparse-channel drop (not collinearity heuristic)",
+    "no_silent_dropping": true
+  },
+  "h5_geometry_config_applied": {
+    "parameterization": "non_centered",
+    "likelihood_scale_policy": "prescaled_log_outcome",
+    "hierarchy_policy": "full_geo_channel_hierarchy",
+    "tau_parameterization": "current",
+    "sigma_policy": "sigma_floor",
+    "beta_prior_policy": "current_default",
+    "hierarchy_strength_policy": "learned_tau",
+    "hierarchy_faithful": true,
+    "ablation_only": false,
+    "explicit_config": false,
+    "fixed_tau_value": null,
+    "sigma_floor": 0.05
+  },
+  "geometry_config_applied": {
+    "parameterization": "non_centered",
+    "likelihood_scale_policy": "prescaled_log_outcome",
+    "hierarchy_policy": "full_geo_channel_hierarchy",
+    "tau_parameterization": "current",
+    "sigma_policy": "sigma_floor",
+    "beta_prior_policy": "current_default",
+    "hierarchy_strength_policy": "learned_tau",
+    "hierarchy_faithful": true,
+    "ablation_only": false,
+    "explicit_config": false,
+    "fixed_tau_value": null,
+    "sigma_floor": 0.05
+  },
+  "sampler_profile_applied": {
+    "profile": "extended_mcmc",
+    "draws": 600,
+    "tune": 600,
+    "chains": 4,
+    "target_accept": 0.95
+  },
+  "forbidden_claims": [],
+  "trust_report_candidate_diagnostics": {
+    "mapping_version": "bayes_h5d_trust_diagnostic_mapping_v1",
+    "warning_codes": [
+      "h5:production:block",
+      "h5:transform_assumption:identity",
+      "h5:transform_unknown:real_panel"
+    ],
+    "trust_report_candidate_fields": {
+      "transform_alignment_status": "assumption_only",
+      "transform_mismatch_detected": false,
+      "panel_context": "real_panel",
+      "convergence_status": "converged_diagnostic_only",
+      "evidence_promotion_allowed": true,
+      "beta_gc_mae_mean": null,
+      "mu_c_mae_mean": null,
+      "mu_channel_mean": {
+        "search": 0.40893737404406894,
+        "social": 0.3362630825714113,
+        "display": 0.248811628213188
+      },
+      "convergence_rhat_max": 1.01,
+      "convergence_ess_bulk_min": 981.0,
+      "convergence_divergence_count": 0
+    },
+    "production_trust_report": null,
+    "recommended_interpretation": "RESEARCH ONLY \u2014 NOT DECISION GRADE Shadow-run diagnostic mapping only; not production TrustReport."
+  }
+}

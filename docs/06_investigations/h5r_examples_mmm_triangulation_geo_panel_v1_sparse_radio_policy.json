@@ -1,0 +1,127 @@
+{
+  "policy_id": "bayes_h5r_triangulation_sparse_radio_policy_v1",
+  "policy_type": "research_shadow_policy",
+  "policy_version": "2026-06-01",
+  "description": "H5r sparse-channel remedy on H5q triangulation panel — governed drop radio (research only).",
+  "model_spec_version": "bayes_h5_sandbox_spec_v1",
+  "enable_h5_sandbox": true,
+  "research_only": true,
+  "artifact_type": "real_panel_shadow_artifact",
+  "dataset_snapshot_id": "mmm-examples-triangulation-geo-panel-frozen-2022-v1",
+  "panel_id": "examples_mmm_triangulation_geo_panel_v1",
+  "panel_path": "examples/triangulation_geo_panel_v1.csv",
+  "panel_schema": {
+    "geo_column": "geo_id",
+    "week_column": "week_start_date",
+    "date_column": "week_start_date",
+    "outcome_column": "revenue",
+    "target_column": "revenue",
+    "media_columns": ["search", "social", "display", "radio"],
+    "control_columns": []
+  },
+  "transform_config": {
+    "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+    "media_transforms_by_channel": {
+      "search": "identity",
+      "social": "identity",
+      "display": "identity",
+      "radio": "identity"
+    },
+    "transform_params_by_channel": {},
+    "transform_mismatch_mode": "aligned",
+    "policy_note": "H5r sparse-radio remedy — identity transforms; radio dropped before fit per channel_policy."
+  },
+  "channel_policy": {
+    "mode": "drop_sparse_channels",
+    "dropped_channels": ["radio"],
+    "kept_channels": ["search", "social", "display"],
+    "sparse_drop_reason": "radio near_zero_share ~0.99 in H5q diagnostics; separate radio effect weakly identified under 8×4 hierarchy",
+    "reason": "radio is ~99% near-zero in H5q diagnostics; governed sparse-channel drop (not collinearity heuristic)",
+    "no_silent_dropping": true
+  },
+  "h5_geometry_config": {
+    "parameterization": "non_centered",
+    "hierarchy_policy": "full_geo_channel_hierarchy",
+    "hierarchy_strength_policy": "learned_tau",
+    "tau_parameterization": "current",
+    "beta_prior_policy": "current_default",
+    "sigma_policy": "sigma_floor",
+    "sigma_floor": 0.05,
+    "likelihood_scale_policy": "prescaled_log_outcome"
+  },
+  "prescale": {
+    "media_prescale": "zscore_panel",
+    "outcome_prescale": "zscore_log"
+  },
+  "sampler_profile": {
+    "profile": "extended_mcmc",
+    "draws": 600,
+    "tune": 600,
+    "chains": 4,
+    "target_accept": 0.95
+  },
+  "production_flags": {
+    "hard_gate": false,
+    "production_promotion": false,
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "research_only": true,
+    "decision_grade": false,
+    "production_decision_surface": false
+  },
+  "excluded_fields": [
+    "optimizer",
+    "optimizer_ready_curves",
+    "optimizer_input",
+    "decision_surface",
+    "DecisionSurface",
+    "budget_recommendation",
+    "recommendations",
+    "production_trust_report"
+  ],
+  "forbidden_claims": [
+    "No production Bayes claim",
+    "No optimizer or budget recommendation use",
+    "No DecisionSurface or budget recommendations",
+    "No Ridge replacement",
+    "No separate radio channel effect claim after sparse-channel drop",
+    "Shadow policy recommendations are not business decisions"
+  ],
+  "remedies_prior_run": {
+    "investigation_id": "INV-H5Q",
+    "policy_id": "bayes_h5q_examples_mmm_triangulation_geo_panel_v1_shadow_policy_v1",
+    "convergence_status": "failed_convergence",
+    "divergence_count": 14,
+    "rhat_max": 1.01
+  },
+  "calibration_signals_stub": [
+    {
+      "calibration_evidence_id": "h5q_triangulation_geox_cls_stub_v1",
+      "evidence_type": "research_calibration_stub",
+      "likelihood_integrated": false,
+      "experiment_evidence_refs": [
+        {
+          "source": "GeoX-CLS-stub",
+          "experiment_id": "H5Q-TRIANGULATION-STUB-E1",
+          "channels": ["search", "social", "display"],
+          "note": "Illustrative triangulation anchor — diagnostic only; radio excluded after sparse drop"
+        }
+      ],
+      "conflict_warnings": [],
+      "note": "Research-only calibration metadata; likelihood not integrated"
+    }
+  ],
+  "geox_cls_comparison": {
+    "available": true,
+    "experiment_evidence_refs": [
+      {
+        "source": "GeoX-CLS-stub",
+        "experiment_id": "H5Q-TRIANGULATION-STUB-E1",
+        "channels": ["search", "social", "display"],
+        "note": "Diagnostic cross-check on retained channels only"
+      }
+    ],
+    "note": "Research stub — diagnostic cross-check only",
+    "likelihood_integrated": false
+  }
+}

@@ -12,6 +12,7 @@ from mmm.data.schema import PanelSchema
 CHANNEL_POLICY_KEEP_ALL = "keep_all_channels"
 CHANNEL_POLICY_SINGLE = "single_channel"
 CHANNEL_POLICY_DROP_COLLINEAR = "drop_collinear_channels"
+CHANNEL_POLICY_DROP_SPARSE = "drop_sparse_channels"
 CHANNEL_POLICY_COMPOSITE = "composite_media_channel"
 CHANNEL_POLICY_POOLED = "pooled_channel_effects"
 
@@ -20,6 +21,7 @@ CHANNEL_POLICY_MODES: frozenset[str] = frozenset(
         CHANNEL_POLICY_KEEP_ALL,
         CHANNEL_POLICY_SINGLE,
         CHANNEL_POLICY_DROP_COLLINEAR,
+        CHANNEL_POLICY_DROP_SPARSE,
         CHANNEL_POLICY_COMPOSITE,
         CHANNEL_POLICY_POOLED,
     }
@@ -179,6 +181,26 @@ def validate_collinearity_config(channel_policy: dict[str, Any] | None) -> None:
             raise H5RealPanelPreprocessingError(
                 "drop_collinear_channels requires 0 < max_abs_corr_threshold < 1"
             )
+    elif mode == CHANNEL_POLICY_DROP_SPARSE:
+        dropped = channel_policy.get("dropped_channels")
+        kept = channel_policy.get("kept_channels")
+        if not isinstance(dropped, list) or not dropped:
+            raise H5RealPanelPreprocessingError(
+                "drop_sparse_channels requires non-empty dropped_channels"
+            )
+        if not isinstance(kept, list) or not kept:
+            raise H5RealPanelPreprocessingError(
+                "drop_sparse_channels requires non-empty kept_channels"
+            )
+        reason = str(channel_policy.get("reason") or channel_policy.get("sparse_drop_reason") or "").strip()
+        if not reason:
+            raise H5RealPanelPreprocessingError(
+                "drop_sparse_channels requires non-empty reason documenting sparse-channel drop"
+            )
+        if channel_policy.get("no_silent_dropping") is not True:
+            raise H5RealPanelPreprocessingError(
+                "drop_sparse_channels requires no_silent_dropping=true"
+            )
     elif mode == CHANNEL_POLICY_COMPOSITE:
         sources = channel_policy.get("source_channels")
         if not sources or not isinstance(sources, list):
@@ -301,6 +323,33 @@ def build_explicit_channel_drop_panel(
     return out_df, out_schema, record
 
 
+def build_sparse_channel_drop_panel(
+    df: pd.DataFrame,
+    schema: PanelSchema,
+    *,
+    dropped_channels: list[str],
+    kept_channels: list[str],
+    reason: str,
+) -> tuple[pd.DataFrame, PanelSchema, dict[str, Any]]:
+    """Governed drop of near-zero / weakly identified sparse media channels."""
+    if not str(reason).strip():
+        raise H5RealPanelPreprocessingError(
+            "drop_sparse_channels requires documented sparse_drop reason"
+        )
+    out_df, out_schema, record = build_explicit_channel_drop_panel(
+        df,
+        schema,
+        dropped_channels=dropped_channels,
+        kept_channels=kept_channels,
+        reason=reason,
+    )
+    record["mode"] = CHANNEL_POLICY_DROP_SPARSE
+    record["sparse_drop_reason"] = reason
+    record["explicit_drop"] = True
+    record["ablation_only"] = False
+    return out_df, out_schema, record
+
+
 def _composite_column(
     df: pd.DataFrame,
     source_channels: list[str],
@@ -400,6 +449,15 @@ def apply_channel_policy(
     if mode == CHANNEL_POLICY_SINGLE:
         ch = str(policy["channel"])
         out_df, out_schema, record = build_single_channel_panel(df, schema, ch)
+    elif mode == CHANNEL_POLICY_DROP_SPARSE:
+        out_df, out_schema, record = build_sparse_channel_drop_panel(
+            df,
+            schema,
+            dropped_channels=list(policy["dropped_channels"]),
+            kept_channels=list(policy["kept_channels"]),
+            reason=str(policy.get("reason") or policy.get("sparse_drop_reason") or ""),
+        )
+        record["no_silent_dropping"] = policy.get("no_silent_dropping", True)
     elif mode == CHANNEL_POLICY_DROP_COLLINEAR:
         explicit_drop = policy.get("dropped_channels")
         if explicit_drop:

@@ -1,0 +1,85 @@
+{
+  "artifact_id": "BAYES_H5R_REMEDY_COMPARISON_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601",
+  "investigation_id": "INV-H5R_SPARSE_CHANNEL_REMEDY_REPLAY",
+  "panel_id": "examples_mmm_triangulation_geo_panel_v1",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "h5q_keep_all": {
+    "policy_id": "bayes_h5q_examples_mmm_triangulation_geo_panel_v1_shadow_policy_v1",
+    "convergence_status": "failed_convergence",
+    "rhat_max": 1.01,
+    "divergence_count": 14,
+    "evidence_promotion_allowed": false,
+    "channel_policy_declared": {
+      "mode": "keep_all_channels",
+      "no_silent_dropping": true
+    },
+    "channel_policy_applied": {
+      "mode": "keep_all_channels",
+      "kept_channels": [
+        "search",
+        "social",
+        "display",
+        "radio"
+      ],
+      "ablation_only": false
+    },
+    "artifact_path": "docs/05_validation/archives/BAYES_H5Q_SHADOW_RUN_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601.json",
+    "forbidden_claims_sample": []
+  },
+  "h5r_drop_sparse_radio": {
+    "policy_id": "bayes_h5r_triangulation_sparse_radio_policy_v1",
+    "convergence_status": "converged_diagnostic_only",
+    "rhat_max": 1.01,
+    "divergence_count": 0,
+    "evidence_promotion_allowed": true,
+    "channel_policy_declared": {
+      "mode": "drop_sparse_channels",
+      "dropped_channels": [
+        "radio"
+      ],
+      "kept_channels": [
+        "search",
+        "social",
+        "display"
+      ],
+      "sparse_drop_reason": "radio near_zero_share ~0.99 in H5q diagnostics; separate radio effect weakly identified under 8\u00d74 hierarchy",
+      "reason": "radio is ~99% near-zero in H5q diagnostics; governed sparse-channel drop (not collinearity heuristic)",
+      "no_silent_dropping": true
+    },
+    "channel_policy_applied": {
+      "mode": "drop_sparse_channels",
+      "dropped_channels": [
+        {
+          "channel": "radio",
+          "reason": "radio is ~99% near-zero in H5q diagnostics; governed sparse-channel drop (not collinearity heuristic)"
+        }
+      ],
+      "kept_channels": [
+        "search",
+        "social",
+        "display"
+      ],
+      "explicit_drop": true,
+      "ablation_only": false,
+      "sparse_drop_reason": "radio is ~99% near-zero in H5q diagnostics; governed sparse-channel drop (not collinearity heuristic)",
+      "no_silent_dropping": true,
+      "explicit_policy": true
+    },
+    "artifact_path": "docs/05_validation/archives/BAYES_H5R_SHADOW_RUN_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_SPARSE_RADIO_20260601.json",
+    "forbidden_claims_sample": []
+  },
+  "remedy_restored_convergence": true,
+  "divergence_delta": {
+    "h5q": 14,
+    "h5r": 0
+  },
+  "usable_under_audit_h5p_u4": true,
+  "interpretation": "Dropping sparse radio removed weak-ID load; hierarchy-faithful geometry unchanged.",
+  "production_flags": {
+    "approved_for_prod": null,
+    "prod_decisioning_allowed": null,
+    "hard_gate": null,
+    "research_only": true
+  },
+  "note": "evidence_promotion_allowed on H5r is research eligibility only \u2014 production Bayes blocked"
+}
