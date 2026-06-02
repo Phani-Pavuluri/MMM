@@ -1,0 +1,234 @@
+{
+  "artifact_id": "BAYES_H5N_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601",
+  "investigation_id": "INV-H5N_SHADOW_POLICY_RECOMMENDER",
+  "panel_id": "examples_mmm_sample_panel_v1",
+  "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
+  "model_spec_version": "bayes_h5_sandbox_spec_v1",
+  "recommender_version": "bayes_h5n_shadow_policy_recommender_v1",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "collinearity_summary": {
+    "max_abs_correlation": 0.9887869687681137,
+    "threshold": 0.95,
+    "high_collinearity": true,
+    "collinear_groups": [
+      {
+        "channels": [
+          "search",
+          "social",
+          "tv"
+        ],
+        "max_abs_corr_threshold": 0.95,
+        "pairwise": [
+          {
+            "a": "search",
+            "b": "social",
+            "correlation": 0.9578902483017746
+          },
+          {
+            "a": "search",
+            "b": "tv",
+            "correlation": 0.9138372291253558
+          },
+          {
+            "a": "social",
+            "b": "tv",
+            "correlation": 0.9887869687681137
+          }
+        ]
+      }
+    ]
+  },
+  "sparsity_summary": {
+    "by_channel": {
+      "search": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 398.1
+      },
+      "social": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 330.3
+      },
+      "tv": {
+        "zero_share": 0.0,
+        "near_zero_share": 0.0,
+        "min_positive": 181.3
+      }
+    },
+    "any_hard_zeros": false
+  },
+  "recommended_shadow_policy": {
+    "channel_recommendation_id": "drop_collinear_channels",
+    "channel_policy": {
+      "mode": "drop_collinear_channels",
+      "max_abs_corr_threshold": 0.95,
+      "dropped_channels": [
+        "tv"
+      ],
+      "kept_channels": [
+        "search",
+        "social"
+      ],
+      "no_silent_dropping": true,
+      "reason": "social-tv correlation exceeded threshold in H5j/H5l diagnostics; drop-tv variant is the governed hierarchy-faithful configuration for frozen replay"
+    },
+    "geometry_recommendation_id": "full_hierarchy_non_centered_sigma_floor",
+    "h5_geometry_config": {
+      "parameterization": "non_centered",
+      "hierarchy_policy": "full_geo_channel_hierarchy",
+      "hierarchy_strength_policy": "learned_tau",
+      "tau_parameterization": "current",
+      "beta_prior_policy": "current_default",
+      "sigma_policy": "sigma_floor",
+      "sigma_floor": 0.05,
+      "likelihood_scale_policy": "prescaled_log_outcome"
+    },
+    "sampler_profile": {
+      "profile": "extended_mcmc",
+      "draws": 600,
+      "tune": 600,
+      "chains": 4,
+      "target_accept": 0.95
+    },
+    "prescale": {
+      "media_prescale": "zscore_panel",
+      "outcome_prescale": "zscore_log"
+    },
+    "status": "recommended",
+    "rationale": "High collinearity (max |\u03c1|=0.989 \u2265 0.95); governed explicit drop converged under hierarchy-faithful geometry (H5m/H5L-B pattern).",
+    "aligns_with_frozen_policy_id": "bayes_h5m_sample_panel_shadow_policy_v1"
+  },
+  "allowed_alternatives": [
+    {
+      "recommendation_id": "keep_all_channels_with_weak_id_warning",
+      "status": "blocked",
+      "rationale": "Keep-all failed or weak under collinearity \u2014 not for evidence promotion.",
+      "channel_policy": {
+        "mode": "keep_all_channels",
+        "no_silent_dropping": true
+      },
+      "evidence_promotion_allowed": false,
+      "hierarchy_faithful": true
+    },
+    {
+      "recommendation_id": "composite_media_channel",
+      "status": "allowed_alternative",
+      "rationale": "Composite PC1 probe available but not selected over governed explicit drop.",
+      "channel_policy": {
+        "mode": "composite_media_channel",
+        "source_channels": [
+          "social",
+          "tv"
+        ],
+        "method": "first_principal_component",
+        "output_channel": "social_tv_pc1",
+        "remaining_channels": [
+          "search"
+        ]
+      },
+      "evidence_promotion_allowed": false,
+      "hierarchy_faithful": true
+    },
+    {
+      "recommendation_id": "ablation_benchmark_only",
+      "status": "diagnostic_only",
+      "rationale": "Ablation variant H5L-J-FIXED-TAU-BENCHMARK converged \u2014 benchmark only, not promotable.",
+      "h5_geometry_config": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "fixed_tau_ablation",
+        "tau_parameterization": "current",
+        "sigma_policy": "current_default",
+        "beta_prior_policy": "current_default",
+        "hierarchy_strength_policy": "fixed_tau_ablation",
+        "hierarchy_faithful": false,
+        "ablation_only": true,
+        "explicit_config": false,
+        "fixed_tau_value": 0.2,
+        "sigma_floor": null
+      },
+      "evidence_promotion_allowed": false,
+      "hierarchy_faithful": false,
+      "variant_id": "H5L-J-FIXED-TAU-BENCHMARK"
+    },
+    {
+      "recommendation_id": "ablation_benchmark_only",
+      "status": "diagnostic_only",
+      "rationale": "Ablation variant H5L-K-POOLED-BENCHMARK converged \u2014 benchmark only, not promotable.",
+      "h5_geometry_config": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "pooled_channel_effects_ablation",
+        "tau_parameterization": "current",
+        "sigma_policy": "current_default",
+        "beta_prior_policy": "current_default",
+        "hierarchy_strength_policy": "learned_tau",
+        "hierarchy_faithful": false,
+        "ablation_only": true,
+        "explicit_config": false,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      },
+      "evidence_promotion_allowed": false,
+      "hierarchy_faithful": false,
+      "variant_id": "H5L-K-POOLED-BENCHMARK"
+    }
+  ],
+  "blocked_options": [
+    {
+      "recommendation_id": "do_not_use_ablation_for_promotion",
+      "status": "blocked",
+      "rationale": "Pooled/fixed-\u03c4 ablations must not be recommended as promotable shadow policies.",
+      "evidence_promotion_allowed": false,
+      "hierarchy_faithful": false
+    }
+  ],
+  "interpretation_changes": [
+    "Dropped channel 'tv': forbid separate effect claim for this channel.",
+    "Retained channel 'search': partial-pooling geo\u00d7channel coefficients only.",
+    "Retained channel 'social': partial-pooling geo\u00d7channel coefficients only.",
+    "Channels 'social' and 'tv' were highly correlated; forbid clean isolated effect claim for either without external calibration."
+  ],
+  "forbidden_claims": [
+    "No DecisionSurface or budget recommendations",
+    "No Ridge replacement",
+    "No clean isolated social-only effect claim without external calibration (retained social may absorb shared social-tv movement).",
+    "No external calibration on pilot \u2014 collinearity interpretation caveats apply.",
+    "No optimizer or budget recommendation use",
+    "No production Bayes claim",
+    "No separate tv channel effect claim after explicit drop.",
+    "Shadow policy recommendations are not business decisions"
+  ],
+  "evidence_status": {
+    "evidence_promotion_allowed": true,
+    "hierarchy_faithful": true,
+    "convergence_status": "converged_diagnostic_only",
+    "source_milestone": "bayes_h5m_sample_panel_shadow_policy_v1",
+    "note": "research eligibility only \u2014 production Bayes blocked"
+  },
+  "calibration_evidence_available": false,
+  "hard_gate": false,
+  "production_promotion": false,
+  "approved_for_prod": false,
+  "prod_decisioning_allowed": false,
+  "research_only": true,
+  "decision_grade": false,
+  "production_decision_surface": false,
+  "outputs_are_diagnostic_only": true,
+  "excluded_fields": [
+    "DecisionSurface",
+    "budget_recommendation",
+    "decision_surface",
+    "optimizer",
+    "recommendations"
+  ],
+  "source_evidence": {
+    "h5j_artifact": "docs/05_validation/archives/BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json",
+    "h5l_artifact": "docs/05_validation/archives/BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json",
+    "h5m_replay_artifact": "docs/05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json",
+    "h5m_frozen_policy": "docs/06_investigations/h5m_sample_panel_shadow_policy.json",
+    "panel_path": "examples/sample_panel.csv"
+  },
+  "recommended_frozen_policy_id": "bayes_h5m_sample_panel_shadow_policy_v1"
+}

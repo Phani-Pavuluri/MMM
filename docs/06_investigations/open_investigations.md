@@ -1883,16 +1883,17 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
-### INV-H5N — Bayes-H5 shadow-policy recommender (planned)
+### INV-H5N — Bayes-H5 shadow-policy recommender
 
 | Field | Value |
 |-------|-------|
 | **Investigation ID** | INV-H5N |
-| **Status** | **planned** — blocked on H5m frozen-policy replay |
+| **Status** | **complete (research lane)** |
 | **Doc** | [INV-H5N_SHADOW_POLICY_RECOMMENDER.md](INV-H5N_SHADOW_POLICY_RECOMMENDER.md) |
-| **Goal** | Diagnostics → governed shadow policy suggestions (channel + geometry + sampler); not prod Bayes or business decisions |
-| **Prerequisites** | H5m complete; H5L-B-style faithful config documented |
-| **Blocks** | H5o+ second real panel until H5n recommendation artifacts exist |
+| **Module** | `mmm/research/bayes_h3_sandbox/h5_shadow_policy_recommender.py` |
+| **Artifact** | [BAYES_H5N_SHADOW_POLICY_RECOMMENDATION_…](../05_validation/archives/BAYES_H5N_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
+| **Outcome** | Sample panel recommends H5m drop-tv policy; alternatives/blocked/forbidden claims explicit |
+| **Unblocks** | H5o second real-panel shadow run (recommender-assisted policy) |
 | **Production impact** | None — no optimizer, DecisionSurface, recommendations, prod TrustReport, or Ridge replacement |
 
 ---

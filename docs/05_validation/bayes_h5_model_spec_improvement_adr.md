@@ -169,44 +169,23 @@
 | **Outcome** | Frozen drop-tv policy replay via `--policy-path`; converged_diagnostic_only (rhat 1.01, 0 div) — see artifact |
 | **Production** | **Still blocked** |
 
-### H5n shadow-policy recommender (planned)
+### H5n shadow-policy recommender (INV-H5N)
 
 | Field | Value |
 |-------|--------|
-| **Status** | **Planned** — blocked on successful H5m frozen-policy replay |
-| **Investigation** | [INV-H5N](../06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md) (stub) |
-| **Goal** | Research-only bridge from real-panel diagnostics → governed H5 shadow-run policy suggestions |
+| **Status** | **Complete** — `h5_shadow_policy_recommender.py` + sample-panel recommendation artifact |
+| **Investigation** | [INV-H5N](../06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md) |
+| **Artifact** | [BAYES_H5N_SHADOW_POLICY_RECOMMENDATION_…](../05_validation/archives/BAYES_H5N_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
+| **Outcome** | Diagnostics → governed drop-tv + σ-floor geometry aligned with H5m frozen policy; explicit alternatives/blocked/forbidden claims |
 | **Production** | **Still blocked** |
 
-Bayes-H5n will add a **research-only shadow-policy recommender** that maps diagnostics such as collinearity, sparsity, convergence failure, weak identification, and calibration availability into **explicit H5 shadow-run policy suggestions**. It will recommend allowed remedies such as dropping collinear channels, building composite media channels, keeping all channels with weak-ID warnings, or requiring external calibration. The recommender changes only the **proposed research shadow policy**; it does **not** authorize production Bayes, optimizer use, DecisionSurface emission, budget recommendations, or Ridge replacement.
+Bayes-H5n adds a **research-only shadow-policy recommender** that maps collinearity, sparsity, convergence experiments, optional business metadata, and calibration availability into **explicit H5 shadow-run policy suggestions** (`recommended`, `allowed_alternative`, `blocked`, `requires_external_calibration`, `diagnostic_only`, `do_not_run`). It recommends shadow policies only — not production Bayes, optimizer use, DecisionSurface, budget recommendations, or Ridge replacement.
 
-**Inputs (planned):** panel diagnostics; collinearity groups; sparsity diagnostics; convergence diagnostics; prior H5j/H5l ablation results; optional business/channel metadata; optional calibration evidence availability.
+**Module:** `mmm/research/bayes_h3_sandbox/h5_shadow_policy_recommender.py`
 
-**Outputs (planned):** `recommended_channel_policy`; `recommended_geometry_config`; sampler profile suggestion; allowed alternatives; blocked options; interpretation changes; forbidden claims; evidence status; `production_flags` false.
+**Sample panel:** recommends `bayes_h5m_sample_panel_shadow_policy_v1` (drop tv, keep search+social; NC hierarchy + `sigma_floor=0.05`; extended MCMC).
 
-**Allowed recommendations (planned):**
-
-- `keep_all_channels` with weak-ID warning
-- `drop_collinear_channels` (explicit drop/keep lists — no silent dropping)
-- `composite_media_channel`
-- `single_channel` diagnostic
-- `external_calibration_required`
-- `do_not_run_h5_shadow_until_panel_fixed`
-
-**Governance (required):**
-
-- No silent dropping or compositing
-- No separate channel-effect claim after collapse/drop
-- No optimizer / recommendation / production promotion use
-- Ablation-only configs (pooled, fixed-τ) **cannot** be recommended as promotable
-- Every recommendation includes rationale and forbidden claims
-
-**Acceptance criteria:**
-
-- Listed after H5m and before any second real-panel batch or panel expansion
-- Clearly research-only; blocked on H5m replay validation
-- Recommends **shadow policies**, not business decisions
-- **H5o or later** may run a second real panel only after H5n recommendation artifacts exist; collinearity is not automatically fixed — it is governed through explicit policy recommendation, interpretation changes, and forbidden claims
+**H5o gate:** second real panel only after H5n recommendation artifacts exist; collinearity governed via explicit policy, interpretation changes, and forbidden claims — not silent fixes.
 
 ---
 
