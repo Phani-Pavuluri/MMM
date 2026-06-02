@@ -60,7 +60,8 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | Bayes-H5l hierarchy geometry refinement (INV-H5L) | 2 | Reliability / governance | TrustReport (diagnostic) | real-panel batch before faithful convergence | [INV-H5L](06_investigations/INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md); [H5L JSON](05_validation/archives/BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json) | Investigation | **Complete (research)** | H5m frozen policy replay | **Yes** | Blocked — see artifact |
 | Bayes-H5m frozen shadow-policy replay (INV-H5M) | 2 | Reliability / governance | TrustReport (diagnostic) | second real panel before governed replay | [INV-H5M](06_investigations/INV-H5M_FROZEN_SHADOW_POLICY_REPLAY.md); [H5M replay JSON](05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | H5n shadow-policy recommender | **Yes** | Blocked |
 | Bayes-H5n shadow-policy recommender (INV-H5N) | 2 | Reliability / governance | TrustReport (diagnostic) | treating recommender as prod decisioning; silent channel collapse | [INV-H5N](06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md); [H5N recommendation JSON](05_validation/archives/BAYES_H5N_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | H5o second real panel | **Yes** | Blocked — research only |
-| Bayes-H5o second real-panel shadow (INV-H5O) | 2 | Reliability / governance | TrustReport (diagnostic) | batching panels; forcing run on do_not_run | [INV-H5O](06_investigations/INV-H5O_SECOND_REAL_PANEL_SHADOW_RUN.md); [H5O shadow JSON](05_validation/archives/BAYES_H5O_SHADOW_RUN_EXAMPLES_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | further panels only per milestone | **Yes** | Blocked — one panel only |
+| Bayes-H5o second real-panel shadow (INV-H5O) | 2 | Reliability / governance | TrustReport (diagnostic) | batching panels; forcing run on do_not_run | [INV-H5O](06_investigations/INV-H5O_SECOND_REAL_PANEL_SHADOW_RUN.md); [H5O shadow JSON](05_validation/archives/BAYES_H5O_SHADOW_RUN_EXAMPLES_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | H5p workflow audit gate | **Yes** | Blocked — one panel only |
+| Bayes-H5p shadow workflow audit gate (AUDIT-H5P) | 2 | Reliability / governance | TrustReport (diagnostic) | treating two-panel pilot as prod-ready; batching without manifest | [AUDIT-H5P](audits/AUDIT-H5P_BAYES_H5_SHADOW_WORKFLOW_GATE.md); [H5 ADR § H5p](05_validation/bayes_h5_model_spec_improvement_adr.md#h5p-shadow-workflow-audit-gate-audit-h5p) | Audit | **Complete (research)** | H5q+ panel only per audit criteria | **Yes** | Blocked — expansion criteria only |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | H5 validation + Promotion Gate; decision trace | Promotion | **Blocked** | not until H5 implementation + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -102,7 +103,8 @@ Bayes-H2b ADR ✅
   → Bayes-H5m frozen shadow-policy replay ✅ (governed policy JSON + `--policy-path`)
   → Bayes-H5n shadow-policy recommender ✅ (diagnostics → governed policy + forbidden claims)
   → Bayes-H5o second real-panel shadow ✅ (benchmark_geo_panel_v1; keep-all policy; converged)
-  → Further real panels — **one panel per milestone**; do not batch
+  → Bayes-H5p shadow workflow audit gate ✅ (AUDIT-H5P — eligibility, stops, expansion criteria)
+  → Further real panels (H5q+) — **one panel per milestone** per AUDIT-H5P; do not batch
   → Production TrustReport integration ← blocked (Promotion Gate required)
   → Bayes-H5 production promotion (blocked)
   → Bayes-H3 production promotion (blocked)

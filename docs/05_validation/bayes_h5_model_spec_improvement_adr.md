@@ -202,6 +202,17 @@ Bayes-H5n adds a **research-only shadow-policy recommender** that maps collinear
 
 Do **not** batch additional panels without a new milestone and manifest.
 
+### H5p shadow workflow audit gate (AUDIT-H5P)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — research checkpoint; expansion criteria + stop conditions |
+| **Audit** | [AUDIT-H5P](../audits/AUDIT-H5P_BAYES_H5_SHADOW_WORKFLOW_GATE.md) |
+| **Outcome** | H5l–H5o evidence summarized; minimum eligibility, usable evidence, and production blockers defined |
+| **Production** | **Still blocked** |
+
+Future real-panel shadow runs require manifest + recommender + frozen policy per [AUDIT-H5P](../audits/AUDIT-H5P_BAYES_H5_SHADOW_WORKFLOW_GATE.md). **One panel per milestone.** Stop on `do_not_run` or failed convergence.
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

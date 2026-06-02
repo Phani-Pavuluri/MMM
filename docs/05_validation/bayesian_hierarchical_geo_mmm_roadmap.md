@@ -220,6 +220,15 @@ Maps collinearity, sparsity, convergence, weak ID, and calibration availability 
 
 One panel only (`examples_mmm_benchmark_geo_panel_v1`); keep-all policy under low collinearity; converged replay. Do not batch panels.
 
+### Bayes-H5p — Shadow workflow audit gate ✅
+
+| Deliverable | Status |
+|-------------|--------|
+| H5l–H5o evidence summary + expansion/stop criteria | **Complete** — [AUDIT-H5P](../audits/AUDIT-H5P_BAYES_H5_SHADOW_WORKFLOW_GATE.md) |
+| Production Bayes | **Still blocked** |
+
+Checkpoint before H5q+ panel expansion: recommender → freeze → replay discipline; stop on `do_not_run` / failed convergence.
+
 ### Bayes-H5 — Production candidacy review
 
 | Gate | Rule |

@@ -78,6 +78,7 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/ROADMAP_ALIGNMENT_REGISTRY.md` | `ROADMAP_ALIGNMENT_REGISTRY.md` | canonical | Living tier/gate/status table (Bayes-H2b path) |
 | `docs/MIP_PLATFORM_AUDIT_TEMPLATE.md` | `MIP_PLATFORM_AUDIT_TEMPLATE.md` | canonical | Recurring platform audit template (mini / phase / promotion) |
 | `docs/audits/MIP_PLATFORM_AUDIT_20260601_PRE_BAYES_H3.md` | `audits/MIP_PLATFORM_AUDIT_20260601_PRE_BAYES_H3.md` | canonical | Phase audit — pre–Bayes-H3 sandbox (Yellow) |
+| `docs/audits/AUDIT-H5P_BAYES_H5_SHADOW_WORKFLOW_GATE.md` | `audits/AUDIT-H5P_BAYES_H5_SHADOW_WORKFLOW_GATE.md` | canonical | Bayes-H5p shadow workflow audit gate (H5l–H5o; expansion criteria; prod blocked) |
 | `docs/ACCIDENTAL_GEOX_TRACK_D_PASTE_QUARANTINE.md` | `ACCIDENTAL_GEOX_TRACK_D_PASTE_QUARANTINE.md` | quarantine | Rollback pointer — GeoX Track B/D docs removed from MMM repo |
 | `validation/worlds/world_catalog.index.json` | `validation/worlds/world_catalog.index.json` | canonical | Catalog index incl. seven WORLD-BAYES-* Bayes-H2b fixtures |
 | `validation/worlds/WORLD-BAYES-*/` | `validation/worlds/WORLD-BAYES-*/` | canonical | Bayes-H2b no-fit hierarchy evidence fixture bundles |
@@ -117,7 +118,7 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json` | `05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json` | canonical | INV-H4-001b sparse diagnostic variant sweep (research only) |
 | `docs/05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json` | `05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json` | canonical | H4b-refresh extended repeated pilot (primary + legacy shrinkage) |
 | `docs/05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json` | `05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json` | canonical | H4c extended recovery reliability map (research only) |
-| `docs/05_validation/bayes_h5_model_spec_improvement_adr.md` | `05_validation/bayes_h5_model_spec_improvement_adr.md` | canonical | Bayes-H5 sandbox model-spec ADR (H5a–H5o complete; further panels one-per-milestone) |
+| `docs/05_validation/bayes_h5_model_spec_improvement_adr.md` | `05_validation/bayes_h5_model_spec_improvement_adr.md` | canonical | Bayes-H5 sandbox model-spec ADR (H5a–H5p complete; H5q+ panels per AUDIT-H5P) |
 | `docs/06_investigations/INV-H5O_SECOND_REAL_PANEL_SHADOW_RUN.md` | `06_investigations/INV-H5O_SECOND_REAL_PANEL_SHADOW_RUN.md` | canonical | Bayes-H5o second real-panel shadow (benchmark panel) |
 | `docs/05_validation/archives/BAYES_H5O_SHADOW_RUN_EXAMPLES_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json` | `05_validation/archives/BAYES_H5O_SHADOW_RUN_EXAMPLES_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json` | canonical | H5o second-panel shadow run artifact |
 | `docs/06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md` | `06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md` | canonical | Bayes-H5n shadow-policy recommender (complete) |

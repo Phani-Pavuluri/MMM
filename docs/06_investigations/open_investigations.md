@@ -1911,6 +1911,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### AUDIT-H5P — Bayes-H5 shadow workflow audit gate
+
+| Field | Value |
+|-------|-------|
+| **Audit ID** | AUDIT-H5P |
+| **Status** | **complete (research checkpoint)** |
+| **Doc** | [AUDIT-H5P_BAYES_H5_SHADOW_WORKFLOW_GATE.md](../audits/AUDIT-H5P_BAYES_H5_SHADOW_WORKFLOW_GATE.md) |
+| **Scope** | H5l–H5o evidence; eligibility, stop conditions, usable evidence, expansion criteria |
+| **Outcome** | Two-panel converged replays documented; production Bayes remains blocked |
+| **Gates H5q+** | One panel per milestone; recommender-first; stop on `do_not_run` |
+
+---
+
 ### INV-H5M — Bayes-H5 frozen shadow-policy replay
 
 | Field | Value |
