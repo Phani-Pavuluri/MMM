@@ -12,7 +12,10 @@ from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
     H5TrustDiagnosticMappingError,
     build_trust_diagnostic_mapping,
     build_world_trust_diagnostic_payload,
+    classify_convergence_status,
+    derive_real_panel_transform_warning_codes,
     derive_warning_codes,
+    evidence_promotion_allowed,
     resolve_world_role,
     validate_trust_diagnostic_mapping_artifact,
     write_trust_diagnostic_mapping_artifact,
@@ -162,6 +165,25 @@ def test_build_world_payload_aligned_no_transform_mismatch_code() -> None:
     )
     assert "h5:transform_mismatch:adstock" not in payload["warning_codes"]
     assert payload["transform_alignment_status"] == "aligned"
+
+
+def test_real_panel_assumption_codes_in_taxonomy() -> None:
+    codes = derive_real_panel_transform_warning_codes(
+        {
+            "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+            "media_transforms_by_channel": {"tv": "identity"},
+            "transform_mismatch_mode": "aligned",
+        }
+    )
+    assert all(c in WARNING_TAXONOMY for c in codes)
+    assert "h5:transform_unknown:real_panel" in codes
+
+
+def test_convergence_taxonomy_and_evidence_gate() -> None:
+    assert classify_convergence_status(rhat_max=2.09, divergence_count=9) == "failed_convergence"
+    assert evidence_promotion_allowed("failed_convergence") is False
+    assert "h5:convergence:failed" in WARNING_TAXONOMY
+    assert "h5:evidence:blocked" in WARNING_TAXONOMY
 
 
 def test_aggregate_warning_rates_recorded() -> None:

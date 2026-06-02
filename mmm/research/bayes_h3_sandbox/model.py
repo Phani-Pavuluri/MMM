@@ -129,9 +129,17 @@ def _package_mvp_fit(
         "outputs_are_diagnostic_only": True,
     }
 
+    divergence_count = 0
+    if hasattr(idata, "sample_stats") and "diverging" in getattr(idata, "sample_stats", {}):
+        try:
+            divergence_count = int(idata.sample_stats["diverging"].sum().values)
+        except (TypeError, ValueError, AttributeError):
+            divergence_count = 0
+
     convergence_diagnostics: dict[str, Any] = {
         "rhat_max": rhat_max,
         "ess_bulk_min": ess_min,
+        "divergence_count": divergence_count,
         "chains": int(idata.posterior.sizes.get("chain", 0)),
         "draws_per_chain": int(idata.posterior.sizes.get("draw", 0)),
     }
@@ -234,11 +242,21 @@ def fit_h5_sandbox_hierarchical(
     nuts_seed = int(config.bayesian.nuts_seed)
     tau_prior_sigma = float(overrides.get("tau_channel_prior_sigma", 0.5))
 
+    from mmm.research.bayes_h3_sandbox.h5_transforms import is_real_panel_generative
+
+    panel_context = str(overrides.get("h5_panel_context", ""))
     gen_transform = str(overrides.get("h5_generative_transform", "linear"))
+    if panel_context == "real_panel" or overrides.get("h5_real_panel"):
+        gen_transform = "real_panel"
     mismatch_mode = str(overrides.get("h5_transform_mismatch_mode", "aligned"))
     fitted_uniform = {ch: transforms_by_channel.get(ch, "identity") for ch in channels}
     fitted_id = next(iter(fitted_uniform.values()), "identity")
-    aligned = transforms_aligned(gen_transform, fitted_id)
+    if is_real_panel_generative(gen_transform):
+        aligned = None
+        generative_reported = "unknown"
+    else:
+        aligned = transforms_aligned(gen_transform, fitted_id)
+        generative_reported = gen_transform
     transform_mismatch_detected = compute_transform_mismatch_detected(
         gen_transform,
         fitted_id,
@@ -284,7 +302,8 @@ def fit_h5_sandbox_hierarchical(
     out["h5_transform_diagnostics"] = {
         "transform_registry_id": TRANSFORM_REGISTRY_ID,
         "media_transforms_by_channel": dict(transforms_by_channel),
-        "generative_transform_expected": gen_transform,
+        "generative_transform_expected": generative_reported,
+        "panel_context": panel_context or ("real_panel" if is_real_panel_generative(gen_transform) else "synthetic_world"),
         "transform_mismatch_mode": mismatch_mode,
         "transform_mismatch_detected": transform_mismatch_detected,
         "transforms_aligned": aligned,

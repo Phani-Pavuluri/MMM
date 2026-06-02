@@ -13,10 +13,21 @@ from mmm.research.bayes_h3_sandbox.h5_shadow_runner import (
     H5ShadowRunnerError,
     DEFAULT_FIXTURE_TRANSFORM_CONFIG,
     ShadowRunRequest,
+    _config_from_panel,
     build_shadow_run_artifact,
+    resolve_sampler_profile,
     run_fixture_dry_run_shadow,
     validate_shadow_run_artifact_file,
     write_shadow_run_artifact,
+)
+from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
+    PANEL_CONTEXT_REAL,
+    PANEL_CONTEXT_SYNTHETIC_FIXTURE,
+    build_shadow_trust_diagnostics,
+    classify_convergence_status,
+    derive_real_panel_transform_warning_codes,
+    derive_synthetic_transform_warning_codes,
+    evidence_promotion_allowed,
 )
 from mmm.research.bayes_h3_sandbox.fixtures import toy_sandbox_bundle
 
@@ -161,6 +172,128 @@ def test_no_optimizer_fields_on_envelope() -> None:
     for forbidden in ("decision_surface", "optimizer_ready_curves", "budget_recommendation", "recommendation"):
         assert forbidden not in artifact
         assert forbidden not in artifact["shadow_run"]
+
+
+def test_real_panel_no_synthetic_transform_mismatch_by_default() -> None:
+    cfg = {
+        **DEFAULT_FIXTURE_TRANSFORM_CONFIG,
+        "media_transforms_by_channel": {"search": "identity", "social": "identity"},
+    }
+    codes = derive_real_panel_transform_warning_codes(cfg)
+    assert "h5:transform_mismatch:adstock" not in codes
+    assert "h5:transform_mismatch:saturation" not in codes
+    assert "h5:transform_unknown:real_panel" in codes
+    assert "h5:transform_assumption:identity" in codes
+
+
+def test_real_panel_transform_assumption_diagnostics() -> None:
+    cfg = {
+        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+        "media_transforms_by_channel": {"search": "identity", "tv": "geometric_adstock"},
+        "transform_mismatch_mode": "aligned",
+    }
+    codes = derive_real_panel_transform_warning_codes(cfg)
+    assert "h5:transform_assumption:identity" in codes
+    assert "h5:transform_assumption:adstock" in codes
+
+
+def test_synthetic_mismatch_world_still_emits_mismatch() -> None:
+    cfg = dict(DEFAULT_FIXTURE_TRANSFORM_CONFIG)
+    cfg["transform_mismatch_mode"] = "intentional_mismatch"
+    h5_diag = {
+        "transform_mismatch_detected": True,
+        "generative_transform_expected": "adstock_then_saturation",
+    }
+    codes = derive_synthetic_transform_warning_codes(cfg, h5_diag)
+    assert "h5:transform_mismatch:adstock" in codes or "h5:transform_mismatch:saturation" in codes
+
+
+def test_convergence_status_classification() -> None:
+    assert classify_convergence_status(rhat_max=1.02, divergence_count=0) == "converged_diagnostic_only"
+    assert classify_convergence_status(rhat_max=1.08, divergence_count=2) == "weak_convergence"
+    assert classify_convergence_status(rhat_max=2.09, divergence_count=9) == "failed_convergence"
+    assert evidence_promotion_allowed("converged_diagnostic_only") is True
+    assert evidence_promotion_allowed("failed_convergence") is False
+
+
+def test_failed_convergence_blocks_evidence_promotion() -> None:
+    artifact = {
+        "convergence_diagnostics": {"rhat_max": 2.09, "divergence_count": 9},
+        "h5_transform_diagnostics": {
+            "transform_mismatch_detected": False,
+            "generative_transform_expected": "unknown",
+        },
+        "posterior_summary": {},
+    }
+    trust = build_shadow_trust_diagnostics(
+        artifact,
+        DEFAULT_FIXTURE_TRANSFORM_CONFIG,
+        panel_context=PANEL_CONTEXT_REAL,
+    )
+    assert trust["trust_report_candidate_fields"]["convergence_status"] == "failed_convergence"
+    assert trust["trust_report_candidate_fields"]["evidence_promotion_allowed"] is False
+    assert "h5:convergence:failed" in trust["warning_codes"]
+    assert "h5:evidence:blocked" in trust["warning_codes"]
+
+
+def test_extended_mcmc_maps_to_extended_sampler_profile() -> None:
+    _, schema, df = toy_sandbox_bundle()
+    cfg, profile = _config_from_panel(df, schema, fast_mcmc=False, extended_mcmc=True)
+    assert profile == "extended"
+    assert cfg.bayesian.draws == 600
+    assert cfg.bayesian.tune == 600
+    assert cfg.bayesian.chains == 4
+    assert resolve_sampler_profile(fast_mcmc=False, extended_mcmc=True)[0] == "extended"
+
+
+@patch("mmm.research.bayes_h3_sandbox.h5_shadow_runner.run_sandbox_fit")
+def test_real_panel_shadow_record_has_real_panel_diagnostics(mock_fit) -> None:
+    mock_fit.return_value = {
+        "posterior_summary": {"mu_channel_mean": {"search": 0.1}},
+        "convergence_diagnostics": {"rhat_max": 1.02, "divergence_count": 0, "ess_bulk_min": 200},
+        "pooling_diagnostics": {},
+        "h5_transform_diagnostics": {
+            "transform_mismatch_detected": False,
+            "generative_transform_expected": "unknown",
+            "panel_context": "real_panel",
+        },
+    }
+    _, schema, df = toy_sandbox_bundle()
+    artifact = build_shadow_run_artifact(
+        ShadowRunRequest(
+            panel_id="real_test",
+            dataset_snapshot_id="snap-1",
+            transform_config=dict(DEFAULT_FIXTURE_TRANSFORM_CONFIG),
+            panel_df=df,
+            execute_fit=True,
+            fast_mcmc=True,
+            artifact_type="real_panel_shadow_artifact",
+        ),
+    )
+    shadow = artifact["shadow_run"]
+    assert "real_panel_diagnostics" in shadow
+    assert shadow["real_panel_diagnostics"]["panel_context"] == PANEL_CONTEXT_REAL
+    codes = shadow["trust_report_candidate_diagnostics"]["warning_codes"]
+    assert "h5:transform_mismatch:adstock" not in codes
+
+
+@patch("mmm.research.bayes_h3_sandbox.h5_shadow_runner.run_sandbox_fit")
+def test_synthetic_fixture_uses_synthetic_trust_codes(mock_fit, tmp_path) -> None:
+    mock_fit.return_value = {
+        "posterior_summary": {},
+        "convergence_diagnostics": {"rhat_max": 1.01, "divergence_count": 0},
+        "pooling_diagnostics": {},
+        "h5_transform_diagnostics": {
+            "transform_mismatch_detected": False,
+            "generative_transform_expected": "linear",
+        },
+    }
+    artifact = run_fixture_dry_run_shadow(
+        execute_fit=True, fast_mcmc=True, output_path=tmp_path / "dry.json"
+    )
+    codes = artifact["shadow_run"]["trust_report_candidate_diagnostics"]["warning_codes"]
+    assert "h5:transform_unknown:real_panel" not in codes
+    assert "h5:recovery_candidate:stable_research_only" in codes
 
 
 @pytest.mark.slow

@@ -25,6 +25,15 @@ GENERATIVE_KINDS_IDENTITY_FIT: frozenset[str] = frozenset(
     }
 )
 
+# Real historical panels have no known generative transform truth (shadow / research).
+REAL_PANEL_GENERATIVE_KINDS: frozenset[str] = frozenset(
+    {
+        "real_panel",
+        "unknown",
+        "none",
+    }
+)
+
 # Registry transform ids used in aligned transform-probe worlds.
 MEDIA_TRANSFORM_IDS: frozenset[str] = frozenset(
     {
@@ -127,6 +136,10 @@ def transforms_aligned(generative_transform: str, fitted_transform_id: str) -> b
     )
 
 
+def is_real_panel_generative(generative_transform: str) -> bool:
+    return str(generative_transform) in REAL_PANEL_GENERATIVE_KINDS
+
+
 def compute_transform_mismatch_detected(
     generative_transform: str,
     fitted_transform_id: str,
@@ -134,6 +147,8 @@ def compute_transform_mismatch_detected(
     transform_mismatch_mode: str = "aligned",
 ) -> bool:
     """Whether the fit should flag transform mismatch (intentional probe or true misalignment)."""
+    if is_real_panel_generative(generative_transform):
+        return transform_mismatch_mode == "intentional_mismatch"
     if transform_mismatch_mode == "intentional_mismatch":
         return True
     return not transforms_aligned(generative_transform, fitted_transform_id)

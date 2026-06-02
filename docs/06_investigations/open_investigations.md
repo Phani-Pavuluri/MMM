@@ -1879,7 +1879,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Prerequisites** | H4c reliability map; INV-071; H4d extended MCMC |
 | **Outcome** | Transform-aligned worlds improve recovery vs H4c mismatch baselines (esp. saturation); mismatch worlds still warn |
 | **Production impact** | None — production Bayes blocked; Ridge unchanged |
-| **Next** | More real-panel shadows (extended MCMC); Promotion Gate for prod |
+| **Next** | Convergence fix before more real panels; Promotion Gate for prod |
+
+---
+
+### INV-H5H — Bayes-H5 real-panel shadow hardening
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5H |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5H_REAL_PANEL_SHADOW_HARDENING.md](INV-H5H_REAL_PANEL_SHADOW_HARDENING.md) |
+| **Artifact** | [BAYES_H5H_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json](../05_validation/archives/BAYES_H5H_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
+| **Outcome** | Real-panel transform assumption warnings; convergence classes; `--extended-mcmc`; sample panel still `failed_convergence` |
+| **Production impact** | None — `h5:evidence:blocked` when convergence fails |
 
 ---
 

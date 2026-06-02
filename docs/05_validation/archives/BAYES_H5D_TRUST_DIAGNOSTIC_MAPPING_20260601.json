@@ -8,6 +8,13 @@
   "warning_taxonomy": [
     "h5:transform_mismatch:adstock",
     "h5:transform_mismatch:saturation",
+    "h5:transform_assumption:identity",
+    "h5:transform_assumption:adstock",
+    "h5:transform_assumption:saturation",
+    "h5:transform_unknown:real_panel",
+    "h5:convergence:failed",
+    "h5:convergence:weak",
+    "h5:evidence:blocked",
     "h5:weak_identification:collinearity",
     "h5:weak_identification:weak_signal_generative",
     "h5:sparse_recovery:report_only",

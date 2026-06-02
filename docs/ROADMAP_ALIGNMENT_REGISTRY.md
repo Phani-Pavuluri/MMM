@@ -52,7 +52,8 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | Bayes-H5d TrustReport diagnostic mapping (INV-H5D) | 2 | Reliability / governance | TrustReport (diagnostic) | prod TrustReport wiring without Promotion Gate | [INV-H5D](06_investigations/INV-H5D_TRUST_DIAGNOSTIC_MAPPING.md); [H5d mapping JSON](05_validation/archives/BAYES_H5D_TRUST_DIAGNOSTIC_MAPPING_20260601.json) | Investigation | **Complete** | H5e shadow protocol | **Yes** | Blocked — research only |
 | Bayes-H5e real-panel shadow-run protocol (INV-H5E) | 2 | Reliability / governance | TrustReport (diagnostic) | shadow output into prod optimizer | [INV-H5E](06_investigations/INV-H5E_REAL_PANEL_SHADOW_RUN_PROTOCOL.md); [H5e schema JSON](05_validation/archives/BAYES_H5E_SHADOW_RUN_SCHEMA_20260601.json) | Investigation | **Protocol defined** | H5f harness (research execution) | **Yes** | Blocked — design only |
 | Bayes-H5f shadow-run harness (INV-H5F) | 2 | Reliability / governance | TrustReport (diagnostic) | prod wiring / optimizer from shadow JSON | [INV-H5F](06_investigations/INV-H5F_REAL_PANEL_SHADOW_RUN_HARNESS.md); [H5f dry-run JSON](05_validation/archives/BAYES_H5F_SHADOW_RUN_DRY_RUN_20260601.json) | Investigation | **Complete (research)** | H5g first real-panel shadow | **Yes** | Blocked — research only |
-| Bayes-H5g first real-panel shadow (INV-H5G) | 2 | Reliability / governance | TrustReport (diagnostic) | treating shadow JSON as decision grade | [INV-H5G](06_investigations/INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md); [H5g artifact JSON](05_validation/archives/BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | More client panels + extended MCMC | **Yes** | Blocked — illustrative panel |
+| Bayes-H5g first real-panel shadow (INV-H5G) | 2 | Reliability / governance | TrustReport (diagnostic) | treating shadow JSON as decision grade | [INV-H5G](06_investigations/INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md); [H5g artifact JSON](05_validation/archives/BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | H5h shadow hardening | **Yes** | Blocked — illustrative panel |
+| Bayes-H5h real-panel shadow hardening (INV-H5H) | 2 | Reliability / governance | TrustReport (diagnostic) | batching panels before convergence gates | [INV-H5H](06_investigations/INV-H5H_REAL_PANEL_SHADOW_HARDENING.md); [H5h artifact JSON](05_validation/archives/BAYES_H5H_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | Convergence fix + next authorized panel | **Yes** | Blocked — failed_convergence |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | H5 validation + Promotion Gate; decision trace | Promotion | **Blocked** | not until H5 implementation + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -86,6 +87,7 @@ Bayes-H2b ADR ✅
   → Bayes-H5e real-panel shadow-run protocol ✅ (design only)
   → Bayes-H5f shadow-run harness ✅ (research execution; prod blocked)
   → Bayes-H5g first real-panel shadow ✅ (examples sample panel; prod blocked)
+  → Bayes-H5h shadow hardening ✅ (diagnostics + extended MCMC; evidence still blocked)
   → Production TrustReport integration ← blocked (Promotion Gate required)
   → Bayes-H5 production promotion (blocked)
   → Bayes-H3 production promotion (blocked)

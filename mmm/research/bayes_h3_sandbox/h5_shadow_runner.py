@@ -1,4 +1,4 @@
-"""Bayes-H5f real-panel shadow-run execution harness (research only)."""
+"""Bayes-H5 real-panel shadow-run execution harness (research only)."""
 
 from __future__ import annotations
 
@@ -30,10 +30,17 @@ from mmm.research.bayes_h3_sandbox.h5_shadow_protocol import (
     validate_shadow_run_record,
     validate_transform_config,
 )
-from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import MAPPING_VERSION as H5D_MAPPING_VERSION
+from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
+    MAPPING_VERSION as H5D_MAPPING_VERSION,
+    PANEL_CONTEXT_REAL,
+    PANEL_CONTEXT_SYNTHETIC_FIXTURE,
+    build_sampler_diagnostics,
+    build_shadow_trust_diagnostics,
+)
 from mmm.research.bayes_h3_sandbox.labels import RESEARCH_ONLY_LABEL
+from mmm.research.bayes_h3_sandbox.recovery_worlds import SAMPLER_EXTENDED, SAMPLER_FAST
 
-HARNESS_VERSION = "bayes_h5f_shadow_runner_v1"
+HARNESS_VERSION = "bayes_h5h_shadow_runner_v1"
 DEFAULT_DRY_RUN_ARTIFACT = Path("docs/05_validation/archives/BAYES_H5F_SHADOW_RUN_DRY_RUN_20260601.json")
 ARCHIVES_DIR = Path("docs/05_validation/archives")
 
@@ -65,6 +72,7 @@ class ShadowRunRequest:
     panel_df: pd.DataFrame | None = None
     output_path: str | Path | None = None
     fast_mcmc: bool = True
+    extended_mcmc: bool = False
     execute_fit: bool = True
     artifact_type: str = "real_panel_shadow_artifact"
     calibration_signals_stub: list[dict[str, Any]] | None = None
@@ -147,22 +155,31 @@ def default_output_path(panel_id: str, *, artifact_type: str, run_date: date | N
     return ARCHIVES_DIR / f"BAYES_H5F_SHADOW_RUN_{safe}_{d}.json"
 
 
+def resolve_sampler_profile(*, fast_mcmc: bool, extended_mcmc: bool) -> tuple[str, dict[str, Any]]:
+    if extended_mcmc:
+        return "extended", dict(SAMPLER_EXTENDED)
+    if fast_mcmc:
+        return "fast", dict(SAMPLER_FAST)
+    return "default", {}
+
+
 def _config_from_panel(
     df: pd.DataFrame,
     schema: PanelSchema,
     *,
     fast_mcmc: bool,
+    extended_mcmc: bool = False,
     nuts_seed: int = TOY_SEED,
-) -> MMMConfig:
+) -> tuple[MMMConfig, str]:
     bayesian: dict[str, Any] = {
         "backend": BayesianBackend.PYMC,
         "nuts_seed": nuts_seed,
         "prior_predictive_draws": 0,
         "posterior_predictive_draws": 0,
     }
-    if fast_mcmc:
-        bayesian.update({"draws": 200, "tune": 200, "chains": 2, "target_accept": 0.92})
-    return MMMConfig(
+    profile_name, sampler = resolve_sampler_profile(fast_mcmc=fast_mcmc, extended_mcmc=extended_mcmc)
+    bayesian.update(sampler)
+    cfg = MMMConfig(
         framework=Framework.BAYESIAN,
         run_environment=RunEnvironment.RESEARCH,
         model_form=ModelForm.SEMI_LOG,
@@ -177,6 +194,7 @@ def _config_from_panel(
         },
         bayesian=bayesian,
     )
+    return cfg, profile_name
 
 
 def _resolve_panel_schema(transform_config: dict[str, Any]) -> tuple[str, str, str]:
@@ -208,52 +226,10 @@ def _infer_schema(df: pd.DataFrame, transform_config: dict[str, Any]) -> PanelSc
     return PanelSchema(geo_col, week_col, target_col, channels, controls)
 
 
-def build_trust_diagnostics_from_fit(
-    artifact: dict[str, Any],
-    transform_config: dict[str, Any],
-) -> dict[str, Any]:
-    """Research-only TrustReport candidate block from a single shadow fit."""
-    h5_diag = artifact.get("h5_transform_diagnostics") or {}
-    mismatch_mode = str(transform_config.get("transform_mismatch_mode", "aligned"))
-    mismatch_detected = bool(h5_diag.get("transform_mismatch_detected"))
-    codes: list[str] = []
-    if mismatch_detected and mismatch_mode == "intentional_mismatch":
-        for ch_tid in transform_config.get("media_transforms_by_channel", {}).values():
-            if ch_tid == "identity":
-                gen = str(h5_diag.get("generative_transform_expected", ""))
-                if "adstock" in gen or "saturation" in gen:
-                    if "adstock" in gen:
-                        codes.append("h5:transform_mismatch:adstock")
-                    if "saturation" in gen or "hill" in gen:
-                        codes.append("h5:transform_mismatch:saturation")
-                break
-    elif mismatch_detected:
-        codes.append("h5:transform_mismatch:adstock")
-    if not mismatch_detected and mismatch_mode == "aligned":
-        codes.append("h5:recovery_candidate:stable_research_only")
-    codes.append("h5:production:block")
-
-    alignment = "intentional_mismatch" if mismatch_detected else "aligned"
-    post = artifact.get("posterior_summary") or {}
-    conv = artifact.get("convergence_diagnostics") or {}
-
-    return {
-        "mapping_version": H5D_MAPPING_VERSION,
-        "warning_codes": sorted(set(codes)),
-        "trust_report_candidate_fields": {
-            "transform_alignment_status": alignment,
-            "transform_mismatch_detected": mismatch_detected,
-            "beta_gc_mae_mean": None,
-            "mu_c_mae_mean": None,
-            "mu_channel_mean": dict(post.get("mu_channel_mean") or {}),
-            "convergence_rhat_max": conv.get("rhat_max"),
-            "convergence_ess_bulk_min": conv.get("ess_bulk_min"),
-        },
-        "production_trust_report": None,
-        "recommended_interpretation": (
-            f"{RESEARCH_ONLY_LABEL} Shadow-run diagnostic mapping only; not production TrustReport."
-        ),
-    }
+def _panel_context_for_request(request: ShadowRunRequest) -> str:
+    if request.artifact_type == "dry_run_shadow_artifact":
+        return PANEL_CONTEXT_SYNTHETIC_FIXTURE
+    return PANEL_CONTEXT_REAL
 
 
 def build_shadow_run_record(
@@ -264,8 +240,10 @@ def build_shadow_run_record(
     config: MMMConfig,
     panel_hash: str,
     config_hash: str,
+    sampler_profile: str = "fast",
 ) -> dict[str, Any]:
-    run_id = request.run_id or f"BAYES-H5F-SHADOW-{request.panel_id}-{date.today().strftime('%Y%m%d')}"
+    panel_context = _panel_context_for_request(request)
+    run_id = request.run_id or f"BAYES-H5H-SHADOW-{request.panel_id}-{date.today().strftime('%Y%m%d')}"
     cal_stub = request.calibration_signals_stub if request.calibration_signals_stub is not None else []
 
     if fit_artifact is not None:
@@ -279,17 +257,29 @@ def build_shadow_run_record(
                 "trust_report_kind"
             ),
         }
-        trust_diag = build_trust_diagnostics_from_fit(fit_artifact, request.transform_config)
+        sampler_diag = build_sampler_diagnostics(fit_artifact, config, sampler_profile=sampler_profile)
+        trust_diag = build_shadow_trust_diagnostics(
+            fit_artifact,
+            request.transform_config,
+            panel_context=panel_context,
+            convergence_status=sampler_diag["convergence_status"],
+        )
     else:
         posterior = {
             "outputs_are_diagnostic_only": True,
             "convergence_diagnostics": {"status": "not_executed"},
             "pooling_diagnostics": {"status": "not_executed"},
         }
+        sampler_diag = {"convergence_status": "not_executed", "evidence_promotion_allowed": False}
         trust_diag = {
             "mapping_version": H5D_MAPPING_VERSION,
-            "warning_codes": ["h5:production:block"],
-            "trust_report_candidate_fields": {"transform_alignment_status": "aligned"},
+            "warning_codes": ["h5:production:block", "h5:evidence:blocked"],
+            "trust_report_candidate_fields": {
+                "transform_alignment_status": "aligned",
+                "panel_context": panel_context,
+                "convergence_status": "not_executed",
+                "evidence_promotion_allowed": False,
+            },
             "production_trust_report": None,
         }
 
@@ -336,6 +326,15 @@ def build_shadow_run_record(
         "production_flags": research_production_flags(),
         "outputs_are_diagnostic_only": True,
     }
+    if panel_context == PANEL_CONTEXT_REAL:
+        record["real_panel_diagnostics"] = {
+            "panel_context": panel_context,
+            "sampler_diagnostics": sampler_diag,
+            "convergence_status": sampler_diag.get("convergence_status"),
+            "evidence_promotion_allowed": bool(sampler_diag.get("evidence_promotion_allowed")),
+            "generative_transform_truth": "unknown",
+            "note": "Real-panel shadow diagnostics — not synthetic generative truth",
+        }
     validate_shadow_run_record(record)
     return record
 
@@ -346,9 +345,14 @@ def build_shadow_run_artifact(
     record: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     validate_shadow_run_request(request)
+    sampler_profile = "fast"
 
     if request.artifact_type == "dry_run_shadow_artifact":
-        cfg, schema, df = toy_sandbox_bundle(fast_mcmc=request.fast_mcmc)
+        cfg, schema, df = toy_sandbox_bundle(fast_mcmc=request.fast_mcmc and not request.extended_mcmc)
+        sampler_profile = resolve_sampler_profile(
+            fast_mcmc=request.fast_mcmc and not request.extended_mcmc,
+            extended_mcmc=request.extended_mcmc,
+        )[0]
         if request.transform_config == DEFAULT_FIXTURE_TRANSFORM_CONFIG:
             transform_config = DEFAULT_FIXTURE_TRANSFORM_CONFIG
         else:
@@ -365,6 +369,7 @@ def build_shadow_run_artifact(
             panel_df=df,
             output_path=request.output_path,
             fast_mcmc=request.fast_mcmc,
+            extended_mcmc=request.extended_mcmc,
             execute_fit=request.execute_fit,
             artifact_type="dry_run_shadow_artifact",
             calibration_signals_stub=TOY_CALIBRATION_SIGNAL_STUB,
@@ -380,7 +385,12 @@ def build_shadow_run_artifact(
         else:
             df = load_panel_from_path(request.panel_path)  # type: ignore[arg-type]
         schema = _infer_schema(df, request.transform_config)
-        cfg = _config_from_panel(df, schema, fast_mcmc=request.fast_mcmc)
+        cfg, sampler_profile = _config_from_panel(
+            df,
+            schema,
+            fast_mcmc=request.fast_mcmc,
+            extended_mcmc=request.extended_mcmc,
+        )
 
     df = validate_panel(df, schema, integrity_qa=False, calendar_strict=False)
     panel_hash = _sha256_panel(df)
@@ -388,6 +398,11 @@ def build_shadow_run_artifact(
 
     fit_artifact: dict[str, Any] | None = None
     if request.execute_fit:
+        panel_context = _panel_context_for_request(request)
+        if panel_context == PANEL_CONTEXT_REAL:
+            generative_kind = "real_panel"
+        else:
+            generative_kind = "linear"
         overrides = {
             "media_transforms_by_channel": dict(
                 request.transform_config.get("media_transforms_by_channel") or {}
@@ -395,7 +410,9 @@ def build_shadow_run_artifact(
             "transform_params_by_channel": dict(
                 request.transform_config.get("transform_params_by_channel") or {}
             ),
-            "h5_generative_transform": "shadow_panel",
+            "h5_generative_transform": generative_kind,
+            "h5_panel_context": panel_context,
+            "h5_real_panel": panel_context == PANEL_CONTEXT_REAL,
             "h5_transform_mismatch_mode": str(request.transform_config.get("transform_mismatch_mode", "aligned")),
         }
         fit_artifact = run_sandbox_fit(
@@ -417,6 +434,7 @@ def build_shadow_run_artifact(
         config=cfg,
         panel_hash=panel_hash,
         config_hash=config_hash,
+        sampler_profile=sampler_profile,
     )
 
     prod_flags = research_production_flags()
@@ -427,10 +445,12 @@ def build_shadow_run_artifact(
         "label": RESEARCH_ONLY_LABEL,
         "research_only": True,
         "shadow_run": shadow_record,
-        "fast_mcmc_profile": request.fast_mcmc,
+        "sampler_profile": sampler_profile,
+        "fast_mcmc_profile": request.fast_mcmc and not request.extended_mcmc,
+        "extended_mcmc_profile": request.extended_mcmc,
         "execute_fit": request.execute_fit,
         "note": (
-            "H5f shadow-run harness output — research only. "
+            "H5 shadow-run harness output — research only. "
             "Not production TrustReport, optimizer, or DecisionSurface."
         ),
         "production_flags": prod_flags,
@@ -514,6 +534,11 @@ def _build_cli_parser() -> argparse.ArgumentParser:
     p.add_argument("--output-path", type=str, default=None)
     p.add_argument("--fast-mcmc", action="store_true", help="Use fast MCMC profile (200/200/2)")
     p.add_argument(
+        "--extended-mcmc",
+        action="store_true",
+        help="Use extended MCMC profile (600/600/4 chains, target_accept=0.95)",
+    )
+    p.add_argument(
         "--fixture-dry-run",
         action="store_true",
         help="Run synthetic fixture dry-run (not real-panel evidence)",
@@ -527,7 +552,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.fixture_dry_run:
         artifact = run_fixture_dry_run_shadow(
             execute_fit=not args.no_fit,
-            fast_mcmc=args.fast_mcmc or True,
+            fast_mcmc=(args.fast_mcmc or True) and not args.extended_mcmc,
             output_path=args.output_path,
         )
     else:
@@ -550,7 +575,8 @@ def main(argv: list[str] | None = None) -> int:
                 dataset_snapshot_id=args.dataset_snapshot_id,
                 transform_config=load_transform_config(args.transform_config),
                 output_path=args.output_path,
-                fast_mcmc=args.fast_mcmc or True,
+                fast_mcmc=(args.fast_mcmc or True) and not args.extended_mcmc,
+                extended_mcmc=args.extended_mcmc,
                 execute_fit=not args.no_fit,
                 artifact_type="real_panel_shadow_artifact",
             )

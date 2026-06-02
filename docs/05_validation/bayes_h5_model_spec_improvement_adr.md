@@ -108,6 +108,16 @@
 | **Artifact** | [BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json](archives/BAYES_H5G_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
 | **Production** | **Still blocked** — illustrative panel only; not decision grade |
 
+### H5h real-panel shadow hardening (INV-H5H)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — real-panel transform semantics + convergence classes + extended MCMC CLI |
+| **Investigation** | [INV-H5H](../06_investigations/INV-H5H_REAL_PANEL_SHADOW_HARDENING.md) |
+| **Artifact** | [BAYES_H5H_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json](archives/BAYES_H5H_SHADOW_RUN_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
+| **Outcome** | Sample panel still `failed_convergence` — do not batch more panels until fixed |
+| **Production** | **Still blocked** |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

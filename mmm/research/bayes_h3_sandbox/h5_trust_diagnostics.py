@@ -18,12 +18,36 @@ DEFAULT_OUTPUT_ARTIFACT = Path("docs/05_validation/archives/BAYES_H5D_TRUST_DIAG
 WARNING_TAXONOMY: tuple[str, ...] = (
     "h5:transform_mismatch:adstock",
     "h5:transform_mismatch:saturation",
+    "h5:transform_assumption:identity",
+    "h5:transform_assumption:adstock",
+    "h5:transform_assumption:saturation",
+    "h5:transform_unknown:real_panel",
+    "h5:convergence:failed",
+    "h5:convergence:weak",
+    "h5:evidence:blocked",
     "h5:weak_identification:collinearity",
     "h5:weak_identification:weak_signal_generative",
     "h5:sparse_recovery:report_only",
     "h5:recovery_candidate:stable_research_only",
     "h5:production:block",
 )
+
+CONVERGENCE_RHAT_CONVERGED_MAX = 1.05
+CONVERGENCE_RHAT_WEAK_MAX = 1.10
+CONVERGENCE_WEAK_DIVERGENCE_MAX = 5
+
+TRANSFORM_ASSUMPTION_CODE_BY_ID: dict[str, str] = {
+    "identity": "h5:transform_assumption:identity",
+    "geometric_adstock": "h5:transform_assumption:adstock",
+    "adstock": "h5:transform_assumption:adstock",
+    "hill_saturation": "h5:transform_assumption:saturation",
+    "saturation": "h5:transform_assumption:saturation",
+    "adstock_then_saturation": "h5:transform_assumption:adstock",
+}
+
+PANEL_CONTEXT_REAL = "real_panel"
+PANEL_CONTEXT_SYNTHETIC_FIXTURE = "synthetic_fixture"
+PANEL_CONTEXT_SYNTHETIC_WORLD = "synthetic_world"
 
 KNOWN_WORLD_ROLES: frozenset[str] = frozenset(
     {
@@ -82,6 +106,193 @@ def research_production_flags() -> dict[str, bool]:
         "research_only": True,
         "decision_grade": False,
         "production_decision_surface": False,
+    }
+
+
+def classify_convergence_status(
+    *,
+    rhat_max: float | None,
+    divergence_count: int | None,
+) -> str:
+    """
+    Report-only convergence class for shadow runs (not a production gate).
+
+    - converged_diagnostic_only: rhat_max <= 1.05 and divergence_count == 0
+    - weak_convergence: rhat_max <= 1.10 and divergence_count <= 5
+    - failed_convergence: otherwise
+    """
+    rhat = float(rhat_max) if rhat_max is not None else float("inf")
+    div = int(divergence_count) if divergence_count is not None else 0
+    if rhat <= CONVERGENCE_RHAT_CONVERGED_MAX and div == 0:
+        return "converged_diagnostic_only"
+    if rhat <= CONVERGENCE_RHAT_WEAK_MAX and div <= CONVERGENCE_WEAK_DIVERGENCE_MAX:
+        return "weak_convergence"
+    return "failed_convergence"
+
+
+def evidence_promotion_allowed(convergence_status: str) -> bool:
+    """Shadow evidence may not be promoted unless diagnostic convergence is clean."""
+    return convergence_status == "converged_diagnostic_only"
+
+
+def derive_real_panel_transform_warning_codes(
+    transform_config: dict[str, Any],
+    *,
+    h5_diag: dict[str, Any] | None = None,
+) -> list[str]:
+    """Real panels: declared transform assumptions + unknown generative truth (no synthetic mismatch)."""
+    codes: list[str] = []
+    mismatch_mode = str(transform_config.get("transform_mismatch_mode", "aligned"))
+    by_channel = transform_config.get("media_transforms_by_channel") or {}
+
+    if mismatch_mode == "intentional_mismatch":
+        h5_diag = h5_diag or {}
+        if h5_diag.get("transform_mismatch_detected"):
+            gen = str(h5_diag.get("generative_transform_expected", ""))
+            if "adstock" in gen:
+                codes.append("h5:transform_mismatch:adstock")
+            if "saturation" in gen or "hill" in gen:
+                codes.append("h5:transform_mismatch:saturation")
+    else:
+        for transform_id in set(by_channel.values()):
+            code = TRANSFORM_ASSUMPTION_CODE_BY_ID.get(str(transform_id))
+            if code:
+                codes.append(code)
+        codes.append("h5:transform_unknown:real_panel")
+
+    codes.append("h5:production:block")
+    return sorted(set(codes))
+
+
+def derive_synthetic_transform_warning_codes(
+    transform_config: dict[str, Any],
+    h5_diag: dict[str, Any],
+) -> list[str]:
+    """Synthetic worlds / fixture: generative truth known — mismatch warnings when detected."""
+    mismatch_mode = str(transform_config.get("transform_mismatch_mode", "aligned"))
+    mismatch_detected = bool(h5_diag.get("transform_mismatch_detected"))
+    codes: list[str] = []
+
+    if mismatch_detected and mismatch_mode == "intentional_mismatch":
+        for ch_tid in transform_config.get("media_transforms_by_channel", {}).values():
+            if ch_tid == "identity":
+                gen = str(h5_diag.get("generative_transform_expected", ""))
+                if "adstock" in gen:
+                    codes.append("h5:transform_mismatch:adstock")
+                if "saturation" in gen or "hill" in gen:
+                    codes.append("h5:transform_mismatch:saturation")
+                break
+    elif mismatch_detected:
+        codes.append("h5:transform_mismatch:adstock")
+
+    if not mismatch_detected and mismatch_mode == "aligned":
+        codes.append("h5:recovery_candidate:stable_research_only")
+
+    codes.append("h5:production:block")
+    return sorted(set(codes))
+
+
+def derive_convergence_warning_codes(convergence_status: str) -> list[str]:
+    codes: list[str] = []
+    if convergence_status == "failed_convergence":
+        codes.extend(["h5:convergence:failed", "h5:evidence:blocked"])
+    elif convergence_status == "weak_convergence":
+        codes.extend(["h5:convergence:weak", "h5:evidence:blocked"])
+    return codes
+
+
+def build_shadow_trust_diagnostics(
+    artifact: dict[str, Any],
+    transform_config: dict[str, Any],
+    *,
+    panel_context: str,
+    convergence_status: str | None = None,
+) -> dict[str, Any]:
+    """TrustReport candidate block for H5 shadow runs (real panel vs synthetic)."""
+    from mmm.research.bayes_h3_sandbox.labels import RESEARCH_ONLY_LABEL
+
+    h5_diag = artifact.get("h5_transform_diagnostics") or {}
+    conv = artifact.get("convergence_diagnostics") or {}
+    post = artifact.get("posterior_summary") or {}
+
+    if convergence_status is None:
+        convergence_status = classify_convergence_status(
+            rhat_max=conv.get("rhat_max"),
+            divergence_count=conv.get("divergence_count"),
+        )
+
+    if panel_context == PANEL_CONTEXT_REAL:
+        codes = derive_real_panel_transform_warning_codes(transform_config, h5_diag=h5_diag)
+        alignment = (
+            "intentional_mismatch"
+            if transform_config.get("transform_mismatch_mode") == "intentional_mismatch"
+            else "assumption_only"
+        )
+        mismatch_detected = bool(h5_diag.get("transform_mismatch_detected"))
+    else:
+        codes = derive_synthetic_transform_warning_codes(transform_config, h5_diag)
+        mismatch_detected = bool(h5_diag.get("transform_mismatch_detected"))
+        alignment = "intentional_mismatch" if mismatch_detected else "aligned"
+
+    codes = sorted(set(codes + derive_convergence_warning_codes(convergence_status)))
+
+    return {
+        "mapping_version": MAPPING_VERSION,
+        "warning_codes": codes,
+        "trust_report_candidate_fields": {
+            "transform_alignment_status": alignment,
+            "transform_mismatch_detected": mismatch_detected,
+            "panel_context": panel_context,
+            "convergence_status": convergence_status,
+            "evidence_promotion_allowed": evidence_promotion_allowed(convergence_status),
+            "beta_gc_mae_mean": None,
+            "mu_c_mae_mean": None,
+            "mu_channel_mean": dict(post.get("mu_channel_mean") or {}),
+            "convergence_rhat_max": conv.get("rhat_max"),
+            "convergence_ess_bulk_min": conv.get("ess_bulk_min"),
+            "convergence_divergence_count": conv.get("divergence_count"),
+        },
+        "production_trust_report": None,
+        "recommended_interpretation": (
+            f"{RESEARCH_ONLY_LABEL} Shadow-run diagnostic mapping only; not production TrustReport."
+        ),
+    }
+
+
+def build_sampler_diagnostics(
+    fit_artifact: dict[str, Any] | None,
+    config: Any,
+    *,
+    sampler_profile: str,
+) -> dict[str, Any]:
+    """Sampler report block for real-panel shadow artifacts."""
+    conv = (fit_artifact or {}).get("convergence_diagnostics") or {}
+    bayesian = getattr(config, "bayesian", None)
+    draws = tune = chains = target_accept = None
+    if bayesian is not None:
+        draws = getattr(bayesian, "draws", None)
+        tune = getattr(bayesian, "tune", None)
+        chains = getattr(bayesian, "chains", None)
+        target_accept = getattr(bayesian, "target_accept", None)
+
+    rhat_max = conv.get("rhat_max")
+    divergence_count = conv.get("divergence_count")
+    status = classify_convergence_status(
+        rhat_max=rhat_max,
+        divergence_count=divergence_count,
+    )
+    return {
+        "sampler_profile": sampler_profile,
+        "draws": draws if draws is not None else conv.get("draws_per_chain"),
+        "tune": tune,
+        "chains": chains if chains is not None else conv.get("chains"),
+        "target_accept": target_accept,
+        "rhat_max": rhat_max,
+        "ess_min": conv.get("ess_bulk_min"),
+        "divergence_count": divergence_count,
+        "convergence_status": status,
+        "evidence_promotion_allowed": evidence_promotion_allowed(status),
+        "report_only": True,
     }
 
 
