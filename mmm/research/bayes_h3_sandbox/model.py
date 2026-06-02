@@ -33,9 +33,33 @@ def _convergence_parameter_family(parameter: str) -> str:
         return "sigma"
     if name.startswith("z_beta"):
         return "beta_offset"
+    if name.startswith("beta_channel"):
+        return "beta_channel"
     if name.startswith("beta"):
         return "beta"
     return "other"
+
+
+def _summary_var_names_for_geometry(geometry: dict[str, Any]) -> list[str]:
+    from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
+        HIERARCHY_FIXED_TAU,
+        HIERARCHY_FULL_GEO_CHANNEL,
+        HIERARCHY_POOLED_CHANNEL,
+        PARAMETERIZATION_NON_CENTERED,
+    )
+
+    hier = geometry.get("hierarchy_policy", HIERARCHY_FULL_GEO_CHANNEL)
+    param = geometry.get("parameterization", PARAMETERIZATION_NON_CENTERED)
+    names = ["alpha_geo", "sigma"]
+    if hier == HIERARCHY_POOLED_CHANNEL:
+        names.append("beta_channel")
+        return names
+    names.extend(["mu_channel", "tau_channel"])
+    if param == PARAMETERIZATION_NON_CENTERED:
+        names.append("z_beta")
+    else:
+        names.append("beta")
+    return names
 
 
 def fit_h3_sandbox_hierarchical(
@@ -124,10 +148,18 @@ def _package_mvp_fit(
     calibration_signals_stub: list[dict[str, Any]],
     beta_geo_index_order: list[str],
     sandbox_model_overrides: dict[str, Any],
+    geometry: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     import arviz as az  # type: ignore
 
-    summary = az.summary(idata, var_names=["mu_channel", "tau_channel", "sigma", "alpha_geo", "z_beta"])
+    from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
+        HIERARCHY_POOLED_CHANNEL,
+        resolve_geometry_config,
+    )
+
+    geom = geometry or resolve_geometry_config(sandbox_model_overrides)
+    var_names = _summary_var_names_for_geometry(geom)
+    summary = az.summary(idata, var_names=var_names)
     rhat_max = float(summary["r_hat"].max()) if "r_hat" in summary.columns and len(summary) else float("nan")
     ess_min = float(summary["ess_bulk"].min()) if "ess_bulk" in summary.columns and len(summary) else float("nan")
     per_parameter: list[dict[str, Any]] = []
@@ -146,20 +178,25 @@ def _package_mvp_fit(
         reverse=True,
     )[:8]
 
-    mu_post = idata.posterior["mu_channel"].mean(dim=("chain", "draw")).values
-    tau_post = idata.posterior["tau_channel"].mean(dim=("chain", "draw")).values
-    beta_post = idata.posterior["beta"].mean(dim=("chain", "draw")).values
-
+    sigma_mean = float(idata.posterior["sigma"].mean(dim=("chain", "draw")).values)
     posterior_summary: dict[str, Any] = {
         "model_kind": MODEL_KIND,
         "n_obs": n_obs,
         "n_geo": n_geo,
         "channels": channels,
-        "mu_channel_mean": {ch: float(mu_post[i]) for i, ch in enumerate(channels)},
-        "tau_channel_mean": {ch: float(tau_post[i]) for i, ch in enumerate(channels)},
-        "sigma_mean": float(idata.posterior["sigma"].mean(dim=("chain", "draw")).values),
+        "sigma_mean": sigma_mean,
         "outputs_are_diagnostic_only": True,
     }
+    if geom.get("hierarchy_policy") == HIERARCHY_POOLED_CHANNEL:
+        beta_ch = idata.posterior["beta_channel"].mean(dim=("chain", "draw")).values
+        posterior_summary["beta_channel_mean"] = {ch: float(beta_ch[i]) for i, ch in enumerate(channels)}
+        beta_post = np.broadcast_to(beta_ch, (n_geo, len(channels)))
+    else:
+        mu_post = idata.posterior["mu_channel"].mean(dim=("chain", "draw")).values
+        tau_post = idata.posterior["tau_channel"].mean(dim=("chain", "draw")).values
+        beta_post = idata.posterior["beta"].mean(dim=("chain", "draw")).values
+        posterior_summary["mu_channel_mean"] = {ch: float(mu_post[i]) for i, ch in enumerate(channels)}
+        posterior_summary["tau_channel_mean"] = {ch: float(tau_post[i]) for i, ch in enumerate(channels)}
 
     divergence_count = 0
     if hasattr(idata, "sample_stats") and "diverging" in getattr(idata, "sample_stats", {}):
@@ -190,11 +227,19 @@ def _package_mvp_fit(
         "beta_posterior_coord": "beta[geo_idx, channel_idx] aligned to beta_geo_index_order × channel_index_order",
     }
 
-    pooling_diagnostics: dict[str, Any] = {
-        "pooling_mode": "partial",
-        "tau_channel_mean": {ch: float(tau_post[i]) for i, ch in enumerate(channels)},
-        "mu_channel_mean": {ch: float(mu_post[i]) for i, ch in enumerate(channels)},
-    }
+    if geom.get("hierarchy_policy") == HIERARCHY_POOLED_CHANNEL:
+        pooling_diagnostics = {
+            "pooling_mode": "pooled_channel_ablation",
+            "beta_channel_mean": posterior_summary.get("beta_channel_mean", {}),
+        }
+    else:
+        mu_post = idata.posterior["mu_channel"].mean(dim=("chain", "draw")).values
+        tau_post = idata.posterior["tau_channel"].mean(dim=("chain", "draw")).values
+        pooling_diagnostics = {
+            "pooling_mode": "partial",
+            "tau_channel_mean": {ch: float(tau_post[i]) for i, ch in enumerate(channels)},
+            "mu_channel_mean": {ch: float(mu_post[i]) for i, ch in enumerate(channels)},
+        }
 
     return {
         "model_kind": MODEL_KIND,
@@ -215,6 +260,7 @@ def _package_mvp_fit(
         "decision_surface": None,
         "optimizer_ready_curves": None,
         "budget_recommendation": None,
+        "h5_geometry_diagnostics": None,
     }
 
 
@@ -251,7 +297,21 @@ def fit_h5_sandbox_hierarchical(
     n_geo = int(geo_idx.max() + 1)
     channels = list(schema.channel_columns)
     n_c = len(channels)
-    overrides = sandbox_model_overrides or {}
+    from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
+        HIERARCHY_FIXED_TAU,
+        HIERARCHY_FULL_GEO_CHANNEL,
+        HIERARCHY_POOLED_CHANNEL,
+        LIKELIHOOD_SIGMA_FLOOR,
+        PARAMETERIZATION_CENTERED,
+        PARAMETERIZATION_NON_CENTERED,
+        apply_likelihood_scale_policy,
+        geometry_record_for_artifact,
+        resolve_geometry_config,
+    )
+
+    overrides = dict(sandbox_model_overrides or {})
+    geometry = resolve_geometry_config(overrides)
+    overrides = apply_likelihood_scale_policy(overrides, geometry)
     transforms_by_channel: dict[str, str] = dict(overrides.get("media_transforms_by_channel") or {})
     if not transforms_by_channel:
         transforms_by_channel = {ch: "identity" for ch in channels}
@@ -310,15 +370,36 @@ def fit_h5_sandbox_hierarchical(
         transform_mismatch_mode=mismatch_mode,
     )
 
+    hier_policy = geometry.get("hierarchy_policy", HIERARCHY_FULL_GEO_CHANNEL)
+    param = geometry.get("parameterization", PARAMETERIZATION_NON_CENTERED)
+    sigma_floor = float(overrides.get("sigma_floor", 0.0))
+
     with pm.Model() as model:
         alpha_geo = pm.Normal("alpha_geo", mu=0.0, sigma=1.0, shape=n_geo)
-        sigma = pm.HalfNormal("sigma", sigma=sigma_prior_sigma)
-        mu_c = pm.Normal("mu_channel", mu=0.0, sigma=mu_prior_sigma, shape=n_c)
-        tau_c = pm.HalfNormal("tau_channel", sigma=tau_prior_sigma, shape=n_c)
-        z = pm.Normal("z_beta", mu=0.0, sigma=1.0, shape=(n_geo, n_c))
-        beta = pm.Deterministic("beta", mu_c + z * tau_c)
-        mu = alpha_geo[geo_idx] + (x * beta[geo_idx]).sum(axis=-1)
-        pm.Normal("y_obs", mu=mu, sigma=sigma, observed=y_obs)
+        sigma_raw = pm.HalfNormal("sigma", sigma=sigma_prior_sigma)
+        if sigma_floor > 0:
+            sigma_like = pm.Deterministic("sigma_eff", pm.math.maximum(sigma_raw, sigma_floor))
+        else:
+            sigma_like = sigma_raw
+
+        if hier_policy == HIERARCHY_POOLED_CHANNEL:
+            beta_ch = pm.Normal("beta_channel", mu=0.0, sigma=0.5, shape=n_c)
+            mu = alpha_geo[geo_idx] + (x * beta_ch).sum(axis=-1)
+        else:
+            mu_c = pm.Normal("mu_channel", mu=0.0, sigma=mu_prior_sigma, shape=n_c)
+            if hier_policy == HIERARCHY_FIXED_TAU:
+                tau_fixed = float(geometry.get("fixed_tau_value", 0.2))
+                tau_c = pm.Deterministic("tau_channel", pm.math.ones(n_c) * tau_fixed)
+            else:
+                tau_c = pm.HalfNormal("tau_channel", sigma=tau_prior_sigma, shape=n_c)
+            if param == PARAMETERIZATION_CENTERED:
+                beta = pm.Normal("beta", mu=mu_c, sigma=tau_c, shape=(n_geo, n_c))
+            else:
+                z = pm.Normal("z_beta", mu=0.0, sigma=1.0, shape=(n_geo, n_c))
+                beta = pm.Deterministic("beta", mu_c + z * tau_c)
+            mu = alpha_geo[geo_idx] + (x * beta[geo_idx]).sum(axis=-1)
+
+        pm.Normal("y_obs", mu=mu, sigma=sigma_like, observed=y_obs)
 
         idata = pm.sample(
             draws=draws,
@@ -341,7 +422,9 @@ def fit_h5_sandbox_hierarchical(
         calibration_signals_stub=calibration_signals_stub or [],
         beta_geo_index_order=beta_geo_index_order,
         sandbox_model_overrides=overrides,
+        geometry=geometry,
     )
+    out["h5_geometry_diagnostics"] = geometry_record_for_artifact(geometry)
     out["model_kind"] = H5_MODEL_KIND
     out["model_spec_version"] = H5_MODEL_SPEC_VERSION
     out["posterior_summary"]["model_kind"] = H5_MODEL_KIND

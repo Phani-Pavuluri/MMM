@@ -1883,6 +1883,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H5K — Bayes-H5 geometry stabilization (non-centered / hierarchy)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5K |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5K_GEOMETRY_STABILIZATION.md](INV-H5K_GEOMETRY_STABILIZATION.md) |
+| **Artifact** | [BAYES_H5K_GEOMETRY_STABILIZATION_20260601.json](../05_validation/archives/BAYES_H5K_GEOMETRY_STABILIZATION_20260601.json) |
+| **Outcome** | Pooled + fixed-τ ablations → `converged_diagnostic_only` on pilot; full partial pooling still weak |
+| **Production impact** | None — prod Bayes still blocked; pilot eligibility under explicit ablation policy only |
+
+---
+
 ### INV-H5J — Bayes-H5 collinearity geometry ablations
 
 | Field | Value |
@@ -1892,7 +1905,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Doc** | [INV-H5J_COLLINEARITY_GEOMETRY_ABLATIONS.md](INV-H5J_COLLINEARITY_GEOMETRY_ABLATIONS.md) |
 | **Artifact** | [BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json](../05_validation/archives/BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json) |
 | **Outcome** | Explicit channel_policy; best H5J-D weak_convergence (drop tv + prescale + extended) |
-| **Production impact** | None — no additional real panels until pilot eligible |
+| **Production impact** | None — superseded by H5k for geometry next steps |
 
 ---
 

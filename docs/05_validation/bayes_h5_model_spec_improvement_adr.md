@@ -138,6 +138,16 @@
 | **Outcome** | Drop-collinear + prescale + extended → **weak_convergence** only; pilot not eligible for more panels |
 | **Production** | **Still blocked** |
 
+### H5k geometry stabilization (INV-H5K)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — explicit `h5_geometry_config` (parameterization, likelihood scale, hierarchy) + sample-panel stabilization matrix |
+| **Investigation** | [INV-H5K](../06_investigations/INV-H5K_GEOMETRY_STABILIZATION.md) |
+| **Artifact** | [BAYES_H5K_GEOMETRY_STABILIZATION_20260601.json](archives/BAYES_H5K_GEOMETRY_STABILIZATION_20260601.json) |
+| **Outcome** | Full hierarchy still weak (4 div); **pooled** and **fixed-τ** ablations → `converged_diagnostic_only` on pilot — research eligibility only |
+| **Production** | **Still blocked** |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

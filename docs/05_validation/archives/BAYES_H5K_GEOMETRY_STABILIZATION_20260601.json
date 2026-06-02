@@ -1,0 +1,1039 @@
+{
+  "artifact_id": "BAYES_H5K_GEOMETRY_STABILIZATION_20260601",
+  "investigation_id": "INV-H5K_GEOMETRY_STABILIZATION",
+  "panel_id": "examples_mmm_sample_panel_v1",
+  "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
+  "panel_path": "examples/sample_panel.csv",
+  "source_h5j_artifact": "docs/05_validation/archives/BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json",
+  "source_h5j_best_variant": "H5J-D-DROP-COLLINEAR-PRESCALE-EXTENDED",
+  "baseline_channel_policy": {
+    "mode": "drop_collinear_channels",
+    "max_abs_corr_threshold": 0.95
+  },
+  "h5j_summary": {
+    "best_variant_id": "H5J-D-DROP-COLLINEAR-PRESCALE-EXTENDED",
+    "best_rhat_max": 1.02,
+    "best_divergence_count": 4,
+    "best_status": "weak_convergence",
+    "ablation_results_present": true
+  },
+  "variants": [
+    {
+      "variant_id": "H5K-A-H5J-BEST-CENTERED-REPLAY",
+      "parameterization": "centered",
+      "likelihood_scale_policy": "prescaled_log_outcome",
+      "hierarchy_policy": "full_geo_channel_hierarchy",
+      "channel_policy": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95
+      },
+      "sampler_profile": "extended",
+      "sampler_settings": {
+        "draws": 600,
+        "tune": 600,
+        "chains": 4,
+        "target_accept": 0.95
+      },
+      "geometry_config": {
+        "parameterization": "centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      },
+      "notes": "H5j-D channel policy replay with centered beta (funnel-prone ablation)",
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "channel_policy_record": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95,
+        "collinear_groups": [
+          {
+            "channels": [
+              "search",
+              "social",
+              "tv"
+            ],
+            "max_abs_corr_threshold": 0.95,
+            "pairwise": [
+              {
+                "a": "search",
+                "b": "social",
+                "correlation": 0.9578902483017746
+              },
+              {
+                "a": "search",
+                "b": "tv",
+                "correlation": 0.9138372291253558
+              },
+              {
+                "a": "social",
+                "b": "tv",
+                "correlation": 0.9887869687681137
+              }
+            ]
+          }
+        ],
+        "dropped_channels": [
+          {
+            "channel": "social",
+            "reason": "collinear_group_drop_redundant: highest mean |rho| to group (0.9733)"
+          }
+        ],
+        "kept_channels": [
+          "search",
+          "tv"
+        ],
+        "ablation_only": true,
+        "explicit_policy": true,
+        "no_silent_dropping": true
+      },
+      "active_channels": [
+        "search",
+        "tv"
+      ],
+      "rhat_max": 1.02,
+      "ess_min": 249.0,
+      "divergence_count": 3,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 1.02,
+          "ess_bulk": 250.0
+        },
+        {
+          "parameter": "alpha_geo[2]",
+          "family": "intercept",
+          "r_hat": 1.02,
+          "ess_bulk": 265.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 1.02,
+          "ess_bulk": 363.0
+        },
+        {
+          "parameter": "mu_channel[1]",
+          "family": "mu_channel",
+          "r_hat": 1.02,
+          "ess_bulk": 333.0
+        },
+        {
+          "parameter": "tau_channel[1]",
+          "family": "tau",
+          "r_hat": 1.02,
+          "ess_bulk": 331.0
+        },
+        {
+          "parameter": "beta[1, 0]",
+          "family": "beta",
+          "r_hat": 1.02,
+          "ess_bulk": 249.0
+        },
+        {
+          "parameter": "beta[1, 1]",
+          "family": "beta",
+          "r_hat": 1.02,
+          "ess_bulk": 249.0
+        },
+        {
+          "parameter": "beta[2, 0]",
+          "family": "beta",
+          "r_hat": 1.02,
+          "ess_bulk": 262.0
+        }
+      ],
+      "convergence_status": "weak_convergence",
+      "evidence_promotion_allowed": false,
+      "warnings": [
+        "h5:evidence:blocked",
+        "h5:production:block",
+        "h5:transform_assumption:identity",
+        "h5:transform_unknown:real_panel"
+      ],
+      "posterior_sanity_notes": "3 divergences \u2014 check tau/beta/sigma geometry",
+      "recommendation": "report_only_weak",
+      "geometry_diagnostics_from_fit": {
+        "parameterization": "centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      }
+    },
+    {
+      "variant_id": "H5K-B-NON-CENTERED-DROP-COLLINEAR-EXTENDED",
+      "parameterization": "non_centered",
+      "likelihood_scale_policy": "prescaled_log_outcome",
+      "hierarchy_policy": "full_geo_channel_hierarchy",
+      "channel_policy": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95
+      },
+      "sampler_profile": "extended",
+      "sampler_settings": {
+        "draws": 600,
+        "tune": 600,
+        "chains": 4,
+        "target_accept": 0.95
+      },
+      "geometry_config": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      },
+      "notes": "Explicit non-centered label + H5j-D channel policy (legacy default geometry)",
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "channel_policy_record": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95,
+        "collinear_groups": [
+          {
+            "channels": [
+              "search",
+              "social",
+              "tv"
+            ],
+            "max_abs_corr_threshold": 0.95,
+            "pairwise": [
+              {
+                "a": "search",
+                "b": "social",
+                "correlation": 0.9578902483017746
+              },
+              {
+                "a": "search",
+                "b": "tv",
+                "correlation": 0.9138372291253558
+              },
+              {
+                "a": "social",
+                "b": "tv",
+                "correlation": 0.9887869687681137
+              }
+            ]
+          }
+        ],
+        "dropped_channels": [
+          {
+            "channel": "social",
+            "reason": "collinear_group_drop_redundant: highest mean |rho| to group (0.9733)"
+          }
+        ],
+        "kept_channels": [
+          "search",
+          "tv"
+        ],
+        "ablation_only": true,
+        "explicit_policy": true,
+        "no_silent_dropping": true
+      },
+      "active_channels": [
+        "search",
+        "tv"
+      ],
+      "rhat_max": 1.02,
+      "ess_min": 170.0,
+      "divergence_count": 4,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "alpha_geo[0]",
+          "family": "intercept",
+          "r_hat": 1.02,
+          "ess_bulk": 247.0
+        },
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 1.02,
+          "ess_bulk": 183.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 1.02,
+          "ess_bulk": 184.0
+        },
+        {
+          "parameter": "tau_channel[0]",
+          "family": "tau",
+          "r_hat": 1.02,
+          "ess_bulk": 170.0
+        },
+        {
+          "parameter": "tau_channel[1]",
+          "family": "tau",
+          "r_hat": 1.02,
+          "ess_bulk": 259.0
+        },
+        {
+          "parameter": "alpha_geo[2]",
+          "family": "intercept",
+          "r_hat": 1.01,
+          "ess_bulk": 210.0
+        },
+        {
+          "parameter": "sigma",
+          "family": "sigma",
+          "r_hat": 1.01,
+          "ess_bulk": 605.0
+        },
+        {
+          "parameter": "mu_channel[1]",
+          "family": "mu_channel",
+          "r_hat": 1.01,
+          "ess_bulk": 227.0
+        }
+      ],
+      "convergence_status": "weak_convergence",
+      "evidence_promotion_allowed": false,
+      "warnings": [
+        "h5:evidence:blocked",
+        "h5:production:block",
+        "h5:transform_assumption:identity",
+        "h5:transform_unknown:real_panel"
+      ],
+      "posterior_sanity_notes": "4 divergences \u2014 check tau/beta/sigma geometry",
+      "recommendation": "report_only_weak",
+      "geometry_diagnostics_from_fit": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      }
+    },
+    {
+      "variant_id": "H5K-C-NON-CENTERED-TARGET-ACCEPT-099",
+      "parameterization": "non_centered",
+      "likelihood_scale_policy": "prescaled_log_outcome",
+      "hierarchy_policy": "full_geo_channel_hierarchy",
+      "channel_policy": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95
+      },
+      "sampler_profile": "extended",
+      "sampler_settings": {
+        "draws": 600,
+        "tune": 600,
+        "chains": 4,
+        "target_accept": 0.99
+      },
+      "geometry_config": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      },
+      "notes": "Non-centered + drop collinear + target_accept=0.99",
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "channel_policy_record": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95,
+        "collinear_groups": [
+          {
+            "channels": [
+              "search",
+              "social",
+              "tv"
+            ],
+            "max_abs_corr_threshold": 0.95,
+            "pairwise": [
+              {
+                "a": "search",
+                "b": "social",
+                "correlation": 0.9578902483017746
+              },
+              {
+                "a": "search",
+                "b": "tv",
+                "correlation": 0.9138372291253558
+              },
+              {
+                "a": "social",
+                "b": "tv",
+                "correlation": 0.9887869687681137
+              }
+            ]
+          }
+        ],
+        "dropped_channels": [
+          {
+            "channel": "social",
+            "reason": "collinear_group_drop_redundant: highest mean |rho| to group (0.9733)"
+          }
+        ],
+        "kept_channels": [
+          "search",
+          "tv"
+        ],
+        "ablation_only": true,
+        "explicit_policy": true,
+        "no_silent_dropping": true
+      },
+      "active_channels": [
+        "search",
+        "tv"
+      ],
+      "rhat_max": 1.06,
+      "ess_min": 79.0,
+      "divergence_count": 0,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 1.06,
+          "ess_bulk": 79.0
+        },
+        {
+          "parameter": "z_beta[0, 1]",
+          "family": "beta_offset",
+          "r_hat": 1.05,
+          "ess_bulk": 125.0
+        },
+        {
+          "parameter": "z_beta[2, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.05,
+          "ess_bulk": 131.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 1.04,
+          "ess_bulk": 94.0
+        },
+        {
+          "parameter": "alpha_geo[2]",
+          "family": "intercept",
+          "r_hat": 1.03,
+          "ess_bulk": 114.0
+        },
+        {
+          "parameter": "sigma",
+          "family": "sigma",
+          "r_hat": 1.03,
+          "ess_bulk": 199.0
+        },
+        {
+          "parameter": "mu_channel[1]",
+          "family": "mu_channel",
+          "r_hat": 1.03,
+          "ess_bulk": 122.0
+        },
+        {
+          "parameter": "tau_channel[0]",
+          "family": "tau",
+          "r_hat": 1.03,
+          "ess_bulk": 123.0
+        }
+      ],
+      "convergence_status": "weak_convergence",
+      "evidence_promotion_allowed": false,
+      "warnings": [
+        "h5:evidence:blocked",
+        "h5:production:block",
+        "h5:transform_assumption:identity",
+        "h5:transform_unknown:real_panel"
+      ],
+      "posterior_sanity_notes": "no major sanity flags",
+      "recommendation": "report_only_weak",
+      "geometry_diagnostics_from_fit": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      }
+    },
+    {
+      "variant_id": "H5K-D-NON-CENTERED-SINGLE-SEARCH",
+      "parameterization": "non_centered",
+      "likelihood_scale_policy": "prescaled_log_outcome",
+      "hierarchy_policy": "full_geo_channel_hierarchy",
+      "channel_policy": {
+        "mode": "single_channel",
+        "channel": "search"
+      },
+      "sampler_profile": "extended",
+      "sampler_settings": {
+        "draws": 600,
+        "tune": 600,
+        "chains": 4,
+        "target_accept": 0.95
+      },
+      "geometry_config": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      },
+      "notes": "Non-centered + single search channel (H5j-C geometry probe)",
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "channel_policy_record": {
+        "mode": "single_channel",
+        "kept_channels": [
+          "search"
+        ],
+        "dropped_channels": [
+          "social",
+          "tv"
+        ],
+        "ablation_only": true,
+        "explicit_policy": true,
+        "no_silent_dropping": true
+      },
+      "active_channels": [
+        "search"
+      ],
+      "rhat_max": 1.01,
+      "ess_min": 588.0,
+      "divergence_count": 38,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "sigma",
+          "family": "sigma",
+          "r_hat": 1.01,
+          "ess_bulk": 1887.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 1.01,
+          "ess_bulk": 629.0
+        },
+        {
+          "parameter": "z_beta[1, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.01,
+          "ess_bulk": 673.0
+        },
+        {
+          "parameter": "z_beta[2, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.01,
+          "ess_bulk": 588.0
+        },
+        {
+          "parameter": "alpha_geo[0]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 1939.0
+        },
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 1853.0
+        },
+        {
+          "parameter": "alpha_geo[2]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 2136.0
+        },
+        {
+          "parameter": "tau_channel[0]",
+          "family": "tau",
+          "r_hat": 1.0,
+          "ess_bulk": 618.0
+        }
+      ],
+      "convergence_status": "failed_convergence",
+      "evidence_promotion_allowed": false,
+      "warnings": [
+        "h5:evidence:blocked",
+        "h5:production:block",
+        "h5:transform_assumption:identity",
+        "h5:transform_unknown:real_panel"
+      ],
+      "posterior_sanity_notes": "38 divergences \u2014 check tau/beta/sigma geometry",
+      "recommendation": "report_only_fail",
+      "geometry_diagnostics_from_fit": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "full_geo_channel_hierarchy",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      }
+    },
+    {
+      "variant_id": "H5K-E-POOLED-CHANNEL-ABLATION",
+      "parameterization": "non_centered",
+      "likelihood_scale_policy": "prescaled_log_outcome",
+      "hierarchy_policy": "pooled_channel_effects_ablation",
+      "channel_policy": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95
+      },
+      "sampler_profile": "extended",
+      "sampler_settings": {
+        "draws": 600,
+        "tune": 600,
+        "chains": 4,
+        "target_accept": 0.95
+      },
+      "geometry_config": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "pooled_channel_effects_ablation",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      },
+      "notes": "Pooled channel coefficients \u2014 no geo\u00d7channel partial pooling",
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "channel_policy_record": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95,
+        "collinear_groups": [
+          {
+            "channels": [
+              "search",
+              "social",
+              "tv"
+            ],
+            "max_abs_corr_threshold": 0.95,
+            "pairwise": [
+              {
+                "a": "search",
+                "b": "social",
+                "correlation": 0.9578902483017746
+              },
+              {
+                "a": "search",
+                "b": "tv",
+                "correlation": 0.9138372291253558
+              },
+              {
+                "a": "social",
+                "b": "tv",
+                "correlation": 0.9887869687681137
+              }
+            ]
+          }
+        ],
+        "dropped_channels": [
+          {
+            "channel": "social",
+            "reason": "collinear_group_drop_redundant: highest mean |rho| to group (0.9733)"
+          }
+        ],
+        "kept_channels": [
+          "search",
+          "tv"
+        ],
+        "ablation_only": true,
+        "explicit_policy": true,
+        "no_silent_dropping": true
+      },
+      "active_channels": [
+        "search",
+        "tv"
+      ],
+      "rhat_max": 1.0,
+      "ess_min": 848.0,
+      "divergence_count": 0,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "alpha_geo[0]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 1246.0
+        },
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 1263.0
+        },
+        {
+          "parameter": "alpha_geo[2]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 1885.0
+        },
+        {
+          "parameter": "sigma",
+          "family": "sigma",
+          "r_hat": 1.0,
+          "ess_bulk": 1596.0
+        },
+        {
+          "parameter": "beta_channel[0]",
+          "family": "beta_channel",
+          "r_hat": 1.0,
+          "ess_bulk": 923.0
+        },
+        {
+          "parameter": "beta_channel[1]",
+          "family": "beta_channel",
+          "r_hat": 1.0,
+          "ess_bulk": 848.0
+        }
+      ],
+      "convergence_status": "converged_diagnostic_only",
+      "evidence_promotion_allowed": true,
+      "warnings": [
+        "h5:production:block",
+        "h5:transform_assumption:identity",
+        "h5:transform_unknown:real_panel"
+      ],
+      "posterior_sanity_notes": "pooled channel ablation \u2014 geo-specific media effects removed",
+      "recommendation": "report_only_pass_eligibility_candidate",
+      "geometry_diagnostics_from_fit": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "pooled_channel_effects_ablation",
+        "explicit_config": true,
+        "fixed_tau_value": null,
+        "sigma_floor": null
+      }
+    },
+    {
+      "variant_id": "H5K-F-FIXED-TAU-ABLATION",
+      "parameterization": "non_centered",
+      "likelihood_scale_policy": "prescaled_log_outcome",
+      "hierarchy_policy": "fixed_tau_ablation",
+      "channel_policy": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95
+      },
+      "sampler_profile": "extended",
+      "sampler_settings": {
+        "draws": 600,
+        "tune": 600,
+        "chains": 4,
+        "target_accept": 0.95
+      },
+      "geometry_config": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "fixed_tau_ablation",
+        "explicit_config": true,
+        "fixed_tau_value": 0.2,
+        "sigma_floor": null
+      },
+      "notes": "Fixed tau_channel=0.2 ablation \u2014 removes tau funnel",
+      "hard_gate": false,
+      "production_promotion": false,
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "research_only": true,
+      "decision_grade": false,
+      "production_decision_surface": false,
+      "channel_policy_record": {
+        "mode": "drop_collinear_channels",
+        "max_abs_corr_threshold": 0.95,
+        "collinear_groups": [
+          {
+            "channels": [
+              "search",
+              "social",
+              "tv"
+            ],
+            "max_abs_corr_threshold": 0.95,
+            "pairwise": [
+              {
+                "a": "search",
+                "b": "social",
+                "correlation": 0.9578902483017746
+              },
+              {
+                "a": "search",
+                "b": "tv",
+                "correlation": 0.9138372291253558
+              },
+              {
+                "a": "social",
+                "b": "tv",
+                "correlation": 0.9887869687681137
+              }
+            ]
+          }
+        ],
+        "dropped_channels": [
+          {
+            "channel": "social",
+            "reason": "collinear_group_drop_redundant: highest mean |rho| to group (0.9733)"
+          }
+        ],
+        "kept_channels": [
+          "search",
+          "tv"
+        ],
+        "ablation_only": true,
+        "explicit_policy": true,
+        "no_silent_dropping": true
+      },
+      "active_channels": [
+        "search",
+        "tv"
+      ],
+      "rhat_max": 1.0,
+      "ess_min": 642.0,
+      "divergence_count": 0,
+      "worst_rhat_parameters": [
+        {
+          "parameter": "alpha_geo[0]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 967.0
+        },
+        {
+          "parameter": "alpha_geo[1]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 654.0
+        },
+        {
+          "parameter": "alpha_geo[2]",
+          "family": "intercept",
+          "r_hat": 1.0,
+          "ess_bulk": 642.0
+        },
+        {
+          "parameter": "sigma",
+          "family": "sigma",
+          "r_hat": 1.0,
+          "ess_bulk": 2291.0
+        },
+        {
+          "parameter": "mu_channel[0]",
+          "family": "mu_channel",
+          "r_hat": 1.0,
+          "ess_bulk": 744.0
+        },
+        {
+          "parameter": "mu_channel[1]",
+          "family": "mu_channel",
+          "r_hat": 1.0,
+          "ess_bulk": 655.0
+        },
+        {
+          "parameter": "z_beta[0, 0]",
+          "family": "beta_offset",
+          "r_hat": 1.0,
+          "ess_bulk": 872.0
+        },
+        {
+          "parameter": "z_beta[0, 1]",
+          "family": "beta_offset",
+          "r_hat": 1.0,
+          "ess_bulk": 1195.0
+        }
+      ],
+      "convergence_status": "converged_diagnostic_only",
+      "evidence_promotion_allowed": true,
+      "warnings": [
+        "h5:production:block",
+        "h5:transform_assumption:identity",
+        "h5:transform_unknown:real_panel"
+      ],
+      "posterior_sanity_notes": "fixed tau ablation tau=0.2",
+      "recommendation": "report_only_pass_eligibility_candidate",
+      "geometry_diagnostics_from_fit": {
+        "parameterization": "non_centered",
+        "likelihood_scale_policy": "prescaled_log_outcome",
+        "hierarchy_policy": "fixed_tau_ablation",
+        "explicit_config": true,
+        "fixed_tau_value": 0.2,
+        "sigma_floor": null
+      }
+    }
+  ],
+  "best_variant": {
+    "variant_id": "H5K-E-POOLED-CHANNEL-ABLATION",
+    "parameterization": "non_centered",
+    "likelihood_scale_policy": "prescaled_log_outcome",
+    "hierarchy_policy": "pooled_channel_effects_ablation",
+    "channel_policy": {
+      "mode": "drop_collinear_channels",
+      "max_abs_corr_threshold": 0.95
+    },
+    "sampler_profile": "extended",
+    "sampler_settings": {
+      "draws": 600,
+      "tune": 600,
+      "chains": 4,
+      "target_accept": 0.95
+    },
+    "geometry_config": {
+      "parameterization": "non_centered",
+      "likelihood_scale_policy": "prescaled_log_outcome",
+      "hierarchy_policy": "pooled_channel_effects_ablation",
+      "explicit_config": true,
+      "fixed_tau_value": null,
+      "sigma_floor": null
+    },
+    "notes": "Pooled channel coefficients \u2014 no geo\u00d7channel partial pooling",
+    "hard_gate": false,
+    "production_promotion": false,
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "research_only": true,
+    "decision_grade": false,
+    "production_decision_surface": false,
+    "channel_policy_record": {
+      "mode": "drop_collinear_channels",
+      "max_abs_corr_threshold": 0.95,
+      "collinear_groups": [
+        {
+          "channels": [
+            "search",
+            "social",
+            "tv"
+          ],
+          "max_abs_corr_threshold": 0.95,
+          "pairwise": [
+            {
+              "a": "search",
+              "b": "social",
+              "correlation": 0.9578902483017746
+            },
+            {
+              "a": "search",
+              "b": "tv",
+              "correlation": 0.9138372291253558
+            },
+            {
+              "a": "social",
+              "b": "tv",
+              "correlation": 0.9887869687681137
+            }
+          ]
+        }
+      ],
+      "dropped_channels": [
+        {
+          "channel": "social",
+          "reason": "collinear_group_drop_redundant: highest mean |rho| to group (0.9733)"
+        }
+      ],
+      "kept_channels": [
+        "search",
+        "tv"
+      ],
+      "ablation_only": true,
+      "explicit_policy": true,
+      "no_silent_dropping": true
+    },
+    "active_channels": [
+      "search",
+      "tv"
+    ],
+    "rhat_max": 1.0,
+    "ess_min": 848.0,
+    "divergence_count": 0,
+    "worst_rhat_parameters": [
+      {
+        "parameter": "alpha_geo[0]",
+        "family": "intercept",
+        "r_hat": 1.0,
+        "ess_bulk": 1246.0
+      },
+      {
+        "parameter": "alpha_geo[1]",
+        "family": "intercept",
+        "r_hat": 1.0,
+        "ess_bulk": 1263.0
+      },
+      {
+        "parameter": "alpha_geo[2]",
+        "family": "intercept",
+        "r_hat": 1.0,
+        "ess_bulk": 1885.0
+      },
+      {
+        "parameter": "sigma",
+        "family": "sigma",
+        "r_hat": 1.0,
+        "ess_bulk": 1596.0
+      },
+      {
+        "parameter": "beta_channel[0]",
+        "family": "beta_channel",
+        "r_hat": 1.0,
+        "ess_bulk": 923.0
+      },
+      {
+        "parameter": "beta_channel[1]",
+        "family": "beta_channel",
+        "r_hat": 1.0,
+        "ess_bulk": 848.0
+      }
+    ],
+    "convergence_status": "converged_diagnostic_only",
+    "evidence_promotion_allowed": true,
+    "warnings": [
+      "h5:production:block",
+      "h5:transform_assumption:identity",
+      "h5:transform_unknown:real_panel"
+    ],
+    "posterior_sanity_notes": "pooled channel ablation \u2014 geo-specific media effects removed",
+    "recommendation": "report_only_pass_eligibility_candidate",
+    "geometry_diagnostics_from_fit": {
+      "parameterization": "non_centered",
+      "likelihood_scale_policy": "prescaled_log_outcome",
+      "hierarchy_policy": "pooled_channel_effects_ablation",
+      "explicit_config": true,
+      "fixed_tau_value": null,
+      "sigma_floor": null
+    }
+  },
+  "any_variant_converged_diagnostic_only": true,
+  "recommendation": "Pilot may be eligible for evidence review under explicit geometry + channel policy.",
+  "shadow_run_eligibility_rule": "No additional real-panel shadow runs until converged_diagnostic_only (rhat_max <= 1.05 and divergence_count == 0) under explicit channel + geometry policy.",
+  "label": "RESEARCH ONLY \u2014 NOT DECISION GRADE",
+  "hard_gate": false,
+  "production_promotion": false,
+  "approved_for_prod": false,
+  "prod_decisioning_allowed": false,
+  "research_only": true,
+  "decision_grade": false,
+  "production_decision_surface": false,
+  "outputs_are_diagnostic_only": true
+}

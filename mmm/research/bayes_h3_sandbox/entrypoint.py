@@ -70,6 +70,17 @@ def run_sandbox_fit(
         enable_h5_sandbox=enable_h5_sandbox,
         research_only=research_only,
     )
+    if sandbox_model_overrides and sandbox_model_overrides.get("h5_geometry_config"):
+        if model_spec_version != H5_MODEL_SPEC_VERSION or not enable_h5_sandbox:
+            from mmm.research.bayes_h3_sandbox.fencing import BayesSandboxGuardError
+
+            raise BayesSandboxGuardError(
+                "h5_geometry_config is allowed only on enable_h5_sandbox=True "
+                f"with model_spec_version={H5_MODEL_SPEC_VERSION!r}"
+            )
+        from mmm.research.bayes_h3_sandbox.h5_geometry_config import validate_geometry_config
+
+        validate_geometry_config(sandbox_model_overrides["h5_geometry_config"])
     if model_spec_version == H5_MODEL_SPEC_VERSION:
         raw = fit_h5_sandbox_hierarchical(
             config,
