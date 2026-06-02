@@ -86,6 +86,7 @@ Operational workflows for analysts and data scientists:
 | H7 Ridge production diagnostics ✅ | [05_validation/ridge_production_diagnostics_contract.md](05_validation/ridge_production_diagnostics_contract.md) · `mmm/diagnostics/ridge_diagnostics.py` |
 | H8 Ridge diagnostics operator surfacing ✅ | `mmm/diagnostics/ridge_diagnostic_summary.py` · train bundle `ridge_production_diagnostics_summary.md` |
 | H9 Ridge diagnostic severity policy ✅ | [ridge_diagnostic_severity_policy.md](05_validation/ridge_diagnostic_severity_policy.md) · `mmm/diagnostics/ridge_severity_policy.py` |
+| H10 Ridge diagnostic E2E audit ✅ | [audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md](audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md) |
 | INV-H4-001 sparse pooling investigation | [06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) |
 | INV-H4-001b variant sweep JSON | [05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) |
 | Bayesian Geo MMM architecture refinement | [05_validation/bayesian_hierarchical_geo_mmm_refinement.md](05_validation/bayesian_hierarchical_geo_mmm_refinement.md) |

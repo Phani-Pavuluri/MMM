@@ -127,6 +127,8 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SUMMARY_20260601.md` | `05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SUMMARY_20260601.md` | canonical | H8 operator Markdown summary |
 | `docs/05_validation/ridge_diagnostic_severity_policy.md` | `05_validation/ridge_diagnostic_severity_policy.md` | canonical | H9 Ridge severity and output eligibility policy |
 | `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SEVERITY_20260601.json` | `05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SEVERITY_20260601.json` | canonical | H9 severity + output_eligibility example |
+| `docs/audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md` | `audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md` | canonical | H10 Ridge diagnostic end-to-end audit gate |
+| `docs/05_validation/archives/BAYES_H10_RIDGE_DIAGNOSTIC_E2E_AUDIT_20260601.json` | `05_validation/archives/BAYES_H10_RIDGE_DIAGNOSTIC_E2E_AUDIT_20260601.json` | canonical | H10 automated E2E audit results |
 | `docs/06_investigations/INV-H5R_SPARSE_CHANNEL_REMEDY_REPLAY.md` | `06_investigations/INV-H5R_SPARSE_CHANNEL_REMEDY_REPLAY.md` | canonical | H5r sparse-radio remedy on H5q panel |
 | `docs/05_validation/archives/BAYES_H5R_REMEDY_COMPARISON_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601.json` | `05_validation/archives/BAYES_H5R_REMEDY_COMPARISON_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601.json` | canonical | H5q vs H5r remedy comparison |
 | `docs/06_investigations/INV-H5Q_THIRD_REAL_PANEL_SHADOW_RUN.md` | `06_investigations/INV-H5Q_THIRD_REAL_PANEL_SHADOW_RUN.md` | canonical | Bayes-H5q third panel (triangulation; failed_convergence) |

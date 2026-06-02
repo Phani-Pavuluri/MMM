@@ -136,6 +136,11 @@ Reference: `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONT
 - Module: `mmm/diagnostics/ridge_severity_policy.py`
 - Archive: `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_SEVERITY_20260601.json`
 
+## E2E audit (H10)
+
+- [AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md](../audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md)
+- CI: `tests/diagnostics/test_ridge_diagnostic_e2e_audit.py`
+
 ## Related
 
 - [Bayes-H6 synthetic lane ADR](bayes_h6_synthetic_lane_adr.md)

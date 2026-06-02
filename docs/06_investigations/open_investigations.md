@@ -2126,6 +2126,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H10 — Ridge diagnostic end-to-end audit (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H10 |
+| **Title** | Ridge diagnostic chain E2E audit (H7→H8→H9) |
+| **Status** | **closed** |
+| **Evidence** | [AUDIT-H10](../audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md); `tests/diagnostics/test_ridge_diagnostic_e2e_audit.py` |
+| **Outcome** | Pass on H6 full-control and omitted-control reference worlds; CI-gated checklist. |
+| **Next** | GeoX/MMM CalibrationSignal integration audit (recommended); optional H11 real-bundle hardening. |
+
+---
+
 ### INV-H9 — Ridge diagnostic severity policy (complete)
 
 | Field | Value |

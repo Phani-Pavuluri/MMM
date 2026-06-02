@@ -1,0 +1,74 @@
+{
+  "audit_id": "AUDIT-H10",
+  "verdict": "pass",
+  "reference_cases": {
+    "full_controls": {
+      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+      "vertical_id": "retail",
+      "checks": {
+        "diagnostic_report_exists": true,
+        "severity_applied": true,
+        "output_eligibility_exists": true,
+        "forbidden_claims_present": true,
+        "markdown_renders": true,
+        "extension_embeds_report": true,
+        "extension_embeds_summary": true,
+        "cli_has_severity": true,
+        "cli_has_forbidden_when_expected": true,
+        "optimizer_disabled": true,
+        "decision_surface_disabled": true,
+        "recommendations_disabled": true,
+        "bayes_h5_research_only": true,
+        "not_hard_gates": true,
+        "optimizer_unchanged": true,
+        "no_forbidden_output_fields_on_report": true,
+        "extension_report_json": true,
+        "ridge_report_json": true,
+        "ridge_summary_md": true,
+        "extension_report_has_severity": true
+      },
+      "severity": "restricted_interpretation",
+      "forbidden_claims": [
+        "collinear_group_ctv_display:forbid_isolated_channel_lift_claims",
+        "no_clean_separate_channel_effect_claim_without_external_calibration"
+      ],
+      "omitted_control_risk": false
+    },
+    "omitted_controls": {
+      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+      "vertical_id": "retail",
+      "checks": {
+        "diagnostic_report_exists": true,
+        "severity_applied": true,
+        "output_eligibility_exists": true,
+        "forbidden_claims_present": true,
+        "markdown_renders": true,
+        "extension_embeds_report": true,
+        "extension_embeds_summary": true,
+        "cli_has_severity": true,
+        "cli_has_forbidden_when_expected": true,
+        "optimizer_disabled": true,
+        "decision_surface_disabled": true,
+        "recommendations_disabled": true,
+        "bayes_h5_research_only": true,
+        "not_hard_gates": true,
+        "optimizer_unchanged": true,
+        "no_forbidden_output_fields_on_report": true,
+        "extension_report_json": true,
+        "ridge_report_json": true,
+        "ridge_summary_md": true,
+        "extension_report_has_severity": true
+      },
+      "severity": "diagnostic_only",
+      "forbidden_claims": [
+        "collinear_group_ctv_display:forbid_isolated_channel_lift_claims",
+        "no_budget_reallocation_claim_based_only_on_this_run",
+        "no_channel_level_causal_claim_without_caveat",
+        "no_clean_media_attribution_claim",
+        "no_clean_separate_channel_effect_claim_without_external_calibration"
+      ],
+      "omitted_control_risk": true
+    }
+  },
+  "production_boundaries_preserved": true
+}

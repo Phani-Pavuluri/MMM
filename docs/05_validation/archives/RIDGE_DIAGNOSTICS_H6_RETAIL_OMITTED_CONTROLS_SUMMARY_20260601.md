@@ -29,7 +29,7 @@
 
 ## Stability
 - Fold stability OK: False
-- Geo-fold RMSE mean: 31240.327287520515
+- Geo-fold RMSE mean: 31229.250200436745
 - Coefficient stability available: True
 
 ## Forbidden claims
