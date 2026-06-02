@@ -117,7 +117,8 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json` | `05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json` | canonical | INV-H4-001b sparse diagnostic variant sweep (research only) |
 | `docs/05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json` | `05_validation/archives/BAYES_H4_REPEATED_PILOT_PRIMARY_METRIC_20260601.json` | canonical | H4b-refresh extended repeated pilot (primary + legacy shrinkage) |
 | `docs/05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json` | `05_validation/archives/BAYES_H4C_EXTENDED_RECOVERY_PILOT_20260601.json` | canonical | H4c extended recovery reliability map (research only) |
-| `docs/05_validation/bayes_h5_model_spec_improvement_adr.md` | `05_validation/bayes_h5_model_spec_improvement_adr.md` | canonical | Bayes-H5 sandbox model-spec improvement ADR (accepted; architecture only) |
+| `docs/05_validation/bayes_h5_model_spec_improvement_adr.md` | `05_validation/bayes_h5_model_spec_improvement_adr.md` | canonical | Bayes-H5 sandbox model-spec ADR (H5a–H5m complete; **H5n** shadow-policy recommender planned) |
+| `docs/06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md` | `06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md` | canonical | Bayes-H5n shadow-policy recommender (planned; blocked on H5m) |
 | `docs/06_investigations/investigation_index.md` | `06_investigations/investigation_index.md` | canonical | Grouped index by risk area |
 | `docs/planning_artifact_schema.md` | `04_governance/artifact_schema.md` | deprecated | Redirect stub only |
 | `docs/DOCUMENTATION_INVENTORY.md` | `DOCUMENTATION_INVENTORY.md` | canonical | This file |

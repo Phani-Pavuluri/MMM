@@ -202,6 +202,15 @@ All items below are **future** reliability-program requirements (Track 2), not s
 
 **Exit:** Authorizes **spec direction** only; H3 MVP remains running code until gated implementation lands.
 
+### Bayes-H5n — Shadow-policy recommender (planned)
+
+| Deliverable | Status |
+|-------------|--------|
+| Diagnostics → governed shadow policy suggestions | **Planned** — blocked on H5m frozen-policy replay |
+| Production Bayes / optimizer / DecisionSurface | **Not in scope** |
+
+Maps collinearity, sparsity, convergence, weak ID, and calibration availability into explicit channel + geometry + sampler policy recommendations with rationale, forbidden claims, and blocked options. **H5o+** second real panel only after H5n artifacts exist. See [H5 ADR § H5n](bayes_h5_model_spec_improvement_adr.md#h5n-shadow-policy-recommender-planned).
+
 ### Bayes-H5 — Production candidacy review
 
 | Gate | Rule |

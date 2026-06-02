@@ -169,6 +169,45 @@
 | **Outcome** | Frozen policy governs replay; rhat≈1.01 matches H5L-B but replay had 3 div (weak) — see artifact |
 | **Production** | **Still blocked** |
 
+### H5n shadow-policy recommender (planned)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Planned** — blocked on successful H5m frozen-policy replay |
+| **Investigation** | [INV-H5N](../06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md) (stub) |
+| **Goal** | Research-only bridge from real-panel diagnostics → governed H5 shadow-run policy suggestions |
+| **Production** | **Still blocked** |
+
+Bayes-H5n will add a **research-only shadow-policy recommender** that maps diagnostics such as collinearity, sparsity, convergence failure, weak identification, and calibration availability into **explicit H5 shadow-run policy suggestions**. It will recommend allowed remedies such as dropping collinear channels, building composite media channels, keeping all channels with weak-ID warnings, or requiring external calibration. The recommender changes only the **proposed research shadow policy**; it does **not** authorize production Bayes, optimizer use, DecisionSurface emission, budget recommendations, or Ridge replacement.
+
+**Inputs (planned):** panel diagnostics; collinearity groups; sparsity diagnostics; convergence diagnostics; prior H5j/H5l ablation results; optional business/channel metadata; optional calibration evidence availability.
+
+**Outputs (planned):** `recommended_channel_policy`; `recommended_geometry_config`; sampler profile suggestion; allowed alternatives; blocked options; interpretation changes; forbidden claims; evidence status; `production_flags` false.
+
+**Allowed recommendations (planned):**
+
+- `keep_all_channels` with weak-ID warning
+- `drop_collinear_channels` (explicit drop/keep lists — no silent dropping)
+- `composite_media_channel`
+- `single_channel` diagnostic
+- `external_calibration_required`
+- `do_not_run_h5_shadow_until_panel_fixed`
+
+**Governance (required):**
+
+- No silent dropping or compositing
+- No separate channel-effect claim after collapse/drop
+- No optimizer / recommendation / production promotion use
+- Ablation-only configs (pooled, fixed-τ) **cannot** be recommended as promotable
+- Every recommendation includes rationale and forbidden claims
+
+**Acceptance criteria:**
+
+- Listed after H5m and before any second real-panel batch or panel expansion
+- Clearly research-only; blocked on H5m replay validation
+- Recommends **shadow policies**, not business decisions
+- **H5o or later** may run a second real panel only after H5n recommendation artifacts exist; collinearity is not automatically fixed — it is governed through explicit policy recommendation, interpretation changes, and forbidden claims
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

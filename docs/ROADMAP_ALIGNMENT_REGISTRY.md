@@ -58,7 +58,8 @@ Do not add rows without tier, gate, proof artifact, and next authorized step.
 | Bayes-H5j collinearity geometry ablations (INV-H5J) | 2 | Reliability / governance | TrustReport (diagnostic) | batching panels before weak/converged pilot | [INV-H5J](06_investigations/INV-H5J_COLLINEARITY_GEOMETRY_ABLATIONS.md); [H5J ablations JSON](05_validation/archives/BAYES_H5J_COLLINEARITY_GEOMETRY_ABLATIONS_20260601.json) | Investigation | **Complete (research)** | H5k geometry stabilization | **Yes** | Blocked — weak_convergence max |
 | Bayes-H5k geometry stabilization (INV-H5K) | 2 | Reliability / governance | TrustReport (diagnostic) | prod Bayes without hierarchy-faithful pass | [INV-H5K](06_investigations/INV-H5K_GEOMETRY_STABILIZATION.md); [H5K JSON](05_validation/archives/BAYES_H5K_GEOMETRY_STABILIZATION_20260601.json) | Investigation | **Complete (research)** | H5l hierarchy-faithful refinement | **Yes** | Blocked — pooled/fixed-τ diagnostic only |
 | Bayes-H5l hierarchy geometry refinement (INV-H5L) | 2 | Reliability / governance | TrustReport (diagnostic) | real-panel batch before faithful convergence | [INV-H5L](06_investigations/INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md); [H5L JSON](05_validation/archives/BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json) | Investigation | **Complete (research)** | H5m frozen policy replay | **Yes** | Blocked — see artifact |
-| Bayes-H5m frozen shadow-policy replay (INV-H5M) | 2 | Reliability / governance | TrustReport (diagnostic) | second real panel before replay confirms | [INV-H5M](06_investigations/INV-H5M_FROZEN_SHADOW_POLICY_REPLAY.md); [H5M replay JSON](05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | synthetic σ-floor check; min-geo gate | **Yes** | Blocked |
+| Bayes-H5m frozen shadow-policy replay (INV-H5M) | 2 | Reliability / governance | TrustReport (diagnostic) | second real panel before governed replay | [INV-H5M](06_investigations/INV-H5M_FROZEN_SHADOW_POLICY_REPLAY.md); [H5M replay JSON](05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) | Investigation | **Complete (research)** | H5n shadow-policy recommender | **Yes** | Blocked |
+| Bayes-H5n shadow-policy recommender | 2 | Reliability / governance | TrustReport (diagnostic) | treating recommender as prod decisioning; silent channel collapse | [INV-H5N](06_investigations/INV-H5N_SHADOW_POLICY_RECOMMENDER.md); [H5 ADR § H5n](05_validation/bayes_h5_model_spec_improvement_adr.md#h5n-shadow-policy-recommender-planned) | Investigation | **Planned** (blocked on H5m) | H5o+ second real panel | **Yes** | Blocked — research only |
 | Bayes-H3 production promotion | 3 | MMM calibration ecosystem; budget optimization | DecisionSurface, CalibrationSignal, TrustReport, Release Gates | posterior→optimizer; coef planning; missing TrustReport | H5 validation + Promotion Gate; decision trace | Promotion | **Blocked** | not until H5 implementation + reproducible Δμ | Yes in sandbox only | **Blocked** — full promotion chain required |
 
 ---
@@ -95,6 +96,11 @@ Bayes-H2b ADR ✅
   → Bayes-H5h shadow hardening ✅ (diagnostics + extended MCMC; evidence still blocked)
   → Bayes-H5i convergence diagnostics ✅ (sample panel matrix; do not batch panels)
   → Bayes-H5j collinearity geometry ablations ✅ (explicit channel_policy; pilot weak_convergence max)
+  → Bayes-H5k geometry stabilization ✅ (ablation vs faithful hierarchy)
+  → Bayes-H5l hierarchy-faithful refinement ✅ (H5L-B σ_floor + full pooling)
+  → Bayes-H5m frozen shadow-policy replay ✅ (governed policy JSON + `--policy-path`)
+  → Bayes-H5n shadow-policy recommender (planned; **blocked on H5m** replay success)
+  → Bayes-H5o+ second real panel (planned; **blocked on H5n** recommendation artifacts — collinearity governed via explicit policy, not silent fixes)
   → Production TrustReport integration ← blocked (Promotion Gate required)
   → Bayes-H5 production promotion (blocked)
   → Bayes-H3 production promotion (blocked)

@@ -1883,6 +1883,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H5N — Bayes-H5 shadow-policy recommender (planned)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5N |
+| **Status** | **planned** — blocked on H5m frozen-policy replay |
+| **Doc** | [INV-H5N_SHADOW_POLICY_RECOMMENDER.md](INV-H5N_SHADOW_POLICY_RECOMMENDER.md) |
+| **Goal** | Diagnostics → governed shadow policy suggestions (channel + geometry + sampler); not prod Bayes or business decisions |
+| **Prerequisites** | H5m complete; H5L-B-style faithful config documented |
+| **Blocks** | H5o+ second real panel until H5n recommendation artifacts exist |
+| **Production impact** | None — no optimizer, DecisionSurface, recommendations, prod TrustReport, or Ridge replacement |
+
+---
+
 ### INV-H5M — Bayes-H5 frozen shadow-policy replay
 
 | Field | Value |
@@ -1893,7 +1907,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Policy** | [h5m_sample_panel_shadow_policy.json](h5m_sample_panel_shadow_policy.json) |
 | **Artifact** | [BAYES_H5M_SHADOW_POLICY_REPLAY_…](../05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
 | **Outcome** | H5L-B replay via `--policy-path`; governed channel/geometry/sampler on artifact |
-| **Production impact** | None — σ floor not a prod default |
+| **Production impact** | None — σ floor not a prod default; unblocks H5n planning only |
 
 ---
 
