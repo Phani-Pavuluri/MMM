@@ -229,6 +229,14 @@ One panel only (`examples_mmm_benchmark_geo_panel_v1`); keep-all policy under lo
 
 Checkpoint before H5q+ panel expansion: recommender → freeze → replay discipline; stop on `do_not_run` / failed convergence.
 
+### Bayes-H5q — Third real-panel shadow ✅
+
+| Deliverable | Status |
+|-------------|--------|
+| Triangulation panel (8 geos, 4 channels, calibration stub) | **Complete** — [INV-H5Q](../06_investigations/INV-H5Q_THIRD_REAL_PANEL_SHADOW_RUN.md) |
+| Convergence | **failed_convergence** (14 div) — recorded honestly; not evidence-promotable |
+| Production Bayes | **Still blocked** |
+
 ### Bayes-H5 — Production candidacy review
 
 | Gate | Rule |

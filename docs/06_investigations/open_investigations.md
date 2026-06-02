@@ -1924,6 +1924,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H5Q — Bayes-H5 third real-panel shadow run
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5Q |
+| **Status** | **complete (research lane)** — workflow pass; **failed_convergence** on replay |
+| **Doc** | [INV-H5Q_THIRD_REAL_PANEL_SHADOW_RUN.md](INV-H5Q_THIRD_REAL_PANEL_SHADOW_RUN.md) |
+| **Panel** | `examples/triangulation_geo_panel_v1.csv` (8 geos, sparse radio, calibration stub) |
+| **Outcome** | Triangulation conditions tested; keep-all policy; 14 divergences — not evidence-promotable |
+| **Production impact** | None |
+
+---
+
 ### INV-H5M — Bayes-H5 frozen shadow-policy replay
 
 | Field | Value |

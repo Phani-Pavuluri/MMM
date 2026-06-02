@@ -256,6 +256,28 @@ def test_benchmark_panel_recommends_keep_all() -> None:
     )
 
 
+def test_custom_panel_schema_without_frozen_policy() -> None:
+    bench = Path("examples/triangulation_geo_panel_v1.csv")
+    if not bench.is_file():
+        pytest.skip("triangulation panel missing")
+    schema = {
+        "geo_column": "geo_id",
+        "week_column": "week_start_date",
+        "target_column": "revenue",
+        "media_columns": ["search", "social", "display", "radio"],
+        "control_columns": [],
+    }
+    art = build_panel_recommendation(
+        panel_path=bench,
+        panel_id="examples_mmm_triangulation_geo_panel_v1",
+        dataset_snapshot_id="mmm-examples-triangulation-geo-panel-frozen-2022-v1",
+        panel_schema=schema,
+        calibration_evidence_available=True,
+    )
+    assert art["recommended_shadow_policy"]["status"] == STATUS_RECOMMENDED
+    assert "radio" in (art.get("sparsity_summary") or {}).get("by_channel", {})
+
+
 def test_do_not_run_not_runnable() -> None:
     art = recommend_shadow_policy(
         _inp(max_corr=0.99, experiments=[]),

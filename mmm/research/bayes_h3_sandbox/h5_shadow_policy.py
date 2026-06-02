@@ -264,7 +264,7 @@ def policy_to_shadow_runner_args(
     if prescale.get("outcome_prescale"):
         sandbox_overrides["outcome_prescale"] = prescale["outcome_prescale"]
 
-    return {
+    runner_args: dict[str, Any] = {
         "panel_path": policy.get("panel_path"),
         "panel_id": policy["panel_id"],
         "dataset_snapshot_id": policy["dataset_snapshot_id"],
@@ -289,6 +289,13 @@ def policy_to_shadow_runner_args(
         "channel_policy_declared": dict(policy["channel_policy"]),
         "forbidden_claims": list(policy.get("forbidden_claims") or []),
     }
+    if policy.get("calibration_signals_stub") is not None:
+        runner_args["calibration_signals_stub"] = list(policy["calibration_signals_stub"])
+    if policy.get("geox_cls_comparison") is not None:
+        runner_args["geox_cls_comparison"] = dict(policy["geox_cls_comparison"])
+    if policy.get("ridge_comparison") is not None:
+        runner_args["ridge_comparison"] = dict(policy["ridge_comparison"])
+    return runner_args
 
 
 def shadow_policy_from_recommendation(
@@ -400,6 +407,10 @@ def policy_to_shadow_request(
     source_policy_path = args.pop("source_policy_path", None)
     _ = frozen, forbidden_claims
 
+    cal_stub = args.pop("calibration_signals_stub", None)
+    geox = args.pop("geox_cls_comparison", None)
+    ridge = args.pop("ridge_comparison", None)
+
     return ShadowRunRequest(
         **args,
         policy_id=policy_id,
@@ -408,4 +419,7 @@ def policy_to_shadow_request(
         sandbox_model_overrides=sandbox_model_overrides,
         sampler_profile_applied=sampler_profile_applied,
         channel_policy_declared=channel_policy_declared,
+        calibration_signals_stub=cal_stub,
+        geox_cls_comparison=geox,
+        ridge_comparison=ridge,
     )

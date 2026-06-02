@@ -1,0 +1,129 @@
+{
+  "policy_id": "bayes_h5q_examples_mmm_triangulation_geo_panel_v1_shadow_policy_v1",
+  "policy_type": "research_shadow_policy",
+  "policy_version": "2026-06-01",
+  "description": "H5q triangulation panel: 8 geos, 4 channels, sparse radio, calibration stub (research only).",
+  "model_spec_version": "bayes_h5_sandbox_spec_v1",
+  "enable_h5_sandbox": true,
+  "research_only": true,
+  "artifact_type": "real_panel_shadow_artifact",
+  "dataset_snapshot_id": "mmm-examples-triangulation-geo-panel-frozen-2022-v1",
+  "panel_id": "examples_mmm_triangulation_geo_panel_v1",
+  "panel_path": "examples/triangulation_geo_panel_v1.csv",
+  "panel_schema": {
+    "geo_column": "geo_id",
+    "week_column": "week_start_date",
+    "date_column": "week_start_date",
+    "outcome_column": "revenue",
+    "target_column": "revenue",
+    "media_columns": [
+      "search",
+      "social",
+      "display",
+      "radio"
+    ],
+    "control_columns": []
+  },
+  "transform_config": {
+    "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+    "media_transforms_by_channel": {
+      "search": "identity",
+      "social": "identity",
+      "display": "identity",
+      "radio": "identity"
+    },
+    "transform_params_by_channel": {},
+    "transform_mismatch_mode": "aligned",
+    "policy_note": "H5q triangulation panel: identity H5 media transforms; calibration stub for GeoX/CLS triangulation probe (research only)."
+  },
+  "channel_policy": {
+    "mode": "keep_all_channels",
+    "no_silent_dropping": true
+  },
+  "h5_geometry_config": {
+    "parameterization": "non_centered",
+    "hierarchy_policy": "full_geo_channel_hierarchy",
+    "hierarchy_strength_policy": "learned_tau",
+    "tau_parameterization": "current",
+    "beta_prior_policy": "current_default",
+    "sigma_policy": "sigma_floor",
+    "sigma_floor": 0.05,
+    "likelihood_scale_policy": "prescaled_log_outcome"
+  },
+  "prescale": {
+    "media_prescale": "zscore_panel",
+    "outcome_prescale": "zscore_log"
+  },
+  "sampler_profile": {
+    "profile": "extended_mcmc",
+    "draws": 600,
+    "tune": 600,
+    "chains": 4,
+    "target_accept": 0.95
+  },
+  "production_flags": {
+    "prod_decisioning_allowed": false,
+    "production_promotion": false,
+    "hard_gate": false,
+    "approved_for_prod": false,
+    "research_only": true,
+    "decision_grade": false,
+    "production_decision_surface": false
+  },
+  "excluded_fields": [
+    "DecisionSurface",
+    "budget_recommendation",
+    "decision_surface",
+    "optimizer",
+    "recommendations"
+  ],
+  "forbidden_claims": [
+    "Channel 'radio' has near-zero variation: block separate coefficient claim.",
+    "No DecisionSurface or budget recommendations",
+    "No Ridge replacement",
+    "No optimizer or budget recommendation use",
+    "No production Bayes claim",
+    "Shadow policy recommendations are not business decisions"
+  ],
+  "recommendation_artifact_id": "BAYES_H5O_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601",
+  "recommendation_status": "recommended",
+  "policy_path": "docs/06_investigations/h5q_examples_mmm_triangulation_geo_panel_v1_shadow_policy.json",
+  "calibration_signals_stub": [
+    {
+      "calibration_evidence_id": "h5q_triangulation_geox_cls_stub_v1",
+      "evidence_type": "research_calibration_stub",
+      "likelihood_integrated": false,
+      "experiment_evidence_refs": [
+        {
+          "source": "GeoX-CLS-stub",
+          "experiment_id": "H5Q-TRIANGULATION-STUB-E1",
+          "channels": [
+            "search",
+            "social",
+            "display"
+          ],
+          "note": "Illustrative triangulation anchor for H5q \u2014 not production calibration"
+        }
+      ],
+      "conflict_warnings": [],
+      "note": "Research-only calibration metadata for shadow recommender; does not integrate likelihood in H5 sandbox v1"
+    }
+  ],
+  "geox_cls_comparison": {
+    "available": true,
+    "experiment_evidence_refs": [
+      {
+        "source": "GeoX-CLS-stub",
+        "experiment_id": "H5Q-TRIANGULATION-STUB-E1",
+        "channels": [
+          "search",
+          "social",
+          "display"
+        ],
+        "note": "Illustrative triangulation anchor for H5q \u2014 not production calibration"
+      }
+    ],
+    "note": "Research stub for triangulation bridge \u2014 diagnostic cross-check only",
+    "likelihood_integrated": false
+  }
+}

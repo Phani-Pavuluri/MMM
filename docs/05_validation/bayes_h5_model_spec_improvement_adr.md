@@ -202,6 +202,18 @@ Bayes-H5n adds a **research-only shadow-policy recommender** that maps collinear
 
 Do **not** batch additional panels without a new milestone and manifest.
 
+### H5q third real-panel shadow run (INV-H5Q)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — triangulation panel; workflow pass; **failed_convergence** on replay (honest) |
+| **Investigation** | [INV-H5Q](../06_investigations/INV-H5Q_THIRD_REAL_PANEL_SHADOW_RUN.md) |
+| **Panel** | `examples/triangulation_geo_panel_v1.csv` — 8 geos, 4 channels, sparse radio, calibration stub |
+| **Recommendation** | [BAYES_H5Q_SHADOW_POLICY_RECOMMENDATION_…](../05_validation/archives/BAYES_H5Q_SHADOW_POLICY_RECOMMENDATION_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601.json) |
+| **Shadow artifact** | [BAYES_H5Q_SHADOW_RUN_…](../05_validation/archives/BAYES_H5Q_SHADOW_RUN_EXAMPLES_MMM_TRIANGULATION_GEO_PANEL_V1_20260601.json) |
+| **Outcome** | keep-all + calibration metadata; 14 divergences — not evidence-promotable |
+| **Production** | **Still blocked** |
+
 ### H5p shadow workflow audit gate (AUDIT-H5P)
 
 | Field | Value |

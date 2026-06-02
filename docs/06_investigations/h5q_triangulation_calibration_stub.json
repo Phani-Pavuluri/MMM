@@ -1,0 +1,15 @@
+{
+  "calibration_evidence_id": "h5q_triangulation_geox_cls_stub_v1",
+  "evidence_type": "research_calibration_stub",
+  "likelihood_integrated": false,
+  "experiment_evidence_refs": [
+    {
+      "source": "GeoX-CLS-stub",
+      "experiment_id": "H5Q-TRIANGULATION-STUB-E1",
+      "channels": ["search", "social", "display"],
+      "note": "Illustrative triangulation anchor for H5q — not production calibration"
+    }
+  ],
+  "conflict_warnings": [],
+  "note": "Research-only calibration metadata for shadow recommender; does not integrate likelihood in H5 sandbox v1"
+}

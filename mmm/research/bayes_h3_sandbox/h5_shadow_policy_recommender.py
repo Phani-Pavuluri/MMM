@@ -104,7 +104,7 @@ class ShadowPolicyRecommendationInput:
 def panel_recommendation_artifact_id(panel_id: str, *, date_suffix: str = "20260601") -> str:
     """Stable archive artifact id for a panel recommendation."""
     slug = panel_id.upper().replace("-", "_")
-    return f"BAYES_H5O_SHADOW_POLICY_RECOMMENDATION_{slug}_{date_suffix}"
+    return f"BAYES_H5Q_SHADOW_POLICY_RECOMMENDATION_{slug}_{date_suffix}"
 
 
 def recommendation_is_runnable(artifact: dict[str, Any]) -> bool:
@@ -711,7 +711,12 @@ def build_panel_recommendation(
         if frozen.get("panel_id") and frozen.get("panel_id") != panel_id:
             frozen = None
 
-    schema_raw = dict(panel_schema or frozen.get("panel_schema") if frozen else _default_panel_schema())
+    if panel_schema is not None:
+        schema_raw = dict(panel_schema)
+    elif frozen is not None:
+        schema_raw = dict(frozen.get("panel_schema") or _default_panel_schema())
+    else:
+        schema_raw = _default_panel_schema()
     channels = tuple(schema_raw.get("media_columns") or ["search", "social", "tv"])
     schema = PanelSchema(
         schema_raw.get("geo_column", "geo_id"),
@@ -815,6 +820,7 @@ def write_panel_recommendation_artifact(
     panel_schema: dict[str, Any] | None = None,
     frozen_policy_path: str | Path | None = None,
     include_sample_panel_prior_evidence: bool = False,
+    calibration_evidence_available: bool = False,
 ) -> dict[str, Any]:
     artifact = build_panel_recommendation(
         panel_path=panel_path,
@@ -823,6 +829,7 @@ def write_panel_recommendation_artifact(
         panel_schema=panel_schema,
         frozen_policy_path=frozen_policy_path,
         include_sample_panel_prior_evidence=include_sample_panel_prior_evidence,
+        calibration_evidence_available=calibration_evidence_available,
     )
     validate_recommendation_artifact(artifact)
     out = Path(output_path)
@@ -861,12 +868,26 @@ def _build_cli_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional frozen policy when panel_id matches",
     )
+    p.add_argument(
+        "--panel-schema-path",
+        type=str,
+        default=None,
+        help="JSON file with panel_schema (required when media columns differ from default)",
+    )
+    p.add_argument(
+        "--calibration-evidence-available",
+        action="store_true",
+        help="Mark external calibration / GeoX-CLS evidence as available for recommender",
+    )
     return p
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_cli_parser().parse_args(argv)
     if args.panel_path and args.panel_id and args.dataset_snapshot_id:
+        panel_schema: dict[str, Any] | None = None
+        if args.panel_schema_path:
+            panel_schema = json.loads(Path(args.panel_schema_path).read_text(encoding="utf-8"))
         out = args.output_path or (
             f"docs/05_validation/archives/"
             f"{panel_recommendation_artifact_id(args.panel_id)}.json"
@@ -876,8 +897,10 @@ def main(argv: list[str] | None = None) -> int:
             panel_id=args.panel_id,
             dataset_snapshot_id=args.dataset_snapshot_id,
             output_path=out,
+            panel_schema=panel_schema,
             frozen_policy_path=args.frozen_policy_path,
             include_sample_panel_prior_evidence=args.include_sample_panel_prior_evidence,
+            calibration_evidence_available=args.calibration_evidence_available,
         )
     else:
         artifact = write_sample_panel_recommendation_artifact(

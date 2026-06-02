@@ -1,0 +1,9 @@
+{
+  "geo_column": "geo_id",
+  "week_column": "week_start_date",
+  "date_column": "week_start_date",
+  "outcome_column": "revenue",
+  "target_column": "revenue",
+  "media_columns": ["search", "social", "display", "radio"],
+  "control_columns": []
+}

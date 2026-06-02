@@ -1,0 +1,12 @@
+{
+  "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+  "media_transforms_by_channel": {
+    "search": "identity",
+    "social": "identity",
+    "display": "identity",
+    "radio": "identity"
+  },
+  "transform_params_by_channel": {},
+  "transform_mismatch_mode": "aligned",
+  "policy_note": "H5q triangulation panel: identity H5 media transforms; calibration stub for GeoX/CLS triangulation probe (research only)."
+}
