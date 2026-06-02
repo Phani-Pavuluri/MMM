@@ -1883,6 +1883,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-H5M — Bayes-H5 frozen shadow-policy replay
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H5M |
+| **Status** | **complete (research lane)** |
+| **Doc** | [INV-H5M_FROZEN_SHADOW_POLICY_REPLAY.md](INV-H5M_FROZEN_SHADOW_POLICY_REPLAY.md) |
+| **Policy** | [h5m_sample_panel_shadow_policy.json](h5m_sample_panel_shadow_policy.json) |
+| **Artifact** | [BAYES_H5M_SHADOW_POLICY_REPLAY_…](../05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
+| **Outcome** | H5L-B replay via `--policy-path`; governed channel/geometry/sampler on artifact |
+| **Production impact** | None — σ floor not a prod default |
+
+---
+
 ### INV-H5L — Bayes-H5 hierarchy-faithful geometry refinement
 
 | Field | Value |
@@ -1891,7 +1905,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **complete (research lane)** |
 | **Doc** | [INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md](INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md) |
 | **Artifact** | [BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json](../05_validation/archives/BAYES_H5L_HIERARCHY_GEOMETRY_REFINEMENT_20260601.json) |
-| **Outcome** | Faithful geometry matrix + ablation benchmarks; see artifact for faithful convergence |
+| **Outcome** | H5L-B faithful pass; frozen as H5m policy |
 | **Production impact** | None — ablation passes not promotion evidence |
 
 ---

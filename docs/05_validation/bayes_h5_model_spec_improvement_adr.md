@@ -158,6 +158,17 @@
 | **Outcome** | **H5L-B/E** hierarchy-faithful `converged_diagnostic_only` with `sigma_floor` + full pooling; ablation benchmarks non-promotable |
 | **Production** | **Still blocked** |
 
+### H5m frozen shadow-policy replay (INV-H5M)
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Complete** — frozen `h5m_sample_panel_shadow_policy.json` + shadow runner `--policy-path` replay |
+| **Investigation** | [INV-H5M](../06_investigations/INV-H5M_FROZEN_SHADOW_POLICY_REPLAY.md) |
+| **Policy** | [h5m_sample_panel_shadow_policy.json](../06_investigations/h5m_sample_panel_shadow_policy.json) |
+| **Artifact** | [BAYES_H5M_SHADOW_POLICY_REPLAY_…](../05_validation/archives/BAYES_H5M_SHADOW_POLICY_REPLAY_EXAMPLES_MMM_SAMPLE_PANEL_V1_20260601.json) |
+| **Outcome** | Frozen policy governs replay; rhat≈1.01 matches H5L-B but replay had 3 div (weak) — see artifact |
+| **Production** | **Still blocked** |
+
 ---
 
 ## Roadmap alignment gate (pre-authoring)

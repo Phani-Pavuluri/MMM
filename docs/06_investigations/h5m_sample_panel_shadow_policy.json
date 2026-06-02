@@ -1,0 +1,77 @@
+{
+  "policy_id": "bayes_h5m_sample_panel_shadow_policy_v1",
+  "policy_version": "2026-06-01",
+  "description": "Frozen H5L-B hierarchy-faithful shadow policy for examples/sample_panel.csv (research only).",
+  "model_spec_version": "bayes_h5_sandbox_spec_v1",
+  "enable_h5_sandbox": true,
+  "research_only": true,
+  "dataset_snapshot_id": "mmm-examples-sample-panel-frozen-2022",
+  "panel_id": "examples_mmm_sample_panel_v1",
+  "panel_path": "examples/sample_panel.csv",
+  "panel_schema": {
+    "geo_column": "geo_id",
+    "week_column": "week_start_date",
+    "target_column": "revenue",
+    "media_columns": ["search", "social", "tv"],
+    "control_columns": []
+  },
+  "transform_config": {
+    "transform_registry_id": "bayes_h5_media_transform_registry_v1",
+    "media_transforms_by_channel": {
+      "search": "identity",
+      "social": "identity",
+      "tv": "identity"
+    },
+    "transform_params_by_channel": {},
+    "transform_mismatch_mode": "aligned",
+    "policy_note": "H5m frozen replay of H5L-B — identity media transforms on pilot panel only."
+  },
+  "channel_policy": {
+    "mode": "drop_collinear_channels",
+    "max_abs_corr_threshold": 0.95,
+    "explicit_dropped_channels": ["social"],
+    "explicit_kept_channels": ["search", "tv"],
+    "drop_rule_note": "Redundant channel per collinear-group heuristic (highest mean |rho| to group) — matches H5L-B replay.",
+    "no_silent_dropping": true
+  },
+  "geometry_config": {
+    "parameterization": "non_centered",
+    "hierarchy_policy": "full_geo_channel_hierarchy",
+    "hierarchy_strength_policy": "learned_tau",
+    "tau_parameterization": "current",
+    "beta_prior_policy": "current_default",
+    "sigma_policy": "sigma_floor",
+    "sigma_floor": 0.05,
+    "likelihood_scale_policy": "prescaled_log_outcome"
+  },
+  "prescale": {
+    "media_prescale": "zscore_panel",
+    "outcome_prescale": "zscore_log"
+  },
+  "sampler_profile": {
+    "profile": "extended_mcmc",
+    "draws": 600,
+    "tune": 600,
+    "chains": 4,
+    "target_accept": 0.95
+  },
+  "production_flags": {
+    "hard_gate": false,
+    "production_promotion": false,
+    "approved_for_prod": false,
+    "prod_decisioning_allowed": false,
+    "research_only": true,
+    "decision_grade": false,
+    "production_decision_surface": false
+  },
+  "excluded_fields": [
+    "optimizer",
+    "optimizer_ready_curves",
+    "optimizer_input",
+    "decision_surface",
+    "DecisionSurface",
+    "budget_recommendation",
+    "recommendations",
+    "production_trust_report"
+  ]
+}

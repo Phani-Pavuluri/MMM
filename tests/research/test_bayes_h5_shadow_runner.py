@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -206,6 +207,24 @@ def test_synthetic_mismatch_world_still_emits_mismatch() -> None:
     }
     codes = derive_synthetic_transform_warning_codes(cfg, h5_diag)
     assert "h5:transform_mismatch:adstock" in codes or "h5:transform_mismatch:saturation" in codes
+
+
+def test_frozen_policy_no_fit_includes_policy_metadata() -> None:
+    policy_path = Path("docs/06_investigations/h5m_sample_panel_shadow_policy.json")
+    if not policy_path.is_file():
+        pytest.skip("frozen policy file missing")
+    from mmm.research.bayes_h3_sandbox.h5_shadow_policy import load_shadow_policy, policy_to_shadow_request
+
+    policy = load_shadow_policy(policy_path)
+    request = policy_to_shadow_request(
+        policy,
+        policy_path=policy_path,
+        execute_fit=False,
+    )
+    artifact = build_shadow_run_artifact(request)
+    assert artifact.get("policy_id") == "bayes_h5m_sample_panel_shadow_policy_v1"
+    assert artifact.get("geometry_config_applied", {}).get("sigma_policy") == "sigma_floor"
+    assert artifact.get("sampler_profile_applied", {}).get("draws") == 600
 
 
 def test_convergence_status_classification() -> None:

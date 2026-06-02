@@ -45,7 +45,7 @@ from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
 from mmm.research.bayes_h3_sandbox.labels import RESEARCH_ONLY_LABEL
 from mmm.research.bayes_h3_sandbox.recovery_worlds import SAMPLER_EXTENDED, SAMPLER_FAST
 
-HARNESS_VERSION = "bayes_h5h_shadow_runner_v1"
+HARNESS_VERSION = "bayes_h5m_shadow_runner_v1"
 DEFAULT_DRY_RUN_ARTIFACT = Path("docs/05_validation/archives/BAYES_H5F_SHADOW_RUN_DRY_RUN_20260601.json")
 ARCHIVES_DIR = Path("docs/05_validation/archives")
 
@@ -86,6 +86,13 @@ class ShadowRunRequest:
     geox_cls_comparison: dict[str, Any] | None = None
     run_id: str | None = None
     requested_production_flags: dict[str, bool] | None = None
+    policy_id: str | None = None
+    source_policy_path: str | None = None
+    geometry_config: dict[str, Any] | None = None
+    sandbox_model_overrides: dict[str, Any] | None = None
+    sampler_profile_applied: dict[str, Any] | None = None
+    channel_policy_declared: dict[str, Any] | None = None
+    channel_policy_applied: dict[str, Any] | None = None
 
 
 def _sha256_bytes(payload: bytes) -> str:
@@ -176,6 +183,7 @@ def _config_from_panel(
     fast_mcmc: bool,
     extended_mcmc: bool = False,
     nuts_seed: int = TOY_SEED,
+    sampler_overrides: dict[str, Any] | None = None,
 ) -> tuple[MMMConfig, str]:
     bayesian: dict[str, Any] = {
         "backend": BayesianBackend.PYMC,
@@ -183,8 +191,12 @@ def _config_from_panel(
         "prior_predictive_draws": 0,
         "posterior_predictive_draws": 0,
     }
-    profile_name, sampler = resolve_sampler_profile(fast_mcmc=fast_mcmc, extended_mcmc=extended_mcmc)
-    bayesian.update(sampler)
+    if sampler_overrides:
+        profile_name = "policy"
+        bayesian.update(sampler_overrides)
+    else:
+        profile_name, sampler = resolve_sampler_profile(fast_mcmc=fast_mcmc, extended_mcmc=extended_mcmc)
+        bayesian.update(sampler)
     cfg = MMMConfig(
         framework=Framework.BAYESIAN,
         run_environment=RunEnvironment.RESEARCH,
@@ -235,11 +247,18 @@ def _infer_schema(df: pd.DataFrame, transform_config: dict[str, Any]) -> PanelSc
 def _resolve_real_panel_inputs(
     df: pd.DataFrame,
     transform_config: dict[str, Any],
-) -> tuple[pd.DataFrame, PanelSchema, dict[str, Any]]:
+    *,
+    channel_policy_declared: dict[str, Any] | None = None,
+) -> tuple[pd.DataFrame, PanelSchema, dict[str, Any], dict[str, Any] | None]:
     schema = _infer_schema(df, transform_config)
+    policy_record: dict[str, Any] | None = None
     if transform_config.get("channel_policy"):
-        df, schema, transform_config, _policy = apply_channel_policy(df, schema, transform_config)
-    return df, schema, transform_config
+        df, schema, transform_config, policy_record = apply_channel_policy(df, schema, transform_config)
+        if channel_policy_declared:
+            from mmm.research.bayes_h3_sandbox.h5_shadow_policy import assert_channel_policy_matches_explicit
+
+            assert_channel_policy_matches_explicit(policy_record, channel_policy_declared)
+    return df, schema, transform_config, policy_record
 
 
 def _panel_context_for_request(request: ShadowRunRequest) -> str:
@@ -401,7 +420,18 @@ def build_shadow_run_artifact(
         else:
             df = load_panel_from_path(request.panel_path)  # type: ignore[arg-type]
         transform_config = dict(request.transform_config)
-        df, schema, transform_config = _resolve_real_panel_inputs(df, transform_config)
+        df, schema, transform_config, policy_record = _resolve_real_panel_inputs(
+            df,
+            transform_config,
+            channel_policy_declared=request.channel_policy_declared,
+        )
+        sampler_ov = None
+        if request.sampler_profile_applied:
+            sampler_ov = {
+                k: request.sampler_profile_applied[k]
+                for k in ("draws", "tune", "chains", "target_accept")
+                if k in request.sampler_profile_applied
+            }
         request = ShadowRunRequest(
             panel_id=request.panel_id,
             dataset_snapshot_id=request.dataset_snapshot_id,
@@ -422,13 +452,23 @@ def build_shadow_run_artifact(
             geox_cls_comparison=request.geox_cls_comparison,
             run_id=request.run_id,
             requested_production_flags=request.requested_production_flags,
+            policy_id=request.policy_id,
+            source_policy_path=request.source_policy_path,
+            geometry_config=request.geometry_config,
+            sandbox_model_overrides=request.sandbox_model_overrides,
+            sampler_profile_applied=request.sampler_profile_applied,
+            channel_policy_declared=request.channel_policy_declared,
+            channel_policy_applied=policy_record,
         )
         cfg, sampler_profile = _config_from_panel(
             df,
             schema,
             fast_mcmc=request.fast_mcmc,
             extended_mcmc=request.extended_mcmc,
+            sampler_overrides=sampler_ov,
         )
+        if request.sampler_profile_applied:
+            sampler_profile = str(request.sampler_profile_applied.get("profile") or sampler_profile)
 
     df = validate_panel(df, schema, integrity_qa=False, calendar_strict=False)
     panel_hash = _sha256_panel(df)
@@ -453,6 +493,8 @@ def build_shadow_run_artifact(
             "h5_real_panel": panel_context == PANEL_CONTEXT_REAL,
             "h5_transform_mismatch_mode": str(request.transform_config.get("transform_mismatch_mode", "aligned")),
         }
+        if request.sandbox_model_overrides:
+            overrides.update(request.sandbox_model_overrides)
         fit_artifact = run_sandbox_fit(
             cfg,
             schema,
@@ -476,6 +518,18 @@ def build_shadow_run_artifact(
     )
 
     prod_flags = research_production_flags()
+    conv = (fit_artifact or {}).get("convergence_diagnostics") or {}
+    from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
+        classify_convergence_status,
+        evidence_promotion_allowed,
+    )
+
+    convergence_status = classify_convergence_status(
+        rhat_max=conv.get("rhat_max"),
+        divergence_count=conv.get("divergence_count"),
+    )
+    promo = evidence_promotion_allowed(convergence_status)
+
     artifact: dict[str, Any] = {
         "harness_version": HARNESS_VERSION,
         "artifact_type": request.artifact_type,
@@ -493,7 +547,25 @@ def build_shadow_run_artifact(
         ),
         "production_flags": prod_flags,
         "outputs_are_diagnostic_only": True,
+        "convergence_status": convergence_status,
+        "rhat_max": conv.get("rhat_max"),
+        "divergence_count": conv.get("divergence_count"),
+        "evidence_promotion_allowed": promo,
+        "excluded_fields": sorted(FORBIDDEN_OUTPUT_FIELDS),
     }
+    if request.policy_id:
+        from mmm.research.bayes_h3_sandbox.h5_geometry_config import geometry_record_for_artifact
+
+        artifact["policy_id"] = request.policy_id
+        artifact["source_policy_path"] = request.source_policy_path
+        artifact["channel_policy_applied"] = request.channel_policy_applied
+        artifact["channel_policy_declared"] = request.channel_policy_declared
+        geom = request.geometry_config or {}
+        artifact["geometry_config_applied"] = geometry_record_for_artifact(geom)
+        artifact["sampler_profile_applied"] = request.sampler_profile_applied
+        artifact["trust_report_candidate_diagnostics"] = shadow_record.get(
+            "trust_report_candidate_diagnostics"
+        )
     if request.artifact_type == "dry_run_shadow_artifact":
         artifact["note"] = (
             "Dry-run shadow artifact on synthetic fixture only — does not constitute real-panel evidence."
@@ -582,6 +654,12 @@ def _build_cli_parser() -> argparse.ArgumentParser:
         help="Run synthetic fixture dry-run (not real-panel evidence)",
     )
     p.add_argument("--no-fit", action="store_true", help="Build artifact without executing MCMC")
+    p.add_argument(
+        "--policy-path",
+        type=str,
+        default=None,
+        help="Frozen shadow policy JSON — fully specifies the run (overrides other panel args)",
+    )
     return p
 
 
@@ -593,6 +671,20 @@ def main(argv: list[str] | None = None) -> int:
             fast_mcmc=(args.fast_mcmc or True) and not args.extended_mcmc,
             output_path=args.output_path,
         )
+    elif args.policy_path:
+        from mmm.research.bayes_h3_sandbox.h5_shadow_policy import (
+            load_shadow_policy,
+            policy_to_shadow_request,
+        )
+
+        policy = load_shadow_policy(args.policy_path)
+        request = policy_to_shadow_request(
+            policy,
+            policy_path=args.policy_path,
+            output_path=args.output_path,
+            execute_fit=not args.no_fit,
+        )
+        artifact = write_shadow_run_artifact(request)
     else:
         missing = [
             name
@@ -605,7 +697,10 @@ def main(argv: list[str] | None = None) -> int:
             if not val
         ]
         if missing:
-            raise SystemExit(f"required arguments missing: {', '.join(missing)}")
+            raise SystemExit(
+                f"required arguments missing: {', '.join(missing)} "
+                "(or provide --policy-path)"
+            )
         artifact = write_shadow_run_artifact(
             ShadowRunRequest(
                 panel_path=args.panel_path,
