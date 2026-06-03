@@ -2161,7 +2161,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-MIP-C5](../audits/AUDIT-MIP-C5_CALIBRATIONSIGNAL_SCHEDULED_ETL_WRAPPER.md); `calibration_signal_etl_job.py`; [outputs](../05_validation/archives/mip_c5_etl_outputs/) |
 | **Outcome** | Batch scan + manifest + C2 artifacts; train smoke proof; no live API or prod cron. |
-| **Next** | Roadmap audit before live scheduling (recommended). |
+| **Next** | MIP-C6 integration readiness checkpoint (complete). |
+
+---
+
+### INV-MIP-C6 — MIP integration readiness checkpoint (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-MIP-C6 |
+| **Title** | MIP integration readiness checkpoint (C1–C5 bridge + next lane) |
+| **Status** | **closed** |
+| **Evidence** | [AUDIT-MIP-C6](../audits/AUDIT-MIP-C6_INTEGRATION_READINESS_CHECKPOINT.md); prerequisites MIP-C5 @ `c7b3ab6` |
+| **Outcome** | Verdict `continue_with_pause_before_live_scheduler`: file bridge complete; C6 prod scheduler and live APIs deferred; recommended next lane GeoX estimator/inference OC (Option B). |
+| **Next** | C6 governance (Option A) only if operational urgency; else GeoX OC; optional H11b / Bayes-H5 transform (Options C/D). |
 
 ---
 
@@ -2174,7 +2187,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-MIP-C4](../audits/AUDIT-MIP-C4_CALIBRATIONSIGNAL_ETL_DRY_RUN.md); `calibration_signal_etl.py`; [dry-run archive](../05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json) |
 | **Outcome** | CLI ETL writes versioned artifact; `mmm train --calibration-signals-path` attaches context; CLI uses `MMMTrainer(cfg)` so path is honored. |
-| **Next** | MIP-C5 production scheduler (optional). |
+| **Next** | MIP-C5 drop-zone wrapper (complete). |
 
 ---
 
