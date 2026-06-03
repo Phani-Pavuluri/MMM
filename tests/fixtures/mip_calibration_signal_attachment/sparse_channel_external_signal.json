@@ -1,0 +1,38 @@
+{
+  "fixture_id": "mip_c1_sparse_channel_external",
+  "description": "Replay evidence on sparse radio channel — external signal does not remove MMM-only forbidden claim.",
+  "ridge_diagnostic_stub": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "coefficient_stability": {
+      "media_coef_by_channel": {"radio": 0.001}
+    },
+    "sparse_channels": {
+      "sparse_channel_extreme": ["radio"],
+      "near_zero_threshold": 0.99
+    },
+    "forbidden_claims": ["no_separate_channel_effect_claim_for_radio"]
+  },
+  "calibration_signal_stub": {
+    "signal_id": "replay-radio-sparse",
+    "source_system": "replay",
+    "source_modality": "replay_unit",
+    "experiment_id": "REPLAY-220",
+    "channel": "radio",
+    "geo_scope": {"kind": "dma", "ids": ["dma_55"]},
+    "estimand_id": "incremental_sales",
+    "effect_estimate": 0.25,
+    "standard_error": 0.08,
+    "freshness_status": "fresh",
+    "eligibility_status": "eligible"
+  },
+  "expected_attachment": {
+    "alignment_status": "aligned",
+    "conflict_status": "none",
+    "trust_report_disposition": "diagnostic_context"
+  },
+  "expected_forbidden_claims": [
+    "no_clean_mmm_only_channel_claim_for_radio_despite_external_signal",
+    "no_separate_channel_effect_claim_for_radio"
+  ],
+  "expected_trust_report_boundary_note": "Sparse-channel MMM forbidden claims persist; external replay is context, not channel-effect validation."
+}

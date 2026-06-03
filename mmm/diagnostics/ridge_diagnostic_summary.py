@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from mmm.artifacts.base import ArtifactStoreBase
+from mmm.diagnostics.calibration_signal_attachment import build_calibration_evidence_summary
 
 FORBIDDEN_SUMMARY_TERMS = (
     "optimizer",
@@ -215,6 +216,23 @@ def format_ridge_diagnostics_markdown(
     if not summary.get("top_warnings"):
         lines.append("- none")
 
+    cal_ctx = (report or {}).get("calibration_evidence_context")
+    if cal_ctx:
+        cal_sum = cal_ctx.get("summary") or build_calibration_evidence_summary(cal_ctx)
+        lines.extend(
+            [
+                "",
+                "## Calibration evidence context (MIP-C1)",
+                f"- {cal_sum.get('headline') or cal_ctx.get('headline')}",
+                f"- Signals: {cal_sum.get('signal_count', 0)} "
+                f"(aligned={cal_sum.get('aligned_count', 0)}, "
+                f"conflicts={cal_sum.get('directional_conflict_count', 0)})",
+                "- **Context only** — does not override Ridge coefficients or optimizer.",
+            ]
+        )
+        for w in (cal_sum.get("warnings") or cal_ctx.get("warnings") or [])[:6]:
+            lines.append(f"- {w}")
+
     boundary = summary.get("production_boundary") or {}
     lines.extend(
         [
@@ -268,6 +286,16 @@ def format_ridge_diagnostics_cli_block(report: dict[str, Any] | None) -> list[st
     forbidden = summary.get("forbidden_claims") or []
     if forbidden:
         lines.append(f"- Forbidden claims: {'; '.join(forbidden)}")
+    cal_ctx = (report or {}).get("calibration_evidence_context")
+    if cal_ctx:
+        cal_sum = cal_ctx.get("summary") or build_calibration_evidence_summary(cal_ctx)
+        lines.append(
+            f"- Calibration context: {cal_sum.get('headline') or 'attached'} (MMM unchanged)"
+        )
+        if cal_sum.get("directional_conflict_count"):
+            lines.append(
+                f"- External/MMM conflict(s): {cal_sum.get('conflict_signal_ids')} — review TrustReport"
+            )
     return lines
 
 

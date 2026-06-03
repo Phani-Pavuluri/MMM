@@ -1,0 +1,41 @@
+{
+  "fixture_id": "mip_c1_geox_conflict_positive_vs_mmm_negative",
+  "description": "GeoX positive lift conflicts with negative Ridge tv coefficient — MMM not overridden.",
+  "ridge_diagnostic_stub": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "coefficient_stability": {
+      "available": true,
+      "media_coef_by_channel": {"tv": -0.08, "search": 0.05}
+    },
+    "collinearity": {"weak_identification_risk": false},
+    "world_metadata": {"estimand_id": "incremental_sales"}
+  },
+  "calibration_signal_stub": {
+    "signal_id": "geox-conflict-tv-2025q1",
+    "source_system": "geox",
+    "source_modality": "geo_experiment",
+    "experiment_id": "EXP-GEOX-4413",
+    "channel": "tv",
+    "geo_scope": {"kind": "dma", "ids": ["dma_101"]},
+    "time_window": {"start": "2025-01-01", "end": "2025-03-31"},
+    "estimand_id": "incremental_sales",
+    "measurement_instrument_id": "geox_v3",
+    "lift_scale": "incremental_roi",
+    "effect_estimate": 0.20,
+    "standard_error": 0.05,
+    "freshness_status": "fresh",
+    "eligibility_status": "eligible"
+  },
+  "expected_attachment": {
+    "alignment_status": "misaligned",
+    "conflict_status": "directional_conflict",
+    "trust_report_disposition": "trust_report_and_human_review",
+    "allowed_use_contains": ["conflict_flag", "trust_report_disclosure"]
+  },
+  "expected_forbidden_claims": [
+    "mmm_direction_validated_by_external_evidence",
+    "single_source_attribution_without_caveat",
+    "ridge_coefficient_override_from_external_evidence"
+  ],
+  "expected_trust_report_boundary_note": "Directional conflict requires TrustReport disclosure and human review; GeoX must not silently override MMM."
+}

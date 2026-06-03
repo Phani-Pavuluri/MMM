@@ -1,0 +1,47 @@
+{
+  "fixture_id": "mip_c1_geox_aligned_positive",
+  "description": "GeoX positive lift aligns with positive Ridge tv coefficient — context attachment only.",
+  "ridge_diagnostic_stub": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "artifact_kind": "RIDGE_PRODUCTION_DIAGNOSTICS",
+    "coefficient_stability": {
+      "available": true,
+      "media_coef_by_channel": {"tv": 0.12, "search": 0.05, "radio": 0.001}
+    },
+    "collinearity": {
+      "weak_identification_risk": true,
+      "calibration_evidence_available": false
+    },
+    "sparse_channels": {"sparse_channel_extreme": ["radio"]},
+    "forbidden_claims": ["no_separate_channel_effect_claim_for_radio"],
+    "world_metadata": {"estimand_id": "incremental_sales"}
+  },
+  "calibration_signal_stub": {
+    "signal_id": "geox-retail-tv-2025q1",
+    "source_system": "geox",
+    "source_modality": "geo_experiment",
+    "experiment_id": "EXP-GEOX-4412",
+    "channel": "tv",
+    "geo_scope": {"kind": "dma", "ids": ["dma_101", "dma_102"]},
+    "time_window": {"start": "2025-01-01", "end": "2025-03-31"},
+    "estimand_id": "incremental_sales",
+    "measurement_instrument_id": "geox_v3",
+    "lift_scale": "incremental_roi",
+    "effect_estimate": 0.15,
+    "standard_error": 0.04,
+    "freshness_status": "fresh",
+    "eligibility_status": "eligible"
+  },
+  "expected_attachment": {
+    "alignment_status": "aligned",
+    "conflict_status": "none",
+    "trust_report_disposition": "diagnostic_context",
+    "allowed_use_contains": ["operator_context", "ridge_diagnostic_interpretation"],
+    "collinearity_calibration_evidence_available": true
+  },
+  "expected_forbidden_claims": [
+    "external_evidence_overrides_mmm_coefficients",
+    "automatic_mmm_recalibration_from_calibration_signal"
+  ],
+  "expected_trust_report_boundary_note": "CalibrationSignal may inform TrustReport and operator context only; must not bypass TrustReport, override MMM coefficients, or feed optimizer/DecisionSurface."
+}

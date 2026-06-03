@@ -2135,7 +2135,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-H10](../audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md); `tests/diagnostics/test_ridge_diagnostic_e2e_audit.py` |
 | **Outcome** | Pass on H6 full-control and omitted-control reference worlds; CI-gated checklist. |
-| **Next** | GeoX/MMM CalibrationSignal integration audit (recommended); optional H11 real-bundle hardening. |
+| **Next** | Optional H11 real-bundle hardening. |
+
+---
+
+### INV-MIP-C1 — CalibrationSignal → MMM diagnostic attachment (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-MIP-C1 |
+| **Title** | GeoX/MMM CalibrationSignal integration audit (context-only attachment) |
+| **Status** | **closed** |
+| **Evidence** | [AUDIT-MIP-C1](../audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md); [attachment contract](../05_validation/calibration_signal_mmm_diagnostic_attachment_contract.md); `tests/mip/test_calibration_signal_mmm_attachment_contract.py` |
+| **Outcome** | Contract + fixtures + helper module; signals attach as `calibration_evidence_context` only; no Ridge refit / optimizer / DecisionSurface changes. |
+| **Next** | Optional H11 real-bundle Ridge diagnostic hardening. |
 
 ---
 

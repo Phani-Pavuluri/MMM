@@ -1,0 +1,31 @@
+{
+  "fixture_id": "mip_c1_stale_signal",
+  "description": "Stale GeoX signal — context-only stale warning; no fresh calibration claim.",
+  "ridge_diagnostic_stub": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "coefficient_stability": {
+      "media_coef_by_channel": {"tv": 0.12}
+    },
+    "world_metadata": {"estimand_id": "incremental_sales"}
+  },
+  "calibration_signal_stub": {
+    "signal_id": "geox-stale-tv",
+    "source_system": "geox",
+    "source_modality": "geo_experiment",
+    "channel": "tv",
+    "effect_estimate": 0.10,
+    "standard_error": 0.03,
+    "freshness_status": "stale",
+    "eligibility_status": "eligible"
+  },
+  "expected_attachment": {
+    "alignment_status": "not_applicable",
+    "conflict_status": "none",
+    "trust_report_disposition": "context_only_stale",
+    "allowed_use_contains": ["operator_context_stale_warning"]
+  },
+  "expected_forbidden_claims": [
+    "fresh_calibration_evidence_claim"
+  ],
+  "expected_trust_report_boundary_note": "Stale evidence is operator context only; freshness gates apply in TrustReport."
+}

@@ -1,0 +1,38 @@
+{
+  "fixture_id": "mip_c1_cls_inconclusive_vs_mmm_positive",
+  "description": "CLS inconclusive eligibility — TrustReport-only even when directions agree.",
+  "ridge_diagnostic_stub": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "coefficient_stability": {
+      "media_coef_by_channel": {"search": 0.05}
+    },
+    "world_metadata": {"estimand_id": "incremental_sales"}
+  },
+  "calibration_signal_stub": {
+    "signal_id": "cls-search-inconclusive",
+    "source_system": "cls",
+    "source_modality": "cls_readout",
+    "study_id": "CLS-STUDY-88",
+    "channel": "search",
+    "geo_scope": {"kind": "national"},
+    "time_window": {"start": "2024-10-01", "end": "2024-12-31"},
+    "estimand_id": "incremental_sales",
+    "measurement_instrument_id": "cls_v2",
+    "lift_scale": "incremental_sales",
+    "effect_estimate": 0.08,
+    "standard_error": 0.06,
+    "freshness_status": "fresh",
+    "eligibility_status": "inconclusive"
+  },
+  "expected_attachment": {
+    "alignment_status": "aligned",
+    "conflict_status": "trust_report_only",
+    "trust_report_disposition": "trust_report_only",
+    "allowed_use_contains": ["trust_report_disclosure", "operator_context"]
+  },
+  "expected_forbidden_claims": [
+    "external_evidence_authorizes_budget_recommendation",
+    "geox_or_cls_silently_overrides_mmm"
+  ],
+  "expected_trust_report_boundary_note": "Inconclusive CLS eligibility routes to TrustReport; not calibration-informed Ridge interpretation."
+}

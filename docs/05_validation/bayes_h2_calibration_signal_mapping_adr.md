@@ -9,6 +9,8 @@
 
 **Explicit scope:** This ADR binds how **experiment evidence** enters Bayesian hierarchical Geo MMM. It does **not** authorize implementation of PyMC models, priors, likelihoods, samplers, posterior artifacts, or production decisioning.
 
+**Ridge production path (MIP-C1):** On the production Ridge baseline, CalibrationSignal attaches as **diagnostic context only** — see [calibration_signal_mmm_diagnostic_attachment_contract.md](calibration_signal_mmm_diagnostic_attachment_contract.md) and [AUDIT-MIP-C1](../audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md). Bayes-H2 ingress rules apply to Bayesian fitting; MIP-C1 does not feed signals into Ridge coefficients.
+
 ---
 
 ## Context

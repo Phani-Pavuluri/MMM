@@ -1,0 +1,34 @@
+{
+  "fixture_id": "mip_c1_missing_uncertainty",
+  "description": "Holdout point estimate without SE — blocks production calibration use.",
+  "ridge_diagnostic_stub": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "coefficient_stability": {
+      "media_coef_by_channel": {"search": 0.05}
+    },
+    "world_metadata": {"estimand_id": "incremental_sales"}
+  },
+  "calibration_signal_stub": {
+    "signal_id": "holdout-search-no-se",
+    "source_system": "holdout_registry",
+    "source_modality": "holdout",
+    "experiment_id": "HOLD-771",
+    "channel": "search",
+    "geo_scope": {"kind": "region", "ids": ["west"]},
+    "estimand_id": "incremental_sales",
+    "effect_estimate": 0.05,
+    "freshness_status": "fresh",
+    "eligibility_status": "eligible"
+  },
+  "expected_attachment": {
+    "alignment_status": "inconclusive",
+    "conflict_status": "none",
+    "trust_report_disposition": "trust_report_only",
+    "allowed_use_contains": ["trust_report_disclosure"]
+  },
+  "expected_forbidden_claims": [
+    "calibration_informed_attribution_without_uncertainty",
+    "production_calibration_use_without_se"
+  ],
+  "expected_trust_report_boundary_note": "Missing uncertainty blocks calibration-informed claims; TrustReport may still record the signal."
+}

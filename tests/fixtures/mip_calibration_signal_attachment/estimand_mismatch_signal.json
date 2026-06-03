@@ -1,0 +1,34 @@
+{
+  "fixture_id": "mip_c1_estimand_mismatch",
+  "description": "Brand-lift estimand vs incremental-sales MMM run — TrustReport-only.",
+  "ridge_diagnostic_stub": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "coefficient_stability": {
+      "media_coef_by_channel": {"tv": 0.12}
+    },
+    "world_metadata": {"estimand_id": "incremental_sales"}
+  },
+  "calibration_signal_stub": {
+    "signal_id": "ab-brand-lift-tv",
+    "source_system": "ab_platform",
+    "source_modality": "ab_test",
+    "experiment_id": "AB-9921",
+    "channel": "tv",
+    "geo_scope": {"kind": "national"},
+    "estimand_id": "brand_lift",
+    "effect_estimate": 0.10,
+    "standard_error": 0.02,
+    "freshness_status": "fresh",
+    "eligibility_status": "eligible"
+  },
+  "expected_attachment": {
+    "alignment_status": "not_applicable",
+    "conflict_status": "scope_mismatch",
+    "trust_report_disposition": "trust_report_only",
+    "allowed_use_contains": ["trust_report_disclosure"]
+  },
+  "expected_forbidden_claims": [
+    "cross_estimand_calibration_claim"
+  ],
+  "expected_trust_report_boundary_note": "Estimand mismatch — evidence disclosed in TrustReport only, not MMM calibration attachment."
+}

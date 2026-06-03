@@ -141,7 +141,24 @@ Reference: `docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONT
 - [AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md](../audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md)
 - CI: `tests/diagnostics/test_ridge_diagnostic_e2e_audit.py`
 
+## Calibration evidence context (MIP-C1)
+
+External **CalibrationSignal** evidence (GeoX, CLS, A/B, holdout, replay) may attach as **`calibration_evidence_context`** on the Ridge report — **context only**:
+
+| Field | Description |
+|-------|-------------|
+| `calibration_evidence_context` | Governed signal attachments, summary, forbidden claims |
+| `calibration_evidence_context.context_only` | Must be `true` |
+| `calibration_evidence_context.trust_report_boundary` | TrustReport + operator context; no coef override |
+
+Contract: [calibration_signal_mmm_diagnostic_attachment_contract.md](calibration_signal_mmm_diagnostic_attachment_contract.md)  
+Audit: [AUDIT-MIP-C1](../audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md)  
+Module: `mmm/diagnostics/calibration_signal_attachment.py`
+
+**Forbidden:** feeding signals into Ridge refit, optimizer, DecisionSurface, or recommendations.
+
 ## Related
 
+- [CalibrationSignal MMM diagnostic attachment contract](calibration_signal_mmm_diagnostic_attachment_contract.md)
 - [Bayes-H6 synthetic lane ADR](bayes_h6_synthetic_lane_adr.md)
 - [INV-H6F benchmark matrix](../06_investigations/INV-H6F_RIDGE_H5_SYNTHETIC_BENCHMARK_MATRIX.md)

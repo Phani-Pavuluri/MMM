@@ -70,6 +70,10 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `tests/test_monte_carlo_reliability.py` | (tests) | canonical | Phase 5F tests |
 | `docs/05_validation/bayes_h1_decision_surface_preservation_adr.md` | `05_validation/bayes_h1_decision_surface_preservation_adr.md` | canonical | Bayes-H1 binding ADR — DecisionSurface preservation |
 | `docs/05_validation/bayes_h2_calibration_signal_mapping_adr.md` | `05_validation/bayes_h2_calibration_signal_mapping_adr.md` | canonical | Bayes-H2 binding ADR — CalibrationSignal → hierarchy mapping |
+| `docs/05_validation/calibration_signal_mmm_diagnostic_attachment_contract.md` | `05_validation/calibration_signal_mmm_diagnostic_attachment_contract.md` | canonical | MIP-C1 Ridge diagnostic attachment contract (context-only) |
+| `docs/audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md` | `audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md` | canonical | MIP-C1 CalibrationSignal → MMM integration audit gate |
+| `mmm/diagnostics/calibration_signal_attachment.py` | (code) | canonical | MIP-C1 context-only CalibrationSignal attachment helpers |
+| `tests/mip/test_calibration_signal_mmm_attachment_contract.py` | (tests) | canonical | MIP-C1 attachment contract tests |
 | `docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | `05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | canonical | Bayes-H2b binding ADR — hierarchy propagation & claim semantics |
 | `docs/05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | `05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | canonical | Bayes-H2d binding ADR — hierarchical model spec (architecture only) |
 | `docs/BAYES_H2B_VALIDATION_WORLDS_001.md` | `BAYES_H2B_VALIDATION_WORLDS_001.md` | canonical | Seven WORLD-BAYES-* validation world specifications (Track 2) |
