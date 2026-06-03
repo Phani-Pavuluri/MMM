@@ -1,0 +1,224 @@
+{
+  "milestone": "MIP-C3",
+  "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+  "source_ref": "mip_c3_fixture_exports_20260601",
+  "adapter_lineage": {
+    "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+    "geox_count": 1,
+    "cls_count": 1
+  },
+  "signals": [
+    {
+      "signal_id": "geox-EXP-GEOX-9901",
+      "source_system": "geox",
+      "source_modality": "geo_experiment",
+      "experiment_id": "EXP-GEOX-9901",
+      "channel": "search",
+      "geo_scope": {
+        "kind": "dma",
+        "ids": [
+          "501",
+          "502",
+          "503"
+        ]
+      },
+      "time_window": {
+        "start": "2025-01-01",
+        "end": "2025-03-31"
+      },
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "geox_v3.2",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.082,
+      "standard_error": 0.021,
+      "interval": null,
+      "freshness_status": "fresh",
+      "eligibility_status": "eligible",
+      "adapter_metadata": {
+        "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+        "source_system": "geox",
+        "source_lineage": {
+          "geox_experiment_id": "EXP-GEOX-9901",
+          "geox_export_version": "geox_v3.2",
+          "source_record_id": "geox-export-row-001"
+        },
+        "adapter_notes": [],
+        "estimand_source_value": "incremental_sales",
+        "trust_report_boundary": "GeoX export is context-only; TrustReport governs promotion."
+      }
+    },
+    {
+      "signal_id": "cls-CLS-STUDY-2201",
+      "source_system": "cls",
+      "source_modality": "cls_readout",
+      "study_id": "CLS-STUDY-2201",
+      "experiment_id": "CLS-STUDY-2201",
+      "channel": "search",
+      "geo_scope": {
+        "kind": "national"
+      },
+      "time_window": {
+        "start": "2024-10-01",
+        "end": "2024-12-31"
+      },
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "cls_v2.1",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.061,
+      "standard_error": 0.018,
+      "interval": null,
+      "freshness_status": "stale",
+      "eligibility_status": "eligible",
+      "adapter_metadata": {
+        "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+        "source_system": "cls",
+        "source_lineage": {
+          "cls_study_id": "CLS-STUDY-2201",
+          "cls_readout_id": "readout-2025q1-v2",
+          "readout_status": "eligible"
+        },
+        "adapter_notes": [],
+        "estimand_source_value": "incremental_sales",
+        "trust_report_boundary": "CLS readout is context-only; inconclusive readouts route to TrustReport."
+      }
+    },
+    {
+      "signal_id": "geox-EXP-GEOX-9902",
+      "source_system": "geox",
+      "source_modality": "geo_experiment",
+      "experiment_id": "EXP-GEOX-9902",
+      "channel": "tv",
+      "geo_scope": {
+        "kind": "dma",
+        "ids": [
+          "601"
+        ]
+      },
+      "time_window": {
+        "start": "2025-02-01",
+        "end": "2025-04-30"
+      },
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "geox_v3.2",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.12,
+      "standard_error": null,
+      "interval": null,
+      "freshness_status": "stale",
+      "eligibility_status": "blocked",
+      "adapter_metadata": {
+        "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+        "source_system": "geox",
+        "source_lineage": {
+          "geox_experiment_id": "EXP-GEOX-9902",
+          "geox_export_version": "geox_v3.2",
+          "source_record_id": null
+        },
+        "adapter_notes": [
+          "missing_uncertainty:geox_export"
+        ],
+        "estimand_source_value": "incremental_sales",
+        "trust_report_boundary": "GeoX export is context-only; TrustReport governs promotion."
+      }
+    },
+    {
+      "signal_id": "cls-CLS-STUDY-2190",
+      "source_system": "cls",
+      "source_modality": "cls_readout",
+      "study_id": "CLS-STUDY-2190",
+      "experiment_id": "CLS-STUDY-2190",
+      "channel": "tv",
+      "geo_scope": {
+        "kind": "national"
+      },
+      "time_window": null,
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "cls_readout_v1",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.09,
+      "standard_error": 0.03,
+      "interval": null,
+      "freshness_status": "stale",
+      "eligibility_status": "eligible",
+      "adapter_metadata": {
+        "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+        "source_system": "cls",
+        "source_lineage": {
+          "cls_study_id": "CLS-STUDY-2190",
+          "cls_readout_id": null,
+          "readout_status": "eligible"
+        },
+        "adapter_notes": [],
+        "estimand_source_value": "incremental_sales",
+        "trust_report_boundary": "CLS readout is context-only; inconclusive readouts route to TrustReport."
+      }
+    },
+    {
+      "signal_id": "geox-EXP-GEOX-MIX-1",
+      "source_system": "geox",
+      "source_modality": "geo_experiment",
+      "experiment_id": "EXP-GEOX-MIX-1",
+      "channel": "search",
+      "geo_scope": {
+        "kind": "national"
+      },
+      "time_window": null,
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "geox_v3.2",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.07,
+      "standard_error": 0.02,
+      "interval": null,
+      "freshness_status": "fresh",
+      "eligibility_status": "eligible",
+      "adapter_metadata": {
+        "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+        "source_system": "geox",
+        "source_lineage": {
+          "geox_experiment_id": "EXP-GEOX-MIX-1",
+          "geox_export_version": "geox_v3.2",
+          "source_record_id": null
+        },
+        "adapter_notes": [],
+        "estimand_source_value": "incremental_sales",
+        "trust_report_boundary": "GeoX export is context-only; TrustReport governs promotion."
+      }
+    },
+    {
+      "signal_id": "cls-CLS-STUDY-MIX-1",
+      "source_system": "cls",
+      "source_modality": "cls_readout",
+      "study_id": "CLS-STUDY-MIX-1",
+      "experiment_id": "CLS-STUDY-MIX-1",
+      "channel": "social",
+      "geo_scope": {
+        "kind": "national"
+      },
+      "time_window": null,
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "cls_readout_v1",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.05,
+      "standard_error": 0.012,
+      "interval": null,
+      "freshness_status": "fresh",
+      "eligibility_status": "inconclusive",
+      "adapter_metadata": {
+        "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+        "source_system": "cls",
+        "source_lineage": {
+          "cls_study_id": "CLS-STUDY-MIX-1",
+          "cls_readout_id": null,
+          "readout_status": "inconclusive"
+        },
+        "adapter_notes": [],
+        "estimand_source_value": "incremental_sales",
+        "trust_report_boundary": "CLS readout is context-only; inconclusive readouts route to TrustReport."
+      }
+    }
+  ],
+  "production_boundary": {
+    "live_api": false,
+    "context_only": true
+  }
+}

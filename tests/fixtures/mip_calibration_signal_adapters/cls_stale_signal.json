@@ -1,0 +1,16 @@
+{
+  "fixture_id": "mip_c3_cls_stale",
+  "source_record": {
+    "cls_study_id": "CLS-STUDY-2190",
+    "channel": "tv",
+    "point_estimate": 0.09,
+    "standard_error": 0.03,
+    "estimand_id": "incremental_sales",
+    "readout_status": "eligible",
+    "stale_flag": true,
+    "as_of_date": "2023-06-01"
+  },
+  "expected": {
+    "freshness_status": "stale"
+  }
+}

@@ -102,7 +102,8 @@ Every Ridge diagnostic report includes `evidence_attachment_lineage` (MIP-C2):
 | MIP-C1 attachment contract | ✅ |
 | H11 real-bundle diagnostics | ✅ |
 | MIP-C2 file/list ingestion at train boundary | ✅ |
-| Live GeoX/CLS API / registry ETL | **Not in scope** |
+| MIP-C3 GeoX/CLS export adapter | ✅ [AUDIT-MIP-C3](AUDIT-MIP-C3_GEOX_CLS_SIGNAL_ADAPTER_GATE.md) |
+| Live GeoX/CLS API / scheduled ETL | **Not in scope** |
 | TrustReport auto-population from signals | **Deferred** |
 | Production approval of evidence | **Blocked** (governance elsewhere) |
 | Bayes-H5 promotion | **Blocked** (research-only) |

@@ -167,6 +167,7 @@ TrustReport remains authoritative for evidence quality, replay certification, fr
 | H10 audit | [AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md](AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md) |
 | H11 real-bundle hardening | [INV-H11](../06_investigations/INV-H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_HARDENING.md) — proves Ridge diagnostics off H6; MIP-C1 absence explicit before C2 ETL |
 | MIP-C2 train-boundary wiring | [AUDIT-MIP-C2](AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WIRING.md) — optional file ingestion at `mmm train` / extension_runner |
+| MIP-C3 GeoX/CLS adapter | [AUDIT-MIP-C3](AUDIT-MIP-C3_GEOX_CLS_SIGNAL_ADAPTER_GATE.md) — export → C2 JSON shape (no live API) |
 | Ridge diagnostics contract | [ridge_production_diagnostics_contract.md](../05_validation/ridge_production_diagnostics_contract.md) |
 | Bayes-H2 CalibrationSignal ADR | [bayes_h2_calibration_signal_mapping_adr.md](../05_validation/bayes_h2_calibration_signal_mapping_adr.md) |
 | Helper module | `mmm/diagnostics/calibration_signal_attachment.py` |

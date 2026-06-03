@@ -1,0 +1,19 @@
+{
+  "fixture_id": "mip_c3_geox_missing_uncertainty",
+  "source_record": {
+    "geox_experiment_id": "EXP-GEOX-9902",
+    "channel": "tv",
+    "dma_ids": ["601"],
+    "window_start": "2025-02-01",
+    "window_end": "2025-04-30",
+    "incremental_lift": 0.12,
+    "estimand_type": "incremental_sales",
+    "geox_export_version": "geox_v3.2",
+    "evidence_as_of": "2025-05-01"
+  },
+  "expected": {
+    "eligibility_status": "blocked",
+    "standard_error": null,
+    "adapter_note_contains": "missing_uncertainty"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "fixture_id": "mip_c3_geox_estimand_mismatch",
+  "source_record": {
+    "geox_experiment_id": "EXP-GEOX-9903",
+    "channel": "social",
+    "dma_ids": ["701"],
+    "window_start": "2025-01-01",
+    "window_end": "2025-02-28",
+    "incremental_lift": 0.04,
+    "incremental_lift_se": 0.015,
+    "estimand_type": "brand_lift",
+    "estimand_mismatch_flag": true,
+    "geox_export_version": "geox_v3.2",
+    "evidence_as_of": "2025-03-10"
+  },
+  "expected": {
+    "estimand_id": "brand_lift",
+    "adapter_note_contains": "estimand_mismatch"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "fixture_id": "mip_c3_mixed_batch",
+  "export_bundle": {
+    "source_ref": "mip_c3_mixed_export_v1",
+    "records": [
+      {
+        "source_system": "geox",
+        "record": {
+          "geox_experiment_id": "EXP-GEOX-MIX-1",
+          "channel": "search",
+          "incremental_lift": 0.07,
+          "incremental_lift_se": 0.02,
+          "estimand_type": "incremental_sales",
+          "geox_export_version": "geox_v3.2",
+          "evidence_as_of": "2026-05-01"
+        }
+      },
+      {
+        "source_system": "cls",
+        "record": {
+          "cls_study_id": "CLS-STUDY-MIX-1",
+          "channel": "social",
+          "point_estimate": 0.05,
+          "standard_error": 0.012,
+          "readout_status": "inconclusive",
+          "estimand_id": "incremental_sales",
+          "as_of_date": "2026-04-01"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "signal_count": 2,
+    "geox_count": 1,
+    "cls_count": 1
+  }
+}

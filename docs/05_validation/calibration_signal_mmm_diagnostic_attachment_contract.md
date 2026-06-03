@@ -141,6 +141,11 @@ build_calibration_forbidden_claims(context) -> list[str]
 
 Audit: [AUDIT-MIP-C2](../audits/AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WIRING.md)
 
+## Upstream adapter (MIP-C3)
+
+GeoX/CLS offline exports → CalibrationSignal JSON: [geox_cls_to_calibration_signal_adapter_contract.md](geox_cls_to_calibration_signal_adapter_contract.md)  
+Module: `mmm/diagnostics/calibration_signal_adapters.py`
+
 ## Tests and fixtures
 
 | Fixtures | `tests/fixtures/mip_calibration_signal_attachment/` |

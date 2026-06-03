@@ -1,0 +1,22 @@
+{
+  "fixture_id": "mip_c3_cls_valid",
+  "source_record": {
+    "cls_study_id": "CLS-STUDY-2201",
+    "cls_readout_id": "readout-2025q1-v2",
+    "channel": "search",
+    "geo_scope_kind": "national",
+    "window_start": "2024-10-01",
+    "window_end": "2024-12-31",
+    "point_estimate": 0.061,
+    "standard_error": 0.018,
+    "estimand_id": "incremental_sales",
+    "readout_status": "eligible",
+    "cls_readout_version": "cls_v2.1",
+    "as_of_date": "2025-01-20"
+  },
+  "expected": {
+    "source_system": "cls",
+    "eligibility_status": "eligible",
+    "freshness_status": "fresh"
+  }
+}

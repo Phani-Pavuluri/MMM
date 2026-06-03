@@ -1,0 +1,23 @@
+{
+  "fixture_id": "mip_c3_geox_valid",
+  "source_record": {
+    "geox_experiment_id": "EXP-GEOX-9901",
+    "source_record_id": "geox-export-row-001",
+    "channel": "search",
+    "dma_ids": ["501", "502", "503"],
+    "window_start": "2025-01-01",
+    "window_end": "2025-03-31",
+    "incremental_lift": 0.082,
+    "incremental_lift_se": 0.021,
+    "estimand_type": "incremental_sales",
+    "geox_export_version": "geox_v3.2",
+    "lift_metric": "incremental_sales",
+    "evidence_as_of": "2026-05-01"
+  },
+  "expected": {
+    "source_system": "geox",
+    "eligibility_status": "eligible",
+    "freshness_status": "fresh",
+    "measurement_instrument_id": "geox_v3.2"
+  }
+}

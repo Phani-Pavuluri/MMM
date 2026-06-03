@@ -2148,7 +2148,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-MIP-C1](../audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md); [attachment contract](../05_validation/calibration_signal_mmm_diagnostic_attachment_contract.md); `tests/mip/test_calibration_signal_mmm_attachment_contract.py` |
 | **Outcome** | Contract + fixtures + helper module; signals attach as `calibration_evidence_context` only; no Ridge refit / optimizer / DecisionSurface changes. |
-| **Next** | Live GeoX/CLS registry ETL (optional). |
+| **Next** | Scheduled ETL job (optional). |
+
+---
+
+### INV-MIP-C3 — GeoX/CLS CalibrationSignal adapter (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-MIP-C3 |
+| **Title** | GeoX/CLS export → CalibrationSignal adapter contract |
+| **Status** | **closed** |
+| **Evidence** | [AUDIT-MIP-C3](../audits/AUDIT-MIP-C3_GEOX_CLS_SIGNAL_ADAPTER_GATE.md); [adapter contract](../05_validation/geox_cls_to_calibration_signal_adapter_contract.md); `test_calibration_signal_adapters.py` |
+| **Outcome** | Export-only adapters; fixture GeoX/CLS rows convert to C2 JSON; ingest via existing train path; no live API. |
+| **Next** | Production ETL scheduler emitting `signals` files (optional). |
 
 ---
 

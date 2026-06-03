@@ -1,0 +1,16 @@
+{
+  "fixture_id": "mip_c3_cls_inconclusive",
+  "source_record": {
+    "cls_study_id": "CLS-STUDY-2202",
+    "channel": "display",
+    "point_estimate": 0.03,
+    "standard_error": 0.025,
+    "readout_status": "inconclusive",
+    "estimand_id": "incremental_sales",
+    "as_of_date": "2025-02-01"
+  },
+  "expected": {
+    "eligibility_status": "inconclusive",
+    "adapter_note_contains": "TrustReport"
+  }
+}
