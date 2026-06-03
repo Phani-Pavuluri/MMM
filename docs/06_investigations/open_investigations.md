@@ -2148,7 +2148,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-MIP-C1](../audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md); [attachment contract](../05_validation/calibration_signal_mmm_diagnostic_attachment_contract.md); `tests/mip/test_calibration_signal_mmm_attachment_contract.py` |
 | **Outcome** | Contract + fixtures + helper module; signals attach as `calibration_evidence_context` only; no Ridge refit / optimizer / DecisionSurface changes. |
-| **Next** | Scheduled ETL job (optional). |
+| **Next** | MIP-C5 scheduled/live ETL (optional). |
+
+---
+
+### INV-MIP-C4 — CalibrationSignal ETL dry-run (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-MIP-C4 |
+| **Title** | GeoX/CLS ETL dry-run → C2 signals artifact + train consumption proof |
+| **Status** | **closed** |
+| **Evidence** | [AUDIT-MIP-C4](../audits/AUDIT-MIP-C4_CALIBRATIONSIGNAL_ETL_DRY_RUN.md); `calibration_signal_etl.py`; [dry-run archive](../05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json) |
+| **Outcome** | CLI ETL writes versioned artifact; `mmm train --calibration-signals-path` attaches context; CLI uses `MMMTrainer(cfg)` so path is honored. |
+| **Next** | MIP-C5 production scheduler (optional). |
 
 ---
 

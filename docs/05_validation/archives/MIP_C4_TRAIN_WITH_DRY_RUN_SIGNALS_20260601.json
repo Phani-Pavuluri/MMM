@@ -1,0 +1,463 @@
+{
+  "milestone": "MIP-C4",
+  "bundle_id": "MIP-C4-DRY-RUN-TRAIN-PROOF",
+  "etl_artifact_path": "docs/05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json",
+  "ridge_production_diagnostics_report": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "artifact_kind": "RIDGE_PRODUCTION_DIAGNOSTICS",
+    "milestone": "H7",
+    "model_id": "ridge_bo",
+    "run_id": null,
+    "dataset_snapshot_id": null,
+    "run_environment": "research",
+    "media_columns": [
+      "search",
+      "social",
+      "tv"
+    ],
+    "control_columns": [],
+    "transform_diagnostics": {
+      "transform_config": {
+        "adstock_type": "geometric",
+        "saturation_type": "hill",
+        "framework": "ridge_bo"
+      },
+      "selected_adstock_saturation": {
+        "decay": 0.2072333577977318,
+        "hill_half": 1.3884050634072491,
+        "hill_slope": 1.451056770163679,
+        "log_alpha": -1.426119957348903,
+        "transform_search_selected": true
+      },
+      "raw_media_columns": [
+        "search",
+        "social",
+        "tv"
+      ],
+      "transformed_media_columns": [
+        "search",
+        "social",
+        "tv"
+      ],
+      "post_transform_summary": {
+        "n_features": 3,
+        "feature_lineage_keys": [
+          "media",
+          "target"
+        ]
+      },
+      "metadata_complete": true,
+      "warnings": []
+    },
+    "control_completeness": {
+      "vertical_id": null,
+      "vertical_profile_known": false,
+      "required_controls_by_vertical": [],
+      "optional_controls_by_vertical": [],
+      "controls_present": [],
+      "missing_controls": [],
+      "missing_required_controls": [],
+      "omitted_control_risk": false,
+      "media_correlated_controls": false,
+      "warnings": [
+        "control_completeness:no_vertical_profile"
+      ]
+    },
+    "collinearity": {
+      "max_abs_correlation": 0.9887869687681136,
+      "weak_identification_risk": true,
+      "collinear_channel_groups": [
+        {
+          "channels": [
+            "search",
+            "social",
+            "tv"
+          ],
+          "max_abs_corr_threshold": 0.95
+        }
+      ],
+      "calibration_evidence_available": true,
+      "warnings": [
+        "collinearity:weak_identification_risk:max_abs_corr=0.989"
+      ]
+    },
+    "sparse_channels": {
+      "near_zero_threshold": 0.99,
+      "by_channel": {
+        "search": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "social": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "tv": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        }
+      },
+      "sparse_channel_extreme": [],
+      "silent_drop_occurred": false,
+      "warnings": []
+    },
+    "fold_stability": {
+      "n_cv_splits": 3,
+      "geo_fold_rmse": [
+        97.43663267259359,
+        29.413105225994443,
+        110.66935928358797
+      ],
+      "geo_fold_rmse_mean": 79.17303239405867,
+      "geo_fold_rmse_std": 35.59788408710666,
+      "fold_stability_ok": true,
+      "warnings": []
+    },
+    "coefficient_stability": {
+      "available": true,
+      "media_coef_by_channel": {
+        "search": "[redacted]",
+        "social": "[redacted]",
+        "tv": "[redacted]"
+      },
+      "sign_by_channel": {
+        "search": 1.0,
+        "social": 1.0,
+        "tv": 1.0
+      },
+      "warnings": []
+    },
+    "sign_plausibility": {
+      "available": false,
+      "sign_match_rate": null,
+      "warnings": []
+    },
+    "response_curve_plausibility": {
+      "decay": 0.2072333577977318,
+      "hill_half": 1.3884050634072491,
+      "hill_slope": 1.451056770163679,
+      "warnings": []
+    },
+    "lift_simulation_stability": {
+      "lift_simulation_run": false,
+      "note": "Lift simulation stability is report-only; optimizer not invoked.",
+      "best_score_available": true,
+      "calibration_detail_keys": [
+        "evaluate_wall_time_ms",
+        "normalization_profile",
+        "normalized",
+        "objective_normalization",
+        "params",
+        "raw",
+        "total"
+      ],
+      "warnings": []
+    },
+    "truth_recovery": null,
+    "forbidden_claims": [
+      "automatic_mmm_recalibration_from_calibration_signal",
+      "budget_recommendation_from_calibration_signal",
+      "collinear_group_search_social:forbid_isolated_channel_lift_claims",
+      "decision_surface_input_from_calibration_signal",
+      "external_evidence_authorizes_budget_recommendation",
+      "external_evidence_authorizes_optimizer_use",
+      "external_evidence_overrides_mmm_coefficients",
+      "geox_or_cls_silently_overrides_mmm",
+      "no_clean_separate_channel_effect_claim_without_external_calibration",
+      "optimizer_input_from_calibration_signal",
+      "ridge_coefficient_override_from_external_evidence"
+    ],
+    "warnings": [
+      "CalibrationSignal cls-CLS-STUDY-MIX-1: TrustReport-only \u2014 not attached as calibration-informed Ridge interpretation.",
+      "collinearity:weak_identification_risk:max_abs_corr=0.989",
+      "control_completeness:no_vertical_profile"
+    ],
+    "production_flags": {
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "optimizer_enabled": false,
+      "decision_surface_enabled": false,
+      "recommendations_enabled": false,
+      "ridge_remains_production_baseline": true,
+      "bayes_h5_research_only": true,
+      "production_bayes_blocked": true,
+      "diagnostics_are_not_hard_gates": true,
+      "allowed_outputs": [
+        "coefficients",
+        "diagnostics",
+        "trust_warnings",
+        "model_metrics"
+      ],
+      "forbidden_outputs": [
+        "budget_recommendation",
+        "decision_surface",
+        "optimizer_output",
+        "optimizer_ready_curves",
+        "production_decision_surface",
+        "recommendation"
+      ]
+    },
+    "outputs_are_diagnostic_only": true,
+    "evidence_attachment_lineage": {
+      "milestone": "MIP-C2",
+      "attempted": true,
+      "source_type": "file",
+      "source_path": "docs/05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json",
+      "source_ref": "mip_c3_mixed_export_v1",
+      "signals_count": 2,
+      "attached_count": 2,
+      "rejected_count": 0,
+      "attachment_errors": [],
+      "context_only": true,
+      "optimizer_unchanged": true,
+      "decision_surface_unchanged": true,
+      "recommendations_unchanged": true,
+      "calibration_evidence_context_present": true,
+      "calibration_signal_count": 2,
+      "mip_c1_attachment_wired": true,
+      "collinearity_calibration_evidence_available": true,
+      "note": "CalibrationSignal ingestion is diagnostic context only; does not refit Ridge, override coefficients, or feed optimizer/DecisionSurface/recommendations."
+    },
+    "severity_policy_version": "mmm_ridge_severity_policy_v1",
+    "severity": "restricted_interpretation",
+    "output_eligibility": {
+      "severity_policy_version": "mmm_ridge_severity_policy_v1",
+      "severity": "restricted_interpretation",
+      "allowed_uses": [
+        "model_fit_review",
+        "aggregate_diagnostic_review",
+        "collinearity_audit"
+      ],
+      "forbidden_uses": [
+        "budget_reallocation_claim",
+        "channel_level_causal_claim",
+        "clean_channel_attribution",
+        "clean_channel_lift_claim",
+        "clean_media_attribution",
+        "isolated_sparse_channel_claim",
+        "production_incrementality_claim"
+      ],
+      "human_review_required": true,
+      "diagnostic_only_reason": "Channel-level and budget claims require caveats or external calibration.",
+      "classification_triggers": [
+        "claims:forbidden_claims_present",
+        "collinearity:weak_identification_without_calibration"
+      ],
+      "optimizer_decision_surface_unchanged": true,
+      "diagnostics_are_not_hard_gates": true,
+      "legacy_diagnostic_severity": "high"
+    },
+    "diagnostic_severity": "high",
+    "calibration_evidence_context": {
+      "attachment_version": "mip_calibration_signal_attachment_v1",
+      "milestone": "MIP-C1",
+      "signals": [
+        {
+          "signal_id": "geox-EXP-GEOX-MIX-1",
+          "source_system": "geox",
+          "source_modality": "geo_experiment",
+          "experiment_id": "EXP-GEOX-MIX-1",
+          "study_id": null,
+          "channel": "search",
+          "geo_scope": {
+            "kind": "national"
+          },
+          "time_window": null,
+          "estimand_id": "incremental_sales",
+          "measurement_instrument_id": "geox_v3.2",
+          "lift_scale": "incremental_sales",
+          "effect_estimate": 0.07,
+          "standard_error": 0.02,
+          "interval": null,
+          "freshness_status": "fresh",
+          "eligibility_status": "eligible",
+          "alignment_status": "aligned",
+          "conflict_status": "none",
+          "trust_report_disposition": "diagnostic_context",
+          "allowed_use": [
+            "operator_context",
+            "ridge_diagnostic_interpretation"
+          ],
+          "forbidden_claims": [
+            "external_evidence_authorizes_budget_recommendation",
+            "external_evidence_authorizes_optimizer_use",
+            "external_evidence_overrides_mmm_coefficients",
+            "geox_or_cls_silently_overrides_mmm"
+          ],
+          "included_in_context": true
+        },
+        {
+          "signal_id": "cls-CLS-STUDY-MIX-1",
+          "source_system": "cls",
+          "source_modality": "cls_readout",
+          "experiment_id": "CLS-STUDY-MIX-1",
+          "study_id": "CLS-STUDY-MIX-1",
+          "channel": "social",
+          "geo_scope": {
+            "kind": "national"
+          },
+          "time_window": null,
+          "estimand_id": "incremental_sales",
+          "measurement_instrument_id": "cls_readout_v1",
+          "lift_scale": "incremental_sales",
+          "effect_estimate": 0.05,
+          "standard_error": 0.012,
+          "interval": null,
+          "freshness_status": "fresh",
+          "eligibility_status": "inconclusive",
+          "alignment_status": "aligned",
+          "conflict_status": "trust_report_only",
+          "trust_report_disposition": "trust_report_only",
+          "allowed_use": [
+            "trust_report_disclosure",
+            "operator_context"
+          ],
+          "forbidden_claims": [
+            "external_evidence_authorizes_budget_recommendation",
+            "external_evidence_authorizes_optimizer_use",
+            "external_evidence_overrides_mmm_coefficients",
+            "geox_or_cls_silently_overrides_mmm"
+          ],
+          "included_in_context": true
+        }
+      ],
+      "included_signals": [
+        {
+          "signal_id": "geox-EXP-GEOX-MIX-1",
+          "source_system": "geox",
+          "source_modality": "geo_experiment",
+          "experiment_id": "EXP-GEOX-MIX-1",
+          "study_id": null,
+          "channel": "search",
+          "geo_scope": {
+            "kind": "national"
+          },
+          "time_window": null,
+          "estimand_id": "incremental_sales",
+          "measurement_instrument_id": "geox_v3.2",
+          "lift_scale": "incremental_sales",
+          "effect_estimate": 0.07,
+          "standard_error": 0.02,
+          "interval": null,
+          "freshness_status": "fresh",
+          "eligibility_status": "eligible",
+          "alignment_status": "aligned",
+          "conflict_status": "none",
+          "trust_report_disposition": "diagnostic_context",
+          "allowed_use": [
+            "operator_context",
+            "ridge_diagnostic_interpretation"
+          ],
+          "forbidden_claims": [
+            "external_evidence_authorizes_budget_recommendation",
+            "external_evidence_authorizes_optimizer_use",
+            "external_evidence_overrides_mmm_coefficients",
+            "geox_or_cls_silently_overrides_mmm"
+          ],
+          "included_in_context": true
+        },
+        {
+          "signal_id": "cls-CLS-STUDY-MIX-1",
+          "source_system": "cls",
+          "source_modality": "cls_readout",
+          "experiment_id": "CLS-STUDY-MIX-1",
+          "study_id": "CLS-STUDY-MIX-1",
+          "channel": "social",
+          "geo_scope": {
+            "kind": "national"
+          },
+          "time_window": null,
+          "estimand_id": "incremental_sales",
+          "measurement_instrument_id": "cls_readout_v1",
+          "lift_scale": "incremental_sales",
+          "effect_estimate": 0.05,
+          "standard_error": 0.012,
+          "interval": null,
+          "freshness_status": "fresh",
+          "eligibility_status": "inconclusive",
+          "alignment_status": "aligned",
+          "conflict_status": "trust_report_only",
+          "trust_report_disposition": "trust_report_only",
+          "allowed_use": [
+            "trust_report_disclosure",
+            "operator_context"
+          ],
+          "forbidden_claims": [
+            "external_evidence_authorizes_budget_recommendation",
+            "external_evidence_authorizes_optimizer_use",
+            "external_evidence_overrides_mmm_coefficients",
+            "geox_or_cls_silently_overrides_mmm"
+          ],
+          "included_in_context": true
+        }
+      ],
+      "global_forbidden_claims": [
+        "automatic_mmm_recalibration_from_calibration_signal",
+        "ridge_coefficient_override_from_external_evidence",
+        "optimizer_input_from_calibration_signal",
+        "decision_surface_input_from_calibration_signal",
+        "budget_recommendation_from_calibration_signal"
+      ],
+      "warnings": [
+        "CalibrationSignal cls-CLS-STUDY-MIX-1: TrustReport-only \u2014 not attached as calibration-informed Ridge interpretation."
+      ],
+      "trust_report_boundary": "CalibrationSignal may inform TrustReport and operator context only; must not bypass TrustReport, override MMM coefficients, or feed optimizer/DecisionSurface.",
+      "headline": "2 external signal(s) attached as diagnostic context only.",
+      "context_only": true,
+      "bayes_h5_research_only": true,
+      "summary": {
+        "signal_count": 2,
+        "aligned_count": 2,
+        "directional_conflict_count": 0,
+        "stale_count": 0,
+        "trust_report_only_count": 1,
+        "conflict_signal_ids": [],
+        "stale_signal_ids": [],
+        "headline": "2 external signal(s) attached as diagnostic context only.",
+        "warnings": [
+          "CalibrationSignal cls-CLS-STUDY-MIX-1: TrustReport-only \u2014 not attached as calibration-informed Ridge interpretation."
+        ],
+        "context_only": true,
+        "mmm_coefficients_unchanged": true
+      },
+      "forbidden_claims": [
+        "automatic_mmm_recalibration_from_calibration_signal",
+        "budget_recommendation_from_calibration_signal",
+        "decision_surface_input_from_calibration_signal",
+        "external_evidence_authorizes_budget_recommendation",
+        "external_evidence_authorizes_optimizer_use",
+        "external_evidence_overrides_mmm_coefficients",
+        "geox_or_cls_silently_overrides_mmm",
+        "optimizer_input_from_calibration_signal",
+        "ridge_coefficient_override_from_external_evidence"
+      ]
+    }
+  },
+  "evidence_attachment_lineage": {
+    "milestone": "MIP-C2",
+    "attempted": true,
+    "source_type": "file",
+    "source_path": "docs/05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json",
+    "source_ref": "mip_c3_mixed_export_v1",
+    "signals_count": 2,
+    "attached_count": 2,
+    "rejected_count": 0,
+    "attachment_errors": [],
+    "context_only": true,
+    "optimizer_unchanged": true,
+    "decision_surface_unchanged": true,
+    "recommendations_unchanged": true,
+    "calibration_evidence_context_present": true,
+    "calibration_signal_count": 2,
+    "mip_c1_attachment_wired": true,
+    "collinearity_calibration_evidence_available": true,
+    "note": "CalibrationSignal ingestion is diagnostic context only; does not refit Ridge, override coefficients, or feed optimizer/DecisionSurface/recommendations."
+  },
+  "calibration_evidence_context_present": true,
+  "production_boundary": {
+    "ridge_fitting_unchanged": true,
+    "optimizer_unchanged": true,
+    "decision_surface_unchanged": true,
+    "context_only": true
+  }
+}

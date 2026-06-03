@@ -163,7 +163,7 @@ def train(
             typer.secho(msg, fg=typer.colors.RED, err=True)
         else:
             typer.secho(msg, fg=typer.colors.YELLOW, err=True)
-    trainer = MMMTrainer.from_yaml(config)
+    trainer = MMMTrainer(cfg)
     out = trainer.run()
     typer.echo(f"Finished run: {out['run_id']} artifacts at {out['store']}")
     for w in out.get("warnings") or []:

@@ -146,6 +146,11 @@ Audit: [AUDIT-MIP-C2](../audits/AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WI
 GeoX/CLS offline exports → CalibrationSignal JSON: [geox_cls_to_calibration_signal_adapter_contract.md](geox_cls_to_calibration_signal_adapter_contract.md)  
 Module: `mmm/diagnostics/calibration_signal_adapters.py`
 
+## ETL dry-run (MIP-C4)
+
+Export files → versioned artifact: `mmm/diagnostics/calibration_signal_etl.py`  
+Audit: [AUDIT-MIP-C4](../audits/AUDIT-MIP-C4_CALIBRATIONSIGNAL_ETL_DRY_RUN.md)
+
 ## Tests and fixtures
 
 | Fixtures | `tests/fixtures/mip_calibration_signal_attachment/` |

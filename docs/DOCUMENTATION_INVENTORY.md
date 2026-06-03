@@ -89,6 +89,11 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `mmm/diagnostics/calibration_signal_adapters.py` | (code) | canonical | MIP-C3 GeoX/CLS → CalibrationSignal adapters |
 | `tests/mip/test_calibration_signal_adapters.py` | (tests) | canonical | MIP-C3 adapter tests |
 | `docs/05_validation/archives/MIP_C3_ADAPTED_GEOX_CLS_SIGNALS_20260601.json` | `05_validation/archives/MIP_C3_ADAPTED_GEOX_CLS_SIGNALS_20260601.json` | canonical | MIP-C3 adapted signal bundle for C2 ingest |
+| `docs/audits/AUDIT-MIP-C4_CALIBRATIONSIGNAL_ETL_DRY_RUN.md` | `audits/AUDIT-MIP-C4_CALIBRATIONSIGNAL_ETL_DRY_RUN.md` | canonical | MIP-C4 ETL dry-run gate audit |
+| `mmm/diagnostics/calibration_signal_etl.py` | (code) | canonical | MIP-C4 dry-run ETL module + CLI |
+| `tests/mip/test_calibration_signal_etl_dry_run.py` | (tests) | canonical | MIP-C4 ETL dry-run tests |
+| `docs/05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json` | `05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json` | canonical | MIP-C4 dry-run signals artifact |
+| `docs/05_validation/archives/MIP_C4_TRAIN_WITH_DRY_RUN_SIGNALS_20260601.json` | `05_validation/archives/MIP_C4_TRAIN_WITH_DRY_RUN_SIGNALS_20260601.json` | canonical | MIP-C4 train consumption proof archive |
 | `docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | `05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | canonical | Bayes-H2b binding ADR — hierarchy propagation & claim semantics |
 | `docs/05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | `05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | canonical | Bayes-H2d binding ADR — hierarchical model spec (architecture only) |
 | `docs/BAYES_H2B_VALIDATION_WORLDS_001.md` | `BAYES_H2B_VALIDATION_WORLDS_001.md` | canonical | Seven WORLD-BAYES-* validation world specifications (Track 2) |

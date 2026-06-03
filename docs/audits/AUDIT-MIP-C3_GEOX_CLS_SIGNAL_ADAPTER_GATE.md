@@ -81,7 +81,8 @@ No changes to `RidgeBOMMMTrainer`, `decide`, or extension optimizer paths.
 | Adapter contract + module | ✅ |
 | Fixture exports + tests | ✅ |
 | C2 train-boundary ingest | ✅ (MIP-C2) |
-| Scheduled ETL job emitting `signals` JSON | **Not in scope** |
+| MIP-C4 ETL dry-run | ✅ [AUDIT-MIP-C4](AUDIT-MIP-C4_CALIBRATIONSIGNAL_ETL_DRY_RUN.md) |
+| Scheduled production ETL job | **Not in scope** (MIP-C5) |
 | Live API client | **Blocked** until ETL + TrustReport governance |
 | Channel rename mapping table (client-specific) | **Operator-owned** |
 | Production evidence approval | **Governance elsewhere** |
