@@ -157,6 +157,25 @@ Module: `mmm/diagnostics/calibration_signal_attachment.py`
 
 **Forbidden:** feeding signals into Ridge refit, optimizer, DecisionSurface, or recommendations.
 
+## Evidence attachment lineage (H11)
+
+Every report includes `evidence_attachment_lineage`:
+
+| Field | Description |
+|-------|-------------|
+| `calibration_evidence_context_present` | Whether `calibration_evidence_context` was attached |
+| `mip_c1_attachment_wired` | Same — explicit for operator/audit |
+| `collinearity_calibration_evidence_available` | Replay/config flag on collinearity block |
+
+Unknown `vertical_id` values must **not** crash diagnostics; emit `control_completeness:unknown_vertical:{id}` and `vertical_profile_known=false`.
+
+## Real-bundle hardening (H11)
+
+- Manifest: [H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_MANIFEST.md](../06_investigations/H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_MANIFEST.md)
+- Investigation: [INV-H11](../06_investigations/INV-H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_HARDENING.md)
+- Runner: `mmm/diagnostics/ridge_real_bundle_hardening.py`
+- CI: `tests/diagnostics/test_ridge_diagnostics_real_bundle_compat.py`
+
 ## Related
 
 - [CalibrationSignal MMM diagnostic attachment contract](calibration_signal_mmm_diagnostic_attachment_contract.md)

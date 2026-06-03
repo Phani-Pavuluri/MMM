@@ -74,6 +74,12 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md` | `audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md` | canonical | MIP-C1 CalibrationSignal → MMM integration audit gate |
 | `mmm/diagnostics/calibration_signal_attachment.py` | (code) | canonical | MIP-C1 context-only CalibrationSignal attachment helpers |
 | `tests/mip/test_calibration_signal_mmm_attachment_contract.py` | (tests) | canonical | MIP-C1 attachment contract tests |
+| `docs/06_investigations/H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_MANIFEST.md` | `06_investigations/H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_MANIFEST.md` | canonical | H11 real-bundle manifest (benchmark geo panel v1) |
+| `docs/06_investigations/INV-H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_HARDENING.md` | `06_investigations/INV-H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_HARDENING.md` | canonical | H11 investigation — real-bundle Ridge diagnostic hardening |
+| `mmm/diagnostics/ridge_real_bundle_hardening.py` | (code) | canonical | H11 real-bundle Ridge diagnostic runner |
+| `tests/diagnostics/test_ridge_diagnostics_real_bundle_compat.py` | (tests) | canonical | H11 schema/bundle compatibility tests |
+| `docs/05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json` | `05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json` | canonical | H11 redacted diagnostic archive (benchmark panel) |
+| `docs/05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_SUMMARY_20260601.md` | `05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_SUMMARY_20260601.md` | canonical | H11 operator summary archive |
 | `docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | `05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | canonical | Bayes-H2b binding ADR — hierarchy propagation & claim semantics |
 | `docs/05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | `05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | canonical | Bayes-H2d binding ADR — hierarchical model spec (architecture only) |
 | `docs/BAYES_H2B_VALIDATION_WORLDS_001.md` | `BAYES_H2B_VALIDATION_WORLDS_001.md` | canonical | Seven WORLD-BAYES-* validation world specifications (Track 2) |

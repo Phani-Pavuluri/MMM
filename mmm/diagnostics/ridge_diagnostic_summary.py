@@ -96,6 +96,8 @@ def summarize_ridge_diagnostics(report: dict[str, Any] | None) -> dict[str, Any]
         g.get("channels") for g in (collinearity.get("collinear_channel_groups") or []) if g.get("channels")
     ]
 
+    evidence_lineage = report.get("evidence_attachment_lineage") or {}
+
     return {
         "status": "ok",
         "severity_badge": severity_badge(report),
@@ -127,6 +129,11 @@ def summarize_ridge_diagnostics(report: dict[str, Any] | None) -> dict[str, Any]
         "coefficient_stability_available": bool(coef.get("available")),
         "forbidden_claims": extract_forbidden_claims(report),
         "top_warnings": extract_top_warnings(report),
+        "calibration_evidence_context_present": bool(
+            evidence_lineage.get("calibration_evidence_context_present")
+            or report.get("calibration_evidence_context")
+        ),
+        "mip_c1_attachment_wired": bool(evidence_lineage.get("mip_c1_attachment_wired")),
         "production_boundary": {
             "ridge_remains_production_baseline": flags.get("ridge_remains_production_baseline"),
             "bayes_h5_research_only": flags.get("bayes_h5_research_only"),
@@ -215,6 +222,17 @@ def format_ridge_diagnostics_markdown(
         lines.append(f"- {w}")
     if not summary.get("top_warnings"):
         lines.append("- none")
+
+    evidence_lineage = (report or {}).get("evidence_attachment_lineage") or {}
+    if evidence_lineage and not evidence_lineage.get("calibration_evidence_context_present"):
+        lines.extend(
+            [
+                "",
+                "## Calibration evidence (MIP-C1)",
+                "- **CalibrationSignal context:** not attached on this run (explicit).",
+                f"- Collinearity replay flag: `{evidence_lineage.get('collinearity_calibration_evidence_available')}`",
+            ]
+        )
 
     cal_ctx = (report or {}).get("calibration_evidence_context")
     if cal_ctx:

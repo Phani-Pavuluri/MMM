@@ -1,0 +1,410 @@
+{
+  "h11_milestone": "H11",
+  "bundle_id": "MMM-BENCHMARK-GEO-PANEL-V1",
+  "lineage": {
+    "bundle_id": "MMM-BENCHMARK-GEO-PANEL-V1",
+    "panel_id": "examples_mmm_benchmark_geo_panel_v1",
+    "dataset_snapshot_id": "mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+    "panel_path": "examples/benchmark_geo_panel_v1.csv",
+    "panel_content_sha256": "406d217a92fd0b8a59ffd1ad34d2da2c237fbb7db43af68742ff56571ae7f126",
+    "vertical_id": "retail",
+    "vertical_assumption": "Illustrative retail profile applied; panel has no control columns in schema.",
+    "date_range": {
+      "start": "2022-01-03",
+      "end": "2022-12-26"
+    },
+    "geo_grain": "geo_id",
+    "geo_count": 4,
+    "row_count": 208,
+    "outcome_column": "revenue",
+    "media_columns": [
+      "search",
+      "social",
+      "tv"
+    ],
+    "control_columns": [],
+    "privacy_status": "public_in_repo_illustrative",
+    "calibration_evidence_available_config": false,
+    "calibration_signals_declared": []
+  },
+  "completeness": {
+    "all_passed": true,
+    "checks": {
+      "ridge_production_diagnostics_report_exists": true,
+      "severity_present": true,
+      "output_eligibility_present": true,
+      "transform_diagnostics_present": true,
+      "vertical_controls_evaluated": true,
+      "sparse_channels_evaluated": true,
+      "collinearity_evaluated": true,
+      "forbidden_claims_present": true,
+      "evidence_attachment_lineage_present": true,
+      "calibration_context_absence_explicit": true,
+      "extension_report_embeds_report": true,
+      "extension_report_embeds_summary": true,
+      "no_optimizer_fields": true,
+      "transform_metadata_rendered": true,
+      "transform_warnings_when_incomplete": true
+    }
+  },
+  "ridge_production_diagnostics_report": {
+    "report_version": "mmm_ridge_production_diagnostics_v1",
+    "artifact_kind": "RIDGE_PRODUCTION_DIAGNOSTICS",
+    "milestone": "H7",
+    "model_id": "ridge_bo",
+    "run_id": "mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+    "dataset_snapshot_id": "mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+    "run_environment": "research",
+    "media_columns": [
+      "search",
+      "social",
+      "tv"
+    ],
+    "control_columns": [],
+    "transform_diagnostics": {
+      "transform_config": {
+        "adstock_type": "geometric",
+        "saturation_type": "hill",
+        "framework": "ridge_bo"
+      },
+      "selected_adstock_saturation": {
+        "decay": 0.36378537319927373,
+        "hill_half": 2.4287574992566916,
+        "hill_slope": 1.770223453733264,
+        "log_alpha": -0.27901266311609074,
+        "transform_search_selected": true
+      },
+      "raw_media_columns": [
+        "search",
+        "social",
+        "tv"
+      ],
+      "transformed_media_columns": [
+        "search",
+        "social",
+        "tv"
+      ],
+      "post_transform_summary": {
+        "n_features": 3,
+        "feature_lineage_keys": [
+          "media",
+          "target"
+        ]
+      },
+      "metadata_complete": true,
+      "warnings": []
+    },
+    "control_completeness": {
+      "vertical_id": "retail",
+      "vertical_profile_known": true,
+      "required_controls_by_vertical": [
+        "promo_flag",
+        "holiday",
+        "unemployment_index"
+      ],
+      "optional_controls_by_vertical": [
+        "competitor_price_index",
+        "weather_index"
+      ],
+      "controls_present": [],
+      "missing_controls": [
+        "competitor_price_index",
+        "holiday",
+        "promo_flag",
+        "unemployment_index",
+        "weather_index"
+      ],
+      "missing_required_controls": [
+        "holiday",
+        "promo_flag",
+        "unemployment_index"
+      ],
+      "missing_optional_controls": [
+        "competitor_price_index",
+        "weather_index"
+      ],
+      "omitted_control_risk": true,
+      "media_correlated_controls": false,
+      "warnings": [
+        "control_completeness:missing_required:['holiday', 'promo_flag', 'unemployment_index']"
+      ]
+    },
+    "collinearity": {
+      "max_abs_correlation": 0.060670394683298864,
+      "weak_identification_risk": false,
+      "collinear_channel_groups": [],
+      "calibration_evidence_available": false,
+      "warnings": []
+    },
+    "sparse_channels": {
+      "near_zero_threshold": 0.99,
+      "by_channel": {
+        "search": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "social": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        },
+        "tv": {
+          "near_zero_share": 0.0,
+          "zero_share": 0.0
+        }
+      },
+      "sparse_channel_extreme": [],
+      "silent_drop_occurred": false,
+      "warnings": []
+    },
+    "fold_stability": {
+      "n_cv_splits": 3,
+      "geo_fold_rmse": [
+        19.49577737204412,
+        17.38565379341348,
+        16.275094627398985
+      ],
+      "geo_fold_rmse_mean": 17.718841930952195,
+      "geo_fold_rmse_std": 1.3357794445344433,
+      "fold_stability_ok": true,
+      "warnings": []
+    },
+    "coefficient_stability": {
+      "available": true,
+      "media_coef_by_channel": {
+        "search": "[redacted]",
+        "social": "[redacted]",
+        "tv": "[redacted]"
+      },
+      "sign_by_channel": {
+        "search": 1.0,
+        "social": 1.0,
+        "tv": 1.0
+      },
+      "warnings": [],
+      "redaction_note": "H11 archive \u2014 coef signs/magnitudes withheld; structure retained."
+    },
+    "sign_plausibility": {
+      "available": false,
+      "sign_match_rate": null,
+      "warnings": []
+    },
+    "response_curve_plausibility": {
+      "decay": 0.36378537319927373,
+      "hill_half": 2.4287574992566916,
+      "hill_slope": 1.770223453733264,
+      "warnings": []
+    },
+    "lift_simulation_stability": {
+      "lift_simulation_run": false,
+      "note": "Lift simulation stability is report-only; optimizer not invoked.",
+      "best_score_available": true,
+      "calibration_detail_keys": [
+        "evaluate_wall_time_ms",
+        "normalization_profile",
+        "normalized",
+        "objective_normalization",
+        "params",
+        "raw",
+        "total"
+      ],
+      "warnings": []
+    },
+    "truth_recovery": null,
+    "forbidden_claims": [
+      "no_budget_reallocation_claim_based_only_on_this_run",
+      "no_channel_level_causal_claim_without_caveat",
+      "no_clean_media_attribution_claim"
+    ],
+    "warnings": [
+      "control_completeness:missing_required:['holiday', 'promo_flag', 'unemployment_index']"
+    ],
+    "production_flags": {
+      "approved_for_prod": false,
+      "prod_decisioning_allowed": false,
+      "optimizer_enabled": false,
+      "decision_surface_enabled": false,
+      "recommendations_enabled": false,
+      "ridge_remains_production_baseline": true,
+      "bayes_h5_research_only": true,
+      "production_bayes_blocked": true,
+      "diagnostics_are_not_hard_gates": true,
+      "allowed_outputs": [
+        "coefficients",
+        "diagnostics",
+        "trust_warnings",
+        "model_metrics"
+      ],
+      "forbidden_outputs": [
+        "budget_recommendation",
+        "decision_surface",
+        "optimizer_output",
+        "optimizer_ready_curves",
+        "production_decision_surface",
+        "recommendation"
+      ]
+    },
+    "outputs_are_diagnostic_only": true,
+    "world_metadata": {
+      "h11_bundle_id": "MMM-BENCHMARK-GEO-PANEL-V1",
+      "h11_milestone": "H11",
+      "panel_lineage": {
+        "bundle_id": "MMM-BENCHMARK-GEO-PANEL-V1",
+        "panel_id": "examples_mmm_benchmark_geo_panel_v1",
+        "dataset_snapshot_id": "mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+        "panel_path": "examples/benchmark_geo_panel_v1.csv",
+        "panel_content_sha256": "406d217a92fd0b8a59ffd1ad34d2da2c237fbb7db43af68742ff56571ae7f126",
+        "vertical_id": "retail",
+        "vertical_assumption": "Illustrative retail profile applied; panel has no control columns in schema.",
+        "date_range": {
+          "start": "2022-01-03",
+          "end": "2022-12-26"
+        },
+        "geo_grain": "geo_id",
+        "geo_count": 4,
+        "row_count": 208,
+        "outcome_column": "revenue",
+        "media_columns": [
+          "search",
+          "social",
+          "tv"
+        ],
+        "control_columns": [],
+        "privacy_status": "public_in_repo_illustrative",
+        "calibration_evidence_available_config": false,
+        "calibration_signals_declared": []
+      },
+      "synthetic_world": false
+    },
+    "evidence_attachment_lineage": {
+      "calibration_evidence_context_present": false,
+      "calibration_signal_count": 0,
+      "mip_c1_attachment_wired": false,
+      "collinearity_calibration_evidence_available": false,
+      "note": "CalibrationSignal attaches via attach_calibration_evidence_context only; absent on this run unless explicitly wired."
+    },
+    "severity_policy_version": "mmm_ridge_severity_policy_v1",
+    "severity": "diagnostic_only",
+    "output_eligibility": {
+      "severity_policy_version": "mmm_ridge_severity_policy_v1",
+      "severity": "diagnostic_only",
+      "allowed_uses": [
+        "model_fit_review",
+        "qa_regression_review",
+        "methodology_benchmark"
+      ],
+      "forbidden_uses": [
+        "budget_reallocation_claim",
+        "channel_level_causal_claim",
+        "clean_channel_attribution",
+        "clean_channel_lift_claim",
+        "clean_media_attribution",
+        "production_incrementality_claim"
+      ],
+      "human_review_required": true,
+      "diagnostic_only_reason": "Required vertical controls missing \u2014 diagnostic QA only.",
+      "classification_triggers": [
+        "claims:forbidden_claims_present",
+        "control:missing_required_vertical_controls"
+      ],
+      "optimizer_decision_surface_unchanged": true,
+      "diagnostics_are_not_hard_gates": true,
+      "legacy_diagnostic_severity": "high"
+    },
+    "diagnostic_severity": "high"
+  },
+  "ridge_production_diagnostics_summary": {
+    "status": "ok",
+    "severity_badge": "DIAGNOSTIC_ONLY",
+    "severity": "diagnostic_only",
+    "overall_severity": "diagnostic_only",
+    "legacy_diagnostic_severity": "high",
+    "allowed_uses": [
+      "model_fit_review",
+      "qa_regression_review",
+      "methodology_benchmark"
+    ],
+    "forbidden_uses": [
+      "budget_reallocation_claim",
+      "channel_level_causal_claim",
+      "clean_channel_attribution",
+      "clean_channel_lift_claim",
+      "clean_media_attribution",
+      "production_incrementality_claim"
+    ],
+    "human_review_required": true,
+    "diagnostic_only_reason": "Required vertical controls missing \u2014 diagnostic QA only.",
+    "classification_triggers": [
+      "claims:forbidden_claims_present",
+      "control:missing_required_vertical_controls"
+    ],
+    "run_id": "mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+    "dataset_snapshot_id": "mmm-examples-benchmark-geo-panel-frozen-2022-v1",
+    "vertical_id": "retail",
+    "missing_required_controls": [
+      "holiday",
+      "promo_flag",
+      "unemployment_index"
+    ],
+    "missing_controls": [
+      "competitor_price_index",
+      "holiday",
+      "promo_flag",
+      "unemployment_index",
+      "weather_index"
+    ],
+    "omitted_control_risk": true,
+    "media_correlated_controls": false,
+    "sparse_channels_extreme": [],
+    "sparse_near_zero_threshold": 0.99,
+    "max_abs_correlation": 0.060670394683298864,
+    "weak_identification_risk": false,
+    "collinear_channel_groups": [],
+    "transform_metadata_complete": true,
+    "transform_warnings": [],
+    "selected_adstock_saturation": {
+      "decay": 0.36378537319927373,
+      "hill_half": 2.4287574992566916,
+      "hill_slope": 1.770223453733264,
+      "log_alpha": -0.27901266311609074,
+      "transform_search_selected": true
+    },
+    "fold_stability_ok": true,
+    "geo_fold_rmse_mean": 17.718841930952195,
+    "coefficient_stability_available": true,
+    "forbidden_claims": [
+      "no_budget_reallocation_claim_based_only_on_this_run",
+      "no_channel_level_causal_claim_without_caveat",
+      "no_clean_media_attribution_claim"
+    ],
+    "top_warnings": [
+      "control_completeness:missing_required:['holiday', 'promo_flag', 'unemployment_index']"
+    ],
+    "calibration_evidence_context_present": false,
+    "mip_c1_attachment_wired": false,
+    "production_boundary": {
+      "ridge_remains_production_baseline": true,
+      "bayes_h5_research_only": true,
+      "approved_for_prod": false,
+      "optimizer_enabled": false,
+      "decision_surface_enabled": false,
+      "recommendations_enabled": false,
+      "diagnostics_are_not_hard_gates": true
+    }
+  },
+  "cli_lines": [
+    "Ridge diagnostics: DIAGNOSTIC_ONLY (diagnostic_only)",
+    "- Human review required before business interpretation",
+    "- Allowed uses: model_fit_review, qa_regression_review, methodology_benchmark",
+    "- Forbidden uses: budget_reallocation_claim, channel_level_causal_claim, clean_channel_attribution...",
+    "- Diagnostic-only: Required vertical controls missing \u2014 diagnostic QA only.",
+    "- Missing required retail controls: holiday, promo_flag, unemployment_index",
+    "- Forbidden claims: no_budget_reallocation_claim_based_only_on_this_run; no_channel_level_causal_claim_without_caveat; no_clean_media_attribution_claim"
+  ],
+  "production_boundary": {
+    "ridge_fitting_unchanged": true,
+    "optimizer_unchanged": true,
+    "decision_surface_unchanged": true,
+    "mip_c1_context_only": true,
+    "bayes_h5_research_only": true
+  }
+}

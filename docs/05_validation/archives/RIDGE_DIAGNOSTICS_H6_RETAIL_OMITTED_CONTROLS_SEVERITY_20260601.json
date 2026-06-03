@@ -66,6 +66,7 @@
     },
     "control_completeness": {
       "vertical_id": "retail",
+      "vertical_profile_known": true,
       "required_controls_by_vertical": [
         "promo_flag",
         "holiday",
@@ -152,25 +153,25 @@
     "fold_stability": {
       "n_cv_splits": 2,
       "geo_fold_rmse": [
-        17155.19662189631,
-        60590.018750393734,
-        15963.842369634387
+        17155.37212078677,
+        60589.99510030924,
+        15995.59072848167
       ],
-      "geo_fold_rmse_mean": 31236.352580641473,
-      "geo_fold_rmse_std": 20761.874023355715,
+      "geo_fold_rmse_mean": 31246.985983192557,
+      "geo_fold_rmse_std": 20754.04235733172,
       "fold_stability_ok": false,
       "warnings": []
     },
     "coefficient_stability": {
       "available": true,
       "media_coef_by_channel": {
-        "tv": -0.0004339564354182174,
-        "search": 0.060294457428741594,
-        "social": 0.016818969963366147,
-        "display": 0.08293361342319358,
-        "ctv": 0.07462035648916117,
-        "radio": 0.04800542134587448,
-        "local_flyer": 0.06029513991597156
+        "tv": -0.00043748875357676174,
+        "search": 0.0603870962039795,
+        "social": 0.01677216684705923,
+        "display": 0.08291235131139044,
+        "ctv": 0.07461737100194943,
+        "radio": 0.04796285441679452,
+        "local_flyer": 0.060323014943544626
       },
       "sign_by_channel": {
         "tv": -1.0,
@@ -247,6 +248,13 @@
       ]
     },
     "outputs_are_diagnostic_only": true,
+    "evidence_attachment_lineage": {
+      "calibration_evidence_context_present": false,
+      "calibration_signal_count": 0,
+      "mip_c1_attachment_wired": false,
+      "collinearity_calibration_evidence_available": false,
+      "note": "CalibrationSignal attaches via attach_calibration_evidence_context only; absent on this run unless explicitly wired."
+    },
     "severity_policy_version": "mmm_ridge_severity_policy_v1",
     "severity": "diagnostic_only",
     "output_eligibility": {

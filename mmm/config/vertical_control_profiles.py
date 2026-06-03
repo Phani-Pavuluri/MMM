@@ -76,6 +76,13 @@ def get_vertical_profile(vertical_id: str) -> VerticalControlProfile:
     return VERTICAL_PROFILES[vertical_id]
 
 
+def resolve_vertical_profile(vertical_id: str | None) -> VerticalControlProfile | None:
+    """Return profile for known vertical_id, or None (H11 — no silent default)."""
+    if not vertical_id:
+        return None
+    return VERTICAL_PROFILES.get(vertical_id)
+
+
 def control_truth_for_profile(
     profile: VerticalControlProfile,
     *,

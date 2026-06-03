@@ -2135,7 +2135,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-H10](../audits/AUDIT-H10_RIDGE_DIAGNOSTIC_E2E_GATE.md); `tests/diagnostics/test_ridge_diagnostic_e2e_audit.py` |
 | **Outcome** | Pass on H6 full-control and omitted-control reference worlds; CI-gated checklist. |
-| **Next** | Optional H11 real-bundle hardening. |
+| **Next** | MIP-C2 live evidence ETL (optional). |
 
 ---
 
@@ -2148,7 +2148,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-MIP-C1](../audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md); [attachment contract](../05_validation/calibration_signal_mmm_diagnostic_attachment_contract.md); `tests/mip/test_calibration_signal_mmm_attachment_contract.py` |
 | **Outcome** | Contract + fixtures + helper module; signals attach as `calibration_evidence_context` only; no Ridge refit / optimizer / DecisionSurface changes. |
-| **Next** | Optional H11 real-bundle Ridge diagnostic hardening. |
+| **Next** | MIP-C2 live CalibrationSignal ETL (optional). |
+
+---
+
+### INV-H11 — Real-bundle Ridge diagnostic hardening (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-H11 |
+| **Title** | Ridge diagnostics on real/realistic training bundles |
+| **Status** | **closed** |
+| **Evidence** | [INV-H11](INV-H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_HARDENING.md); [manifest](H11_REAL_BUNDLE_RIDGE_DIAGNOSTIC_MANIFEST.md); [H11 archive](../05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json) |
+| **Outcome** | Benchmark geo panel v1: full diagnostic chain + explicit MIP-C1 absence + redacted archive; unknown-vertical and missing-transform hardening. |
+| **Next** | MIP-C2 evidence ingestion wiring (optional); H11b triangulation panel. |
 
 ---
 

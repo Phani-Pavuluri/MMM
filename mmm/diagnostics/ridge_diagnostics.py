@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from mmm.config.schema import Framework, MMMConfig, RunEnvironment
-from mmm.config.vertical_control_profiles import VerticalControlProfile, get_vertical_profile
+from mmm.config.vertical_control_profiles import VerticalControlProfile, resolve_vertical_profile
 from mmm.data.schema import PanelSchema
 from mmm.features.design_matrix import build_design_matrix
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
@@ -158,10 +158,14 @@ def build_control_completeness_diagnostics(
 ) -> dict[str, Any]:
     """Compare panel controls to vertical recommendations."""
     present = set(schema.control_columns)
-    prof = profile or (get_vertical_profile(vertical_id) if vertical_id else None)
+    prof = profile or resolve_vertical_profile(vertical_id)
     if prof is None:
+        warnings: list[str] = ["control_completeness:no_vertical_profile"]
+        if vertical_id:
+            warnings.append(f"control_completeness:unknown_vertical:{vertical_id}")
         return {
-            "vertical_id": None,
+            "vertical_id": vertical_id,
+            "vertical_profile_known": False,
             "required_controls_by_vertical": [],
             "optional_controls_by_vertical": [],
             "controls_present": sorted(present),
@@ -169,7 +173,7 @@ def build_control_completeness_diagnostics(
             "missing_required_controls": [],
             "omitted_control_risk": False,
             "media_correlated_controls": media_correlated_controls,
-            "warnings": ["control_completeness:no_vertical_profile"],
+            "warnings": warnings,
         }
 
     required = set(prof.required_controls)
@@ -187,6 +191,7 @@ def build_control_completeness_diagnostics(
 
     return {
         "vertical_id": prof.vertical_id,
+        "vertical_profile_known": True,
         "required_controls_by_vertical": list(prof.required_controls),
         "optional_controls_by_vertical": list(prof.optional_controls),
         "controls_present": sorted(present),
@@ -533,6 +538,20 @@ def compose_ridge_diagnostic_report(
     }
     if world_metadata:
         report["world_metadata"] = world_metadata
+
+    cal_ctx = report.get("calibration_evidence_context")
+    report["evidence_attachment_lineage"] = {
+        "calibration_evidence_context_present": bool(cal_ctx),
+        "calibration_signal_count": len((cal_ctx or {}).get("signals") or []),
+        "mip_c1_attachment_wired": bool(cal_ctx),
+        "collinearity_calibration_evidence_available": bool(
+            (report.get("collinearity") or {}).get("calibration_evidence_available")
+        ),
+        "note": (
+            "CalibrationSignal attaches via attach_calibration_evidence_context only; "
+            "absent on this run unless explicitly wired."
+        ),
+    }
 
     for forbidden in FORBIDDEN_OUTPUT_FIELDS:
         if forbidden in report and report.get(forbidden):
