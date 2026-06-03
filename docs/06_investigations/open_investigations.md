@@ -2148,7 +2148,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-MIP-C1](../audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md); [attachment contract](../05_validation/calibration_signal_mmm_diagnostic_attachment_contract.md); `tests/mip/test_calibration_signal_mmm_attachment_contract.py` |
 | **Outcome** | Contract + fixtures + helper module; signals attach as `calibration_evidence_context` only; no Ridge refit / optimizer / DecisionSurface changes. |
-| **Next** | MIP-C2 live CalibrationSignal ETL (optional). |
+| **Next** | Live GeoX/CLS registry ETL (optional). |
+
+---
+
+### INV-MIP-C2 — CalibrationSignal train-boundary wiring (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-MIP-C2 |
+| **Title** | Wire CalibrationSignal context into Ridge train/extension diagnostics |
+| **Status** | **closed** |
+| **Evidence** | [AUDIT-MIP-C2](../audits/AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WIRING.md); `calibration_signal_ingestion.py`; `test_calibration_signal_train_boundary_ingestion.py` |
+| **Outcome** | Optional `--calibration-signals-path` / YAML path; context attaches before artifact export; lineage explicit; fit unchanged. |
+| **Next** | Live GeoX/CLS ETL to emit signal JSON (optional). |
 
 ---
 

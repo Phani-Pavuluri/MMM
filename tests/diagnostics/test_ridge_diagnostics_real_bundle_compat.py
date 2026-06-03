@@ -90,6 +90,7 @@ def test_calibration_context_absent_is_explicit() -> None:
         pytest.skip("benchmark panel missing")
     result = run_real_bundle_ridge_diagnostics({**BENCHMARK_BUNDLE_SPEC, "n_trials": 2})
     lineage = result["report"]["evidence_attachment_lineage"]
+    assert lineage["attempted"] is False
     assert lineage["calibration_evidence_context_present"] is False
     assert lineage["mip_c1_attachment_wired"] is False
     assert "CalibrationSignal" in lineage["note"]

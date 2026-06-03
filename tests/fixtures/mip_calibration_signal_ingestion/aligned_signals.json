@@ -1,0 +1,21 @@
+{
+  "source_ref": "mip_c2_fixture_aligned_v1",
+  "signals": [
+    {
+      "signal_id": "geox-benchmark-search-aligned",
+      "source_system": "geox",
+      "source_modality": "geo_experiment",
+      "experiment_id": "EXP-GEOX-H11-FIXTURE",
+      "channel": "search",
+      "geo_scope": {"kind": "national"},
+      "time_window": {"start": "2022-01-01", "end": "2022-12-31"},
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "geox_v3",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.05,
+      "standard_error": 0.02,
+      "freshness_status": "fresh",
+      "eligibility_status": "eligible"
+    }
+  ]
+}

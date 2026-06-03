@@ -80,6 +80,10 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `tests/diagnostics/test_ridge_diagnostics_real_bundle_compat.py` | (tests) | canonical | H11 schema/bundle compatibility tests |
 | `docs/05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json` | `05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_20260601.json` | canonical | H11 redacted diagnostic archive (benchmark panel) |
 | `docs/05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_SUMMARY_20260601.md` | `05_validation/archives/H11_RIDGE_DIAGNOSTICS_REAL_BUNDLE_MMM_BENCHMARK_GEO_PANEL_V1_SUMMARY_20260601.md` | canonical | H11 operator summary archive |
+| `docs/audits/AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WIRING.md` | `audits/AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WIRING.md` | canonical | MIP-C2 train/extension CalibrationSignal wiring audit |
+| `mmm/diagnostics/calibration_signal_ingestion.py` | (code) | canonical | MIP-C2 signal load + lineage + report ingest |
+| `tests/mip/test_calibration_signal_train_boundary_ingestion.py` | (tests) | canonical | MIP-C2 train-boundary ingestion tests |
+| `docs/05_validation/archives/MIP_C2_RIDGE_DIAGNOSTICS_WITH_CALIBRATION_SIGNAL_CONTEXT_20260601.json` | `05_validation/archives/MIP_C2_RIDGE_DIAGNOSTICS_WITH_CALIBRATION_SIGNAL_CONTEXT_20260601.json` | canonical | MIP-C2 representative diagnostic archive with context |
 | `docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | `05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | canonical | Bayes-H2b binding ADR — hierarchy propagation & claim semantics |
 | `docs/05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | `05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | canonical | Bayes-H2d binding ADR — hierarchical model spec (architecture only) |
 | `docs/BAYES_H2B_VALIDATION_WORLDS_001.md` | `BAYES_H2B_VALIDATION_WORLDS_001.md` | canonical | Seven WORLD-BAYES-* validation world specifications (Track 2) |

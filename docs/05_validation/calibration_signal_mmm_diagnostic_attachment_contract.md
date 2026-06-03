@@ -131,10 +131,22 @@ build_calibration_forbidden_claims(context) -> list[str]
 
 ---
 
+## Train-boundary ingestion (MIP-C2)
+
+| Input | Module |
+|-------|--------|
+| `ingest_calibration_signals_into_report` | `mmm/diagnostics/calibration_signal_ingestion.py` |
+| Extension hook | `extension_runner._attach_ridge_production_diagnostics` |
+| CLI | `mmm train --calibration-signals-path` |
+
+Audit: [AUDIT-MIP-C2](../audits/AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WIRING.md)
+
 ## Tests and fixtures
 
 | Fixtures | `tests/fixtures/mip_calibration_signal_attachment/` |
+| Ingestion fixtures | `tests/fixtures/mip_calibration_signal_ingestion/` |
 | Tests | `tests/mip/test_calibration_signal_mmm_attachment_contract.py` |
+| Train boundary tests | `tests/mip/test_calibration_signal_train_boundary_ingestion.py` |
 
 ---
 

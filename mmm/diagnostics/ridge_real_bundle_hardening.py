@@ -146,19 +146,7 @@ def run_real_bundle_ridge_diagnostics(
         "panel_lineage": lineage,
         "synthetic_world": False,
     }
-    report = compose_ridge_diagnostic_report(
-        panel,
-        schema,
-        config,
-        fit_out,
-        trainer=trainer,
-        vertical_id=spec.get("vertical_id"),
-        model_id="ridge_bo",
-        run_id=spec["dataset_snapshot_id"],
-        dataset_snapshot_id=spec["dataset_snapshot_id"],
-        calibration_evidence_available=bool(spec.get("calibration_evidence_available")),
-        world_metadata=world_metadata,
-    )
+    cal_path = spec.get("calibration_signals_path")
     extension_report = attach_ridge_diagnostics_to_extension_report(
         {"governance_stub": True, "h11_bundle_id": spec["bundle_id"]},
         panel,
@@ -168,7 +156,9 @@ def run_real_bundle_ridge_diagnostics(
         trainer=trainer,
         vertical_id=spec.get("vertical_id"),
         calibration_evidence_available=bool(spec.get("calibration_evidence_available")),
+        calibration_signals_path=cal_path,
     )
+    report = extension_report["ridge_production_diagnostics_report"]
     summary = summarize_ridge_diagnostics(report)
     extension_report["ridge_production_diagnostics_summary"] = summary
     markdown = format_ridge_diagnostics_markdown(report, summary=summary)

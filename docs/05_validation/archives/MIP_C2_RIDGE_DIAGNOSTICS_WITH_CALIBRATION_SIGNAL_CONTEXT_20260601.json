@@ -1,6 +1,7 @@
 {
-  "h11_milestone": "H11",
+  "milestone": "MIP-C2",
   "bundle_id": "MMM-BENCHMARK-GEO-PANEL-V1",
+  "calibration_signals_path": "tests/fixtures/mip_calibration_signal_ingestion/aligned_signals.json",
   "lineage": {
     "bundle_id": "MMM-BENCHMARK-GEO-PANEL-V1",
     "panel_id": "examples_mmm_benchmark_geo_panel_v1",
@@ -27,25 +28,25 @@
     "calibration_evidence_available_config": false,
     "calibration_signals_declared": []
   },
-  "completeness": {
-    "all_passed": true,
-    "checks": {
-      "ridge_production_diagnostics_report_exists": true,
-      "severity_present": true,
-      "output_eligibility_present": true,
-      "transform_diagnostics_present": true,
-      "vertical_controls_evaluated": true,
-      "sparse_channels_evaluated": true,
-      "collinearity_evaluated": true,
-      "forbidden_claims_present": true,
-      "evidence_attachment_lineage_present": true,
-      "calibration_context_absence_explicit": true,
-      "extension_report_embeds_report": true,
-      "extension_report_embeds_summary": true,
-      "no_optimizer_fields": true,
-      "transform_metadata_rendered": true,
-      "transform_warnings_when_incomplete": true
-    }
+  "evidence_attachment_lineage": {
+    "milestone": "MIP-C2",
+    "attempted": true,
+    "source_type": "file",
+    "source_path": "tests/fixtures/mip_calibration_signal_ingestion/aligned_signals.json",
+    "source_ref": "mip_c2_fixture_aligned_v1",
+    "signals_count": 1,
+    "attached_count": 1,
+    "rejected_count": 0,
+    "attachment_errors": [],
+    "context_only": true,
+    "optimizer_unchanged": true,
+    "decision_surface_unchanged": true,
+    "recommendations_unchanged": true,
+    "calibration_evidence_context_present": true,
+    "calibration_signal_count": 1,
+    "mip_c1_attachment_wired": true,
+    "collinearity_calibration_evidence_available": true,
+    "note": "CalibrationSignal ingestion is diagnostic context only; does not refit Ridge, override coefficients, or feed optimizer/DecisionSurface/recommendations."
   },
   "ridge_production_diagnostics_report": {
     "report_version": "mmm_ridge_production_diagnostics_v1",
@@ -133,7 +134,7 @@
       "max_abs_correlation": 0.060670394683298864,
       "weak_identification_risk": false,
       "collinear_channel_groups": [],
-      "calibration_evidence_available": false,
+      "calibration_evidence_available": true,
       "warnings": []
     },
     "sparse_channels": {
@@ -171,17 +172,16 @@
     "coefficient_stability": {
       "available": true,
       "media_coef_by_channel": {
-        "search": "[redacted]",
-        "social": "[redacted]",
-        "tv": "[redacted]"
+        "search": 0.3114562026908492,
+        "social": 0.12887589913821648,
+        "tv": 0.30685029354409654
       },
       "sign_by_channel": {
         "search": 1.0,
         "social": 1.0,
         "tv": 1.0
       },
-      "warnings": [],
-      "redaction_note": "H11 archive \u2014 coef signs/magnitudes withheld; structure retained."
+      "warnings": []
     },
     "sign_plausibility": {
       "available": false,
@@ -211,9 +211,18 @@
     },
     "truth_recovery": null,
     "forbidden_claims": [
+      "automatic_mmm_recalibration_from_calibration_signal",
+      "budget_recommendation_from_calibration_signal",
+      "decision_surface_input_from_calibration_signal",
+      "external_evidence_authorizes_budget_recommendation",
+      "external_evidence_authorizes_optimizer_use",
+      "external_evidence_overrides_mmm_coefficients",
+      "geox_or_cls_silently_overrides_mmm",
       "no_budget_reallocation_claim_based_only_on_this_run",
       "no_channel_level_causal_claim_without_caveat",
-      "no_clean_media_attribution_claim"
+      "no_clean_media_attribution_claim",
+      "optimizer_input_from_calibration_signal",
+      "ridge_coefficient_override_from_external_evidence"
     ],
     "warnings": [
       "control_completeness:missing_required:['holiday', 'promo_flag', 'unemployment_index']"
@@ -246,22 +255,22 @@
     "outputs_are_diagnostic_only": true,
     "evidence_attachment_lineage": {
       "milestone": "MIP-C2",
-      "attempted": false,
-      "source_type": "none",
-      "source_path": null,
-      "source_ref": null,
-      "signals_count": 0,
-      "attached_count": 0,
+      "attempted": true,
+      "source_type": "file",
+      "source_path": "tests/fixtures/mip_calibration_signal_ingestion/aligned_signals.json",
+      "source_ref": "mip_c2_fixture_aligned_v1",
+      "signals_count": 1,
+      "attached_count": 1,
       "rejected_count": 0,
       "attachment_errors": [],
       "context_only": true,
       "optimizer_unchanged": true,
       "decision_surface_unchanged": true,
       "recommendations_unchanged": true,
-      "calibration_evidence_context_present": false,
-      "calibration_signal_count": 0,
-      "mip_c1_attachment_wired": false,
-      "collinearity_calibration_evidence_available": false,
+      "calibration_evidence_context_present": true,
+      "calibration_signal_count": 1,
+      "mip_c1_attachment_wired": true,
+      "collinearity_calibration_evidence_available": true,
       "note": "CalibrationSignal ingestion is diagnostic context only; does not refit Ridge, override coefficients, or feed optimizer/DecisionSurface/recommendations."
     },
     "severity_policy_version": "mmm_ridge_severity_policy_v1",
@@ -292,7 +301,125 @@
       "diagnostics_are_not_hard_gates": true,
       "legacy_diagnostic_severity": "high"
     },
-    "diagnostic_severity": "high"
+    "diagnostic_severity": "high",
+    "calibration_evidence_context": {
+      "attachment_version": "mip_calibration_signal_attachment_v1",
+      "milestone": "MIP-C1",
+      "signals": [
+        {
+          "signal_id": "geox-benchmark-search-aligned",
+          "source_system": "geox",
+          "source_modality": "geo_experiment",
+          "experiment_id": "EXP-GEOX-H11-FIXTURE",
+          "study_id": null,
+          "channel": "search",
+          "geo_scope": {
+            "kind": "national"
+          },
+          "time_window": {
+            "start": "2022-01-01",
+            "end": "2022-12-31"
+          },
+          "estimand_id": "incremental_sales",
+          "measurement_instrument_id": "geox_v3",
+          "lift_scale": "incremental_sales",
+          "effect_estimate": 0.05,
+          "standard_error": 0.02,
+          "interval": null,
+          "freshness_status": "fresh",
+          "eligibility_status": "eligible",
+          "alignment_status": "aligned",
+          "conflict_status": "none",
+          "trust_report_disposition": "diagnostic_context",
+          "allowed_use": [
+            "operator_context",
+            "ridge_diagnostic_interpretation"
+          ],
+          "forbidden_claims": [
+            "external_evidence_authorizes_budget_recommendation",
+            "external_evidence_authorizes_optimizer_use",
+            "external_evidence_overrides_mmm_coefficients",
+            "geox_or_cls_silently_overrides_mmm"
+          ],
+          "included_in_context": true
+        }
+      ],
+      "included_signals": [
+        {
+          "signal_id": "geox-benchmark-search-aligned",
+          "source_system": "geox",
+          "source_modality": "geo_experiment",
+          "experiment_id": "EXP-GEOX-H11-FIXTURE",
+          "study_id": null,
+          "channel": "search",
+          "geo_scope": {
+            "kind": "national"
+          },
+          "time_window": {
+            "start": "2022-01-01",
+            "end": "2022-12-31"
+          },
+          "estimand_id": "incremental_sales",
+          "measurement_instrument_id": "geox_v3",
+          "lift_scale": "incremental_sales",
+          "effect_estimate": 0.05,
+          "standard_error": 0.02,
+          "interval": null,
+          "freshness_status": "fresh",
+          "eligibility_status": "eligible",
+          "alignment_status": "aligned",
+          "conflict_status": "none",
+          "trust_report_disposition": "diagnostic_context",
+          "allowed_use": [
+            "operator_context",
+            "ridge_diagnostic_interpretation"
+          ],
+          "forbidden_claims": [
+            "external_evidence_authorizes_budget_recommendation",
+            "external_evidence_authorizes_optimizer_use",
+            "external_evidence_overrides_mmm_coefficients",
+            "geox_or_cls_silently_overrides_mmm"
+          ],
+          "included_in_context": true
+        }
+      ],
+      "global_forbidden_claims": [
+        "automatic_mmm_recalibration_from_calibration_signal",
+        "ridge_coefficient_override_from_external_evidence",
+        "optimizer_input_from_calibration_signal",
+        "decision_surface_input_from_calibration_signal",
+        "budget_recommendation_from_calibration_signal"
+      ],
+      "warnings": [],
+      "trust_report_boundary": "CalibrationSignal may inform TrustReport and operator context only; must not bypass TrustReport, override MMM coefficients, or feed optimizer/DecisionSurface.",
+      "headline": "1 external signal(s) attached as diagnostic context only.",
+      "context_only": true,
+      "bayes_h5_research_only": true,
+      "summary": {
+        "signal_count": 1,
+        "aligned_count": 1,
+        "directional_conflict_count": 0,
+        "stale_count": 0,
+        "trust_report_only_count": 0,
+        "conflict_signal_ids": [],
+        "stale_signal_ids": [],
+        "headline": "1 external signal(s) attached as diagnostic context only.",
+        "warnings": [],
+        "context_only": true,
+        "mmm_coefficients_unchanged": true
+      },
+      "forbidden_claims": [
+        "automatic_mmm_recalibration_from_calibration_signal",
+        "budget_recommendation_from_calibration_signal",
+        "decision_surface_input_from_calibration_signal",
+        "external_evidence_authorizes_budget_recommendation",
+        "external_evidence_authorizes_optimizer_use",
+        "external_evidence_overrides_mmm_coefficients",
+        "geox_or_cls_silently_overrides_mmm",
+        "optimizer_input_from_calibration_signal",
+        "ridge_coefficient_override_from_external_evidence"
+      ]
+    }
   },
   "ridge_production_diagnostics_summary": {
     "status": "ok",
@@ -354,15 +481,24 @@
     "geo_fold_rmse_mean": 17.718841930952195,
     "coefficient_stability_available": true,
     "forbidden_claims": [
+      "automatic_mmm_recalibration_from_calibration_signal",
+      "budget_recommendation_from_calibration_signal",
+      "decision_surface_input_from_calibration_signal",
+      "external_evidence_authorizes_budget_recommendation",
+      "external_evidence_authorizes_optimizer_use",
+      "external_evidence_overrides_mmm_coefficients",
+      "geox_or_cls_silently_overrides_mmm",
       "no_budget_reallocation_claim_based_only_on_this_run",
       "no_channel_level_causal_claim_without_caveat",
-      "no_clean_media_attribution_claim"
+      "no_clean_media_attribution_claim",
+      "optimizer_input_from_calibration_signal",
+      "ridge_coefficient_override_from_external_evidence"
     ],
     "top_warnings": [
       "control_completeness:missing_required:['holiday', 'promo_flag', 'unemployment_index']"
     ],
-    "calibration_evidence_context_present": false,
-    "mip_c1_attachment_wired": false,
+    "calibration_evidence_context_present": true,
+    "mip_c1_attachment_wired": true,
     "production_boundary": {
       "ridge_remains_production_baseline": true,
       "bayes_h5_research_only": true,
@@ -373,15 +509,6 @@
       "diagnostics_are_not_hard_gates": true
     }
   },
-  "cli_lines": [
-    "Ridge diagnostics: DIAGNOSTIC_ONLY (diagnostic_only)",
-    "- Human review required before business interpretation",
-    "- Allowed uses: model_fit_review, qa_regression_review, methodology_benchmark",
-    "- Forbidden uses: budget_reallocation_claim, channel_level_causal_claim, clean_channel_attribution...",
-    "- Diagnostic-only: Required vertical controls missing \u2014 diagnostic QA only.",
-    "- Missing required retail controls: holiday, promo_flag, unemployment_index",
-    "- Forbidden claims: no_budget_reallocation_claim_based_only_on_this_run; no_channel_level_causal_claim_without_caveat; no_clean_media_attribution_claim"
-  ],
   "production_boundary": {
     "ridge_fitting_unchanged": true,
     "optimizer_unchanged": true,

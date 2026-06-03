@@ -1,0 +1,17 @@
+{
+  "source_ref": "mip_c2_fixture_malformed_v1",
+  "signals": [
+    {"experiment_id": "missing-signal-id"},
+    "not-an-object",
+    {
+      "signal_id": "valid-stub-search",
+      "source_system": "replay",
+      "source_modality": "replay_unit",
+      "channel": "search",
+      "effect_estimate": 0.04,
+      "standard_error": 0.01,
+      "freshness_status": "fresh",
+      "eligibility_status": "eligible"
+    }
+  ]
+}

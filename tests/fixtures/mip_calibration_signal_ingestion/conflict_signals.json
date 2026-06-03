@@ -1,0 +1,16 @@
+{
+  "source_ref": "mip_c2_fixture_conflict_v1",
+  "signals": [
+    {
+      "signal_id": "geox-benchmark-tv-conflict",
+      "source_system": "geox",
+      "source_modality": "geo_experiment",
+      "experiment_id": "EXP-GEOX-H11-CONFLICT",
+      "channel": "tv",
+      "effect_estimate": 0.35,
+      "standard_error": 0.08,
+      "freshness_status": "fresh",
+      "eligibility_status": "eligible"
+    }
+  ]
+}

@@ -248,6 +248,12 @@ def _attach_ridge_production_diagnostics(ctx: ExtensionContext) -> None:
     product = getattr(ctx.ext, "product", None)
     if isinstance(product, dict):
         vertical_id = product.get("vertical_id")
+    rd = getattr(ctx.ext, "ridge_diagnostics", None)
+    if rd is not None and getattr(rd, "vertical_id", None):
+        vertical_id = rd.vertical_id
+    cal_signals_path: str | None = None
+    if rd is not None and getattr(rd, "calibration_signals_path", None):
+        cal_signals_path = rd.calibration_signals_path
     try:
         from mmm.diagnostics.ridge_diagnostics import attach_ridge_diagnostics_to_extension_report
 
@@ -263,6 +269,7 @@ def _attach_ridge_production_diagnostics(ctx: ExtensionContext) -> None:
             calibration_evidence_available=bool(
                 ctx.config.calibration.enabled and ctx.config.calibration.use_replay_calibration
             ),
+            calibration_signals_path=cal_signals_path,
         )
     except Exception:
         ctx.out.setdefault("ridge_production_diagnostics_report", {"status": "unavailable"})

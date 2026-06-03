@@ -539,19 +539,11 @@ def compose_ridge_diagnostic_report(
     if world_metadata:
         report["world_metadata"] = world_metadata
 
-    cal_ctx = report.get("calibration_evidence_context")
-    report["evidence_attachment_lineage"] = {
-        "calibration_evidence_context_present": bool(cal_ctx),
-        "calibration_signal_count": len((cal_ctx or {}).get("signals") or []),
-        "mip_c1_attachment_wired": bool(cal_ctx),
-        "collinearity_calibration_evidence_available": bool(
-            (report.get("collinearity") or {}).get("calibration_evidence_available")
-        ),
-        "note": (
-            "CalibrationSignal attaches via attach_calibration_evidence_context only; "
-            "absent on this run unless explicitly wired."
-        ),
-    }
+    from mmm.diagnostics.calibration_signal_ingestion import build_evidence_attachment_lineage
+
+    report["evidence_attachment_lineage"] = build_evidence_attachment_lineage(
+        report, attempted=False, source_type="none"
+    )
 
     for forbidden in FORBIDDEN_OUTPUT_FIELDS:
         if forbidden in report and report.get(forbidden):
@@ -572,6 +564,8 @@ def attach_ridge_diagnostics_to_extension_report(
     trainer: RidgeBOMMMTrainer | None = None,
     vertical_id: str | None = None,
     calibration_evidence_available: bool = False,
+    calibration_signals: list[dict[str, Any]] | None = None,
+    calibration_signals_path: str | None = None,
 ) -> dict[str, Any]:
     """Merge H7 diagnostics into an extension report without changing optimizer behavior."""
     if config.framework != Framework.RIDGE_BO:
@@ -584,6 +578,13 @@ def attach_ridge_diagnostics_to_extension_report(
         trainer=trainer,
         vertical_id=vertical_id,
         calibration_evidence_available=calibration_evidence_available,
+    )
+    from mmm.diagnostics.calibration_signal_ingestion import ingest_calibration_signals_into_report
+
+    report = ingest_calibration_signals_into_report(
+        report,
+        signals=calibration_signals,
+        signals_path=calibration_signals_path,
     )
     out = dict(extension_report)
     out["ridge_production_diagnostics_report"] = report

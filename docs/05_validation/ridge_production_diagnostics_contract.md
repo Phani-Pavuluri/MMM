@@ -157,15 +157,33 @@ Module: `mmm/diagnostics/calibration_signal_attachment.py`
 
 **Forbidden:** feeding signals into Ridge refit, optimizer, DecisionSurface, or recommendations.
 
-## Evidence attachment lineage (H11)
+## Train-boundary ingestion (MIP-C2)
+
+Optional CalibrationSignal JSON at train time:
+
+| Input | Description |
+|-------|-------------|
+| `extensions.ridge_diagnostics.calibration_signals_path` | YAML path to signal list |
+| CLI `--calibration-signals-path` | Overrides YAML for one run |
+
+Flow: `compose_ridge_diagnostic_report` → `ingest_calibration_signals_into_report` → H8 export.
+
+Audit: [AUDIT-MIP-C2](../audits/AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WIRING.md)  
+Module: `mmm/diagnostics/calibration_signal_ingestion.py`
+
+## Evidence attachment lineage (H11 / MIP-C2)
 
 Every report includes `evidence_attachment_lineage`:
 
 | Field | Description |
 |-------|-------------|
+| `attempted` | MIP-C2 ingestion invoked |
+| `source_type` | `none` / `file` / `list` |
+| `source_path` | Signal file path when applicable |
+| `signals_count` / `attached_count` / `rejected_count` | Ingestion counts |
+| `attachment_errors` | Fail-closed parse/validation errors |
 | `calibration_evidence_context_present` | Whether `calibration_evidence_context` was attached |
-| `mip_c1_attachment_wired` | Same — explicit for operator/audit |
-| `collinearity_calibration_evidence_available` | Replay/config flag on collinearity block |
+| `context_only` / `optimizer_unchanged` / … | Production boundary flags (always true) |
 
 Unknown `vertical_id` values must **not** crash diagnostics; emit `control_completeness:unknown_vertical:{id}` and `vertical_profile_known=false`.
 

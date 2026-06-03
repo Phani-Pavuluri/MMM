@@ -136,7 +136,16 @@ app.add_typer(decide_app, name="decide")
 
 
 @app.command()
-def train(config: Path) -> None:
+def train(
+    config: Path,
+    calibration_signals_path: Annotated[
+        Path | None,
+        typer.Option(
+            "--calibration-signals-path",
+            help="MIP-C2: JSON CalibrationSignal list for Ridge diagnostic context only (no refit).",
+        ),
+    ] = None,
+) -> None:
     """Fit model + CV + extensions; writes ``extension_report.json``.
 
     Does not run ``decide`` gates or emit a decision bundle.
@@ -146,6 +155,8 @@ def train(config: Path) -> None:
     from mmm.governance.baseline_beat_waiver import BASELINE_BEAT_WAIVER_MESSAGE, baseline_beat_waiver_active
 
     cfg = load_config(config)
+    if calibration_signals_path is not None:
+        cfg.extensions.ridge_diagnostics.calibration_signals_path = str(calibration_signals_path)
     if baseline_beat_waiver_active(cfg.extensions.governance):
         msg = BASELINE_BEAT_WAIVER_MESSAGE
         if cfg.run_environment == RunEnvironment.PROD:

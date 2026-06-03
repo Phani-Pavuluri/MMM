@@ -291,7 +291,17 @@ class PanelQAConfig(BaseModel):
     all_channel_zero_warn_fraction: float = Field(default=0.2, ge=0.0, le=1.0)
 
 
+class RidgeDiagnosticsConfig(BaseModel):
+    """MIP-C2 — optional CalibrationSignal context on Ridge production diagnostics only."""
+
+    #: JSON file: list of CalibrationSignal dicts or ``{"signals": [...]}`` (context-only; no refit).
+    calibration_signals_path: str | None = None
+    #: Vertical for control-completeness checks (retail/cpg/auto); omit when unknown.
+    vertical_id: str | None = None
+
+
 class ExtensionSuiteConfig(BaseModel):
+    ridge_diagnostics: RidgeDiagnosticsConfig = Field(default_factory=RidgeDiagnosticsConfig)
     continuous_validation: ContinuousValidationConfig = Field(default_factory=ContinuousValidationConfig)
     decision_validation: DecisionValidationConfig = Field(default_factory=DecisionValidationConfig)
     robust_optimization_research: RobustOptimizationResearchConfig = Field(
