@@ -94,6 +94,11 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `tests/mip/test_calibration_signal_etl_dry_run.py` | (tests) | canonical | MIP-C4 ETL dry-run tests |
 | `docs/05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json` | `05_validation/archives/MIP_C4_DRY_RUN_CALIBRATION_SIGNALS_20260601.json` | canonical | MIP-C4 dry-run signals artifact |
 | `docs/05_validation/archives/MIP_C4_TRAIN_WITH_DRY_RUN_SIGNALS_20260601.json` | `05_validation/archives/MIP_C4_TRAIN_WITH_DRY_RUN_SIGNALS_20260601.json` | canonical | MIP-C4 train consumption proof archive |
+| `docs/audits/AUDIT-MIP-C5_CALIBRATIONSIGNAL_SCHEDULED_ETL_WRAPPER.md` | `audits/AUDIT-MIP-C5_CALIBRATIONSIGNAL_SCHEDULED_ETL_WRAPPER.md` | canonical | MIP-C5 scheduled drop-zone ETL wrapper audit |
+| `mmm/diagnostics/calibration_signal_etl_job.py` | (code) | canonical | MIP-C5 scheduled ETL job module + CLI |
+| `tests/mip/test_calibration_signal_etl_job.py` | (tests) | canonical | MIP-C5 scheduled ETL job tests |
+| `docs/05_validation/archives/mip_c5_etl_outputs/` | `05_validation/archives/mip_c5_etl_outputs/` | canonical | MIP-C5 reference job outputs (manifest, signals, summary) |
+| `docs/05_validation/archives/MIP_C5_TRAIN_WITH_SCHEDULED_ETL_SIGNALS_20260601.json` | `05_validation/archives/MIP_C5_TRAIN_WITH_SCHEDULED_ETL_SIGNALS_20260601.json` | canonical | MIP-C5 train consumption proof |
 | `docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | `05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | canonical | Bayes-H2b binding ADR — hierarchy propagation & claim semantics |
 | `docs/05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | `05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | canonical | Bayes-H2d binding ADR — hierarchical model spec (architecture only) |
 | `docs/BAYES_H2B_VALIDATION_WORLDS_001.md` | `BAYES_H2B_VALIDATION_WORLDS_001.md` | canonical | Seven WORLD-BAYES-* validation world specifications (Track 2) |

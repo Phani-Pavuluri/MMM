@@ -92,6 +92,7 @@ Operational workflows for analysts and data scientists:
 | MIP-C2 CalibrationSignal train-boundary wiring ✅ | [AUDIT-MIP-C2](audits/AUDIT-MIP-C2_CALIBRATIONSIGNAL_TRAIN_BOUNDARY_WIRING.md) · `mmm train --calibration-signals-path` |
 | MIP-C3 GeoX/CLS → CalibrationSignal adapter ✅ | [AUDIT-MIP-C3](audits/AUDIT-MIP-C3_GEOX_CLS_SIGNAL_ADAPTER_GATE.md) · [adapter contract](05_validation/geox_cls_to_calibration_signal_adapter_contract.md) |
 | MIP-C4 CalibrationSignal ETL dry-run ✅ | [AUDIT-MIP-C4](audits/AUDIT-MIP-C4_CALIBRATIONSIGNAL_ETL_DRY_RUN.md) · `python -m mmm.diagnostics.calibration_signal_etl` |
+| MIP-C5 Scheduled CalibrationSignal ETL wrapper ✅ | [AUDIT-MIP-C5](audits/AUDIT-MIP-C5_CALIBRATIONSIGNAL_SCHEDULED_ETL_WRAPPER.md) · `python -m mmm.diagnostics.calibration_signal_etl_job` |
 | INV-H4-001 sparse pooling investigation | [06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) |
 | INV-H4-001b variant sweep JSON | [05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) |
 | Bayesian Geo MMM architecture refinement | [05_validation/bayesian_hierarchical_geo_mmm_refinement.md](05_validation/bayesian_hierarchical_geo_mmm_refinement.md) |

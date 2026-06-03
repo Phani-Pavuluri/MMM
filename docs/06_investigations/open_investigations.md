@@ -2148,7 +2148,20 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **closed** |
 | **Evidence** | [AUDIT-MIP-C1](../audits/AUDIT-MIP-C1_CALIBRATIONSIGNAL_MMM_INTEGRATION_GATE.md); [attachment contract](../05_validation/calibration_signal_mmm_diagnostic_attachment_contract.md); `tests/mip/test_calibration_signal_mmm_attachment_contract.py` |
 | **Outcome** | Contract + fixtures + helper module; signals attach as `calibration_evidence_context` only; no Ridge refit / optimizer / DecisionSurface changes. |
-| **Next** | MIP-C5 scheduled/live ETL (optional). |
+| **Next** | MIP-C4 ETL dry-run (complete). |
+
+---
+
+### INV-MIP-C5 — Scheduled CalibrationSignal ETL wrapper (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-MIP-C5 |
+| **Title** | Drop-zone scheduled ETL wrapper over MIP-C4 |
+| **Status** | **closed** |
+| **Evidence** | [AUDIT-MIP-C5](../audits/AUDIT-MIP-C5_CALIBRATIONSIGNAL_SCHEDULED_ETL_WRAPPER.md); `calibration_signal_etl_job.py`; [outputs](../05_validation/archives/mip_c5_etl_outputs/) |
+| **Outcome** | Batch scan + manifest + C2 artifacts; train smoke proof; no live API or prod cron. |
+| **Next** | Roadmap audit before live scheduling (recommended). |
 
 ---
 

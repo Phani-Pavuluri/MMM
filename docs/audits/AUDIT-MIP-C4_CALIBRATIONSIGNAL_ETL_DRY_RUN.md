@@ -111,9 +111,10 @@ Dry-run records:
 
 ---
 
-## 9. What remains (MIP-C5+)
+## 9. What remains (after MIP-C5)
 
-- Scheduled production ETL job  
+- MIP-C5 drop-zone batch wrapper — ✅ [AUDIT-MIP-C5](AUDIT-MIP-C5_CALIBRATIONSIGNAL_SCHEDULED_ETL_WRAPPER.md)  
+- Production cron/K8s deployment (roadmap audit recommended first)  
 - Live GeoX/CLS API pull  
 - Client channel mapping tables  
 - TrustReport auto-population from ETL run metadata  

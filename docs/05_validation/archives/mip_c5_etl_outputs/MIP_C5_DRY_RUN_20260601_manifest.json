@@ -1,0 +1,48 @@
+{
+  "artifact_type": "calibration_signal_etl_job_manifest",
+  "job_version": "mip_calibration_signal_etl_job_v1",
+  "run_id": "MIP_C5_DRY_RUN_20260601",
+  "started_at": "2026-06-03T04:01:33+00:00",
+  "completed_at": "2026-06-03T04:01:33+00:00",
+  "input_dir": "/workspace/mmm/tests/fixtures/mip_calibration_signal_adapters",
+  "output_dir": "/workspace/mmm/docs/05_validation/archives/mip_c5_etl_outputs",
+  "pattern": "mixed_batch.json",
+  "files_seen": 1,
+  "files_processed": 1,
+  "files_failed": 0,
+  "records_seen": 2,
+  "signals_written": 2,
+  "blocked_count": 0,
+  "inconclusive_count": 1,
+  "stale_count": 0,
+  "errors": [],
+  "output_artifacts": [
+    {
+      "input_path": "tests/fixtures/mip_calibration_signal_adapters/mixed_batch.json",
+      "output_path": "docs/05_validation/archives/mip_c5_etl_outputs/MIP_C5_DRY_RUN_20260601_mixed_batch_signals.json",
+      "success": true,
+      "error": null,
+      "records_seen": 2,
+      "signals_written": 2,
+      "blocked_count": 0,
+      "inconclusive_count": 1,
+      "stale_count": 0,
+      "source_systems": [
+        "cls",
+        "geox"
+      ]
+    }
+  ],
+  "context_only": true,
+  "optimizer_unchanged": true,
+  "decision_surface_unchanged": true,
+  "recommendations_unchanged": true,
+  "live_api_used": false,
+  "production_scheduler": false,
+  "continue_on_error": true,
+  "production_flags": {
+    "approved_for_prod": false,
+    "decisioning_allowed": false,
+    "bayes_h5_research_only": true
+  }
+}

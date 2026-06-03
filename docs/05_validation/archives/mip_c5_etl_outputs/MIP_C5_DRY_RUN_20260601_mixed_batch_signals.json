@@ -1,0 +1,105 @@
+{
+  "artifact_type": "calibration_signal_etl_dry_run",
+  "artifact_version": "mip_calibration_signal_etl_dry_run_v1",
+  "source_ref": "mip_c3_mixed_export_v1",
+  "signals": [
+    {
+      "signal_id": "geox-EXP-GEOX-MIX-1",
+      "source_system": "geox",
+      "source_modality": "geo_experiment",
+      "experiment_id": "EXP-GEOX-MIX-1",
+      "channel": "search",
+      "geo_scope": {
+        "kind": "national"
+      },
+      "time_window": null,
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "geox_v3.2",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.07,
+      "standard_error": 0.02,
+      "interval": null,
+      "freshness_status": "fresh",
+      "eligibility_status": "eligible",
+      "adapter_metadata": {
+        "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+        "source_system": "geox",
+        "source_lineage": {
+          "geox_experiment_id": "EXP-GEOX-MIX-1",
+          "geox_export_version": "geox_v3.2",
+          "source_record_id": null
+        },
+        "adapter_notes": [],
+        "estimand_source_value": "incremental_sales",
+        "trust_report_boundary": "GeoX export is context-only; TrustReport governs promotion."
+      }
+    },
+    {
+      "signal_id": "cls-CLS-STUDY-MIX-1",
+      "source_system": "cls",
+      "source_modality": "cls_readout",
+      "study_id": "CLS-STUDY-MIX-1",
+      "experiment_id": "CLS-STUDY-MIX-1",
+      "channel": "social",
+      "geo_scope": {
+        "kind": "national"
+      },
+      "time_window": null,
+      "estimand_id": "incremental_sales",
+      "measurement_instrument_id": "cls_readout_v1",
+      "lift_scale": "incremental_sales",
+      "effect_estimate": 0.05,
+      "standard_error": 0.012,
+      "interval": null,
+      "freshness_status": "fresh",
+      "eligibility_status": "inconclusive",
+      "adapter_metadata": {
+        "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+        "source_system": "cls",
+        "source_lineage": {
+          "cls_study_id": "CLS-STUDY-MIX-1",
+          "cls_readout_id": null,
+          "readout_status": "inconclusive"
+        },
+        "adapter_notes": [],
+        "estimand_source_value": "incremental_sales",
+        "trust_report_boundary": "CLS readout is context-only; inconclusive readouts route to TrustReport."
+      }
+    }
+  ],
+  "etl_lineage": {
+    "etl_version": "mip_calibration_signal_etl_dry_run_v1",
+    "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+    "input_source": "tests/fixtures/mip_calibration_signal_adapters/mixed_batch.json",
+    "input_content_sha256": "e4c0c3cb42fac388b85309cb734e6fdb45e21cb366ee08803d84d8ac6a169a16",
+    "output_path": "docs/05_validation/archives/mip_c5_etl_outputs/MIP_C5_DRY_RUN_20260601_mixed_batch_signals.json",
+    "source_systems": [
+      "cls",
+      "geox"
+    ],
+    "records_seen": 2,
+    "signals_written": 2,
+    "adapter_errors": [],
+    "adapter_lineage": {
+      "adapter_version": "mip_geox_cls_calibration_signal_adapter_v1",
+      "geox_count": 1,
+      "cls_count": 1
+    },
+    "blocked_count": 0,
+    "inconclusive_count": 1,
+    "stale_count": 0,
+    "context_only": true,
+    "optimizer_unchanged": true,
+    "decision_surface_unchanged": true,
+    "recommendations_unchanged": true,
+    "live_api": false,
+    "dry_run": true,
+    "note": "Dry-run ETL only \u2014 not production scheduling or evidence approval."
+  },
+  "production_flags": {
+    "approved_for_prod": false,
+    "decisioning_allowed": false,
+    "bayes_h5_research_only": true,
+    "etl_is_dry_run": true
+  }
+}
