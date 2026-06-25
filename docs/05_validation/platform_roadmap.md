@@ -305,6 +305,8 @@ Hierarchical synthetic worlds; geo heterogeneity recovery; partial-pooling / sma
 
 **Explicit:** Orchestration must **consume** platform contracts — not invent parallel semantics, gate names, or “shadow” budget optimizers.
 
+**MMM package-side agents (deferred):** Optional interpretive layers around deterministic MMM outputs — not the modeling engine. See [mmm_package_side_agents_roadmap.md](mmm_package_side_agents_roadmap.md) for prerequisites, boundaries, and five deferred agent roles. Implementation blocked until typed run manifests and failure packets exist.
+
 **Status:** Not implemented in v1.x. Listed for architectural alignment only.
 
 ---

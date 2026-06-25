@@ -2178,6 +2178,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-MMM-AGENTS-ROADMAP — Future package-side support agents (roadmap capture)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-MMM-AGENTS-ROADMAP |
+| **Title** | Future MMM package-side support agents — deferred roadmap |
+| **Status** | **closed** (roadmap capture) |
+| **Evidence** | [mmm_package_side_agents_roadmap.md](../05_validation/mmm_package_side_agents_roadmap.md); [INV-039](#inv-039--auto-retrain-auto-promotion-agentic-orchestration-out-of-v1-scope) |
+| **Outcome** | Five package-side agents + four deferred general agents documented with prerequisites, typed handoff concepts, and examples. No runtime implementation. Agents blocked until `MMMRunManifest`, `MMMFailurePacket`, and MIP agent contracts are stable. |
+| **Next** | MMM deterministic contracts (run manifest, failure packet); GeoX OC; implement agents only if repeated operator pain justifies. |
+
+---
+
 ### INV-MIP-C4 — CalibrationSignal ETL dry-run (complete)
 
 | Field | Value |
