@@ -85,7 +85,8 @@ Train → Validate → Calibrate → Diagnostics → Simulate scenarios → Opti
 - Artifact and semantics contracts (decision vs diagnostic tier)  
 - Lineage and run manifests  
 - Optimization safety gates and environment policies (research vs prod)  
-- Future package-side support agents (deferred roadmap): [docs/05_validation/mmm_package_side_agents_roadmap.md](docs/05_validation/mmm_package_side_agents_roadmap.md)
+- Future package-side support agents (deferred roadmap): [docs/05_validation/mmm_package_side_agents_roadmap.md](docs/05_validation/mmm_package_side_agents_roadmap.md)  
+- MMM→MIP export contract inventory (MMM-EXPORT-001): [docs/05_validation/mmm_to_mip_export_contract_inventory.md](docs/05_validation/mmm_to_mip_export_contract_inventory.md)
 
 ---
 

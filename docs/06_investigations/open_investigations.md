@@ -2191,6 +2191,19 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
+### INV-MMM-EXPORT-CONTRACTS-001 — MMM→MIP export contract inventory (complete)
+
+| Field | Value |
+|-------|-------|
+| **Investigation ID** | INV-MMM-EXPORT-CONTRACTS-001 |
+| **Title** | Governed MMM-to-MIP export contract inventory (MMM-EXPORT-001) |
+| **Status** | **closed** (inventory / docs) |
+| **Evidence** | [mmm_to_mip_export_contract_inventory.md](../05_validation/mmm_to_mip_export_contract_inventory.md) |
+| **Outcome** | Nine artifact families inventoried with status/claim taxonomies; no family currently `EXISTS_GOVERNED_AND_CONSUMABLE_BY_MIP`. ROI/recommendations blocked until RecommendationContract + ExportBundle. |
+| **Next** | MMM-EXPORT-002 typed schemas + fixture `MMMExportBundle`; then EXPORT-003 adapter; MIP-EXPORT-001 ingestion gates. |
+
+---
+
 ### INV-MIP-C4 — CalibrationSignal ETL dry-run (complete)
 
 | Field | Value |
