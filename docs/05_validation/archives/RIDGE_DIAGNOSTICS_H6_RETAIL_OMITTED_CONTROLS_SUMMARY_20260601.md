@@ -29,7 +29,7 @@
 
 ## Stability
 - Fold stability OK: False
-- Geo-fold RMSE mean: 31238.79756485796
+- Geo-fold RMSE mean: 31229.250200436745
 - Coefficient stability available: True
 
 ## Forbidden claims
@@ -42,10 +42,6 @@
 ## Top warnings
 - collinearity:weak_identification_risk:max_abs_corr=0.972
 - control_completeness:missing_required:['holiday', 'promo_flag', 'unemployment_index']
-
-## Calibration evidence (MIP-C1)
-- **CalibrationSignal context:** not attached on this run (explicit).
-- Collinearity replay flag: `False`
 
 ## Production boundary
 - Ridge remains production baseline: True
