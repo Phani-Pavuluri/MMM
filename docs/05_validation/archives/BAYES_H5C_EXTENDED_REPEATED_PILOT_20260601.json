@@ -6,8 +6,7 @@
   "research_only": true,
   "seeds": [
     4400,
-    4401,
-    4402
+    4401
   ],
   "sampler_settings": {
     "inference_backend": "pymc",
@@ -24,201 +23,6 @@
     "extended_mcmc_profile": true
   },
   "per_run": [
-    {
-      "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
-      "role": "recovery_candidate",
-      "h5_classification": "recovery_candidate",
-      "generative_transform": "geometric_adstock",
-      "fitted_transform_expectation": "geometric_adstock",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.2626720099121368,
-      "mu_c_mae": 0.24060604270867136,
-      "beta_gc_coverage_90": 0.25,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "geometric_adstock",
-          "search": "geometric_adstock"
-        },
-        "generative_transform_expected": "geometric_adstock",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
-        "policy_role": "recovery_candidate",
-        "outcome": "pass",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.01,
-        "ess_bulk_min": 405.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "recovery_candidate",
-        "h5_classification": "recovery_candidate",
-        "generative_transform": "geometric_adstock",
-        "generative_params": {
-          "decay": 0.7
-        },
-        "fitted_transform_id": "geometric_adstock",
-        "fitted_transform_expectation": "geometric_adstock",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_warning_expected": false,
-        "recovery_expectation": "improved_beta_recovery_vs_h4c_mismatch"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4400,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
-      "role": "recovery_candidate",
-      "h5_classification": "recovery_candidate",
-      "generative_transform": "geometric_adstock",
-      "fitted_transform_expectation": "geometric_adstock",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.2639690304658199,
-      "mu_c_mae": 0.25152154628196843,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "geometric_adstock",
-          "search": "geometric_adstock"
-        },
-        "generative_transform_expected": "geometric_adstock",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
-        "policy_role": "recovery_candidate",
-        "outcome": "pass",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 772.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "recovery_candidate",
-        "h5_classification": "recovery_candidate",
-        "generative_transform": "geometric_adstock",
-        "generative_params": {
-          "decay": 0.7
-        },
-        "fitted_transform_id": "geometric_adstock",
-        "fitted_transform_expectation": "geometric_adstock",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_warning_expected": false,
-        "recovery_expectation": "improved_beta_recovery_vs_h4c_mismatch"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4401,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
-      "role": "recovery_candidate",
-      "h5_classification": "recovery_candidate",
-      "generative_transform": "geometric_adstock",
-      "fitted_transform_expectation": "geometric_adstock",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.2633938882182095,
-      "mu_c_mae": 0.2525683084288425,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "geometric_adstock",
-          "search": "geometric_adstock"
-        },
-        "generative_transform_expected": "geometric_adstock",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-ADSTOCK-ALIGNED",
-        "policy_role": "recovery_candidate",
-        "outcome": "pass",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 890.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "recovery_candidate",
-        "h5_classification": "recovery_candidate",
-        "generative_transform": "geometric_adstock",
-        "generative_params": {
-          "decay": 0.7
-        },
-        "fitted_transform_id": "geometric_adstock",
-        "fitted_transform_expectation": "geometric_adstock",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_warning_expected": false,
-        "recovery_expectation": "improved_beta_recovery_vs_h4c_mismatch"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4402,
-      "extended_mcmc": true
-    },
     {
       "world_id": "WORLD-BAYES-H5-SATURATION-ALIGNED",
       "role": "recovery_candidate",
@@ -238,6 +42,7 @@
           "search": "hill_saturation"
         },
         "generative_transform_expected": "hill_saturation",
+        "panel_context": "synthetic_world",
         "transform_mismatch_mode": "aligned",
         "transform_mismatch_detected": false,
         "transforms_aligned": true,
@@ -304,6 +109,7 @@
           "search": "hill_saturation"
         },
         "generative_transform_expected": "hill_saturation",
+        "panel_context": "synthetic_world",
         "transform_mismatch_mode": "aligned",
         "transform_mismatch_detected": false,
         "transforms_aligned": true,
@@ -352,273 +158,6 @@
       "extended_mcmc": true
     },
     {
-      "world_id": "WORLD-BAYES-H5-SATURATION-ALIGNED",
-      "role": "recovery_candidate",
-      "h5_classification": "recovery_candidate",
-      "generative_transform": "hill_saturation",
-      "fitted_transform_expectation": "hill_saturation",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.11373296039261747,
-      "mu_c_mae": 0.12223586385960122,
-      "beta_gc_coverage_90": 0.25,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "hill_saturation",
-          "search": "hill_saturation"
-        },
-        "generative_transform_expected": "hill_saturation",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-SATURATION-ALIGNED",
-        "policy_role": "recovery_candidate",
-        "outcome": "pass",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.01,
-        "ess_bulk_min": 656.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "recovery_candidate",
-        "h5_classification": "recovery_candidate",
-        "generative_transform": "hill_saturation",
-        "generative_params": {
-          "half": 2.0,
-          "slope": 1.5
-        },
-        "fitted_transform_id": "hill_saturation",
-        "fitted_transform_expectation": "hill_saturation",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_warning_expected": false,
-        "recovery_expectation": "improved_beta_recovery_vs_h4c_mismatch"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4402,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
-      "role": "transform_mismatch",
-      "h5_classification": "transform_mismatch",
-      "generative_transform": "geometric_adstock",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "intentional_mismatch",
-      "beta_gc_mae": 0.2783413455669551,
-      "mu_c_mae": 0.27667375235392117,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "geometric_adstock",
-        "transform_mismatch_mode": "intentional_mismatch",
-        "transform_mismatch_detected": true,
-        "transforms_aligned": false,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:transform_mismatch:WORLD-BAYES-H5-ADSTOCK-MISMATCH: generative=geometric_adstock fitted=identity"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
-        "policy_role": "transform_mismatch",
-        "outcome": "transform_mismatch_warning",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.01,
-        "ess_bulk_min": 498.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "transform_mismatch",
-        "h5_classification": "transform_mismatch",
-        "generative_transform": "geometric_adstock",
-        "generative_params": {
-          "decay": 0.7
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "intentional_mismatch",
-        "transform_mismatch_warning_expected": true,
-        "model_mismatch": "Outcome adstocked; H5 fit uses identity on raw media"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4400,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
-      "role": "transform_mismatch",
-      "h5_classification": "transform_mismatch",
-      "generative_transform": "geometric_adstock",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "intentional_mismatch",
-      "beta_gc_mae": 0.2773851543070675,
-      "mu_c_mae": 0.27370088502909695,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "geometric_adstock",
-        "transform_mismatch_mode": "intentional_mismatch",
-        "transform_mismatch_detected": true,
-        "transforms_aligned": false,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:transform_mismatch:WORLD-BAYES-H5-ADSTOCK-MISMATCH: generative=geometric_adstock fitted=identity"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
-        "policy_role": "transform_mismatch",
-        "outcome": "transform_mismatch_warning",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 775.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "transform_mismatch",
-        "h5_classification": "transform_mismatch",
-        "generative_transform": "geometric_adstock",
-        "generative_params": {
-          "decay": 0.7
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "intentional_mismatch",
-        "transform_mismatch_warning_expected": true,
-        "model_mismatch": "Outcome adstocked; H5 fit uses identity on raw media"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4401,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
-      "role": "transform_mismatch",
-      "h5_classification": "transform_mismatch",
-      "generative_transform": "geometric_adstock",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "intentional_mismatch",
-      "beta_gc_mae": 0.2774638982182981,
-      "mu_c_mae": 0.2654138524676257,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "geometric_adstock",
-        "transform_mismatch_mode": "intentional_mismatch",
-        "transform_mismatch_detected": true,
-        "transforms_aligned": false,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:transform_mismatch:WORLD-BAYES-H5-ADSTOCK-MISMATCH: generative=geometric_adstock fitted=identity"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-ADSTOCK-MISMATCH",
-        "policy_role": "transform_mismatch",
-        "outcome": "transform_mismatch_warning",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 600.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "transform_mismatch",
-        "h5_classification": "transform_mismatch",
-        "generative_transform": "geometric_adstock",
-        "generative_params": {
-          "decay": 0.7
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "intentional_mismatch",
-        "transform_mismatch_warning_expected": true,
-        "model_mismatch": "Outcome adstocked; H5 fit uses identity on raw media"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4402,
-      "extended_mcmc": true
-    },
-    {
       "world_id": "WORLD-BAYES-H5-SATURATION-MISMATCH",
       "role": "transform_mismatch",
       "h5_classification": "transform_mismatch",
@@ -637,6 +176,7 @@
           "search": "identity"
         },
         "generative_transform_expected": "hill_saturation",
+        "panel_context": "synthetic_world",
         "transform_mismatch_mode": "intentional_mismatch",
         "transform_mismatch_detected": true,
         "transforms_aligned": false,
@@ -705,6 +245,7 @@
           "search": "identity"
         },
         "generative_transform_expected": "hill_saturation",
+        "panel_context": "synthetic_world",
         "transform_mismatch_mode": "intentional_mismatch",
         "transform_mismatch_detected": true,
         "transforms_aligned": false,
@@ -753,745 +294,26 @@
       "has_optimizer_ready_curves": false,
       "nuts_seed": 4401,
       "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-SATURATION-MISMATCH",
-      "role": "transform_mismatch",
-      "h5_classification": "transform_mismatch",
-      "generative_transform": "hill_saturation",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "intentional_mismatch",
-      "beta_gc_mae": 0.09985554154200929,
-      "mu_c_mae": 0.12007720215976256,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "hill_saturation",
-        "transform_mismatch_mode": "intentional_mismatch",
-        "transform_mismatch_detected": true,
-        "transforms_aligned": false,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:transform_mismatch:WORLD-BAYES-H5-SATURATION-MISMATCH: generative=hill_saturation fitted=identity"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-SATURATION-MISMATCH",
-        "policy_role": "transform_mismatch",
-        "outcome": "transform_mismatch_warning",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.06,
-        "ess_bulk_min": 56.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "transform_mismatch",
-        "h5_classification": "transform_mismatch",
-        "generative_transform": "hill_saturation",
-        "generative_params": {
-          "half": 2.0,
-          "slope": 1.5
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "intentional_mismatch",
-        "transform_mismatch_warning_expected": true,
-        "model_mismatch": "Outcome saturated; H5 fit uses identity on raw media"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4402,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
-      "role": "weak_identification",
-      "h5_classification": "weak_identification",
-      "generative_transform": "correlated",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.26757764767644276,
-      "mu_c_mae": 0.2588253173840931,
-      "beta_gc_coverage_90": 0.25,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "correlated",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:collinearity:WORLD-BAYES-H5-CORRELATED-CHANNELS: max_channel_corr=0.953"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
-        "policy_role": "weak_identification",
-        "outcome": "warning_or_restricted",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 1122.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "weak_identification",
-        "h5_classification": "weak_identification",
-        "generative_transform": "correlated",
-        "generative_params": {
-          "rho": 0.92
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "collinearity_warning_expected": true
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4400,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
-      "role": "weak_identification",
-      "h5_classification": "weak_identification",
-      "generative_transform": "correlated",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.26619122157811337,
-      "mu_c_mae": 0.2699399618096417,
-      "beta_gc_coverage_90": 0.25,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "correlated",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:collinearity:WORLD-BAYES-H5-CORRELATED-CHANNELS: max_channel_corr=0.953"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
-        "policy_role": "weak_identification",
-        "outcome": "warning_or_restricted",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 965.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "weak_identification",
-        "h5_classification": "weak_identification",
-        "generative_transform": "correlated",
-        "generative_params": {
-          "rho": 0.92
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "collinearity_warning_expected": true
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4401,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
-      "role": "weak_identification",
-      "h5_classification": "weak_identification",
-      "generative_transform": "correlated",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.26698847429325967,
-      "mu_c_mae": 0.26441000608315574,
-      "beta_gc_coverage_90": 0.25,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "correlated",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:collinearity:WORLD-BAYES-H5-CORRELATED-CHANNELS: max_channel_corr=0.953"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-CORRELATED-CHANNELS",
-        "policy_role": "weak_identification",
-        "outcome": "warning_or_restricted",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 1106.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "weak_identification",
-        "h5_classification": "weak_identification",
-        "generative_transform": "correlated",
-        "generative_params": {
-          "rho": 0.92
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "collinearity_warning_expected": true
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4402,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
-      "role": "weak_identification",
-      "h5_classification": "weak_identification",
-      "generative_transform": "weak_signal",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.2786521513715499,
-      "mu_c_mae": 0.26410806447041335,
-      "beta_gc_coverage_90": 0.25,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "weak_signal",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:weak_identification:WORLD-BAYES-H5-WEAK-SIGNAL: weak_signal_generative"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
-        "policy_role": "weak_identification",
-        "outcome": "warning_or_restricted",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.01,
-        "ess_bulk_min": 944.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "weak_identification",
-        "h5_classification": "weak_identification",
-        "generative_transform": "weak_signal",
-        "generative_params": {
-          "media_scale": 0.2,
-          "noise_sigma": 0.45
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "recovery_expectation": "poor_beta_recovery"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4400,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
-      "role": "weak_identification",
-      "h5_classification": "weak_identification",
-      "generative_transform": "weak_signal",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.2801447573803842,
-      "mu_c_mae": 0.2715846760273607,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "weak_signal",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:weak_identification:WORLD-BAYES-H5-WEAK-SIGNAL: weak_signal_generative"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
-        "policy_role": "weak_identification",
-        "outcome": "warning_or_restricted",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 830.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "weak_identification",
-        "h5_classification": "weak_identification",
-        "generative_transform": "weak_signal",
-        "generative_params": {
-          "media_scale": 0.2,
-          "noise_sigma": 0.45
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "recovery_expectation": "poor_beta_recovery"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4401,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
-      "role": "weak_identification",
-      "h5_classification": "weak_identification",
-      "generative_transform": "weak_signal",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.280052319478908,
-      "mu_c_mae": 0.2670785459942048,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": null,
-      "shrinkage_ratio_sparse_vs_true_mu": null,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "weak_signal",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [
-        "h5:weak_identification:WORLD-BAYES-H5-WEAK-SIGNAL: weak_signal_generative"
-      ],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-WEAK-SIGNAL",
-        "policy_role": "weak_identification",
-        "outcome": "warning_or_restricted",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.0,
-        "ess_bulk_min": 886.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "weak_identification",
-        "h5_classification": "weak_identification",
-        "generative_transform": "weak_signal",
-        "generative_params": {
-          "media_scale": 0.2,
-          "noise_sigma": 0.45
-        },
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "recovery_expectation": "poor_beta_recovery"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4402,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
-      "role": "recovery_candidate",
-      "h5_classification": "recovery_candidate",
-      "generative_transform": "linear",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.26873975998734995,
-      "mu_c_mae": 0.26208467979825784,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": 0.06749331235293995,
-      "shrinkage_ratio_sparse_vs_true_mu": 14.760624962241751,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "linear",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
-        "policy_role": "recovery_candidate",
-        "outcome": "pass",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.01,
-        "ess_bulk_min": 467.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "recovery_candidate",
-        "h5_classification": "recovery_candidate",
-        "generative_transform": "linear",
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "sparse_role": "recovery_not_stress"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4400,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
-      "role": "recovery_candidate",
-      "h5_classification": "recovery_candidate",
-      "generative_transform": "linear",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.2689706036140212,
-      "mu_c_mae": 0.26240282690341465,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": 0.07154719125536844,
-      "shrinkage_ratio_sparse_vs_true_mu": 14.623392386703426,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "linear",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
-        "policy_role": "recovery_candidate",
-        "outcome": "pass",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.01,
-        "ess_bulk_min": 472.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "recovery_candidate",
-        "h5_classification": "recovery_candidate",
-        "generative_transform": "linear",
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "sparse_role": "recovery_not_stress"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4401,
-      "extended_mcmc": true
-    },
-    {
-      "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
-      "role": "recovery_candidate",
-      "h5_classification": "recovery_candidate",
-      "generative_transform": "linear",
-      "fitted_transform_expectation": "identity",
-      "transform_mismatch_mode": "aligned",
-      "beta_gc_mae": 0.26776046683375815,
-      "mu_c_mae": 0.2669583981700834,
-      "beta_gc_coverage_90": 0.0,
-      "shrinkage_ratio_sparse": 0.08683742567241991,
-      "shrinkage_ratio_sparse_vs_true_mu": 14.675846308104052,
-      "h5_transform_diagnostics": {
-        "transform_registry_id": "bayes_h5_media_transform_registry_v1",
-        "media_transforms_by_channel": {
-          "tv": "identity",
-          "search": "identity"
-        },
-        "generative_transform_expected": "linear",
-        "transform_mismatch_mode": "aligned",
-        "transform_mismatch_detected": false,
-        "transforms_aligned": true,
-        "research_only": true
-      },
-      "h5_diagnostic_warnings": [],
-      "conflict_warnings": [],
-      "policy_outcomes": {
-        "world_id": "WORLD-BAYES-H5-SPARSE-RECOVERY",
-        "policy_role": "recovery_candidate",
-        "outcome": "pass",
-        "hard_gate": false,
-        "fail_for_claim": false,
-        "global_model_failure": false,
-        "production_promotion": false
-      },
-      "convergence": {
-        "rhat_max": 1.01,
-        "ess_bulk_min": 608.0
-      },
-      "expected_diagnostic_behavior": {
-        "role": "recovery_candidate",
-        "h5_classification": "recovery_candidate",
-        "generative_transform": "linear",
-        "fitted_transform_id": "identity",
-        "fitted_transform_expectation": "identity",
-        "transform_mismatch_mode": "aligned",
-        "sparse_role": "recovery_not_stress"
-      },
-      "research_only": true,
-      "approved_for_prod": false,
-      "prod_decisioning_allowed": false,
-      "production_promotion": false,
-      "hard_gate": false,
-      "decision_grade": false,
-      "production_decision_surface": false,
-      "has_decision_surface": false,
-      "has_budget_recommendation": false,
-      "has_optimizer_ready_curves": false,
-      "nuts_seed": 4402,
-      "extended_mcmc": true
     }
   ],
   "aggregate_by_world": {
-    "WORLD-BAYES-H5-ADSTOCK-ALIGNED": {
-      "n_runs": 3,
-      "beta_gc_mae": {
-        "n": 3,
-        "mean": 0.26334497619872205,
-        "median": 0.2633938882182095,
-        "min": 0.2626720099121368,
-        "max": 0.2639690304658199,
-        "std": 0.0005306347572526374
-      },
-      "mu_c_mae": {
-        "n": 3,
-        "mean": 0.2482319658064941,
-        "median": 0.25152154628196843,
-        "min": 0.24060604270867136,
-        "max": 0.2525683084288425,
-        "std": 0.0054092485657105055
-      },
-      "transform_mismatch_warning_rate": 0.0,
-      "unexpected_mismatch_warning_rate": 0.0,
-      "weak_identification_warning_rate": 0.0,
-      "collinearity_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-ADSTOCK-MISMATCH": {
-      "n_runs": 3,
-      "beta_gc_mae": {
-        "n": 3,
-        "mean": 0.27773013269744024,
-        "median": 0.2774638982182981,
-        "min": 0.2773851543070675,
-        "max": 0.2783413455669551,
-        "std": 0.0004333866862932991
-      },
-      "mu_c_mae": {
-        "n": 3,
-        "mean": 0.27192949661688126,
-        "median": 0.27370088502909695,
-        "min": 0.2654138524676257,
-        "max": 0.27667375235392117,
-        "std": 0.004764430644022292
-      },
-      "transform_mismatch_warning_rate": 1.0,
-      "unexpected_mismatch_warning_rate": 0.0,
-      "weak_identification_warning_rate": 0.0,
-      "collinearity_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-CORRELATED-CHANNELS": {
-      "n_runs": 3,
-      "beta_gc_mae": {
-        "n": 3,
-        "mean": 0.2669191145159386,
-        "median": 0.26698847429325967,
-        "min": 0.26619122157811337,
-        "max": 0.26757764767644276,
-        "std": 0.0005681269902435191
-      },
-      "mu_c_mae": {
-        "n": 3,
-        "mean": 0.2643917617589635,
-        "median": 0.26441000608315574,
-        "min": 0.2588253173840931,
-        "max": 0.2699399618096417,
-        "std": 0.0045375529248056585
-      },
-      "transform_mismatch_warning_rate": 0.0,
-      "unexpected_mismatch_warning_rate": 0.0,
-      "weak_identification_warning_rate": 0.0,
-      "collinearity_warning_rate": 1.0
-    },
     "WORLD-BAYES-H5-SATURATION-ALIGNED": {
-      "n_runs": 3,
+      "n_runs": 2,
       "beta_gc_mae": {
-        "n": 3,
-        "mean": 0.1136894301121412,
-        "median": 0.11373296039261747,
+        "n": 2,
+        "mean": 0.11366766497190305,
+        "median": 0.11366766497190305,
         "min": 0.11351171811442258,
         "max": 0.11382361182938351,
-        "std": 0.00013099767516204437
+        "std": 0.00015594685748046566
       },
       "mu_c_mae": {
-        "n": 3,
-        "mean": 0.12062637981754781,
-        "median": 0.12004422485137828,
+        "n": 2,
+        "mean": 0.11982163779652111,
+        "median": 0.11982163779652111,
         "min": 0.11959905074166394,
-        "max": 0.12223586385960122,
-        "std": 0.0011524970450311873
+        "max": 0.12004422485137828,
+        "std": 0.00022258705485717067
       },
       "transform_mismatch_warning_rate": 0.0,
       "unexpected_mismatch_warning_rate": 0.0,
@@ -1499,142 +321,61 @@
       "collinearity_warning_rate": 0.0
     },
     "WORLD-BAYES-H5-SATURATION-MISMATCH": {
-      "n_runs": 3,
+      "n_runs": 2,
       "beta_gc_mae": {
-        "n": 3,
-        "mean": 0.0994691475386634,
-        "median": 0.09939248650118965,
+        "n": 2,
+        "mean": 0.09927595053699045,
+        "median": 0.09927595053699045,
         "min": 0.09915941457279127,
-        "max": 0.09985554154200929,
-        "std": 0.00028931629210730587
+        "max": 0.09939248650118965,
+        "std": 0.00011653596419918671
       },
       "mu_c_mae": {
-        "n": 3,
-        "mean": 0.11250584467862852,
-        "median": 0.11102764355733757,
+        "n": 2,
+        "mean": 0.10872016593806151,
+        "median": 0.10872016593806151,
         "min": 0.10641268831878545,
-        "max": 0.12007720215976256,
-        "std": 0.00567559356918159
+        "max": 0.11102764355733757,
+        "std": 0.002307477619276063
       },
       "transform_mismatch_warning_rate": 1.0,
       "unexpected_mismatch_warning_rate": 0.0,
       "weak_identification_warning_rate": 0.0,
-      "collinearity_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-SPARSE-RECOVERY": {
-      "n_runs": 3,
-      "beta_gc_mae": {
-        "n": 3,
-        "mean": 0.2684902768117098,
-        "median": 0.26873975998734995,
-        "min": 0.26776046683375815,
-        "max": 0.2689706036140212,
-        "std": 0.0005245881863786026
-      },
-      "mu_c_mae": {
-        "n": 3,
-        "mean": 0.26381530162391864,
-        "median": 0.26240282690341465,
-        "min": 0.26208467979825784,
-        "max": 0.2669583981700834,
-        "std": 0.002226296823428916
-      },
-      "transform_mismatch_warning_rate": 0.0,
-      "unexpected_mismatch_warning_rate": 0.0,
-      "weak_identification_warning_rate": 0.0,
-      "collinearity_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-WEAK-SIGNAL": {
-      "n_runs": 3,
-      "beta_gc_mae": {
-        "n": 3,
-        "mean": 0.2796164094102807,
-        "median": 0.280052319478908,
-        "min": 0.2786521513715499,
-        "max": 0.2801447573803842,
-        "std": 0.0006828769363753349
-      },
-      "mu_c_mae": {
-        "n": 3,
-        "mean": 0.2675904288306596,
-        "median": 0.2670785459942048,
-        "min": 0.26410806447041335,
-        "max": 0.2715846760273607,
-        "std": 0.0030737000636651183
-      },
-      "transform_mismatch_warning_rate": 0.0,
-      "unexpected_mismatch_warning_rate": 0.0,
-      "weak_identification_warning_rate": 1.0,
       "collinearity_warning_rate": 0.0
     }
   },
   "h4c_baseline_comparison": {
-    "WORLD-BAYES-H5-ADSTOCK-ALIGNED": {
-      "h4c_baseline_world": "WORLD-BAYES-H4C-ADSTOCKED-MEDIA",
-      "h4c_beta_gc_mae": 0.2792256953538691,
-      "h5_beta_gc_mae_mean": 0.26334497619872205,
-      "delta_vs_h4c": -0.01588071915514705,
-      "improved_vs_h4c": true
-    },
-    "WORLD-BAYES-H5-ADSTOCK-MISMATCH": {
-      "h4c_baseline_world": "WORLD-BAYES-H4C-ADSTOCKED-MEDIA",
-      "h4c_beta_gc_mae": 0.2792256953538691,
-      "h5_beta_gc_mae_mean": 0.27773013269744024,
-      "delta_vs_h4c": -0.0014955626564288615,
-      "improved_vs_h4c": true
-    },
-    "WORLD-BAYES-H5-CORRELATED-CHANNELS": {
-      "h4c_baseline_world": "WORLD-BAYES-H4C-CORRELATED-CHANNELS",
-      "h4c_beta_gc_mae": 0.26810702624751037,
-      "h5_beta_gc_mae_mean": 0.2669191145159386,
-      "delta_vs_h4c": -0.001187911731571789,
-      "improved_vs_h4c": true
-    },
     "WORLD-BAYES-H5-SATURATION-ALIGNED": {
       "h4c_baseline_world": "WORLD-BAYES-H4C-SATURATION",
       "h4c_beta_gc_mae": 0.17106256135771242,
-      "h5_beta_gc_mae_mean": 0.1136894301121412,
-      "delta_vs_h4c": -0.057373131245571224,
+      "h5_beta_gc_mae_mean": 0.11366766497190305,
+      "delta_vs_h4c": -0.05739489638580937,
       "improved_vs_h4c": true
     },
     "WORLD-BAYES-H5-SATURATION-MISMATCH": {
       "h4c_baseline_world": "WORLD-BAYES-H4C-SATURATION",
       "h4c_beta_gc_mae": 0.17106256135771242,
-      "h5_beta_gc_mae_mean": 0.0994691475386634,
-      "delta_vs_h4c": -0.07159341381904902,
-      "improved_vs_h4c": true
-    },
-    "WORLD-BAYES-H5-SPARSE-RECOVERY": {
-      "h4c_baseline_world": "WORLD-BAYES-H4C-SPARSE-RECOVERY",
-      "h4c_beta_gc_mae": 0.26889435621118535,
-      "h5_beta_gc_mae_mean": 0.2684902768117098,
-      "delta_vs_h4c": -0.00040407939947556537,
-      "improved_vs_h4c": true
-    },
-    "WORLD-BAYES-H5-WEAK-SIGNAL": {
-      "h4c_baseline_world": "WORLD-BAYES-H4C-WEAK-SIGNAL",
-      "h4c_beta_gc_mae": 0.2843358011752104,
-      "h5_beta_gc_mae_mean": 0.2796164094102807,
-      "delta_vs_h4c": -0.004719391764929692,
+      "h5_beta_gc_mae_mean": 0.09927595053699045,
+      "delta_vs_h4c": -0.07178661082072196,
       "improved_vs_h4c": true
     }
   },
   "stability_summary": {
     "WORLD-BAYES-H5-ADSTOCK-ALIGNED": {
-      "beta_gc_mae_mean": 0.26334497619872205,
-      "beta_gc_mae_std": 0.0005306347572526374,
-      "improved_vs_h4c_all_seeds": true,
-      "stable_improvement": true
+      "beta_gc_mae_mean": null,
+      "beta_gc_mae_std": null,
+      "improved_vs_h4c_all_seeds": null,
+      "stable_improvement": null
     },
     "WORLD-BAYES-H5-SATURATION-ALIGNED": {
-      "beta_gc_mae_mean": 0.1136894301121412,
-      "beta_gc_mae_std": 0.00013099767516204437,
+      "beta_gc_mae_mean": 0.11366766497190305,
+      "beta_gc_mae_std": 0.00015594685748046566,
       "improved_vs_h4c_all_seeds": true,
       "stable_improvement": true
     }
   },
   "mismatch_warning_rate_by_world": {
-    "WORLD-BAYES-H5-ADSTOCK-MISMATCH": 1.0,
+    "WORLD-BAYES-H5-ADSTOCK-MISMATCH": 0.0,
     "WORLD-BAYES-H5-SATURATION-MISMATCH": 1.0
   },
   "hard_gate": false,
@@ -1644,84 +385,13 @@
   "decision_grade": false,
   "outputs_are_diagnostic_only": true,
   "production_decision_surface": false,
-  "comparison_to_h5b_fast_pilot": {
-    "WORLD-BAYES-H5-ADSTOCK-ALIGNED": {
-      "h5b_beta_gc_mae_mean": 0.26436036255532896,
-      "current_beta_gc_mae_mean": 0.26334497619872205,
-      "delta_vs_h5b": -0.0010153863566069177,
-      "material_change_vs_h5b": false,
-      "h5b_transform_mismatch_warning_rate": 0.0,
-      "current_transform_mismatch_warning_rate": 0.0,
-      "h5b_unexpected_mismatch_warning_rate": 0.0,
-      "current_unexpected_mismatch_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-SATURATION-ALIGNED": {
-      "h5b_beta_gc_mae_mean": 0.11396560578665772,
-      "current_beta_gc_mae_mean": 0.1136894301121412,
-      "delta_vs_h5b": -0.00027617567451652947,
-      "material_change_vs_h5b": false,
-      "h5b_transform_mismatch_warning_rate": 0.0,
-      "current_transform_mismatch_warning_rate": 0.0,
-      "h5b_unexpected_mismatch_warning_rate": 0.0,
-      "current_unexpected_mismatch_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-ADSTOCK-MISMATCH": {
-      "h5b_beta_gc_mae_mean": 0.27792360289283724,
-      "current_beta_gc_mae_mean": 0.27773013269744024,
-      "delta_vs_h5b": -0.00019347019539700527,
-      "material_change_vs_h5b": false,
-      "h5b_transform_mismatch_warning_rate": 1.0,
-      "current_transform_mismatch_warning_rate": 1.0,
-      "h5b_unexpected_mismatch_warning_rate": 0.0,
-      "current_unexpected_mismatch_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-SATURATION-MISMATCH": {
-      "h5b_beta_gc_mae_mean": 0.09968495083893801,
-      "current_beta_gc_mae_mean": 0.0994691475386634,
-      "delta_vs_h5b": -0.00021580330027461125,
-      "material_change_vs_h5b": false,
-      "h5b_transform_mismatch_warning_rate": 1.0,
-      "current_transform_mismatch_warning_rate": 1.0,
-      "h5b_unexpected_mismatch_warning_rate": 0.0,
-      "current_unexpected_mismatch_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-CORRELATED-CHANNELS": {
-      "h5b_beta_gc_mae_mean": 0.26756556036728957,
-      "current_beta_gc_mae_mean": 0.2669191145159386,
-      "delta_vs_h5b": -0.0006464458513509852,
-      "material_change_vs_h5b": false,
-      "h5b_transform_mismatch_warning_rate": 0.0,
-      "current_transform_mismatch_warning_rate": 0.0,
-      "h5b_unexpected_mismatch_warning_rate": 0.0,
-      "current_unexpected_mismatch_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-WEAK-SIGNAL": {
-      "h5b_beta_gc_mae_mean": 0.28269150734878473,
-      "current_beta_gc_mae_mean": 0.2796164094102807,
-      "delta_vs_h5b": -0.0030750979385040234,
-      "material_change_vs_h5b": false,
-      "h5b_transform_mismatch_warning_rate": 0.0,
-      "current_transform_mismatch_warning_rate": 0.0,
-      "h5b_unexpected_mismatch_warning_rate": 0.0,
-      "current_unexpected_mismatch_warning_rate": 0.0
-    },
-    "WORLD-BAYES-H5-SPARSE-RECOVERY": {
-      "h5b_beta_gc_mae_mean": 0.2688725571600638,
-      "current_beta_gc_mae_mean": 0.2684902768117098,
-      "delta_vs_h5b": -0.0003822803483540249,
-      "material_change_vs_h5b": false,
-      "h5b_transform_mismatch_warning_rate": 0.0,
-      "current_transform_mismatch_warning_rate": 0.0,
-      "h5b_unexpected_mismatch_warning_rate": 0.0,
-      "current_unexpected_mismatch_warning_rate": 0.0
-    }
-  },
+  "comparison_to_h5b_fast_pilot": {},
   "h5c_conclusions": {
     "saturation_aligned_improvement_holds": true,
-    "adstock_aligned_improvement_holds": true,
-    "mismatch_warnings_clean": true,
+    "adstock_aligned_improvement_holds": false,
+    "mismatch_warnings_clean": false,
     "unexpected_mismatch_clean": true,
-    "weak_id_diagnostics_present": true,
+    "weak_id_diagnostics_present": false,
     "sparse_recovery_report_only": true,
     "material_change_any_world": false,
     "accepted_research_evidence": "H5 transform-aligned spec improves saturation recovery vs H4c MVP mismatch; adstock gain modest but directionally stable; diagnostics behave as designed.",

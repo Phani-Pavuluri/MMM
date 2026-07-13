@@ -151,22 +151,22 @@
       "note": "Optional cross-check vs historical GeoX/CLS CalibrationSignal or replay evidence when documented"
     },
     "excluded_fields": [
-      "optimizer_ready_curves",
-      "recommendation",
-      "optimizer_input",
       "production_trust_report",
+      "idata",
+      "approved_for_prod",
+      "prod_decisioning_allowed",
+      "production_recommendation",
+      "optimizer_input",
+      "production_decision_surface",
+      "hard_gate",
       "production_promotion",
       "budget_recommendation_payload",
-      "prod_decisioning_allowed",
-      "budget_recommendation",
-      "production_recommendation",
-      "production_decision_surface",
-      "idata",
+      "optimizer_ready_curves",
+      "recommendation",
       "linear_coef_draws",
-      "approved_for_prod",
+      "decision_surface",
       "decision_grade",
-      "hard_gate",
-      "decision_surface"
+      "budget_recommendation"
     ],
     "production_flags": {
       "hard_gate": false,

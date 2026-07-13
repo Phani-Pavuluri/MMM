@@ -86,7 +86,8 @@ Train → Validate → Calibrate → Diagnostics → Simulate scenarios → Opti
 - Lineage and run manifests  
 - Optimization safety gates and environment policies (research vs prod)  
 - Future package-side support agents (deferred roadmap): [docs/05_validation/mmm_package_side_agents_roadmap.md](docs/05_validation/mmm_package_side_agents_roadmap.md)  
-- MMM→MIP export contract inventory (MMM-EXPORT-001): [docs/05_validation/mmm_to_mip_export_contract_inventory.md](docs/05_validation/mmm_to_mip_export_contract_inventory.md)
+- MMM→MIP export contract inventory (MMM-EXPORT-001): [docs/05_validation/mmm_to_mip_export_contract_inventory.md](docs/05_validation/mmm_to_mip_export_contract_inventory.md)  
+- MMM→MIP export schemas + fixtures (MMM-EXPORT-002): [docs/05_validation/mmm_export_schema_and_fixture_contract.md](docs/05_validation/mmm_export_schema_and_fixture_contract.md)
 
 ---
 

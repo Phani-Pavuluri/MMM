@@ -302,6 +302,10 @@ Every governed MMM → MIP export artifact (or future schema) **must** carry:
 
 **Overall inventory verdict:** **No** MMM family is currently `EXISTS_GOVERNED_AND_CONSUMABLE_BY_MIP`. MIP may only give **meta readiness** answers that cite this inventory (“fit internals exist; governed ROI/recommendation exports do not”).
 
+### EXPORT-002 progress
+
+Typed schemas + synthetic fixture bundles land in [mmm_export_schema_and_fixture_contract.md](mmm_export_schema_and_fixture_contract.md) (`mmm/contracts/mip_export.py`, `tests/fixtures/mip_export/`). Fixtures exercise readiness, ROI-blocked, demo ROI, optimizer-without-rec, and RecommendationContract **shape** — still **not** production-consumable. Runtime adapter remains **MMM-EXPORT-003**.
+
 ---
 
 ## 9. Examples
@@ -358,7 +362,7 @@ Otherwise: blocked.
 
 | ID | Scope | Output |
 |----|-------|--------|
-| **MMM-EXPORT-002** | Typed schemas + fixture `MMMExportBundle` | JSON Schema / pydantic placeholders + synthetic fixture with demo flags |
+| **MMM-EXPORT-002** | Typed schemas + fixture `MMMExportBundle` | ✅ Complete — [schema/fixture contract](mmm_export_schema_and_fixture_contract.md) |
 | **MMM-EXPORT-003** | Runtime adapter | Map existing package artifacts → populated export families (still claim-gated) |
 | **MIP-EXPORT-001** | MIP-side | Ingest `MMMExportBundle`; answerability gates for LLM/demo/recommendation |
 

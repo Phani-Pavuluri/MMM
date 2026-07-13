@@ -1,0 +1,71 @@
+{
+  "artifact_type": "MMMExportBundle",
+  "schema_version": "mmm_mip_export_v1",
+  "model_run_id": "fixture-demo-roi-20260601",
+  "training_data_fingerprint": "sha256:fixture-panel-demo-roi-001",
+  "model_artifact_fingerprint": "sha256:fixture-fit-demo-roi-001",
+  "source_artifacts": [
+    "tests/fixtures/mip_export/demo_fixture_roi_bundle.json"
+  ],
+  "generated_at": "2026-06-01T00:00:00Z",
+  "package_version": "0.1.0-fixture",
+  "git_commit": "fixture0000000000000000000000000000000003",
+  "inventory_status": "EXISTS_PARTIAL_NOT_CONSUMABLE",
+  "llm_exposure_allowed": false,
+  "demo_fixture_allowed": true,
+  "recommendation_allowed": false,
+  "production_claim_allowed": false,
+  "planning_allowed": false,
+  "allowed_claims": ["demo_fixture_only"],
+  "forbidden_claims": [
+    "production_claim_allowed",
+    "synthetic_demo_not_business_truth",
+    "channel_roi_ranking",
+    "budget_shift_recommendation",
+    "incremental_roi_truth"
+  ],
+  "artifact_safety_status": "demo_fixture_only",
+  "synthetic_demo_label": "SYNTHETIC_DEMO_NOT_BUSINESS_TRUTH",
+  "artifacts": [
+    {
+      "artifact_type": "MMMChannelROIArtifact",
+      "schema_version": "mmm_mip_export_v1",
+      "model_run_id": "fixture-demo-roi-20260601",
+      "training_data_fingerprint": "sha256:fixture-panel-demo-roi-001",
+      "model_artifact_fingerprint": "sha256:fixture-fit-demo-roi-001",
+      "source_artifacts": ["synthetic_demo_roi"],
+      "model_form": "semi_log",
+      "estimand": "synthetic_demo_roi",
+      "time_window": "demo",
+      "geo_scope": "demo",
+      "channel_scope": ["meta", "search", "tv"],
+      "outcome_metric": "revenue",
+      "spend_metric": "media_spend",
+      "currency": "USD",
+      "uncertainty_status": "present",
+      "diagnostic_status": "not_applicable",
+      "promotion_status": "demo_synthetic",
+      "calibration_status": "not_applicable",
+      "planning_allowed": false,
+      "llm_exposure_allowed": false,
+      "demo_fixture_allowed": true,
+      "recommendation_allowed": false,
+      "production_claim_allowed": false,
+      "allowed_claims": ["demo_fixture_only"],
+      "forbidden_claims": [
+        "production_claim_allowed",
+        "synthetic_demo_not_business_truth",
+        "incremental_roi_truth",
+        "channel_roi_ranking"
+      ],
+      "generated_at": "2026-06-01T00:00:00Z",
+      "package_version": "0.1.0-fixture",
+      "git_commit": "fixture0000000000000000000000000000000003",
+      "artifact_safety_status": "demo_fixture_only",
+      "synthetic_demo_label": "SYNTHETIC_DEMO_NOT_BUSINESS_TRUTH",
+      "roi_by_channel": {"meta": 0.9, "search": 1.1, "tv": 0.4},
+      "roas_by_channel": {"meta": 1.5, "search": 2.0, "tv": 0.8},
+      "has_roi_values": true
+    }
+  ]
+}

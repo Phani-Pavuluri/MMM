@@ -96,6 +96,7 @@ Operational workflows for analysts and data scientists:
 | MIP-C6 Integration readiness checkpoint ✅ | [AUDIT-MIP-C6](audits/AUDIT-MIP-C6_INTEGRATION_READINESS_CHECKPOINT.md) — pause before live scheduler; GeoX OC recommended next |
 | Future MMM package-side support agents (deferred) | [mmm_package_side_agents_roadmap.md](05_validation/mmm_package_side_agents_roadmap.md) — roadmap capture only; no runtime implementation |
 | MMM-EXPORT-001 MMM→MIP export contract inventory ✅ | [mmm_to_mip_export_contract_inventory.md](05_validation/mmm_to_mip_export_contract_inventory.md) — what MIP may / must not claim; next EXPORT-002 |
+| MMM-EXPORT-002 Typed export schemas + fixtures ✅ | [mmm_export_schema_and_fixture_contract.md](05_validation/mmm_export_schema_and_fixture_contract.md) · `mmm/contracts/mip_export.py` · `tests/fixtures/mip_export/` |
 | INV-H4-001 sparse pooling investigation | [06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md](06_investigations/INV-H4-001_SPARSE_POOLING_BEHAVIOR.md) |
 | INV-H4-001b variant sweep JSON | [05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json](05_validation/archives/BAYES_H4_SPARSE_VARIANT_SWEEP_20260601.json) |
 | Bayesian Geo MMM architecture refinement | [05_validation/bayesian_hierarchical_geo_mmm_refinement.md](05_validation/bayesian_hierarchical_geo_mmm_refinement.md) |

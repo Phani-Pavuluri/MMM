@@ -2196,11 +2196,11 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | Field | Value |
 |-------|-------|
 | **Investigation ID** | INV-MMM-EXPORT-CONTRACTS-001 |
-| **Title** | Governed MMM-to-MIP export contract inventory (MMM-EXPORT-001) |
-| **Status** | **closed** (inventory / docs) |
-| **Evidence** | [mmm_to_mip_export_contract_inventory.md](../05_validation/mmm_to_mip_export_contract_inventory.md) |
-| **Outcome** | Nine artifact families inventoried with status/claim taxonomies; no family currently `EXISTS_GOVERNED_AND_CONSUMABLE_BY_MIP`. ROI/recommendations blocked until RecommendationContract + ExportBundle. |
-| **Next** | MMM-EXPORT-002 typed schemas + fixture `MMMExportBundle`; then EXPORT-003 adapter; MIP-EXPORT-001 ingestion gates. |
+| **Title** | Governed MMM-to-MIP export contract inventory (MMM-EXPORT-001) + schemas/fixtures (MMM-EXPORT-002) |
+| **Status** | **open** (EXPORT-002 complete; EXPORT-003 pending) |
+| **Evidence** | [inventory](../05_validation/mmm_to_mip_export_contract_inventory.md); [schema/fixtures](../05_validation/mmm_export_schema_and_fixture_contract.md); `mmm/contracts/mip_export.py`; `tests/fixtures/mip_export/`; `tests/contracts/test_mmm_mip_export_contracts.py` |
+| **Outcome** | EXPORT-001 inventory: no family MIP-consumable. EXPORT-002: typed schemas, validators, five synthetic fixture bundles; production/recommendation exposure blocked. |
+| **Next** | **MMM-EXPORT-003** runtime adapter from package artifacts → `MMMExportBundle` (claim-gated); then MIP-EXPORT-001 ingestion. |
 
 ---
 

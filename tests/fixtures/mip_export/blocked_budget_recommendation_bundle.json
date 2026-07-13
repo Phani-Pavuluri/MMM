@@ -1,0 +1,68 @@
+{
+  "artifact_type": "MMMExportBundle",
+  "schema_version": "mmm_mip_export_v1",
+  "model_run_id": "fixture-budget-blocked-20260601",
+  "training_data_fingerprint": "sha256:fixture-panel-budget-blocked-001",
+  "model_artifact_fingerprint": "sha256:fixture-fit-budget-blocked-001",
+  "source_artifacts": [
+    "tests/fixtures/mip_export/blocked_budget_recommendation_bundle.json"
+  ],
+  "generated_at": "2026-06-01T00:00:00Z",
+  "package_version": "0.1.0-fixture",
+  "git_commit": "fixture0000000000000000000000000000000004",
+  "inventory_status": "EXISTS_PARTIAL_NOT_CONSUMABLE",
+  "llm_exposure_allowed": true,
+  "demo_fixture_allowed": false,
+  "recommendation_allowed": false,
+  "production_claim_allowed": false,
+  "planning_allowed": false,
+  "allowed_claims": ["readiness_explanation_allowed", "diagnostic_explanation_allowed"],
+  "forbidden_claims": [
+    "blocked_until_recommendation_contract",
+    "budget_shift_recommendation",
+    "budget_reallocation",
+    "move_spend_between_channels",
+    "optimize_budget_advice"
+  ],
+  "artifact_safety_status": "blocked",
+  "artifacts": [
+    {
+      "artifact_type": "MMMOptimizerResultArtifact",
+      "schema_version": "mmm_mip_export_v1",
+      "model_run_id": "fixture-budget-blocked-20260601",
+      "training_data_fingerprint": "sha256:fixture-panel-budget-blocked-001",
+      "model_artifact_fingerprint": "sha256:fixture-fit-budget-blocked-001",
+      "source_artifacts": ["optimize_budget.json"],
+      "model_form": "semi_log",
+      "estimand": "constrained_budget_optimizer_result_not_recommendation",
+      "time_window": "2024-W01/2025-W52",
+      "geo_scope": "national",
+      "channel_scope": ["meta", "search"],
+      "outcome_metric": "revenue",
+      "spend_metric": "media_spend",
+      "currency": "USD",
+      "uncertainty_status": "partial",
+      "diagnostic_status": "warn",
+      "promotion_status": "planning_candidate",
+      "calibration_status": "none",
+      "planning_allowed": false,
+      "llm_exposure_allowed": true,
+      "demo_fixture_allowed": false,
+      "recommendation_allowed": false,
+      "production_claim_allowed": false,
+      "allowed_claims": ["diagnostic_explanation_allowed", "readiness_explanation_allowed"],
+      "forbidden_claims": [
+        "blocked_until_recommendation_contract",
+        "budget_shift_recommendation",
+        "move_spend_between_channels"
+      ],
+      "generated_at": "2026-06-01T00:00:00Z",
+      "package_version": "0.1.0-fixture",
+      "git_commit": "fixture0000000000000000000000000000000004",
+      "artifact_safety_status": "blocked",
+      "objective": "maximize_delta_mu",
+      "solution_spend": {"meta": 400000.0, "search": 600000.0},
+      "has_recommendation_contract": false
+    }
+  ]
+}

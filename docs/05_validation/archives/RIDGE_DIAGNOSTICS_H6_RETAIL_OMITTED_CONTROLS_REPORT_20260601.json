@@ -63,6 +63,7 @@
   },
   "control_completeness": {
     "vertical_id": "retail",
+    "vertical_profile_known": true,
     "required_controls_by_vertical": [
       "promo_flag",
       "holiday",
@@ -149,25 +150,25 @@
   "fold_stability": {
     "n_cv_splits": 2,
     "geo_fold_rmse": [
-      17155.434576641033,
-      60590.899575490694,
-      15941.416449178523
+      17155.207935466915,
+      60590.08540842807,
+      15971.099350678898
     ],
-    "geo_fold_rmse_mean": 31229.250200436745,
-    "geo_fold_rmse_std": 20767.73620340224,
+    "geo_fold_rmse_mean": 31238.79756485796,
+    "geo_fold_rmse_std": 20760.123664407238,
     "fold_stability_ok": false,
     "warnings": []
   },
   "coefficient_stability": {
     "available": true,
     "media_coef_by_channel": {
-      "tv": -0.0004443532403235105,
-      "search": 0.06046889716886043,
-      "social": 0.016693311019525932,
-      "display": 0.0828865166803989,
-      "ctv": 0.07457301570022326,
-      "radio": 0.04819868162565913,
-      "local_flyer": 0.060402639463263394
+      "tv": -0.00043991664020591345,
+      "search": 0.060237645739112146,
+      "social": 0.016777994464711846,
+      "display": 0.08290937876556959,
+      "ctv": 0.07462638759425631,
+      "radio": 0.04802093936034953,
+      "local_flyer": 0.060281296851367135
     },
     "sign_by_channel": {
       "tv": -1.0,
@@ -244,6 +245,26 @@
     ]
   },
   "outputs_are_diagnostic_only": true,
+  "evidence_attachment_lineage": {
+    "milestone": "MIP-C2",
+    "attempted": false,
+    "source_type": "none",
+    "source_path": null,
+    "source_ref": null,
+    "signals_count": 0,
+    "attached_count": 0,
+    "rejected_count": 0,
+    "attachment_errors": [],
+    "context_only": true,
+    "optimizer_unchanged": true,
+    "decision_surface_unchanged": true,
+    "recommendations_unchanged": true,
+    "calibration_evidence_context_present": false,
+    "calibration_signal_count": 0,
+    "mip_c1_attachment_wired": false,
+    "collinearity_calibration_evidence_available": false,
+    "note": "CalibrationSignal ingestion is diagnostic context only; does not refit Ridge, override coefficients, or feed optimizer/DecisionSurface/recommendations."
+  },
   "severity_policy_version": "mmm_ridge_severity_policy_v1",
   "severity": "diagnostic_only",
   "output_eligibility": {

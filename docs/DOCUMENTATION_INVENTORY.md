@@ -102,6 +102,10 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/audits/AUDIT-MIP-C6_INTEGRATION_READINESS_CHECKPOINT.md` | `audits/AUDIT-MIP-C6_INTEGRATION_READINESS_CHECKPOINT.md` | canonical | MIP-C6 integration readiness checkpoint — verdict `continue_with_pause_before_live_scheduler` |
 | `docs/05_validation/mmm_package_side_agents_roadmap.md` | `05_validation/mmm_package_side_agents_roadmap.md` | canonical | Future MMM package-side support agents — deferred roadmap; prerequisites and boundaries |
 | `docs/05_validation/mmm_to_mip_export_contract_inventory.md` | `05_validation/mmm_to_mip_export_contract_inventory.md` | canonical | MMM-EXPORT-001 governed MMM→MIP export contract inventory (docs only) |
+| `docs/05_validation/mmm_export_schema_and_fixture_contract.md` | `05_validation/mmm_export_schema_and_fixture_contract.md` | canonical | MMM-EXPORT-002 typed schemas, validators, fixture bundles |
+| `mmm/contracts/mip_export.py` | (code) | canonical | MMM→MIP export Pydantic schemas + claim-safety validators |
+| `tests/fixtures/mip_export/` | (fixtures) | canonical | Synthetic MMMExportBundle fixtures (non-production) |
+| `tests/contracts/test_mmm_mip_export_contracts.py` | (tests) | canonical | MMM-EXPORT-002 schema and claim-safety tests |
 | `docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | `05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | canonical | Bayes-H2b binding ADR — hierarchy propagation & claim semantics |
 | `docs/05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | `05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | canonical | Bayes-H2d binding ADR — hierarchical model spec (architecture only) |
 | `docs/BAYES_H2B_VALIDATION_WORLDS_001.md` | `BAYES_H2B_VALIDATION_WORLDS_001.md` | canonical | Seven WORLD-BAYES-* validation world specifications (Track 2) |
