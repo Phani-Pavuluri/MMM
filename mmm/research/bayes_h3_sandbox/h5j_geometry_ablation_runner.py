@@ -7,9 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
-
-from mmm.data.schema import PanelSchema, validate_panel
+from mmm.data.schema import validate_panel
 from mmm.research.bayes_h3_sandbox.entrypoint import run_sandbox_fit
 from mmm.research.bayes_h3_sandbox.fencing import H5_MODEL_SPEC_VERSION
 from mmm.research.bayes_h3_sandbox.h5_convergence_diagnostics import (
@@ -25,7 +23,6 @@ from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
     CHANNEL_POLICY_POOLED,
     CHANNEL_POLICY_SINGLE,
     apply_channel_policy,
-    apply_preprocessing_config,
     compute_media_correlation_matrix,
     detect_collinear_channel_groups,
 )
@@ -218,7 +215,10 @@ def run_geometry_ablation(
         }
         if spec.preprocessing:
             overrides.setdefault("media_prescale", spec.preprocessing.get("media_prescale"))
-            overrides.setdefault("outcome_prescale", "zscore_log" if spec.model_overrides.get("outcome_prescale") else None)
+            overrides.setdefault(
+                "outcome_prescale",
+                "zscore_log" if spec.model_overrides.get("outcome_prescale") else None,
+            )
         fit_artifact = run_sandbox_fit(
             cfg,
             schema,
@@ -306,7 +306,15 @@ def build_geometry_ablation_artifact(
     groups = detect_collinear_channel_groups(df, channels, max_abs_corr_threshold=0.95)
     h5i = _load_baseline_h5i()
 
-    ablations = [run_geometry_ablation(s, base_transform_config=base_config, panel_path=panel_path, execute_fit=execute_fit) for s in (specs or default_ablation_specs())]
+    ablations = [
+        run_geometry_ablation(
+            s,
+            base_transform_config=base_config,
+            panel_path=panel_path,
+            execute_fit=execute_fit,
+        )
+        for s in (specs or default_ablation_specs())
+    ]
 
     return {
         "artifact_id": ARTIFACT_ID,

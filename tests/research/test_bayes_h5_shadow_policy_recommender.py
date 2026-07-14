@@ -11,21 +11,20 @@ from mmm.research.bayes_h3_sandbox.h5_shadow_policy_recommender import (
     CHANNEL_COMPOSITE,
     CHANNEL_DROP_COLLINEAR,
     CHANNEL_DROP_SPARSE,
-    CHANNEL_DO_NOT_RUN,
     CHANNEL_EXTERNAL_CALIBRATION,
     CHANNEL_KEEP_ALL_WEAK_ID,
     GEOM_ABLATION_BENCHMARK,
-    H5ShadowPolicyRecommenderError,
-    ShadowPolicyRecommendationInput,
     STATUS_BLOCKED,
     STATUS_DO_NOT_RUN,
     STATUS_RECOMMENDED,
     STATUS_REQUIRES_EXTERNAL_CALIBRATION,
+    H5ShadowPolicyRecommenderError,
+    ShadowPolicyRecommendationInput,
     build_panel_recommendation,
     build_sample_panel_recommendation,
     panel_recommendation_artifact_id,
-    recommendation_is_runnable,
     recommend_shadow_policy,
+    recommendation_is_runnable,
     validate_recommendation_artifact,
     write_sample_panel_recommendation_artifact,
 )
@@ -173,7 +172,11 @@ def test_blocks_keep_all_when_collinearity_and_keep_all_failed() -> None:
             ],
         )
     )
-    blocked = [b for b in art["blocked_options"] + art["allowed_alternatives"] if b.get("recommendation_id") == CHANNEL_KEEP_ALL_WEAK_ID]
+    blocked = [
+        b
+        for b in art["blocked_options"] + art["allowed_alternatives"]
+        if b.get("recommendation_id") == CHANNEL_KEEP_ALL_WEAK_ID
+    ]
     assert any(b["status"] == STATUS_BLOCKED for b in blocked)
 
 

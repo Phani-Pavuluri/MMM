@@ -349,7 +349,7 @@ def fit_h5_sandbox_hierarchical(
     overrides = apply_geometry_priors(overrides, geometry, channel_scales=channel_scales)
 
     y = work[schema.target_column].to_numpy(dtype=float)
-    if config.model_form == ModelForm.SEMI_LOG:
+    if config.model_form == ModelForm.SEMI_LOG:  # noqa: SIM108 - preserve explicit model-form branch
         y_obs = safe_log(y)
     else:
         y_obs = y.astype(float)
@@ -472,7 +472,8 @@ def fit_h5_sandbox_hierarchical(
         "transform_registry_id": TRANSFORM_REGISTRY_ID,
         "media_transforms_by_channel": dict(transforms_by_channel),
         "generative_transform_expected": generative_reported,
-        "panel_context": panel_context or ("real_panel" if is_real_panel_generative(gen_transform) else "synthetic_world"),
+        "panel_context": panel_context
+        or ("real_panel" if is_real_panel_generative(gen_transform) else "synthetic_world"),
         "transform_mismatch_mode": mismatch_mode,
         "transform_mismatch_detected": transform_mismatch_detected,
         "transforms_aligned": aligned,

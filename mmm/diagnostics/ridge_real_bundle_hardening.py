@@ -13,7 +13,6 @@ import pandas as pd
 from mmm.config.schema import CVConfig, Framework, MMMConfig, ModelForm, PoolingMode, RunEnvironment
 from mmm.data.schema import PanelSchema
 from mmm.diagnostics.ridge_diagnostic_summary import (
-    export_ridge_diagnostic_artifacts,
     format_ridge_diagnostics_cli_block,
     format_ridge_diagnostics_markdown,
     summarize_ridge_diagnostics,
@@ -21,7 +20,6 @@ from mmm.diagnostics.ridge_diagnostic_summary import (
 from mmm.diagnostics.ridge_diagnostics import (
     FORBIDDEN_OUTPUT_FIELDS,
     attach_ridge_diagnostics_to_extension_report,
-    compose_ridge_diagnostic_report,
 )
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 
@@ -140,7 +138,7 @@ def run_real_bundle_ridge_diagnostics(
         fit_out = trainer.fit(panel)
         fit_out["_ridge_trainer"] = trainer
 
-    world_metadata = {
+    _world_metadata = {
         "h11_bundle_id": spec["bundle_id"],
         "h11_milestone": H11_MILESTONE,
         "panel_lineage": lineage,

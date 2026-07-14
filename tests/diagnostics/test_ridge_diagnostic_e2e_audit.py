@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import pytest
-
 from mmm.artifacts.lifecycle import persist_training_artifacts
 from mmm.artifacts.stores.local import LocalArtifactStore
 from mmm.diagnostics.ridge_diagnostic_summary import (
@@ -22,6 +20,7 @@ from mmm.diagnostics.ridge_diagnostics import (
 from mmm.diagnostics.ridge_severity_policy import SEVERITY_DIAGNOSTIC_ONLY
 from mmm.evaluation.extension_runner import _attach_ridge_production_diagnostics
 from mmm.evaluation.extensions.context import ExtensionContext
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.research.h6_synthetic.production_shapes import (
     WORLD_H6_PILOT_RETAIL_FULL,
     WORLD_H6_PILOT_RETAIL_OMITTED,
@@ -30,7 +29,6 @@ from mmm.research.h6_synthetic.production_shapes import (
     h6_ridge_config,
     materialize_h6_panel,
 )
-from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 
 AUDIT_ID = "AUDIT-H10"
 
@@ -84,7 +82,7 @@ def _run_e2e_chain(world_id: str, *, vertical_id: str = "retail") -> dict[str, A
             "ridge_report_json": report_path.is_file(),
             "ridge_summary_md": md_path.is_file(),
         }
-        if er_path.is_file():
+        if er_path.is_file():  # noqa: SIM108 - keep fixture presence branch explicit
             er_loaded = json.loads(er_path.read_text(encoding="utf-8"))
         else:
             er_loaded = {}

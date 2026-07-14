@@ -309,7 +309,10 @@ def build_coefficient_stability_diagnostics(
     coef = np.asarray(coef).ravel()
     n_media = len(schema.channel_columns)
     media_coef = coef[:n_media] if coef.size >= n_media else coef
-    signs = {ch: float(np.sign(c)) if c != 0 else 0.0 for ch, c in zip(schema.channel_columns, media_coef)}
+    signs = {
+        ch: float(np.sign(c)) if c != 0 else 0.0
+        for ch, c in zip(schema.channel_columns, media_coef, strict=False)
+    }
     return {
         "available": True,
         "media_coef_by_channel": {

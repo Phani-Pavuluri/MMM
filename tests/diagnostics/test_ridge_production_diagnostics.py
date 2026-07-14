@@ -10,9 +10,9 @@ import pytest
 from mmm.config.schema import Framework
 from mmm.diagnostics.ridge_diagnostics import (
     FORBIDDEN_OUTPUT_FIELDS,
-    SPARSE_NEAR_ZERO_THRESHOLD,
     compose_ridge_diagnostic_report,
 )
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.research.h6_synthetic.benchmark_harness import run_ridge_h6_benchmark
 from mmm.research.h6_synthetic.production_shapes import (
     WORLD_H6_PILOT_RETAIL_FULL,
@@ -23,7 +23,6 @@ from mmm.research.h6_synthetic.production_shapes import (
     h6_ridge_config,
     materialize_h6_panel,
 )
-from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 
 ARCHIVE_PATH = Path(
     "docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_20260601.json"

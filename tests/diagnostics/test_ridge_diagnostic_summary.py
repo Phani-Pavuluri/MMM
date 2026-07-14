@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from mmm.artifacts.lifecycle import persist_training_artifacts
 from mmm.artifacts.stores.local import LocalArtifactStore
 from mmm.diagnostics.ridge_diagnostic_summary import (
@@ -19,6 +17,8 @@ from mmm.diagnostics.ridge_diagnostic_summary import (
     summarize_ridge_diagnostics,
     write_ridge_diagnostic_archive_files,
 )
+from mmm.diagnostics.ridge_diagnostics import compose_ridge_diagnostic_report
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 from mmm.research.h6_synthetic.production_shapes import (
     WORLD_H6_PILOT_RETAIL_FULL,
     WORLD_H6_PILOT_RETAIL_OMITTED,
@@ -27,9 +27,6 @@ from mmm.research.h6_synthetic.production_shapes import (
     h6_ridge_config,
     materialize_h6_panel,
 )
-from mmm.diagnostics.ridge_diagnostics import compose_ridge_diagnostic_report
-from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
-
 
 ARCHIVE_JSON = Path(
     "docs/05_validation/archives/RIDGE_DIAGNOSTICS_H6_RETAIL_OMITTED_CONTROLS_REPORT_20260601.json"

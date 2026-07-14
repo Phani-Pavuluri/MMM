@@ -2,35 +2,32 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
 from mmm.research.bayes_h3_sandbox.fencing import H5_MODEL_SPEC_VERSION
+from mmm.research.bayes_h3_sandbox.fixtures import toy_sandbox_bundle
 from mmm.research.bayes_h3_sandbox.h5_shadow_protocol import validate_shadow_run_record
 from mmm.research.bayes_h3_sandbox.h5_shadow_runner import (
-    H5ShadowRunnerError,
     DEFAULT_FIXTURE_TRANSFORM_CONFIG,
+    H5ShadowRunnerError,
     ShadowRunRequest,
     _config_from_panel,
     build_shadow_run_artifact,
     resolve_sampler_profile,
     run_fixture_dry_run_shadow,
     validate_shadow_run_artifact_file,
-    write_shadow_run_artifact,
 )
 from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
     PANEL_CONTEXT_REAL,
-    PANEL_CONTEXT_SYNTHETIC_FIXTURE,
     build_shadow_trust_diagnostics,
     classify_convergence_status,
     derive_real_panel_transform_warning_codes,
     derive_synthetic_transform_warning_codes,
     evidence_promotion_allowed,
 )
-from mmm.research.bayes_h3_sandbox.fixtures import toy_sandbox_bundle
 
 
 def _valid_transform_config() -> dict:

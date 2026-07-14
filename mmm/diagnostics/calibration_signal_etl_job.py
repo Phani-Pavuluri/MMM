@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import fnmatch
 import json
 import sys
 from datetime import datetime, timezone
@@ -11,9 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from mmm.diagnostics.calibration_signal_etl import (
-    ETL_ARTIFACT_TYPE,
     build_train_consumption_archive,
-    prove_c2_ingest,
     run_dry_run_etl,
     validate_signal_artifact,
 )
@@ -265,7 +262,7 @@ def prove_train_consumption(
     from mmm.diagnostics.ridge_diagnostics import attach_ridge_diagnostics_to_extension_report
     from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 
-    artifact = json.loads(Path(signals_path).read_text(encoding="utf-8"))
+    _artifact = json.loads(Path(signals_path).read_text(encoding="utf-8"))
     config = load_config(config_path)
     config.ridge_bo.n_trials = 2
     builder = DatasetBuilder(config.data)

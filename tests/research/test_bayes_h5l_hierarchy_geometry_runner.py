@@ -5,7 +5,6 @@ from __future__ import annotations
 import pytest
 
 from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
-    H5GeometryConfigError,
     HIERARCHY_FIXED_TAU,
     HIERARCHY_FULL_GEO_CHANNEL,
     HIERARCHY_POOLED_CHANNEL,
@@ -14,17 +13,18 @@ from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
     SIGMA_POLICY_FLOOR,
     TAU_PARAM_CURRENT,
     TAU_PARAM_LOG_TAU,
+    H5GeometryConfigError,
     evidence_promotion_for_geometry,
     is_ablation_only_geometry,
     is_hierarchy_faithful_geometry,
     validate_geometry_config,
 )
+from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import classify_convergence_status
 from mmm.research.bayes_h3_sandbox.h5l_hierarchy_geometry_runner import (
     build_hierarchy_geometry_artifact,
     default_hierarchy_specs,
     validate_hierarchy_geometry_artifact,
 )
-from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import classify_convergence_status
 
 
 def _full_geom(**kwargs: object) -> dict[str, object]:

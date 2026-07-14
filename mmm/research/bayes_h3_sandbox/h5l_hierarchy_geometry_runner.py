@@ -369,7 +369,12 @@ def build_hierarchy_geometry_artifact(
     h5k = _load_h5k_artifact()
     spec_list = specs or default_hierarchy_specs()
     variants = [
-        run_hierarchy_geometry_variant(s, base_transform_config=base_config, panel_path=panel_path, execute_fit=execute_fit)
+        run_hierarchy_geometry_variant(
+            s,
+            base_transform_config=base_config,
+            panel_path=panel_path,
+            execute_fit=execute_fit,
+        )
         for s in spec_list
     ]
     faithful_variants = [v for v in variants if v.get("hierarchy_faithful")]

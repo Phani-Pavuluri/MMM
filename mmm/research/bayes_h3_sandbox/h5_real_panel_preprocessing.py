@@ -212,7 +212,7 @@ def validate_collinearity_config(channel_policy: dict[str, Any] | None) -> None:
             )
         if not str(channel_policy.get("output_channel") or "").strip():
             raise H5RealPanelPreprocessingError("composite_media_channel requires output_channel")
-    elif mode == CHANNEL_POLICY_POOLED:
+    elif mode == CHANNEL_POLICY_POOLED:  # noqa: SIM102 - preserve reserved branch structure
         if channel_policy.get("implemented") is True:
             pass  # reserved for future pooled ablation wiring
 
@@ -436,7 +436,10 @@ def apply_channel_policy(
     """
     policy = transform_config.get("channel_policy")
     if not policy:
-        return df, schema, transform_config, {"mode": CHANNEL_POLICY_KEEP_ALL, "kept_channels": list(schema.channel_columns)}
+        return df, schema, transform_config, {
+            "mode": CHANNEL_POLICY_KEEP_ALL,
+            "kept_channels": list(schema.channel_columns),
+        }
 
     validate_collinearity_config(policy)
     mode = policy["mode"]

@@ -8,8 +8,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
-
 from mmm.data.schema import PanelSchema, validate_panel
 from mmm.research.bayes_h3_sandbox.fencing import H5_MODEL_SPEC_VERSION
 from mmm.research.bayes_h3_sandbox.h5_convergence_diagnostics import (
@@ -38,7 +36,6 @@ from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
 )
 from mmm.research.bayes_h3_sandbox.h5_shadow_policy import load_shadow_policy
 from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
-    classify_convergence_status,
     evidence_promotion_allowed,
     research_production_flags,
 )
@@ -142,7 +139,7 @@ def _variant_is_ablation(row: dict[str, Any]) -> bool:
     if cp.get("mode") == CHANNEL_POLICY_POOLED:
         return True
     rec = row.get("channel_policy_record") or {}
-    if rec.get("mode") == "pooled_channel_effects":
+    if rec.get("mode") == "pooled_channel_effects":  # noqa: SIM103 - keep policy gate explicit
         return True
     return False
 
@@ -172,9 +169,7 @@ def _keep_all_variants(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out = []
     for row in results:
         cp = row.get("channel_config") or row.get("channel_policy") or {}
-        if cp.get("mode") == CHANNEL_POLICY_KEEP_ALL:
-            out.append(row)
-        elif not cp and "BASELINE" in str(row.get("variant_id", "")):
+        if cp.get("mode") == CHANNEL_POLICY_KEEP_ALL or not cp and "BASELINE" in str(row.get("variant_id", "")):
             out.append(row)
     return out
 
@@ -435,7 +430,9 @@ def recommend_shadow_policy(inp: ShadowPolicyRecommendationInput) -> dict[str, A
     elif inseparable and high_collinearity:
         comp_policy = {
             "mode": CHANNEL_POLICY_COMPOSITE,
-            "source_channels": list(inseparable[0]) if isinstance(inseparable, list) and inseparable else ["social", "tv"],
+            "source_channels": (
+                list(inseparable[0]) if isinstance(inseparable, list) and inseparable else ["social", "tv"]
+            ),
             "method": "first_principal_component",
             "output_channel": business.get("composite_output_channel", "social_tv_pc1"),
             "remaining_channels": [c for c in channels if c not in (inseparable[0] if inseparable else [])],
@@ -452,7 +449,9 @@ def recommend_shadow_policy(inp: ShadowPolicyRecommendationInput) -> dict[str, A
                 hierarchy_faithful=True,
             )
         )
-        interpretation_changes.extend(_interpretation_for_channel_policy(comp_policy, collinear_groups=collinear_groups))
+        interpretation_changes.extend(
+            _interpretation_for_channel_policy(comp_policy, collinear_groups=collinear_groups)
+        )
 
     if not high_collinearity:
         keep_policy = {"mode": CHANNEL_POLICY_KEEP_ALL, "no_silent_dropping": True}
@@ -854,7 +853,7 @@ def validate_recommendation_artifact(artifact: dict[str, Any]) -> None:
     rec = artifact.get("recommended_shadow_policy") or {}
     if rec.get("status") == STATUS_RECOMMENDED:
         cp = rec.get("channel_policy") or {}
-        if cp.get("mode") == CHANNEL_POLICY_DROP_COLLINEAR:
+        if cp.get("mode") == CHANNEL_POLICY_DROP_COLLINEAR:  # noqa: SIM102 - keep policy gate explicit
             if not cp.get("dropped_channels") or not cp.get("kept_channels"):
                 raise H5ShadowPolicyRecommenderError("explicit drop/keep channels required")
     for alt in artifact.get("allowed_alternatives") or []:

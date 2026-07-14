@@ -74,7 +74,7 @@ def _has_uncertainty(signal: dict[str, Any]) -> bool:
     if signal.get("standard_error") is not None:
         return True
     interval = signal.get("interval") or signal.get("credible_interval")
-    if isinstance(interval, (list, tuple)) and len(interval) >= 2:
+    if isinstance(interval, (list, tuple)) and len(interval) >= 2:  # noqa: SIM103 - keep gate readable
         return True
     return False
 
@@ -87,7 +87,7 @@ def _estimand_matches(signal: dict[str, Any], report: dict[str, Any]) -> bool:
     if report_estimand and report_estimand != estimand:
         return False
     allowed = signal.get("estimand_allowlist")
-    if isinstance(allowed, list) and estimand not in allowed:
+    if isinstance(allowed, list) and estimand not in allowed:  # noqa: SIM103 - keep gate readable
         return False
     return True
 

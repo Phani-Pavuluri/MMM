@@ -298,7 +298,7 @@ def normalize_calibration_signal_batch(
                 errors.append(f"batch[{i}]: unsupported source_system:{sys_row}")
                 continue
         elif isinstance(row, dict):
-            if system == "geox":
+            if system == "geox":  # noqa: SIM108 - preserve explicit adapter dispatch
                 sig = geox_record_to_calibration_signal(row)
             else:
                 sig = cls_record_to_calibration_signal(row)

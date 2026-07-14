@@ -2,16 +2,12 @@
 
 from __future__ import annotations
 
-import json
-
-import pytest
-
+from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import classify_convergence_status
 from mmm.research.bayes_h3_sandbox.h5j_geometry_ablation_runner import (
     build_geometry_ablation_artifact,
     default_ablation_specs,
     validate_geometry_ablation_artifact,
 )
-from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import classify_convergence_status
 
 
 def test_artifact_schema_valid_without_fit() -> None:

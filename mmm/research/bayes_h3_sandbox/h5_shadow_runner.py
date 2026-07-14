@@ -23,6 +23,11 @@ from mmm.research.bayes_h3_sandbox.fixtures import (
     TOY_SEED,
     toy_sandbox_bundle,
 )
+from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
+    H5RealPanelPreprocessingError,
+    apply_channel_policy,
+    validate_collinearity_config,
+)
 from mmm.research.bayes_h3_sandbox.h5_shadow_protocol import (
     FORBIDDEN_OUTPUT_FIELDS,
     H5ShadowProtocolError,
@@ -32,15 +37,12 @@ from mmm.research.bayes_h3_sandbox.h5_shadow_protocol import (
 )
 from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
     MAPPING_VERSION as H5D_MAPPING_VERSION,
+)
+from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
     PANEL_CONTEXT_REAL,
     PANEL_CONTEXT_SYNTHETIC_FIXTURE,
     build_sampler_diagnostics,
     build_shadow_trust_diagnostics,
-)
-from mmm.research.bayes_h3_sandbox.h5_real_panel_preprocessing import (
-    H5RealPanelPreprocessingError,
-    apply_channel_policy,
-    validate_collinearity_config,
 )
 from mmm.research.bayes_h3_sandbox.labels import RESEARCH_ONLY_LABEL
 from mmm.research.bayes_h3_sandbox.recovery_worlds import SAMPLER_EXTENDED, SAMPLER_FAST
@@ -416,7 +418,7 @@ def build_shadow_run_artifact(
             requested_production_flags=request.requested_production_flags,
         )
     else:
-        if request.panel_df is not None:
+        if request.panel_df is not None:  # noqa: SIM108 - preserve explicit input-source branch
             df = request.panel_df.copy()
         else:
             df = load_panel_from_path(request.panel_path)  # type: ignore[arg-type]
@@ -479,7 +481,7 @@ def build_shadow_run_artifact(
     fit_artifact: dict[str, Any] | None = None
     if request.execute_fit:
         panel_context = _panel_context_for_request(request)
-        if panel_context == PANEL_CONTEXT_REAL:
+        if panel_context == PANEL_CONTEXT_REAL:  # noqa: SIM108 - preserve explicit context branch
             generative_kind = "real_panel"
         else:
             generative_kind = "linear"

@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pytest
 
+from mmm.data.loader import DatasetBuilder
+from mmm.diagnostics.calibration_signal_attachment import FORBIDDEN_ATTACHMENT_OUTPUT_FIELDS
 from mmm.diagnostics.calibration_signal_etl import (
     ETL_ARTIFACT_TYPE,
     adapt_export_to_signals,
@@ -17,13 +19,11 @@ from mmm.diagnostics.calibration_signal_etl import (
     run_dry_run_etl,
     validate_signal_artifact,
 )
-from mmm.diagnostics.calibration_signal_attachment import FORBIDDEN_ATTACHMENT_OUTPUT_FIELDS
 from mmm.diagnostics.calibration_signal_ingestion import parse_calibration_signals_payload
 from mmm.diagnostics.ridge_diagnostics import (
     FORBIDDEN_OUTPUT_FIELDS,
     attach_ridge_diagnostics_to_extension_report,
 )
-from mmm.data.loader import DatasetBuilder
 from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
 
 FIXTURE_EXPORT = (

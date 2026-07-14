@@ -18,7 +18,6 @@ from mmm.diagnostics.calibration_signal_etl_job import (
     run_scheduled_etl_job,
     summarize_job_run,
     validate_job_outputs,
-    write_job_manifest,
 )
 from mmm.diagnostics.ridge_diagnostics import FORBIDDEN_OUTPUT_FIELDS
 

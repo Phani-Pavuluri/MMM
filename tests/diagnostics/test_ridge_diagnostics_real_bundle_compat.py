@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from mmm.config.schema import Framework
+from mmm.data.schema import PanelSchema
 from mmm.diagnostics.ridge_diagnostics import (
     FORBIDDEN_OUTPUT_FIELDS,
     build_control_completeness_diagnostics,
@@ -20,7 +21,6 @@ from mmm.diagnostics.ridge_real_bundle_hardening import (
     run_real_bundle_ridge_diagnostics,
     validate_h11_artifact_completeness,
 )
-from mmm.data.schema import PanelSchema
 from mmm.research.h6_synthetic.production_shapes import (
     get_h6_world,
     h6_panel_schema,

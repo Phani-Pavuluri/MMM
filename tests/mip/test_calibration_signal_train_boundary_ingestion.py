@@ -34,9 +34,7 @@ ARCHIVE_PATH = Path(
 
 def _benchmark_fit(n_trials: int = 2) -> tuple:
     result = run_real_bundle_ridge_diagnostics({**BENCHMARK_BUNDLE_SPEC, "n_trials": n_trials})
-    panel_path = Path(BENCHMARK_BUNDLE_SPEC["panel_path"])
-    import pandas as pd
-    from mmm.diagnostics.ridge_real_bundle_hardening import build_ridge_config_for_bundle, load_bundle_panel
+    from mmm.diagnostics.ridge_real_bundle_hardening import load_bundle_panel
 
     panel, schema, config = load_bundle_panel({**BENCHMARK_BUNDLE_SPEC, "n_trials": n_trials})
     trainer = RidgeBOMMMTrainer(config, schema)

@@ -189,7 +189,7 @@ def build_h6f_benchmark_matrix(
 ) -> dict[str, Any]:
     """Build combined H6f benchmark matrix across pilot worlds."""
     ids = world_ids or H6_PILOT_WORLD_IDS
-    if h5_world_ids is None:
+    if h5_world_ids is None:  # noqa: SIM108 - preserve explicit default-vs-supplied branch
         h5_ids = set(H6F_H5_WORLDS_DEFAULT)
     else:
         h5_ids = set(h5_world_ids)

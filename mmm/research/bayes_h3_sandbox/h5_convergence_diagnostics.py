@@ -4,14 +4,12 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import date
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
-from mmm.config.schema import BayesianBackend, Framework, MMMConfig, ModelForm, PoolingMode, RunEnvironment
 from mmm.data.schema import PanelSchema, validate_panel
 from mmm.research.bayes_h3_sandbox.entrypoint import run_sandbox_fit
 from mmm.research.bayes_h3_sandbox.fencing import H5_MODEL_SPEC_VERSION
@@ -27,7 +25,7 @@ from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
     evidence_promotion_allowed,
     research_production_flags,
 )
-from mmm.research.bayes_h3_sandbox.recovery_worlds import SAMPLER_EXTENDED, SAMPLER_FAST
+from mmm.research.bayes_h3_sandbox.recovery_worlds import SAMPLER_FAST
 from mmm.utils.math import safe_log
 
 INVESTIGATION_ID = "INV-H5I_REAL_PANEL_CONVERGENCE_DIAGNOSTICS"
@@ -192,7 +190,10 @@ def inspect_transform_output_scale(
             "min": float(np.min(col)),
             "max": float(np.max(col)),
         }
-    return {"post_transform_by_channel": out, "note": "identity transform applies per-column standardization in H5 registry"}
+    return {
+        "post_transform_by_channel": out,
+        "note": "identity transform applies per-column standardization in H5 registry",
+    }
 
 
 def summarize_posterior_diagnostics(
@@ -254,7 +255,10 @@ def infer_suspected_failure_modes(
             {
                 "mode": "overparameterized_for_panel_size",
                 "severity": "high",
-                "note": f"{n_geos} geos × {n_channels} channels with partial pooling — many hierarchical offsets per row",
+                "note": (
+                    f"{n_geos} geos × {n_channels} channels with partial pooling — "
+                    "many hierarchical offsets per row"
+                ),
             }
         )
 
@@ -290,14 +294,18 @@ def infer_suspected_failure_modes(
         )
 
     if not modes:
-        modes.append({"mode": "unknown", "severity": "low", "note": "No dominant mode inferred from static diagnostics"})
+        modes.append(
+            {"mode": "unknown", "severity": "low", "note": "No dominant mode inferred from static diagnostics"}
+        )
     return modes
 
 
 def recommend_next_experiments(suspected_modes: list[dict[str, str]], matrix_rows: list[dict[str, Any]]) -> list[str]:
     recs = [
-        "Do not run additional real panels until a variant reaches converged_diagnostic_only or documented weak_convergence.",
-        "Prefer geometry fixes (scaling, collinearity reduction, simpler hierarchy) before aggressive sampler tuning alone.",
+        "Do not run additional real panels until a variant reaches converged_diagnostic_only or documented "
+        "weak_convergence.",
+        "Prefer geometry fixes (scaling, collinearity reduction, simpler hierarchy) before aggressive sampler "
+        "tuning alone.",
     ]
     mode_ids = {m["mode"] for m in suspected_modes}
     if "media_collinearity" in mode_ids:
@@ -339,7 +347,11 @@ def build_convergence_diagnostics_artifact(
     transform_scale = inspect_transform_output_scale(df, schema, transform_config)
 
     h5h = json.loads(Path(source_h5h_artifact_path).read_text(encoding="utf-8"))
-    h5g = json.loads(Path(source_h5g_artifact_path).read_text(encoding="utf-8")) if Path(source_h5g_artifact_path).is_file() else {}
+    h5g = (
+        json.loads(Path(source_h5g_artifact_path).read_text(encoding="utf-8"))
+        if Path(source_h5g_artifact_path).is_file()
+        else {}
+    )
     shadow_h5h = h5h.get("shadow_run") or {}
     pd_h5h = shadow_h5h.get("posterior_diagnostics") or {}
     post_h5h = summarize_posterior_diagnostics(

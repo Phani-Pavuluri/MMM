@@ -7,7 +7,6 @@ from unittest.mock import patch
 
 import pytest
 
-from mmm.research.bayes_h3_sandbox.fencing import H5_MODEL_SPEC_VERSION
 from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
     HIERARCHY_FIXED_TAU,
     HIERARCHY_POOLED_CHANNEL,

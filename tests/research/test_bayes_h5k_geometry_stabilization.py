@@ -5,24 +5,24 @@ from __future__ import annotations
 import pytest
 
 from mmm.research.bayes_h3_sandbox.entrypoint import run_sandbox_fit
-from mmm.research.bayes_h3_sandbox.fencing import BayesSandboxGuardError, H5_MODEL_SPEC_VERSION
+from mmm.research.bayes_h3_sandbox.fencing import BayesSandboxGuardError
 from mmm.research.bayes_h3_sandbox.h5_geometry_config import (
-    H5GeometryConfigError,
     HIERARCHY_FULL_GEO_CHANNEL,
     LIKELIHOOD_CURRENT_DEFAULT,
     PARAMETERIZATION_CENTERED,
     PARAMETERIZATION_NON_CENTERED,
+    H5GeometryConfigError,
     resolve_geometry_config,
     validate_geometry_config,
+)
+from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
+    classify_convergence_status,
+    evidence_promotion_allowed,
 )
 from mmm.research.bayes_h3_sandbox.h5k_geometry_stabilization_runner import (
     build_geometry_stabilization_artifact,
     default_stabilization_specs,
     validate_geometry_stabilization_artifact,
-)
-from mmm.research.bayes_h3_sandbox.h5_trust_diagnostics import (
-    classify_convergence_status,
-    evidence_promotion_allowed,
 )
 from mmm.research.bayes_h3_sandbox.model import fit_h5_sandbox_hierarchical
 
@@ -48,9 +48,10 @@ def test_unsupported_parameterization_fails_closed() -> None:
 
 
 def test_geometry_config_rejected_without_h5_gate() -> None:
+    import pandas as pd
+
     from mmm.config.schema import BayesianBackend, Framework, MMMConfig, ModelForm, PoolingMode
     from mmm.data.schema import PanelSchema
-    import pandas as pd
 
     cfg = MMMConfig(
         framework=Framework.BAYESIAN,
@@ -142,10 +143,11 @@ def test_variants_record_geometry_fields_without_fit() -> None:
 def test_tiny_non_centered_synthetic_smoke() -> None:
     pymc = pytest.importorskip("pymc")
     del pymc
-    from mmm.config.schema import MMMConfig, ModelForm
-    from mmm.data.schema import PanelSchema
     import numpy as np
     import pandas as pd
+
+    from mmm.config.schema import MMMConfig, ModelForm
+    from mmm.data.schema import PanelSchema
 
     rng = np.random.default_rng(0)
     rows = []
@@ -189,10 +191,11 @@ def test_tiny_non_centered_synthetic_smoke() -> None:
 @pytest.mark.slow
 def test_tiny_centered_synthetic_smoke() -> None:
     pytest.importorskip("pymc")
-    from mmm.config.schema import MMMConfig, ModelForm
-    from mmm.data.schema import PanelSchema
     import numpy as np
     import pandas as pd
+
+    from mmm.config.schema import MMMConfig, ModelForm
+    from mmm.data.schema import PanelSchema
 
     rng = np.random.default_rng(1)
     rows = []

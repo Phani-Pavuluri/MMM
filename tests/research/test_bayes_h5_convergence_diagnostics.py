@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import json
-
 import pandas as pd
 import pytest
 
 from mmm.research.bayes_h3_sandbox.h5_convergence_diagnostics import (
-    H5ConvergenceDiagnosticError,
     build_convergence_diagnostics_artifact,
     inspect_collinearity_diagnostics,
     inspect_panel_shape,
