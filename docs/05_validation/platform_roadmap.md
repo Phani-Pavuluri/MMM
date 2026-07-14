@@ -120,10 +120,13 @@ only producer artifacts and technical evidence: schemas, serialization,
 structural validation, diagnostics, calibration lineage, promotion evidence,
 allowed/blocked technical claims, artifact availability, and range restrictions.
 
-The producer interface is not frozen. R10 `MMMFailurePacket` remains missing and
-R16 MIP consumer readiness remains blocked; MIP ingestion and recommendation
-authority remain unauthorized. The next MMM task is
-`MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001`.
+`MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001` implements the MMM-owned,
+versioned technical failure packet and producer outcome wrapper. It does not
+reintroduce MIP parsing or conversational policy. R16 MIP consumer readiness
+remains blocked, MIP ingestion and recommendation authority remain unauthorized,
+and the producer interface is not frozen. Based on the remaining audit gaps, the
+next narrow producer candidate is `MMM_MIP_HANDOFF_V1_TYPED_RUN_MANIFEST_001`
+(R9), subject to a separate scope and evidence review.
 See [the reconciliation audit](MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001.md).
 
 ---

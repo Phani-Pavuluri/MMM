@@ -1,0 +1,29 @@
+{
+  "schema_version": "mmm_mip_failure_v1",
+  "failure_id": "failure-promotion-001",
+  "created_at": "2026-07-13T12:10:00Z",
+  "producer_package_version": "0.1.0",
+  "producer_git_commit": "7e351b4",
+  "run_id": "run-promotion-001",
+  "model_id": "ridge-release-002",
+  "model_family": "ridge",
+  "configuration_hash": "sha256:config",
+  "dataset_fingerprint": "sha256:panel",
+  "code": "MODEL_NOT_PROMOTED",
+  "stage": "PROMOTION_GATE",
+  "source_component": "mmm.governance.promotion",
+  "technical_summary": "Model release is not approved for the requested governed producer path.",
+  "failure_status": "blocked",
+  "retry_disposition": "RETRY_AFTER_GOVERNANCE_CHANGE",
+  "remediation_actions": [
+    {
+      "action_code": "GOVERNANCE",
+      "affected_resource": "ridge-release-002",
+      "required": true,
+      "technical_detail": "Complete the required promotion evidence and approval gate before retrying.",
+      "evidence_references": ["promotion:ridge-release-002"]
+    }
+  ],
+  "governance_blocker_ids": ["promotion:ridge-release-002"],
+  "technical_context": {"promotion_status": "planning_candidate"}
+}

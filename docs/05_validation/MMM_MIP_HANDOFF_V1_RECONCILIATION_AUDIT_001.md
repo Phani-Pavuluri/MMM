@@ -142,6 +142,23 @@ producer-owned public contract is available. The next MMM task is
 `MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001`; it must not implement MIP
 consumer behavior in MMM.
 
+## Follow-up status — typed failure packet implementation
+
+This section records post-audit implementation status; it does not change the
+historical verdict or requirement matrix for audited commit `a803da2`.
+
+`MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001` implements R10 as a versioned,
+producer-owned `MMMFailurePacket`, deterministic technical retry/remediation
+policy, JSON-safe serialization, fixtures, and a discriminated export outcome.
+The producer adapter can emit explicitly mapped known technical failures without
+parsing exception strings or catching arbitrary defects. R16 remains **blocked**:
+MMM does not provide MIP input parsing, conversational answerability, intent
+routing, TrustReport assembly, or recommendation authority. The interface
+remains **not frozen**.
+
+Based on the remaining audited producer gaps, the next narrow candidate is a
+typed run manifest (R9), not an assumed MIP consumer task.
+
 ## Explicit non-authorizations
 
 This audit does not authorize production Bayesian MMM, automatic or LLM-based

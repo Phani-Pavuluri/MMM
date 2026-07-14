@@ -36,12 +36,17 @@ def test_reconciliation_audit_contract() -> None:
     assert {row["status"] for row in requirements} <= STATUSES
     assert all(row["status"] in STATUSES for row in requirements)
     assert {row["classification"] for row in summary["a803da2_classifications"]} <= CLASSIFICATIONS
-    assert summary["next_task"] == "MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001"
+    assert summary["next_task"] == "MMM_MIP_HANDOFF_V1_TYPED_RUN_MANIFEST_001"
     assert summary["producer_boundary_cleanup"] == {
         "completed": True,
         "interface_freeze_recommended": False,
         "r10_typed_failure_packet": "missing",
         "r16_mip_consumer_readiness": "blocked",
+    }
+    assert summary["typed_failure_packet_followup"] == {
+        "r10_typed_failure_packet": "implemented",
+        "r16_mip_consumer_readiness": "blocked",
+        "interface_freeze_recommended": False,
     }
     assert summary["non_authorizations"]
     assert "MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001" in ROADMAP.read_text(encoding="utf-8")

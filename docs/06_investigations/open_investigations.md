@@ -2197,10 +2197,10 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 |-------|-------|
 | **Investigation ID** | INV-MMM-EXPORT-CONTRACTS-001 |
 | **Title** | Governed MMM-to-MIP export contract inventory (MMM-EXPORT-001) + schemas/fixtures (MMM-EXPORT-002) |
-| **Status** | **open** (EXPORT-002 complete; EXPORT-003 pending) |
-| **Evidence** | [inventory](../05_validation/mmm_to_mip_export_contract_inventory.md); [schema/fixtures](../05_validation/mmm_export_schema_and_fixture_contract.md); `mmm/contracts/mip_export.py`; `tests/fixtures/mip_export/`; `tests/contracts/test_mmm_mip_export_contracts.py` |
-| **Outcome** | EXPORT-001 inventory: no family MIP-consumable. EXPORT-002: typed schemas, validators, five synthetic fixture bundles; production/recommendation exposure blocked. |
-| **Next** | **MMM-EXPORT-003** runtime adapter from package artifacts → `MMMExportBundle` (claim-gated); then MIP-EXPORT-001 ingestion. |
+| **Status** | **open** (EXPORT-002/003 and typed failure packet complete; real producer handoff remains incomplete) |
+| **Evidence** | [inventory](../05_validation/mmm_to_mip_export_contract_inventory.md); [schema/fixtures](../05_validation/mmm_export_schema_and_fixture_contract.md); [typed failure packet](../05_validation/mmm_typed_failure_packet_contract.md); `mmm/contracts/mip_export.py`; `mmm/contracts/mip_failure.py`; `tests/fixtures/mip_export/` |
+| **Outcome** | Producer schemas, conservative adapter, and a versioned technical failure outcome exist. Failure packets carry technical remediation only; they do not create MIP parsing, user-facing policy, TrustReport, or recommendation authority. |
+| **Next** | R9 typed run manifest is the evidence-based next narrow producer candidate. R16 MIP consumer readiness remains blocked and the interface is not frozen. |
 
 ---
 
@@ -2213,8 +2213,8 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | removed from MMM; MIP-owned follow-up |
 | **Evidence** | [reconciliation audit](../05_validation/MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001.md); `mmm/contracts/mip_export.py`; `tests/contracts/test_mmm_mip_producer_boundary.py` |
 | **Outcome** | MMM retains producer schemas, serialization, structural validation, diagnostics, calibration/claim evidence, promotion evidence, and range restrictions. Consumer parsing, platform-input loading, intent classification, conversational answerability, refusal wording, LLM routing, TrustReport assembly, orchestration, and recommendation authority do not ship in MMM. |
-| **Boundary** | The producer interface is not frozen. R10 typed failure packets remain missing and R16 MIP consumer readiness remains blocked. |
-| **Next** | `MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001`; MIP consumer implementation remains a coordinated MIP task after a producer-owned public contract exists. |
+| **Boundary** | The producer interface is not frozen. R10 typed failure packets are producer-owned technical evidence; R16 MIP consumer readiness remains blocked. |
+| **Next** | MIP consumer implementation remains a coordinated MIP task after a complete producer-owned public contract exists; no MIP parsing or conversational policy ships in MMM. |
 
 ---
 

@@ -1,0 +1,28 @@
+{
+  "schema_version": "mmm_mip_failure_v1",
+  "failure_id": "failure-calibration-001",
+  "created_at": "2026-07-13T12:05:00Z",
+  "producer_package_version": "0.1.0",
+  "run_id": "run-calibration-001",
+  "model_id": "ridge-release-001",
+  "model_family": "ridge",
+  "code": "CALIBRATION_SCOPE_MISMATCH",
+  "stage": "CALIBRATION",
+  "source_component": "mmm.diagnostics.calibration_signal_attachment",
+  "technical_summary": "Calibration signal scope does not match the governed model estimand.",
+  "failure_status": "blocked",
+  "retry_disposition": "RETRY_AFTER_CALIBRATION_CHANGE",
+  "remediation_actions": [
+    {
+      "action_code": "CALIBRATION",
+      "affected_resource": "calibration-signal-042",
+      "required": true,
+      "technical_detail": "Supply calibration evidence aligned to the model estimand and scope.",
+      "evidence_references": ["calibration-signal-042"]
+    }
+  ],
+  "calibration_signal_ids": ["calibration-signal-042"],
+  "affected_market": "US",
+  "affected_kpi": "revenue",
+  "technical_context": {"signal_estimand": "incremental_lift", "model_estimand": "modeled_outcome"}
+}
