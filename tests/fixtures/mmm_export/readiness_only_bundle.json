@@ -1,0 +1,34 @@
+{
+  "artifact_type": "MMMExportBundle",
+  "schema_version": "mmm_mip_export_v1",
+  "bundle_id": "bundle-readiness-001",
+  "model_run_id": "run-readiness-001",
+  "llm_exposure_allowed": true,
+  "allowed_claims": ["readiness_explanation_allowed", "diagnostic_explanation_allowed"],
+  "forbidden_claims": ["channel_roi_ranking", "budget_shift_recommendation"],
+  "artifact_safety_status": "readiness_only",
+  "lineage": {"producer": "mmm", "git_commit": "fixture"},
+  "artifacts": [
+    {
+      "artifact_type": "MMMModelFitArtifact",
+      "llm_exposure_allowed": true,
+      "allowed_claims": ["readiness_explanation_allowed"],
+      "forbidden_claims": ["channel_roi_ranking"],
+      "diagnostic_status": "pass",
+      "promotion_status": "diagnostic_only",
+      "uncertainty_status": "not_applicable",
+      "artifact_safety_status": "readiness_only",
+      "lineage": {"source_artifacts": ["model_fit.json"]}
+    },
+    {
+      "artifact_type": "MMMModelDiagnosticArtifact",
+      "llm_exposure_allowed": true,
+      "allowed_claims": ["readiness_explanation_allowed", "diagnostic_explanation_allowed"],
+      "forbidden_claims": ["declare_model_valid_for_budget"],
+      "diagnostic_status": "warn",
+      "promotion_status": "diagnostic_only",
+      "uncertainty_status": "not_applicable",
+      "artifact_safety_status": "diagnostic_only"
+    }
+  ]
+}

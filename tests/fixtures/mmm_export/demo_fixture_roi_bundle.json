@@ -1,0 +1,27 @@
+{
+  "artifact_type": "MMMExportBundle",
+  "schema_version": "mmm_mip_export_v1",
+  "bundle_id": "bundle-demo-roi-001",
+  "model_run_id": "run-demo-roi-001",
+  "llm_exposure_allowed": false,
+  "demo_fixture_allowed": true,
+  "production_claim_allowed": false,
+  "allowed_claims": ["demo_fixture_only"],
+  "forbidden_claims": ["synthetic_demo_not_business_truth"],
+  "artifact_safety_status": "demo_fixture_only",
+  "artifacts": [
+    {
+      "artifact_type": "MMMChannelROIArtifact",
+      "llm_exposure_allowed": false,
+      "demo_fixture_allowed": true,
+      "production_claim_allowed": false,
+      "allowed_claims": ["demo_fixture_only"],
+      "forbidden_claims": ["synthetic_demo_not_business_truth"],
+      "diagnostic_status": "not_applicable",
+      "promotion_status": "demo_synthetic",
+      "uncertainty_status": "present",
+      "artifact_safety_status": "demo_fixture_only",
+      "roi_by_channel": {"search": 1.2}
+    }
+  ]
+}

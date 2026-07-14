@@ -103,6 +103,11 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/05_validation/mmm_package_side_agents_roadmap.md` | `05_validation/mmm_package_side_agents_roadmap.md` | canonical | Future MMM package-side support agents — deferred roadmap; prerequisites and boundaries |
 | `docs/05_validation/mmm_to_mip_export_contract_inventory.md` | `05_validation/mmm_to_mip_export_contract_inventory.md` | canonical | MMM-EXPORT-001 governed MMM→MIP export contract inventory (docs only) |
 | `docs/05_validation/mmm_export_schema_and_fixture_contract.md` | `05_validation/mmm_export_schema_and_fixture_contract.md` | canonical | MMM-EXPORT-002 typed schemas, validators, fixture bundles |
+| `docs/mmm_export_bundle_ingestion_and_answerability.md` | `mmm_export_bundle_ingestion_and_answerability.md` | canonical | MIP-EXPORT-001 external bundle ingestion and fail-closed LLM answerability policy |
+| `mmm/contracts/mmm_export_bundle.py` | (code) | canonical | MIP-EXPORT-001 conservative external bundle parser |
+| `mmm/llm/mmm_export_answerability.py` | (code) | canonical | MIP-EXPORT-001 intent classifier and cannot-say results |
+| `tests/llm/test_mmm_export_answerability.py` | (tests) | canonical | MIP-EXPORT-001 parser and answerability gate tests |
+| `tests/fixtures/mmm_export/` | (fixtures) | canonical | MIP-local MMM export answer-safety fixtures |
 | `mmm/contracts/mip_export.py` | (code) | canonical | MMM→MIP export Pydantic schemas + claim-safety validators |
 | `tests/fixtures/mip_export/` | (fixtures) | canonical | Synthetic MMMExportBundle fixtures (non-production) |
 | `tests/contracts/test_mmm_mip_export_contracts.py` | (tests) | canonical | MMM-EXPORT-002 schema and claim-safety tests |
