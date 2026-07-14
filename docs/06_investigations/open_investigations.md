@@ -2159,7 +2159,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Investigation ID** | INV-MIP-C5 |
 | **Title** | Drop-zone scheduled ETL wrapper over MIP-C4 |
 | **Status** | **closed** |
-| **Evidence** | [AUDIT-MIP-C5](../audits/AUDIT-MIP-C5_CALIBRATIONSIGNAL_SCHEDULED_ETL_WRAPPER.md); `calibration_signal_etl_job.py`; [outputs](../05_validation/archives/mip_c5_etl_outputs/) |
+| **Evidence** | [AUDIT-MIP-C5](../audits/AUDIT-MIP-C5_CALIBRATIONSIGNAL_SCHEDULED_ETL_WRAPPER.md); `calibration_signal_etl_job.py`; [outputs](../05_validation/archives/mip_c5_etl_outputs/MIP_C5_DRY_RUN_20260601_summary.md) |
 | **Outcome** | Batch scan + manifest + C2 artifacts; train smoke proof; no live API or prod cron. |
 | **Next** | MIP-C6 integration readiness checkpoint (complete). |
 

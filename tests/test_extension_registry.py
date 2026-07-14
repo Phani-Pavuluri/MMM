@@ -135,6 +135,7 @@ def test_extension_report_top_level_keys_regression() -> None:
             "post_fit_validation",
             "response_diagnostics",
             "ridge_fit_summary",
+            "ridge_production_diagnostics_report",
             "roi_summary",
             "run_manifest",
             "seed_resolution",

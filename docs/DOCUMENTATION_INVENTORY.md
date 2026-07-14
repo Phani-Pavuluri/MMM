@@ -178,6 +178,47 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/DOCUMENTATION_INVENTORY.md` | `DOCUMENTATION_INVENTORY.md` | canonical | This file |
 | `docs/_archive/cross_branch_not_shipped.md` | `_archive/cross_branch_not_shipped.md` | archived | Cross-branch quarantine policy |
 | `docs/_archive/roadmap_causal_calibration_governance.md` | `_archive/roadmap_causal_calibration_governance.md` | archived | Pre-platform roadmap; superseded by `platform_roadmap.md` narrative |
+| `docs/02_concepts/continuous_validation.md` | `02_concepts/continuous_validation.md` | canonical | Documented concept page |
+| `docs/02_concepts/decision_validation.md` | `02_concepts/decision_validation.md` | canonical | Documented concept page |
+| `docs/02_concepts/experiment_evidence.md` | `02_concepts/experiment_evidence.md` | canonical | Documented concept page |
+| `docs/02_concepts/hierarchical_borrowing.md` | `02_concepts/hierarchical_borrowing.md` | canonical | Documented concept page |
+| `docs/02_concepts/robust_optimization_research.md` | `02_concepts/robust_optimization_research.md` | canonical | Documented concept page |
+| `docs/02_concepts/uncertainty_propagation.md` | `02_concepts/uncertainty_propagation.md` | canonical | Documented concept page |
+| `docs/04_governance/calibration_freshness.md` | `04_governance/calibration_freshness.md` | canonical | Documented governance page |
+| `docs/04_governance/decision_artifact_contract.md` | `04_governance/decision_artifact_contract.md` | canonical | Documented governance page |
+| `docs/04_governance/decision_stress.md` | `04_governance/decision_stress.md` | canonical | Documented governance page |
+| `docs/04_governance/decision_trace.md` | `04_governance/decision_trace.md` | canonical | Documented governance page |
+| `docs/04_governance/optimizer_certification.md` | `04_governance/optimizer_certification.md` | canonical | Documented governance page |
+| `docs/04_governance/performance_certification.md` | `04_governance/performance_certification.md` | canonical | Documented governance page |
+| `docs/04_governance/production_readiness.md` | `04_governance/production_readiness.md` | canonical | Documented governance page |
+| `docs/04_governance/promotion_workflow.md` | `04_governance/promotion_workflow.md` | canonical | Documented governance page |
+| `docs/04_governance/reproducibility_certification.md` | `04_governance/reproducibility_certification.md` | canonical | Documented governance page |
+| `docs/04_governance/synthetic_certification.md` | `04_governance/synthetic_certification.md` | canonical | Documented governance page |
+| `docs/04_governance/v1_release_notes.md` | `04_governance/v1_release_notes.md` | canonical | Documented governance page |
+| `docs/05_validation/archives/mip_c5_etl_outputs/MIP_C5_DRY_RUN_20260601_summary.md` | `05_validation/archives/mip_c5_etl_outputs/MIP_C5_DRY_RUN_20260601_summary.md` | canonical | MIP-C5 dry-run summary |
+| `docs/05_validation/bayes_h3_research_sandbox_backend_adr.md` | `05_validation/bayes_h3_research_sandbox_backend_adr.md` | canonical | Bayesian research sandbox ADR |
+| `docs/05_validation/bayes_h4_recovery_worlds_adr.md` | `05_validation/bayes_h4_recovery_worlds_adr.md` | canonical | Bayesian recovery-worlds ADR |
+| `docs/06_investigations/H5G_FIRST_REAL_PANEL_SHADOW_RUN_MANIFEST.md` | `06_investigations/H5G_FIRST_REAL_PANEL_SHADOW_RUN_MANIFEST.md` | canonical | Investigation manifest |
+| `docs/06_investigations/H5O_SECOND_REAL_PANEL_SHADOW_RUN_MANIFEST.md` | `06_investigations/H5O_SECOND_REAL_PANEL_SHADOW_RUN_MANIFEST.md` | canonical | Investigation manifest |
+| `docs/06_investigations/H5Q_THIRD_REAL_PANEL_SHADOW_RUN_MANIFEST.md` | `06_investigations/H5Q_THIRD_REAL_PANEL_SHADOW_RUN_MANIFEST.md` | canonical | Investigation manifest |
+| `docs/06_investigations/INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md` | `06_investigations/INV-071_BAYES_H4_TRUE_EFFECT_RECOVERY_THRESHOLDS.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md` | `06_investigations/INV-H4D_SPARSE_TAU_AND_RECOVERY_STABILITY.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5B_REPEATED_PILOT_AND_DIAGNOSTICS.md` | `06_investigations/INV-H5B_REPEATED_PILOT_AND_DIAGNOSTICS.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5C_EXTENDED_MCMC_CONFIRMATION.md` | `06_investigations/INV-H5C_EXTENDED_MCMC_CONFIRMATION.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5D_TRUST_DIAGNOSTIC_MAPPING.md` | `06_investigations/INV-H5D_TRUST_DIAGNOSTIC_MAPPING.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5E_REAL_PANEL_SHADOW_RUN_PROTOCOL.md` | `06_investigations/INV-H5E_REAL_PANEL_SHADOW_RUN_PROTOCOL.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5F_REAL_PANEL_SHADOW_RUN_HARNESS.md` | `06_investigations/INV-H5F_REAL_PANEL_SHADOW_RUN_HARNESS.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md` | `06_investigations/INV-H5G_FIRST_REAL_PANEL_SHADOW_RUN.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5H_REAL_PANEL_SHADOW_HARDENING.md` | `06_investigations/INV-H5H_REAL_PANEL_SHADOW_HARDENING.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5I_REAL_PANEL_CONVERGENCE_DIAGNOSTICS.md` | `06_investigations/INV-H5I_REAL_PANEL_CONVERGENCE_DIAGNOSTICS.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5J_COLLINEARITY_GEOMETRY_ABLATIONS.md` | `06_investigations/INV-H5J_COLLINEARITY_GEOMETRY_ABLATIONS.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5K_GEOMETRY_STABILIZATION.md` | `06_investigations/INV-H5K_GEOMETRY_STABILIZATION.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md` | `06_investigations/INV-H5L_HIERARCHY_GEOMETRY_REFINEMENT.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H5M_FROZEN_SHADOW_POLICY_REPLAY.md` | `06_investigations/INV-H5M_FROZEN_SHADOW_POLICY_REPLAY.md` | canonical | Investigation report |
+| `docs/06_investigations/INV-H6_SYNTHETIC_TO_REAL_SHADOW_COMPARISON.md` | `06_investigations/INV-H6_SYNTHETIC_TO_REAL_SHADOW_COMPARISON.md` | canonical | Investigation report |
+| `docs/audits/MIP_MINI_AUDIT_20260601_BAYES_H3_SANDBOX_MVP.md` | `audits/MIP_MINI_AUDIT_20260601_BAYES_H3_SANDBOX_MVP.md` | canonical | Audit report |
+| `docs/dev_setup.md` | `dev_setup.md` | canonical | Development setup |
+| `docs/track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md` | `track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md` | canonical | Track D readout |
 
 ## Deprecated redirects
 
