@@ -6,10 +6,24 @@ from mmm.contracts.semantics import (
     ModelingTargetSpec,
     OptimizationSafetySpec,
 )
+from mmm.contracts.mip_failure import (
+    MMMExportOutcome,
+    MMMFailureCode,
+    MMMFailurePacket,
+    MMMFailureStage,
+    MMMRemediationAction,
+    MMMRetryDisposition,
+)
 
 __all__ = [
     "ModelingTargetSpec",
     "CalibrationEstimandSpec",
     "ContributionInterpretation",
     "OptimizationSafetySpec",
+    "MMMFailurePacket",
+    "MMMFailureCode",
+    "MMMFailureStage",
+    "MMMRetryDisposition",
+    "MMMRemediationAction",
+    "MMMExportOutcome",
 ]

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 
 from mmm.contracts.mip_export import (
@@ -20,6 +21,15 @@ from mmm.contracts.mip_export import (
     PromotionStatus,
     UncertaintyStatus,
     validate_mmm_export_bundle,
+)
+from mmm.contracts.mip_failure import (
+    MMMExportOutcome,
+    MMMFailureCode,
+    MMMFailurePacket,
+    MMMFailureStage,
+    MMMRemediationAction,
+    MMMRetryDisposition,
+    build_mmm_failure_packet,
 )
 
 
@@ -264,8 +274,75 @@ def adapt_runtime_artifacts_to_export_bundle(
     return bundle
 
 
+def emit_known_failure_outcome(
+    *,
+    failure_id: str,
+    created_at: datetime,
+    code: MMMFailureCode,
+    stage: MMMFailureStage,
+    source_component: str,
+    technical_summary: str,
+    context: MMMExportRuntimeContext | None = None,
+    affected_resource: str | None = None,
+    remediation_actions: list[MMMRemediationAction] | None = None,
+    retry_disposition: MMMRetryDisposition | None = None,
+    retry_override_evidence: str | None = None,
+    **evidence: Any,
+) -> MMMExportOutcome:
+    """Emit one explicitly mapped known producer failure at the export boundary.
+
+    Callers must supply a governed ``MMMFailureCode``. This helper intentionally
+    does not catch arbitrary exceptions or infer codes from exception strings.
+    """
+    if context is not None:
+        evidence.setdefault("run_id", context.model_run_id)
+        evidence.setdefault("dataset_fingerprint", context.training_data_fingerprint)
+        evidence.setdefault("configuration_hash", context.model_artifact_fingerprint)
+        evidence.setdefault("producer_package_version", context.package_version)
+        evidence.setdefault("producer_git_commit", context.git_commit)
+    packet = build_mmm_failure_packet(
+        failure_id=failure_id,
+        created_at=created_at,
+        code=code,
+        stage=stage,
+        source_component=source_component,
+        technical_summary=technical_summary,
+        affected_resource=affected_resource,
+        remediation_actions=remediation_actions,
+        retry_disposition=retry_disposition,
+        retry_override_evidence=retry_override_evidence,
+        **evidence,
+    )
+    return MMMExportOutcome.failure(packet)
+
+
+def adapt_runtime_artifacts_to_export_outcome(
+    *,
+    context: MMMExportRuntimeContext,
+    known_failure: MMMFailurePacket | None = None,
+    extension_report: Mapping[str, Any] | None = None,
+    simulation_result: Mapping[str, Any] | None = None,
+    optimizer_result: Mapping[str, Any] | None = None,
+    recommendation_contract: Mapping[str, Any] | None = None,
+) -> MMMExportOutcome:
+    """Non-breaking outcome wrapper around the existing successful export adapter."""
+    if known_failure is not None:
+        return MMMExportOutcome.failure(known_failure)
+    return MMMExportOutcome.success(
+        adapt_runtime_artifacts_to_export_bundle(
+            context=context,
+            extension_report=extension_report,
+            simulation_result=simulation_result,
+            optimizer_result=optimizer_result,
+            recommendation_contract=recommendation_contract,
+        )
+    )
+
+
 __all__ = [
     "MMMExportAdapterError",
     "MMMExportRuntimeContext",
     "adapt_runtime_artifacts_to_export_bundle",
+    "adapt_runtime_artifacts_to_export_outcome",
+    "emit_known_failure_outcome",
 ]
