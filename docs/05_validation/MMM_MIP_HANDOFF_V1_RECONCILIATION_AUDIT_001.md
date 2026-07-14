@@ -178,6 +178,18 @@ frozen**. The next task must be selected from the remaining audited MMM gaps
 using current evidence; calibration-treatment lineage (R6) is the current
 highest-priority narrow producer candidate.
 
+## Follow-up status — calibration-treatment lineage implementation
+
+This post-audit follow-up does not revise the historical matrix for `a803da2`.
+`MMM_MIP_HANDOFF_V1_CALIBRATION_TREATMENT_LINEAGE_001` adds the versioned
+producer `MMMCalibrationTreatmentLineage`, typed freshness/compatibility/
+disposition/role evidence, deterministic transformations and summaries, typed
+failure linkage, fixtures, and additive run-manifest linkage. Ridge remains
+context-only and unchanged; Bayesian prior/likelihood evidence remains explicit
+research-only evidence. R9 and R10 remain implemented; R16 remains blocked and
+the interface remains not frozen. The next task must be selected from the
+remaining audited producer gaps using current evidence.
+
 ## Explicit non-authorizations
 
 This audit does not authorize production Bayesian MMM, automatic or LLM-based

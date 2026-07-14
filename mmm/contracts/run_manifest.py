@@ -161,6 +161,7 @@ class MMMRunManifest(BaseModel):
     channel_scope: list[str] = Field(default_factory=list)
     calibration_signal_ids: list[str] = Field(default_factory=list)
     calibration_status: CalibrationStatus | None = None
+    calibration_lineage_id: str | None = Field(default=None, max_length=200)
     validation_result_ids: list[str] = Field(default_factory=list)
     diagnostic_ids: list[str] = Field(default_factory=list)
     steps: list[MMMRunStep] = Field(default_factory=list)
@@ -170,7 +171,7 @@ class MMMRunManifest(BaseModel):
     @field_validator(
         "manifest_id", "run_id", "producer_package_name", "producer_package_version", "producer_contract_version",
         "model_id", "model_family", "model_version", "estimator_identity", "configuration_hash",
-        "dataset_fingerprint", "data_grain", "kpi_identity", "time_range", "market_scope",
+        "dataset_fingerprint", "data_grain", "kpi_identity", "time_range", "market_scope", "calibration_lineage_id",
     )
     @classmethod
     def _safe_manifest_text(cls, value: str | None, info: Any) -> str | None:

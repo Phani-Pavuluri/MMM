@@ -22,6 +22,15 @@ from mmm.contracts.run_manifest import (
     MMMRunStep,
     MMMRunStepStatus,
 )
+from mmm.contracts.calibration_treatment import (
+    MMMCalibrationApplicationRole,
+    MMMCalibrationCompatibilityStatus,
+    MMMCalibrationFreshnessStatus,
+    MMMCalibrationTransformationStep,
+    MMMCalibrationTreatmentDisposition,
+    MMMCalibrationTreatmentLineage,
+    MMMCalibrationTreatmentRecord,
+)
 
 __all__ = [
     "ModelingTargetSpec",
@@ -40,4 +49,11 @@ __all__ = [
     "MMMRunStepStatus",
     "MMMArtifactReference",
     "MMMExportManifestOutcome",
+    "MMMCalibrationTreatmentLineage",
+    "MMMCalibrationTreatmentRecord",
+    "MMMCalibrationTreatmentDisposition",
+    "MMMCalibrationApplicationRole",
+    "MMMCalibrationCompatibilityStatus",
+    "MMMCalibrationFreshnessStatus",
+    "MMMCalibrationTransformationStep",
 ]

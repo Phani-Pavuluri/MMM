@@ -129,7 +129,11 @@ boundary tests; R16 MIP consumer readiness remains blocked, MIP ingestion and
 recommendation authority remain unauthorized, and the producer interface is not
 frozen. The next narrow producer task must be selected from the remaining audit
 gaps using current evidence; typed calibration-treatment lineage (R6) is the
-current candidate.
+current candidate. `MMM_MIP_HANDOFF_V1_CALIBRATION_TREATMENT_LINEAGE_001`
+implements that producer evidence contract without changing calibration math,
+Ridge behavior, Bayes promotion, or MIP policy. R9 and R10 remain implemented;
+R16 remains blocked and interface freeze remains unauthorized. The next task
+must be selected from the remaining audited producer gaps based on evidence.
 See [the reconciliation audit](MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001.md).
 
 ---

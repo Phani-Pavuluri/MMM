@@ -39,6 +39,7 @@ from mmm.contracts.run_manifest import (
     MMMRunStepStatus,
     build_mmm_run_manifest,
 )
+from mmm.contracts.calibration_treatment import MMMCalibrationTreatmentLineage
 
 
 class MMMExportAdapterError(ValueError):
@@ -353,6 +354,7 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
     manifest_id: str,
     created_at: datetime,
     known_failure: MMMFailurePacket | None = None,
+    calibration_lineage: MMMCalibrationTreatmentLineage | None = None,
     extension_report: Mapping[str, Any] | None = None,
     simulation_result: Mapping[str, Any] | None = None,
     optimizer_result: Mapping[str, Any] | None = None,
@@ -363,6 +365,8 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
     This deliberately maps only an already-typed ``known_failure``.  It does not
     inspect exceptions or change the legacy success adapter's behaviour.
     """
+    if calibration_lineage is not None and calibration_lineage.run_id != context.model_run_id:
+        raise MMMExportAdapterError("calibration lineage run ID must match the runtime export context")
     outcome = adapt_runtime_artifacts_to_export_outcome(
         context=context,
         known_failure=known_failure,
@@ -383,6 +387,8 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
         "time_range": context.time_window,
         "market_scope": context.geo_scope,
         "channel_scope": list(context.channel_scope),
+        "calibration_lineage_id": calibration_lineage.lineage_id if calibration_lineage else None,
+        "calibration_signal_ids": [record.signal_id for record in calibration_lineage.records] if calibration_lineage else [],
     }
     if outcome.outcome_type == "success":
         bundle = outcome.export_bundle
