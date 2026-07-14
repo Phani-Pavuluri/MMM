@@ -110,6 +110,17 @@ See [synthetic_validation_roadmap.md §10](synthetic_validation_roadmap.md#gover
 
 Future **experimentation** and **orchestration** systems must consume **DecisionSurface**, **Estimand**, **CalibrationSignal**, and **TrustReport** — not invent parallel JSON shapes or gate names.
 
+### MMM–MIP handoff reconciliation (2026-07-13)
+
+`MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001` found the export lane **blocked by
+ownership mixing**: MMM has partial producer schemas and a conservative adapter,
+while `a803da2` also placed MIP-owned consumer parsing, conversational
+answerability, and cannot-answer policy in MMM.  The interface is not frozen and
+MIP ingestion remains unauthorized.  The selected narrow next MMM task is
+`MMM_MIP_HANDOFF_V1_PRODUCER_BOUNDARY_CLEANUP_001`; it must retain only producer
+eligibility evidence in MMM and coordinate relocation of platform policy to MIP.
+See [the reconciliation audit](MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001.md).
+
 ---
 
 ## Track 1 — Platform Contract Layer
