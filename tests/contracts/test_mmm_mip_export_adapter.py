@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from mmm.contracts.mip_export import parse_export_artifact, validate_mmm_export_bundle
+from mmm.contracts.mip_export import (
+    MMMChannelROIArtifact,
+    parse_export_artifact,
+    validate_mmm_export_bundle,
+)
 from mmm.contracts.mip_export_adapter import (
     MMMExportAdapterError,
     MMMExportRuntimeContext,
@@ -12,25 +16,23 @@ from mmm.contracts.mip_export_adapter import (
 )
 
 
-def _context(**changes: object) -> MMMExportRuntimeContext:
-    values = {
-        "model_run_id": "run-003",
-        "training_data_fingerprint": "sha256:panel",
-        "model_artifact_fingerprint": "sha256:model",
-        "generated_at": "2026-07-13T12:00:00Z",
-        "package_version": "0.1.0",
-        "git_commit": "abc1234",
-        "model_form": "semi_log",
-        "estimand": "modeled_outcome",
-        "time_window": "2026-01-01/2026-06-30",
-        "geo_scope": "national",
-        "channel_scope": ("search", "social"),
-        "outcome_metric": "revenue",
-        "spend_metric": "spend",
-        "currency": "USD",
-    }
-    values.update(changes)
-    return MMMExportRuntimeContext(**values)  # type: ignore[arg-type]
+def _context(*, training_data_fingerprint: str = "sha256:panel") -> MMMExportRuntimeContext:
+    return MMMExportRuntimeContext(
+        model_run_id="run-003",
+        training_data_fingerprint=training_data_fingerprint,
+        model_artifact_fingerprint="sha256:model",
+        generated_at="2026-07-13T12:00:00Z",
+        package_version="0.1.0",
+        git_commit="abc1234",
+        model_form="semi_log",
+        estimand="modeled_outcome",
+        time_window="2026-01-01/2026-06-30",
+        geo_scope="national",
+        channel_scope=("search", "social"),
+        outcome_metric="revenue",
+        spend_metric="spend",
+        currency="USD",
+    )
 
 
 def test_adapts_only_artifact_families_present_and_validates() -> None:
@@ -70,7 +72,8 @@ def test_present_roi_curve_and_optimizer_stay_blocked() -> None:
         "MMMOptimizerResultArtifact",
     }
     roi = parse_export_artifact(by_type["MMMChannelROIArtifact"])
-    assert roi.roi_by_channel == {}  # type: ignore[attr-defined]
+    assert isinstance(roi, MMMChannelROIArtifact)
+    assert roi.roi_by_channel == {}
     assert by_type["MMMOptimizerResultArtifact"]["has_recommendation_contract"] is False
     assert all(item["production_claim_allowed"] is False for item in bundle.artifacts)
     assert all(item["recommendation_allowed"] is False for item in bundle.artifacts)
