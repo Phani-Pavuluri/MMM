@@ -18,8 +18,14 @@
   "interface_freeze_recommended": false,
   "misowned_mip_policy": ["consumer parsing", "conversational answerability", "cannot-answer wording", "LLM intent routing"],
   "missing_mmm_artifacts": ["typed MMMRunManifest", "typed MMMFailurePacket", "typed calibration-treatment lineage", "public governed simulation export", "producer golden handoff fixtures", "compatibility policy"],
-  "next_task": "MMM_MIP_HANDOFF_V1_PRODUCER_BOUNDARY_CLEANUP_001",
-  "next_task_reason": "Resolve a803da2 producer/consumer ownership mixing before extending a contract that MIP must consume independently.",
+  "next_task": "MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001",
+  "next_task_reason": "The producer/consumer ownership boundary is restored; R10 remains the next missing MMM-owned contract prerequisite.",
+  "producer_boundary_cleanup": {
+    "completed": true,
+    "interface_freeze_recommended": false,
+    "r10_typed_failure_packet": "missing",
+    "r16_mip_consumer_readiness": "blocked"
+  },
   "non_authorizations": ["production Bayesian MMM", "automatic model-family selection", "LLM-based model selection", "recommendation authorization", "budget optimization", "final platform DecisionSurface", "TrustReport assembly", "MIP user-intent routing", "cross-engine orchestration", "live production scheduling", "automatic model promotion", "unsupported ROI claims", "unsupported causal claims"],
   "overall_verdict": "MMM_MIP_HANDOFF_V1_BLOCKED_BY_OWNERSHIP_MIXING",
   "repository": "MMM",
