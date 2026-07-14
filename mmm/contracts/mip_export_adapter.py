@@ -31,6 +31,14 @@ from mmm.contracts.mip_failure import (
     MMMRetryDisposition,
     build_mmm_failure_packet,
 )
+from mmm.contracts.run_manifest import (
+    MMMArtifactReference,
+    MMMExportManifestOutcome,
+    MMMRunStatus,
+    MMMRunStep,
+    MMMRunStepStatus,
+    build_mmm_run_manifest,
+)
 
 
 class MMMExportAdapterError(ValueError):
@@ -339,10 +347,99 @@ def adapt_runtime_artifacts_to_export_outcome(
     )
 
 
+def adapt_runtime_artifacts_to_export_manifest_outcome(
+    *,
+    context: MMMExportRuntimeContext,
+    manifest_id: str,
+    created_at: datetime,
+    known_failure: MMMFailurePacket | None = None,
+    extension_report: Mapping[str, Any] | None = None,
+    simulation_result: Mapping[str, Any] | None = None,
+    optimizer_result: Mapping[str, Any] | None = None,
+    recommendation_contract: Mapping[str, Any] | None = None,
+) -> MMMExportManifestOutcome:
+    """Return the existing export outcome with additive typed run evidence.
+
+    This deliberately maps only an already-typed ``known_failure``.  It does not
+    inspect exceptions or change the legacy success adapter's behaviour.
+    """
+    outcome = adapt_runtime_artifacts_to_export_outcome(
+        context=context,
+        known_failure=known_failure,
+        extension_report=extension_report,
+        simulation_result=simulation_result,
+        optimizer_result=optimizer_result,
+        recommendation_contract=recommendation_contract,
+    )
+    common: dict[str, Any] = {
+        "manifest_id": manifest_id,
+        "run_id": context.model_run_id,
+        "created_at": created_at,
+        "producer_package_version": context.package_version,
+        "model_family": context.model_form,
+        "estimator_identity": context.estimand,
+        "configuration_hash": context.model_artifact_fingerprint,
+        "dataset_fingerprint": context.training_data_fingerprint,
+        "time_range": context.time_window,
+        "market_scope": context.geo_scope,
+        "channel_scope": list(context.channel_scope),
+    }
+    if outcome.outcome_type == "success":
+        bundle = outcome.export_bundle
+        assert bundle is not None
+        export_ref = MMMArtifactReference(
+            artifact_type="MMMExportBundle",
+            artifact_id=bundle.model_run_id,
+            contract_version=bundle.schema_version,
+            content_fingerprint=bundle.model_artifact_fingerprint,
+            logical_name="mmm_producer_export_bundle",
+        )
+        manifest = build_mmm_run_manifest(
+            **common,
+            status=MMMRunStatus.SUCCEEDED,
+            successful_export=export_ref,
+            steps=[
+                MMMRunStep(
+                    sequence=0,
+                    step_name="producer_export",
+                    stage=MMMFailureStage.EXPORT,
+                    status=MMMRunStepStatus.SUCCEEDED,
+                    output_artifacts=[export_ref],
+                    technical_detail="Validated producer export bundle emitted.",
+                )
+            ],
+        )
+    else:
+        packet = outcome.failure_packet
+        assert packet is not None
+        manifest_status = MMMRunStatus.BLOCKED if packet.failure_status == "blocked" else MMMRunStatus.FAILED
+        step_status = MMMRunStepStatus.BLOCKED if packet.failure_status == "blocked" else MMMRunStepStatus.FAILED
+        manifest = build_mmm_run_manifest(
+            **common,
+            status=manifest_status,
+            failure_packet=packet,
+            calibration_signal_ids=packet.calibration_signal_ids,
+            validation_result_ids=packet.validation_result_ids,
+            diagnostic_ids=packet.diagnostic_ids,
+            steps=[
+                MMMRunStep(
+                    sequence=0,
+                    step_name=f"failure_{packet.stage.value.lower()}",
+                    stage=packet.stage,
+                    status=step_status,
+                    failure_packet_id=packet.failure_id,
+                    technical_detail=packet.technical_summary,
+                )
+            ],
+        )
+    return MMMExportManifestOutcome(export_outcome=outcome, run_manifest=manifest)
+
+
 __all__ = [
     "MMMExportAdapterError",
     "MMMExportRuntimeContext",
     "adapt_runtime_artifacts_to_export_bundle",
+    "adapt_runtime_artifacts_to_export_manifest_outcome",
     "adapt_runtime_artifacts_to_export_outcome",
     "emit_known_failure_outcome",
 ]

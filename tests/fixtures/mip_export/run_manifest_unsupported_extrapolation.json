@@ -1,0 +1,14 @@
+{
+  "schema_version": "mmm_mip_run_manifest_v1",
+  "manifest_id": "manifest-plan-blocked-001",
+  "run_id": "run-plan-blocked-001",
+  "created_at": "2026-07-14T12:00:00Z",
+  "producer_package_name": "mmm",
+  "producer_package_version": "0.1.0",
+  "producer_contract_version": "mmm_mip_run_manifest_v1",
+  "status": "BLOCKED",
+  "steps": [{"sequence": 0, "step_name": "simulation_range_check", "stage": "SIMULATION", "status": "BLOCKED", "failure_packet_id": "failure-plan-001"}],
+  "failure_packet": {
+    "schema_version": "mmm_mip_failure_v1", "failure_id": "failure-plan-001", "created_at": "2026-07-14T12:00:00Z", "run_id": "run-plan-blocked-001", "code": "UNSUPPORTED_EXTRAPOLATION", "stage": "SIMULATION", "source_component": "mmm.simulation.range", "technical_summary": "Candidate plan exceeds the supported operating range.", "failure_status": "blocked", "retry_disposition": "RETRY_AFTER_PLAN_CHANGE", "remediation_actions": [{"action_code": "CANDIDATE_PLAN", "affected_resource": "candidate-plan-001", "required": true, "technical_detail": "Constrain the candidate plan to the supported range."}], "supported_range_evidence": ["candidate_plan_exceeds_supported_range"]
+  }
+}

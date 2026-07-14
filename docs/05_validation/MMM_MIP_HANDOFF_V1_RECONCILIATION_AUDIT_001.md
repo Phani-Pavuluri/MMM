@@ -159,6 +159,25 @@ remains **not frozen**.
 Based on the remaining audited producer gaps, the next narrow candidate is a
 typed run manifest (R9), not an assumed MIP consumer task.
 
+## Follow-up status — typed run manifest implementation
+
+This section records post-audit implementation status and does not alter the
+historical requirement matrix for audited commit `a803da2`.
+
+`MMM_MIP_HANDOFF_V1_TYPED_RUN_MANIFEST_001` implements R9 as the versioned,
+typed, producer-owned `MMMRunManifest`. It has strict run and execution-step
+states, safe artifact references, data/model/calibration/diagnostic lineage,
+deterministic serialization, typed failure linkage, deterministic fixtures, and
+an additive producer export-boundary outcome. The legacy internal dict helper is
+retained for compatibility and is not the public handoff contract.
+
+R10 `MMMFailurePacket` remains **implemented**. R16 MIP consumer readiness
+remains **blocked**: MMM still provides neither consumer parsing nor
+conversational/authorization policy. The producer interface remains **not
+frozen**. The next task must be selected from the remaining audited MMM gaps
+using current evidence; calibration-treatment lineage (R6) is the current
+highest-priority narrow producer candidate.
+
 ## Explicit non-authorizations
 
 This audit does not authorize production Bayesian MMM, automatic or LLM-based

@@ -2197,10 +2197,10 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 |-------|-------|
 | **Investigation ID** | INV-MMM-EXPORT-CONTRACTS-001 |
 | **Title** | Governed MMM-to-MIP export contract inventory (MMM-EXPORT-001) + schemas/fixtures (MMM-EXPORT-002) |
-| **Status** | **open** (EXPORT-002/003 and typed failure packet complete; real producer handoff remains incomplete) |
-| **Evidence** | [inventory](../05_validation/mmm_to_mip_export_contract_inventory.md); [schema/fixtures](../05_validation/mmm_export_schema_and_fixture_contract.md); [typed failure packet](../05_validation/mmm_typed_failure_packet_contract.md); `mmm/contracts/mip_export.py`; `mmm/contracts/mip_failure.py`; `tests/fixtures/mip_export/` |
-| **Outcome** | Producer schemas, conservative adapter, and a versioned technical failure outcome exist. Failure packets carry technical remediation only; they do not create MIP parsing, user-facing policy, TrustReport, or recommendation authority. |
-| **Next** | R9 typed run manifest is the evidence-based next narrow producer candidate. R16 MIP consumer readiness remains blocked and the interface is not frozen. |
+| **Status** | **open** (EXPORT-002/003, typed failure packet, and typed run manifest complete; real producer handoff remains incomplete) |
+| **Evidence** | [inventory](../05_validation/mmm_to_mip_export_contract_inventory.md); [schema/fixtures](../05_validation/mmm_export_schema_and_fixture_contract.md); [typed failure packet](../05_validation/mmm_typed_failure_packet_contract.md); [typed run manifest](../05_validation/mmm_typed_run_manifest_contract.md); `mmm/contracts/mip_export.py`; `mmm/contracts/mip_failure.py`; `mmm/contracts/run_manifest.py`; `tests/fixtures/mip_export/` |
+| **Outcome** | Producer schemas, conservative adapter, a versioned technical failure outcome, and a strict producer run manifest exist. These facts do not create MIP parsing, user-facing policy, TrustReport, recommendation authority, or interface freeze. |
+| **Next** | Typed calibration-treatment lineage (R6) is the evidence-based next narrow producer candidate. R16 MIP consumer readiness remains blocked and the interface is not frozen. |
 
 ---
 

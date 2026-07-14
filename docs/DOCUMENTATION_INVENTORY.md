@@ -104,12 +104,15 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/05_validation/mmm_to_mip_export_contract_inventory.md` | `05_validation/mmm_to_mip_export_contract_inventory.md` | canonical | MMM-EXPORT-001 governed MMM→MIP export contract inventory (docs only) |
 | `docs/05_validation/mmm_export_schema_and_fixture_contract.md` | `05_validation/mmm_export_schema_and_fixture_contract.md` | canonical | MMM-EXPORT-002 typed schemas, validators, fixture bundles |
 | `docs/05_validation/mmm_typed_failure_packet_contract.md` | `05_validation/mmm_typed_failure_packet_contract.md` | canonical | MMM-owned versioned typed failure packets and producer export outcomes; not MIP platform policy |
+| `docs/05_validation/mmm_typed_run_manifest_contract.md` | `05_validation/mmm_typed_run_manifest_contract.md` | canonical | MMM-owned versioned typed run-manifest evidence and additive producer export-boundary linkage; not MIP policy |
 | `mmm/contracts/mip_export.py` | (code) | canonical | MMM-owned producer export Pydantic schemas, structural validation, and technical claim evidence; not a frozen MIP interface |
 | `mmm/contracts/mip_export_adapter.py` | (code) | canonical | MMM-owned conservative producer serialization adapter; emits partial, non-consumable bundles only |
 | `mmm/contracts/mip_failure.py` | (code) | canonical | MMM-owned typed failure taxonomy, remediation policy, JSON-safe packet serialization, and discriminated producer outcome |
+| `mmm/contracts/run_manifest.py` | (code) | canonical | MMM-owned typed run-manifest, step, and safe artifact-reference contracts; legacy dict helper retained for compatibility |
 | `tests/fixtures/mip_export/` | (fixtures) | canonical | MMM-owned synthetic producer-schema fixtures (non-production) |
 | `tests/contracts/test_mmm_mip_export_contracts.py` | (tests) | canonical | MMM-EXPORT-002 schema and claim-safety tests |
 | `tests/contracts/test_mmm_failure_packet.py` | (tests) | canonical | Typed producer failure packet, outcome, fixture, and boundary-emission tests |
+| `tests/contracts/test_mmm_run_manifest.py` | (tests) | canonical | Typed producer run-manifest, fixture, serialization, and boundary-linkage tests |
 | `tests/contracts/test_mmm_mip_producer_boundary.py` | (tests) | canonical | MMM producer-boundary regression: no MIP parser or conversational policy ships here |
 | `docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | `05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | canonical | Bayes-H2b binding ADR — hierarchy propagation & claim semantics |
 | `docs/05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | `05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | canonical | Bayes-H2d binding ADR — hierarchical model spec (architecture only) |

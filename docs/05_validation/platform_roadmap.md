@@ -121,12 +121,15 @@ structural validation, diagnostics, calibration lineage, promotion evidence,
 allowed/blocked technical claims, artifact availability, and range restrictions.
 
 `MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001` implements the MMM-owned,
-versioned technical failure packet and producer outcome wrapper. It does not
-reintroduce MIP parsing or conversational policy. R16 MIP consumer readiness
-remains blocked, MIP ingestion and recommendation authority remain unauthorized,
-and the producer interface is not frozen. Based on the remaining audit gaps, the
-next narrow producer candidate is `MMM_MIP_HANDOFF_V1_TYPED_RUN_MANIFEST_001`
-(R9), subject to a separate scope and evidence review.
+versioned technical failure packet and producer outcome wrapper. The subsequent
+`MMM_MIP_HANDOFF_V1_TYPED_RUN_MANIFEST_001` adds the strict, versioned producer
+run manifest and additive export-boundary linkage. Neither task reintroduces MIP
+parsing or conversational policy. R9 and R10 are implemented with contract and
+boundary tests; R16 MIP consumer readiness remains blocked, MIP ingestion and
+recommendation authority remain unauthorized, and the producer interface is not
+frozen. The next narrow producer task must be selected from the remaining audit
+gaps using current evidence; typed calibration-treatment lineage (R6) is the
+current candidate.
 See [the reconciliation audit](MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001.md).
 
 ---

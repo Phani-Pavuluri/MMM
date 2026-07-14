@@ -17,9 +17,9 @@
   "handoff_v1_complete": false,
   "interface_freeze_recommended": false,
   "misowned_mip_policy": ["consumer parsing", "conversational answerability", "cannot-answer wording", "LLM intent routing"],
-  "missing_mmm_artifacts": ["typed MMMRunManifest", "typed MMMFailurePacket", "typed calibration-treatment lineage", "public governed simulation export", "producer golden handoff fixtures", "compatibility policy"],
-  "next_task": "MMM_MIP_HANDOFF_V1_TYPED_RUN_MANIFEST_001",
-  "next_task_reason": "R10 typed failure packets are implemented; R9 remains the next narrow MMM-owned deterministic contract gap, while R16 stays blocked.",
+  "missing_mmm_artifacts": ["typed calibration-treatment lineage", "public governed simulation export", "producer golden handoff fixtures", "compatibility policy"],
+  "next_task": "MMM_MIP_HANDOFF_V1_CALIBRATION_TREATMENT_LINEAGE_001",
+  "next_task_reason": "R9 typed run manifests and R10 typed failure packets are implemented; R6 remains the next narrow MMM-owned lineage gap, while R16 stays blocked.",
   "producer_boundary_cleanup": {
     "completed": true,
     "interface_freeze_recommended": false,
@@ -27,6 +27,12 @@
     "r16_mip_consumer_readiness": "blocked"
   },
   "typed_failure_packet_followup": {
+    "r10_typed_failure_packet": "implemented",
+    "r16_mip_consumer_readiness": "blocked",
+    "interface_freeze_recommended": false
+  },
+  "typed_run_manifest_followup": {
+    "r9_typed_run_manifest": "implemented",
     "r10_typed_failure_packet": "implemented",
     "r16_mip_consumer_readiness": "blocked",
     "interface_freeze_recommended": false

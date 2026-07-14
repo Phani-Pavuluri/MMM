@@ -14,6 +14,14 @@ from mmm.contracts.mip_failure import (
     MMMRemediationAction,
     MMMRetryDisposition,
 )
+from mmm.contracts.run_manifest import (
+    MMMArtifactReference,
+    MMMExportManifestOutcome,
+    MMMRunManifest,
+    MMMRunStatus,
+    MMMRunStep,
+    MMMRunStepStatus,
+)
 
 __all__ = [
     "ModelingTargetSpec",
@@ -26,4 +34,10 @@ __all__ = [
     "MMMRetryDisposition",
     "MMMRemediationAction",
     "MMMExportOutcome",
+    "MMMRunManifest",
+    "MMMRunStatus",
+    "MMMRunStep",
+    "MMMRunStepStatus",
+    "MMMArtifactReference",
+    "MMMExportManifestOutcome",
 ]
