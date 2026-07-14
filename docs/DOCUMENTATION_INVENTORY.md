@@ -103,14 +103,11 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/05_validation/mmm_package_side_agents_roadmap.md` | `05_validation/mmm_package_side_agents_roadmap.md` | canonical | Future MMM package-side support agents — deferred roadmap; prerequisites and boundaries |
 | `docs/05_validation/mmm_to_mip_export_contract_inventory.md` | `05_validation/mmm_to_mip_export_contract_inventory.md` | canonical | MMM-EXPORT-001 governed MMM→MIP export contract inventory (docs only) |
 | `docs/05_validation/mmm_export_schema_and_fixture_contract.md` | `05_validation/mmm_export_schema_and_fixture_contract.md` | canonical | MMM-EXPORT-002 typed schemas, validators, fixture bundles |
-| `docs/mmm_export_bundle_ingestion_and_answerability.md` | `mmm_export_bundle_ingestion_and_answerability.md` | canonical | MIP-EXPORT-001 external bundle ingestion and fail-closed LLM answerability policy |
-| `mmm/contracts/mmm_export_bundle.py` | (code) | canonical | MIP-EXPORT-001 conservative external bundle parser |
-| `mmm/llm/mmm_export_answerability.py` | (code) | canonical | MIP-EXPORT-001 intent classifier and cannot-say results |
-| `tests/llm/test_mmm_export_answerability.py` | (tests) | canonical | MIP-EXPORT-001 parser and answerability gate tests |
-| `tests/fixtures/mmm_export/` | (fixtures) | canonical | MIP-local MMM export answer-safety fixtures |
-| `mmm/contracts/mip_export.py` | (code) | canonical | MMM→MIP export Pydantic schemas + claim-safety validators |
-| `tests/fixtures/mip_export/` | (fixtures) | canonical | Synthetic MMMExportBundle fixtures (non-production) |
+| `mmm/contracts/mip_export.py` | (code) | canonical | MMM-owned producer export Pydantic schemas, structural validation, and technical claim evidence; not a frozen MIP interface |
+| `mmm/contracts/mip_export_adapter.py` | (code) | canonical | MMM-owned conservative producer serialization adapter; emits partial, non-consumable bundles only |
+| `tests/fixtures/mip_export/` | (fixtures) | canonical | MMM-owned synthetic producer-schema fixtures (non-production) |
 | `tests/contracts/test_mmm_mip_export_contracts.py` | (tests) | canonical | MMM-EXPORT-002 schema and claim-safety tests |
+| `tests/contracts/test_mmm_mip_producer_boundary.py` | (tests) | canonical | MMM producer-boundary regression: no MIP parser or conversational policy ships here |
 | `docs/05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | `05_validation/bayes_h2b_hierarchical_experiment_prior_scope_rules_adr.md` | canonical | Bayes-H2b binding ADR — hierarchy propagation & claim semantics |
 | `docs/05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | `05_validation/bayes_h2d_hierarchical_model_spec_adr.md` | canonical | Bayes-H2d binding ADR — hierarchical model spec (architecture only) |
 | `docs/BAYES_H2B_VALIDATION_WORLDS_001.md` | `BAYES_H2B_VALIDATION_WORLDS_001.md` | canonical | Seven WORLD-BAYES-* validation world specifications (Track 2) |

@@ -2204,17 +2204,17 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 
 ---
 
-### INV-MIP-EXPORT-001 — MMMExportBundle ingestion and answerability gates (complete)
+### INV-MIP-EXPORT-001 — MMMExportBundle consumer boundary (MIP-owned; removed from MMM)
 
 | Field | Value |
 |-------|-------|
 | **Investigation ID** | INV-MIP-EXPORT-001 |
-| **Title** | Ingest external MMMExportBundle artifacts and enforce LLM answerability gates |
-| **Status** | complete |
-| **Evidence** | [ingestion and answerability contract](../mmm_export_bundle_ingestion_and_answerability.md); `mmm/contracts/mmm_export_bundle.py`; `mmm/llm/mmm_export_answerability.py`; `tests/llm/test_mmm_export_answerability.py` |
-| **Outcome** | Readiness and diagnostic explanations are explicitly gated; ROI, contribution, curve/simulation recommendation implications, demo truth, and budget advice fail closed unless their governed fields permit the exact claim. |
-| **Boundary** | Consumer-only parsing and classification. No MMM execution, computation, GeoX changes, DecisionSurface changes, TrustReport bypass, or recommendation generation. |
-| **Next** | Wire answerability decisions and bundle/artifact lineage into the MIP prompt/verifier response trace. |
+| **Title** | External MMMExportBundle parsing and conversational answerability belong to MIP |
+| **Status** | removed from MMM; MIP-owned follow-up |
+| **Evidence** | [reconciliation audit](../05_validation/MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001.md); `mmm/contracts/mip_export.py`; `tests/contracts/test_mmm_mip_producer_boundary.py` |
+| **Outcome** | MMM retains producer schemas, serialization, structural validation, diagnostics, calibration/claim evidence, promotion evidence, and range restrictions. Consumer parsing, platform-input loading, intent classification, conversational answerability, refusal wording, LLM routing, TrustReport assembly, orchestration, and recommendation authority do not ship in MMM. |
+| **Boundary** | The producer interface is not frozen. R10 typed failure packets remain missing and R16 MIP consumer readiness remains blocked. |
+| **Next** | `MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001`; MIP consumer implementation remains a coordinated MIP task after a producer-owned public contract exists. |
 
 ---
 

@@ -113,12 +113,17 @@ Future **experimentation** and **orchestration** systems must consume **Decision
 ### MMM–MIP handoff reconciliation (2026-07-13)
 
 `MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001` found the export lane **blocked by
-ownership mixing**: MMM has partial producer schemas and a conservative adapter,
-while `a803da2` also placed MIP-owned consumer parsing, conversational
-answerability, and cannot-answer policy in MMM.  The interface is not frozen and
-MIP ingestion remains unauthorized.  The selected narrow next MMM task is
-`MMM_MIP_HANDOFF_V1_PRODUCER_BOUNDARY_CLEANUP_001`; it must retain only producer
-eligibility evidence in MMM and coordinate relocation of platform policy to MIP.
+ownership mixing**. `MMM_MIP_HANDOFF_V1_PRODUCER_BOUNDARY_CLEANUP_001` removed
+the MIP-owned consumer parser, input loading, user-intent/conversational
+answerability, refusal wording, and LLM-routing policy from MMM. MMM retains
+only producer artifacts and technical evidence: schemas, serialization,
+structural validation, diagnostics, calibration lineage, promotion evidence,
+allowed/blocked technical claims, artifact availability, and range restrictions.
+
+The producer interface is not frozen. R10 `MMMFailurePacket` remains missing and
+R16 MIP consumer readiness remains blocked; MIP ingestion and recommendation
+authority remain unauthorized. The next MMM task is
+`MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001`.
 See [the reconciliation audit](MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001.md).
 
 ---

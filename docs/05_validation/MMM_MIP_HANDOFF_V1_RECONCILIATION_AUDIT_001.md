@@ -120,18 +120,27 @@ must own consumer parsing, conversational answerability, refusal language,
 TrustReport assembly, user-intent routing, cross-engine orchestration, and
 recommendation authorization.
 
-## Next task and interface-freeze decision
+## Cleanup outcome and interface-freeze decision
 
-**Selected next MMM task:** `MMM_MIP_HANDOFF_V1_PRODUCER_BOUNDARY_CLEANUP_001`.
+`MMM_MIP_HANDOFF_V1_PRODUCER_BOUNDARY_CLEANUP_001` removed the misowned MIP
+consumer parser, bundle loader, user-intent taxonomy, conversational
+answerability result, refusal wording, LLM-routing policy, consumer-only tests,
+and consumer-only fixtures from MMM. The historical `a803da2` classification
+above remains the audit evidence for that removal.
 
-It must remove or relocate the MIP-owned policy introduced by `a803da2` while
-preserving producer-side schema validation and technical claim evidence.  This
-is narrower and more fundamental than adding manifests or failure packets to a
-boundary that currently mixes producer and consumer responsibilities.  It must
-not implement MIP work in MMM; MIP relocation is a coordinated follow-up.
+MMM retains producer export schemas, serialization, structural validation,
+diagnostics, calibration lineage, technical allowed/blocked claim evidence,
+promotion evidence, artifact availability, and supported-range/extrapolation
+restrictions. MIP owns externally supplied-bundle parsing, platform input
+loading, user-intent classification, conversational answerability, refusal
+wording, LLM routing, TrustReport assembly, cross-engine orchestration, and
+recommendation/optimization authorization.
 
-Do not freeze the interface until that cleanup is complete and the resulting
-MMM-only producer API is documented and tested.
+The producer interface is **not frozen**. R10 `MMMFailurePacket` remains
+**missing**, and R16 MIP consumer readiness remains **blocked** until a
+producer-owned public contract is available. The next MMM task is
+`MMM_MIP_HANDOFF_V1_TYPED_FAILURE_PACKET_001`; it must not implement MIP
+consumer behavior in MMM.
 
 ## Explicit non-authorizations
 
