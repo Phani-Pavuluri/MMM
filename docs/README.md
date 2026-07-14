@@ -145,6 +145,7 @@ Living register of open gaps, design debt, and deferred work (evidence-linked; n
 
 - [DOCUMENTATION_INVENTORY.md](DOCUMENTATION_INVENTORY.md) — canonical paths and deprecated redirects
 - [documentation_truth_audit.md](documentation_truth_audit.md) — docs vs code audit
+- [dev_validation_workflow.md](dev_validation_workflow.md) — Docker/devcontainer validation entrypoint and authority
 - Validate links: `python scripts/validate_docs.py`
 
 ## Archive

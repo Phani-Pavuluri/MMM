@@ -218,6 +218,7 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/06_investigations/INV-H6_SYNTHETIC_TO_REAL_SHADOW_COMPARISON.md` | `06_investigations/INV-H6_SYNTHETIC_TO_REAL_SHADOW_COMPARISON.md` | canonical | Investigation report |
 | `docs/audits/MIP_MINI_AUDIT_20260601_BAYES_H3_SANDBOX_MVP.md` | `audits/MIP_MINI_AUDIT_20260601_BAYES_H3_SANDBOX_MVP.md` | canonical | Audit report |
 | `docs/dev_setup.md` | `dev_setup.md` | canonical | Development setup |
+| `docs/dev_validation_workflow.md` | `dev_validation_workflow.md` | canonical | Docker/devcontainer validation workflow |
 | `docs/track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md` | `track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md` | canonical | Track D readout |
 
 ## Deprecated redirects
