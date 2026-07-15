@@ -2200,7 +2200,7 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 | **Status** | **open** (EXPORT-002/003, typed failure packet, typed run manifest, and calibration-treatment lineage complete; real producer handoff remains incomplete) |
 | **Evidence** | [inventory](../05_validation/mmm_to_mip_export_contract_inventory.md); [schema/fixtures](../05_validation/mmm_export_schema_and_fixture_contract.md); [typed failure packet](../05_validation/mmm_typed_failure_packet_contract.md); [typed run manifest](../05_validation/mmm_typed_run_manifest_contract.md); `mmm/contracts/mip_export.py`; `mmm/contracts/mip_failure.py`; `mmm/contracts/run_manifest.py`; `tests/fixtures/mip_export/` |
 | **Outcome** | Producer schemas, conservative adapter, typed failure/run-manifest contracts, and calibration-treatment lineage exist. These facts do not create MIP parsing, user-facing policy, TrustReport, recommendation authority, or interface freeze. |
-| **Next** | Select the next narrow producer task from remaining audited gaps, with typed diagnostics/limitations (R7) the current candidate. R16 remains blocked and the interface is not frozen. |
+| **Next** | Typed diagnostics/limitations (R7) is implemented. Select the next narrow producer task from remaining audited gaps; R16 remains blocked and the interface is not frozen. |
 
 ---
 

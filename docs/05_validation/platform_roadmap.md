@@ -136,6 +136,11 @@ R16 remains blocked and interface freeze remains unauthorized. The next task
 must be selected from the remaining audited producer gaps based on evidence.
 See [the reconciliation audit](MMM_MIP_HANDOFF_V1_RECONCILIATION_AUDIT_001.md).
 
+Typed diagnostics and limitations (R7) are now producer-owned evidence. R9,
+R10, and calibration-treatment lineage remain implemented; R16 remains blocked
+and interface freeze remains unauthorized. The next task must come from the
+remaining audited producer gaps based on current evidence.
+
 ---
 
 ## Track 1 — Platform Contract Layer

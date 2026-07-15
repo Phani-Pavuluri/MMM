@@ -40,6 +40,7 @@ from mmm.contracts.run_manifest import (
     build_mmm_run_manifest,
 )
 from mmm.contracts.calibration_treatment import MMMCalibrationTreatmentLineage
+from mmm.contracts.diagnostics_limitations import MMMDiagnosticsLimitations
 
 
 class MMMExportAdapterError(ValueError):
@@ -355,6 +356,7 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
     created_at: datetime,
     known_failure: MMMFailurePacket | None = None,
     calibration_lineage: MMMCalibrationTreatmentLineage | None = None,
+    diagnostics_limitations: MMMDiagnosticsLimitations | None = None,
     extension_report: Mapping[str, Any] | None = None,
     simulation_result: Mapping[str, Any] | None = None,
     optimizer_result: Mapping[str, Any] | None = None,
@@ -367,6 +369,8 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
     """
     if calibration_lineage is not None and calibration_lineage.run_id != context.model_run_id:
         raise MMMExportAdapterError("calibration lineage run ID must match the runtime export context")
+    if diagnostics_limitations is not None and diagnostics_limitations.run_id != context.model_run_id:
+        raise MMMExportAdapterError("diagnostics aggregate run ID must match the runtime export context")
     outcome = adapt_runtime_artifacts_to_export_outcome(
         context=context,
         known_failure=known_failure,
@@ -389,6 +393,7 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
         "channel_scope": list(context.channel_scope),
         "calibration_lineage_id": calibration_lineage.lineage_id if calibration_lineage else None,
         "calibration_signal_ids": [record.signal_id for record in calibration_lineage.records] if calibration_lineage else [],
+        "diagnostics_limitations_id": diagnostics_limitations.aggregate_id if diagnostics_limitations else None,
     }
     if outcome.outcome_type == "success":
         bundle = outcome.export_bundle

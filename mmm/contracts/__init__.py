@@ -31,6 +31,17 @@ from mmm.contracts.calibration_treatment import (
     MMMCalibrationTreatmentLineage,
     MMMCalibrationTreatmentRecord,
 )
+from mmm.contracts.diagnostics_limitations import (
+    MMMAffectedScope,
+    MMMDiagnosticCategory,
+    MMMDiagnosticRecord,
+    MMMDiagnosticSeverity,
+    MMMDiagnosticStatus,
+    MMMDiagnosticsLimitations,
+    MMMLimitationRecord,
+    MMMTechnicalClaim,
+    MMMTechnicalClaimDisposition,
+)
 
 __all__ = [
     "ModelingTargetSpec",
@@ -56,4 +67,13 @@ __all__ = [
     "MMMCalibrationCompatibilityStatus",
     "MMMCalibrationFreshnessStatus",
     "MMMCalibrationTransformationStep",
+    "MMMDiagnosticsLimitations",
+    "MMMDiagnosticRecord",
+    "MMMDiagnosticStatus",
+    "MMMDiagnosticSeverity",
+    "MMMDiagnosticCategory",
+    "MMMLimitationRecord",
+    "MMMTechnicalClaim",
+    "MMMTechnicalClaimDisposition",
+    "MMMAffectedScope",
 ]

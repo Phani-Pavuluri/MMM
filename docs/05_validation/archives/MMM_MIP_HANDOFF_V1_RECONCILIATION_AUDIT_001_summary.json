@@ -18,7 +18,7 @@
   "interface_freeze_recommended": false,
   "misowned_mip_policy": ["consumer parsing", "conversational answerability", "cannot-answer wording", "LLM intent routing"],
   "missing_mmm_artifacts": ["public governed simulation export", "producer golden handoff fixtures", "compatibility policy"],
-  "next_task": "MMM_MIP_HANDOFF_V1_TYPED_DIAGNOSTICS_LIMITATIONS_001",
+  "next_task": "MMM_MIP_HANDOFF_V1_PRODUCER_GOLDEN_FIXTURES_001",
   "next_task_reason": "R6 calibration-treatment lineage, R9 typed run manifests, and R10 typed failure packets are implemented; R7 typed diagnostics/limitations is the next narrow producer gap, while R16 stays blocked.",
   "producer_boundary_cleanup": {
     "completed": true,
@@ -44,6 +44,7 @@
     "r16_mip_consumer_readiness": "blocked",
     "interface_freeze_recommended": false
   },
+  "typed_diagnostics_limitations_followup": {"r7_typed_diagnostics_limitations": "implemented", "r9_typed_run_manifest": "implemented", "r10_typed_failure_packet": "implemented", "r16_mip_consumer_readiness": "blocked", "interface_freeze_recommended": false},
   "non_authorizations": ["production Bayesian MMM", "automatic model-family selection", "LLM-based model selection", "recommendation authorization", "budget optimization", "final platform DecisionSurface", "TrustReport assembly", "MIP user-intent routing", "cross-engine orchestration", "live production scheduling", "automatic model promotion", "unsupported ROI claims", "unsupported causal claims"],
   "overall_verdict": "MMM_MIP_HANDOFF_V1_BLOCKED_BY_OWNERSHIP_MIXING",
   "repository": "MMM",

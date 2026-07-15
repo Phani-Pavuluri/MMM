@@ -190,6 +190,14 @@ research-only evidence. R9 and R10 remain implemented; R16 remains blocked and
 the interface remains not frozen. The next task must be selected from the
 remaining audited producer gaps using current evidence.
 
+## Follow-up status — typed diagnostics and limitations
+
+This labeled post-audit status does not rewrite the historical finding. R7 now
+has typed producer diagnostics/limitations, explicit claim effects, deterministic
+serialization, fixtures, failure linkage, and additive manifest linkage. R9,
+R10, and calibration-treatment lineage remain implemented. R16 remains blocked
+and interface freeze remains unauthorized.
+
 ## Explicit non-authorizations
 
 This audit does not authorize production Bayesian MMM, automatic or LLM-based

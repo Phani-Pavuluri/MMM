@@ -36,7 +36,7 @@ def test_reconciliation_audit_contract() -> None:
     assert {row["status"] for row in requirements} <= STATUSES
     assert all(row["status"] in STATUSES for row in requirements)
     assert {row["classification"] for row in summary["a803da2_classifications"]} <= CLASSIFICATIONS
-    assert summary["next_task"] == "MMM_MIP_HANDOFF_V1_TYPED_DIAGNOSTICS_LIMITATIONS_001"
+    assert summary["next_task"] == "MMM_MIP_HANDOFF_V1_PRODUCER_GOLDEN_FIXTURES_001"
     assert summary["producer_boundary_cleanup"] == {
         "completed": True,
         "interface_freeze_recommended": False,
