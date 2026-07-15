@@ -151,6 +151,16 @@ recommendations, optimization, simulation, response surfaces, or interface freez
 Post-R13 audit selection: `MMM_MIP_HANDOFF_V1_SCHEMA_COMPATIBILITY_POLICY_001`
 (R15) precedes safe consumer binding; R11/R12 remain deferred planning evidence gaps.
 
+R15 is now implemented as a producer-owned compatibility/deprecation policy
+with a deterministic registry of the supported public contract and fixture-set
+versions. It records the observed permissive export-model versus strict typed
+contract parser behavior without changing runtime parsing or golden fixtures.
+This policy does not negotiate schemas, freeze the producer interface, or
+authorize MIP consumer readiness. R6, R7, R9, R10, calibration-treatment
+lineage, and R13 remain implemented; R11/R12 remain partial; R16 remains
+blocked. The next task must be selected from post-R15 evidence and all
+downstream authorization flags remain false.
+
 ---
 
 ## Track 1 — Platform Contract Layer

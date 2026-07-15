@@ -221,6 +221,23 @@ The post-R13 evidence audit selects `MMM_MIP_HANDOFF_V1_SCHEMA_COMPATIBILITY_POL
 as the next narrow R15 producer prerequisite. R11/R12 remain deferred; R16
 remains blocked and interface freeze remains unauthorized.
 
+## Follow-up status — schema compatibility policy
+
+This labeled follow-up records current evidence and does not revise the
+historical `a803da2` requirement matrix. `MMM_MIP_HANDOFF_V1_SCHEMA_COMPATIBILITY_POLICY_001`
+implements R15 as a versioned producer policy, deterministic registry, and
+contract/fixture evidence tests. It records the actual difference between the
+permissive export models and strict typed contracts without changing either
+runtime parser behavior or golden-fixture semantics. Current versions are
+active, unsupported required versions are fail-closed by policy, and removal
+still needs separate authorization and consumer migration evidence.
+
+R6, R7, R9, R10, calibration-treatment lineage, and R13 remain implemented;
+R11 and R12 remain partial; R16 remains blocked. The interface remains
+unauthorized for freeze and all downstream authorization flags remain false.
+The next MMM handoff task must be selected from post-R15 evidence rather than
+assuming consumer implementation is authorized.
+
 This audit does not authorize production Bayesian MMM, automatic or LLM-based
 model-family selection, recommendation authorization, budget optimization,
 final platform `DecisionSurface`, TrustReport assembly, MIP user-intent routing,

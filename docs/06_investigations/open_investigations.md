@@ -2197,10 +2197,10 @@ Moat is **estimand discipline**, **replay governance**, **decision semantics**, 
 |-------|-------|
 | **Investigation ID** | INV-MMM-EXPORT-CONTRACTS-001 |
 | **Title** | Governed MMM-to-MIP export contract inventory (MMM-EXPORT-001) + schemas/fixtures (MMM-EXPORT-002) |
-| **Status** | **open** (EXPORT-002/003, typed failure packet, typed run manifest, and calibration-treatment lineage complete; real producer handoff remains incomplete) |
-| **Evidence** | [inventory](../05_validation/mmm_to_mip_export_contract_inventory.md); [schema/fixtures](../05_validation/mmm_export_schema_and_fixture_contract.md); [typed failure packet](../05_validation/mmm_typed_failure_packet_contract.md); [typed run manifest](../05_validation/mmm_typed_run_manifest_contract.md); `mmm/contracts/mip_export.py`; `mmm/contracts/mip_failure.py`; `mmm/contracts/run_manifest.py`; `tests/fixtures/mip_export/` |
-| **Outcome** | Producer schemas, conservative adapter, typed failure/run-manifest contracts, and calibration-treatment lineage exist. These facts do not create MIP parsing, user-facing policy, TrustReport, recommendation authority, or interface freeze. |
-| **Next** | The remaining-gap audit selects `MMM_MIP_HANDOFF_V1_PRODUCER_GOLDEN_FIXTURES_001` (R13). R16 remains blocked and the interface is not frozen. |
+| **Status** | **open** (EXPORT-002/003, typed failure packet, typed run manifest, calibration-treatment lineage, diagnostics/limitations, golden fixtures, and compatibility-policy evidence complete; real producer handoff remains incomplete) |
+| **Evidence** | [inventory](../05_validation/mmm_to_mip_export_contract_inventory.md); [schema/fixtures](../05_validation/mmm_export_schema_and_fixture_contract.md); [typed failure packet](../05_validation/mmm_typed_failure_packet_contract.md); [typed run manifest](../05_validation/mmm_typed_run_manifest_contract.md); [compatibility policy](../05_validation/mmm_mip_schema_compatibility_policy.md); `mmm/contracts/mip_export.py`; `mmm/contracts/mip_failure.py`; `mmm/contracts/run_manifest.py`; `tests/fixtures/mip_export/` |
+| **Outcome** | Producer schemas, conservative adapter, typed failure/run-manifest contracts, calibration-treatment lineage, diagnostics/limitations, goldens, and a policy-only version/compatibility registry exist. These facts do not create MIP parsing, user-facing policy, TrustReport, recommendation authority, or interface freeze. |
+| **Next** | Select the next narrow MMM task from post-R15 evidence; R11 and R12 remain partial candidates. R16 remains blocked and the interface is not frozen. |
 
 ---
 

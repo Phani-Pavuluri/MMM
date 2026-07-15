@@ -34,3 +34,13 @@ Completed artifact verification: consumer parser/intent/answerability symbols re
 Expected work: fixture schema/index and focused fixture integrity tests only. Non-goals: model fitting changes, simulation export, response surfaces, MIP parsing, recommendation/optimization authorization, and interface freeze. R16 remains blocked afterward.
 
 Deferred alternatives: R11 simulation export (requires bounded public runtime evidence); R12 response surfaces (requires canonical range/uncertainty projection); R15 compatibility policy (requires an authorized interface evolution decision). All authorization flags remain false.
+
+## Follow-up status — schema compatibility policy
+
+This follow-up preserves the historical `7f615fb` selection. R15 is now
+implemented as producer-owned version/compatibility policy evidence with a
+deterministic registry and regression tests; it does not implement runtime
+negotiation, MIP parsing, consumer readiness, or an interface freeze. R6, R7,
+R9, R10, calibration-treatment lineage, and R13 remain implemented. R11 and
+R12 remain partial, R16 remains blocked, the interface freeze remains
+unauthorized, and all downstream authorization flags remain false.

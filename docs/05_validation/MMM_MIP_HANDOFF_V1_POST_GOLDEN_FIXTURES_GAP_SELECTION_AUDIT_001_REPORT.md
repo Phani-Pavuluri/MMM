@@ -26,3 +26,14 @@ evidence, not first-consumer compatibility prerequisites.
 
 R6, R7, R9, R10, calibration lineage, and R13 remain implemented. All downstream
 authorization flags remain false; interface freeze remains unauthorized.
+
+## Follow-up status — R15 schema compatibility policy
+
+This labeled follow-up does not change the historical `949d7a6` audit verdict.
+`MMM_MIP_HANDOFF_V1_SCHEMA_COMPATIBILITY_POLICY_001` supplies the selected
+R15 producer prerequisite: a documented per-contract compatibility policy, a
+deterministic supported-version registry, fixture-set support rules, and tests
+against current public contracts. R15 is implemented as policy evidence only;
+it does not add schema negotiation, alter runtime parsing, freeze the
+interface, or authorize MIP consumers. R11 and R12 remain partial and R16
+remains blocked. All downstream authorization flags remain false.
