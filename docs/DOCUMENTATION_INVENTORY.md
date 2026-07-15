@@ -108,6 +108,7 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/05_validation/mmm_calibration_treatment_lineage_contract.md` | `05_validation/mmm_calibration_treatment_lineage_contract.md` | canonical | MMM-owned typed calibration-treatment lineage; preserves producer evidence without changing fitting or MIP policy |
 | `docs/05_validation/mmm_typed_diagnostics_limitations_contract.md` | `05_validation/mmm_typed_diagnostics_limitations_contract.md` | canonical | MMM-owned typed diagnostics, limitations, and technical-claim evidence |
 | `docs/05_validation/MMM_MIP_HANDOFF_V1_REMAINING_GAP_SELECTION_AUDIT_001_REPORT.md` | `05_validation/MMM_MIP_HANDOFF_V1_REMAINING_GAP_SELECTION_AUDIT_001_REPORT.md` | canonical | Evidence reconciliation and single next MMM producer task selection |
+| `docs/05_validation/mmm_producer_golden_fixture_suite.md` | `05_validation/mmm_producer_golden_fixture_suite.md` | canonical | Versioned deterministic public producer golden fixture suite |
 | `mmm/contracts/mip_export.py` | (code) | canonical | MMM-owned producer export Pydantic schemas, structural validation, and technical claim evidence; not a frozen MIP interface |
 | `mmm/contracts/mip_export_adapter.py` | (code) | canonical | MMM-owned conservative producer serialization adapter; emits partial, non-consumable bundles only |
 | `mmm/contracts/mip_failure.py` | (code) | canonical | MMM-owned typed failure taxonomy, remediation policy, JSON-safe packet serialization, and discriminated producer outcome |

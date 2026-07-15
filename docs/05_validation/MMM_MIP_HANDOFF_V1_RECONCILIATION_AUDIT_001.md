@@ -207,6 +207,14 @@ At `7f615fb`, the evidence-only remaining-gap audit selected
 It preserves the historical verdict: R16 is blocked and interface freeze is not
 authorized; no consumer, recommendation, or optimization authority is implied.
 
+## Follow-up status — producer golden fixtures
+
+`MMM_MIP_HANDOFF_V1_PRODUCER_GOLDEN_FIXTURES_001` provides a versioned,
+deterministic index over public producer artifacts and validates parsing,
+terminal-state, research-only, and safety boundaries. R13 is implemented with
+fixture evidence only; R6, R7, R9, and R10 remain implemented. R16 remains
+blocked and interface freeze remains unauthorized.
+
 This audit does not authorize production Bayesian MMM, automatic or LLM-based
 model-family selection, recommendation authorization, budget optimization,
 final platform `DecisionSurface`, TrustReport assembly, MIP user-intent routing,
