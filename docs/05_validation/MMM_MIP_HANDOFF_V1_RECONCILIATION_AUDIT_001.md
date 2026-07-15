@@ -200,6 +200,13 @@ and interface freeze remains unauthorized.
 
 ## Explicit non-authorizations
 
+## Follow-up status — remaining-gap selection audit
+
+At `7f615fb`, the evidence-only remaining-gap audit selected
+`MMM_MIP_HANDOFF_V1_PRODUCER_GOLDEN_FIXTURES_001` as the next narrow MMM task.
+It preserves the historical verdict: R16 is blocked and interface freeze is not
+authorized; no consumer, recommendation, or optimization authority is implied.
+
 This audit does not authorize production Bayesian MMM, automatic or LLM-based
 model-family selection, recommendation authorization, budget optimization,
 final platform `DecisionSurface`, TrustReport assembly, MIP user-intent routing,

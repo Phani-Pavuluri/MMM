@@ -141,6 +141,10 @@ R10, and calibration-treatment lineage remain implemented; R16 remains blocked
 and interface freeze remains unauthorized. The next task must come from the
 remaining audited producer gaps based on current evidence.
 
+The remaining-gap selection audit names
+`MMM_MIP_HANDOFF_V1_PRODUCER_GOLDEN_FIXTURES_001` as the next narrow producer
+task. R16 remains blocked and interface freeze remains unauthorized.
+
 ---
 
 ## Track 1 — Platform Contract Layer
