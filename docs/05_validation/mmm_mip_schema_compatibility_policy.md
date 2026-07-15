@@ -79,3 +79,11 @@ Examples:
 - Adding an optional field to `MMMFailurePacket` is breaking today because its parser rejects unknown fields.
 - Renaming `run_id`, changing a failure-code meaning, or changing a fixture's terminal outcome is breaking and requires a new applicable version.
 - Removing `golden_v1`, silently dropping a deprecated field, weakening unsupported-version handling, or changing producer/MIP ownership through a schema update is prohibited until separately authorized.
+
+## Follow-up — post-compatibility gap selection
+
+The policy evidence audit is complete. The next narrow producer prerequisite is
+`MMM_MIP_HANDOFF_V1_SUPPORTED_RANGE_EVIDENCE_001`, selected because R11 public
+simulation export and R12 response-surface evidence both need a positive,
+versioned supported-range record. This does not change runtime compatibility
+behavior, authorize an interface freeze, or unblock R16 MIP consumer readiness.

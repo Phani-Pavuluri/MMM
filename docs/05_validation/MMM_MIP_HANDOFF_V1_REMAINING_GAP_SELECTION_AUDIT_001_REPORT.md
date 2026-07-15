@@ -44,3 +44,11 @@ negotiation, MIP parsing, consumer readiness, or an interface freeze. R6, R7,
 R9, R10, calibration-treatment lineage, and R13 remain implemented. R11 and
 R12 remain partial, R16 remains blocked, the interface freeze remains
 unauthorized, and all downstream authorization flags remain false.
+
+## Follow-up status — post-compatibility selection
+
+This follow-up preserves the historical R13 selection at `7f615fb`. Current
+R11/R12 evidence selects `MMM_MIP_HANDOFF_V1_SUPPORTED_RANGE_EVIDENCE_001`, a
+shared producer evidence prerequisite, rather than implementing either broad
+export. R11/R12 remain partial; R16 remains blocked and interface freeze
+remains unauthorized.

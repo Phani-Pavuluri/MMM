@@ -238,6 +238,16 @@ unauthorized for freeze and all downstream authorization flags remain false.
 The next MMM handoff task must be selected from post-R15 evidence rather than
 assuming consumer implementation is authorized.
 
+## Follow-up status — post-compatibility gap selection
+
+This labeled follow-up preserves the historical `a803da2` verdict. The
+post-compatibility evidence audit evaluates R11 and R12 and selects
+`MMM_MIP_HANDOFF_V1_SUPPORTED_RANGE_EVIDENCE_001` as their narrower shared
+producer prerequisite. Internal full-panel Δμ and diagnostic curve utilities
+remain distinct from governed public artifacts. R11 and R12 remain partial,
+R16 remains blocked, interface freeze remains unauthorized, and no downstream
+authorization is implied.
+
 This audit does not authorize production Bayesian MMM, automatic or LLM-based
 model-family selection, recommendation authorization, budget optimization,
 final platform `DecisionSurface`, TrustReport assembly, MIP user-intent routing,

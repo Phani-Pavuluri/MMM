@@ -161,6 +161,13 @@ lineage, and R13 remain implemented; R11/R12 remain partial; R16 remains
 blocked. The next task must be selected from post-R15 evidence and all
 downstream authorization flags remain false.
 
+Post-compatibility evidence selection: R11 public simulation export and R12
+response-surface evidence remain partial. Their next shared producer
+prerequisite is `MMM_MIP_HANDOFF_V1_SUPPORTED_RANGE_EVIDENCE_001`: a positive,
+versioned supported-range record, not a simulation/response-surface export.
+R16 remains blocked, interface freeze remains unauthorized, and all downstream
+authorization flags remain false.
+
 ---
 
 ## Track 1 — Platform Contract Layer
