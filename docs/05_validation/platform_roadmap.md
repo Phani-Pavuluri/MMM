@@ -148,6 +148,9 @@ task. R16 remains blocked and interface freeze remains unauthorized.
 That fixture suite now closes R13 without authorizing consumer readiness,
 recommendations, optimization, simulation, response surfaces, or interface freeze.
 
+Post-R13 audit selection: `MMM_MIP_HANDOFF_V1_SCHEMA_COMPATIBILITY_POLICY_001`
+(R15) precedes safe consumer binding; R11/R12 remain deferred planning evidence gaps.
+
 ---
 
 ## Track 1 — Platform Contract Layer

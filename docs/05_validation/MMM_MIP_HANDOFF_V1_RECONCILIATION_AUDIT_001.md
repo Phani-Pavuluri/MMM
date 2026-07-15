@@ -215,6 +215,12 @@ terminal-state, research-only, and safety boundaries. R13 is implemented with
 fixture evidence only; R6, R7, R9, and R10 remain implemented. R16 remains
 blocked and interface freeze remains unauthorized.
 
+## Follow-up status — post-golden gap selection
+
+The post-R13 evidence audit selects `MMM_MIP_HANDOFF_V1_SCHEMA_COMPATIBILITY_POLICY_001`
+as the next narrow R15 producer prerequisite. R11/R12 remain deferred; R16
+remains blocked and interface freeze remains unauthorized.
+
 This audit does not authorize production Bayesian MMM, automatic or LLM-based
 model-family selection, recommendation authorization, budget optimization,
 final platform `DecisionSurface`, TrustReport assembly, MIP user-intent routing,
