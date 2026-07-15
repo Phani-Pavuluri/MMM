@@ -168,6 +168,16 @@ versioned supported-range record, not a simulation/response-surface export.
 R16 remains blocked, interface freeze remains unauthorized, and all downstream
 authorization flags remain false.
 
+Supported-range evidence is now implemented as the MMM-owned, versioned
+`MMMSupportedRangeEvidence` contract with typed bounds, scope, availability,
+extrapolation, restrictions, and additive manifest/export references. It records
+only existing observed/training-domain and explicit restriction evidence; it
+does not derive new numerical support. R11 and R12 remain partial, R16 remains
+blocked, interface freeze remains unauthorized, and all downstream authorization
+flags remain false. Based on post-range evidence, the next narrow producer task
+is `MMM_MIP_HANDOFF_V1_PUBLIC_SIMULATION_EXPORT_001`; it is not authorized by
+this status update.
+
 ---
 
 ## Track 1 — Platform Contract Layer

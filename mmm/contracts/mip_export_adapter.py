@@ -41,6 +41,7 @@ from mmm.contracts.run_manifest import (
 )
 from mmm.contracts.calibration_treatment import MMMCalibrationTreatmentLineage
 from mmm.contracts.diagnostics_limitations import MMMDiagnosticsLimitations
+from mmm.contracts.supported_range import MMMSupportedRangeEvidence
 
 
 class MMMExportAdapterError(ValueError):
@@ -357,6 +358,7 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
     known_failure: MMMFailurePacket | None = None,
     calibration_lineage: MMMCalibrationTreatmentLineage | None = None,
     diagnostics_limitations: MMMDiagnosticsLimitations | None = None,
+    supported_range_evidence: MMMSupportedRangeEvidence | None = None,
     extension_report: Mapping[str, Any] | None = None,
     simulation_result: Mapping[str, Any] | None = None,
     optimizer_result: Mapping[str, Any] | None = None,
@@ -371,6 +373,8 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
         raise MMMExportAdapterError("calibration lineage run ID must match the runtime export context")
     if diagnostics_limitations is not None and diagnostics_limitations.run_id != context.model_run_id:
         raise MMMExportAdapterError("diagnostics aggregate run ID must match the runtime export context")
+    if supported_range_evidence is not None and supported_range_evidence.run_id != context.model_run_id:
+        raise MMMExportAdapterError("supported range evidence run ID must match the runtime export context")
     outcome = adapt_runtime_artifacts_to_export_outcome(
         context=context,
         known_failure=known_failure,
@@ -394,6 +398,7 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
         "calibration_lineage_id": calibration_lineage.lineage_id if calibration_lineage else None,
         "calibration_signal_ids": [record.signal_id for record in calibration_lineage.records] if calibration_lineage else [],
         "diagnostics_limitations_id": diagnostics_limitations.aggregate_id if diagnostics_limitations else None,
+        "supported_range_evidence_id": supported_range_evidence.evidence_id if supported_range_evidence else None,
     }
     if outcome.outcome_type == "success":
         bundle = outcome.export_bundle
@@ -443,7 +448,11 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
                 )
             ],
         )
-    return MMMExportManifestOutcome(export_outcome=outcome, run_manifest=manifest)
+    return MMMExportManifestOutcome(
+        export_outcome=outcome,
+        run_manifest=manifest,
+        supported_range_evidence_id=supported_range_evidence.evidence_id if supported_range_evidence else None,
+    )
 
 
 __all__ = [

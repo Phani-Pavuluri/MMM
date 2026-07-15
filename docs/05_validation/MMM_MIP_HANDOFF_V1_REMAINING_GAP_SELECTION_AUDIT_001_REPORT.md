@@ -52,3 +52,11 @@ R11/R12 evidence selects `MMM_MIP_HANDOFF_V1_SUPPORTED_RANGE_EVIDENCE_001`, a
 shared producer evidence prerequisite, rather than implementing either broad
 export. R11/R12 remain partial; R16 remains blocked and interface freeze
 remains unauthorized.
+
+## Follow-up status — supported-range evidence
+
+The later shared prerequisite is implemented with typed observed, supported,
+validated, restricted, unavailable, and research-only evidence. This does not
+revise the historical selection or authorize R11/R12, consumer readiness, or an
+interface freeze. R16 remains blocked; the next narrow producer task is
+`MMM_MIP_HANDOFF_V1_PUBLIC_SIMULATION_EXPORT_001`.

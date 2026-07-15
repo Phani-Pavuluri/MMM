@@ -45,3 +45,11 @@ audit selects `MMM_MIP_HANDOFF_V1_SUPPORTED_RANGE_EVIDENCE_001` as the narrow
 shared R11/R12 prerequisite. It does not implement simulation or response
 surface exports, authorize consumers, or freeze the interface. R11 and R12
 remain partial; R16 remains blocked.
+
+## Follow-up — supported-range evidence
+
+The post-R15 selected prerequisite is now implemented as a separate, versioned
+producer fixture collection and public typed contract, without changing
+`golden_v1`. R11/R12 remain partial, R16 remains blocked, and interface freeze
+remains unauthorized; the next narrow producer task is
+`MMM_MIP_HANDOFF_V1_PUBLIC_SIMULATION_EXPORT_001`.

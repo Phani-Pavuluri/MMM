@@ -147,6 +147,24 @@
       "evidence_references": ["mmm/contracts/calibration_treatment.py", "tests/contracts/test_mmm_calibration_treatment_lineage.py"]
     },
     {
+      "contract_id": "mmm_supported_range_evidence",
+      "public_type": "MMMSupportedRangeEvidence and MMMSupportedRangeRecord",
+      "module": "mmm.contracts.supported_range",
+      "current_schema_version": "mmm_supported_range_evidence_v1",
+      "current_contract_version": "mmm_supported_range_record_v1",
+      "supported_versions": ["mmm_supported_range_evidence_v1", "mmm_supported_range_record_v1"],
+      "support_status": "ACTIVE",
+      "fixture_coverage": ["tests/fixtures/mip_export/supported_range_v1", "tests/contracts/test_mmm_supported_range_evidence.py"],
+      "unknown_field_policy": {"top_level": "CURRENT_RUNTIME_REJECT", "nested": "CURRENT_RUNTIME_REJECT", "optional_metadata": "NO_OPEN_EXTENSION_SURFACE", "required_semantic": "FAIL_CLOSED"},
+      "missing_field_policy": {"required": "PYDANTIC_REJECTS", "optional": "ABSENT_DOES_NOT_IMPLY_UNRESTRICTED_SUPPORT", "schema_version": "CURRENT_RUNTIME_DEFAULTS_WHEN_ABSENT_AND_REJECTS_UNSUPPORTED_SUPPLIED_VALUE"},
+      "enum_expansion_policy": "CURRENT_TYPED_ENUMS_REJECT_UNKNOWN_VALUES; range availability and extrapolation semantics are FAIL_CLOSED",
+      "additive_field_policy": "BREAKING_CURRENT_PARSER_REJECTS_UNKNOWN_FIELDS",
+      "breaking_change_policy": "BREAKING_NEW_VERSION_AND_EVIDENCE_REQUIRED",
+      "deprecation_state": "ACTIVE",
+      "replacement": null,
+      "evidence_references": ["mmm/contracts/supported_range.py", "tests/contracts/test_mmm_supported_range_evidence.py"]
+    },
+    {
       "contract_id": "mmm_diagnostics_limitations",
       "public_type": "MMMDiagnosticsLimitations",
       "module": "mmm.contracts.diagnostics_limitations",
@@ -219,6 +237,7 @@
     "R7_TYPED_DIAGNOSTICS_LIMITATIONS": "IMPLEMENTED",
     "R9_TYPED_RUN_MANIFEST": "IMPLEMENTED",
     "R10_TYPED_FAILURE_PACKET": "IMPLEMENTED",
+    "R11_R12_SUPPORTED_RANGE_EVIDENCE": "IMPLEMENTED_SHARED_PREREQUISITE",
     "R11_FULL_PANEL_DELTA_MU_SIMULATION": "PARTIAL",
     "R12_RESPONSE_SURFACE_EVIDENCE": "PARTIAL",
     "R13_PRODUCER_GOLDEN_FIXTURES": "IMPLEMENTED",

@@ -7,7 +7,7 @@
 
 ## Scope and ownership
 
-This is an MMM-owned declaration of compatibility for producer artifacts. It covers the public export bundle, typed failure packet and outcome, run manifest and manifest outcome, artifact reference, calibration-treatment lineage, diagnostics/limitations aggregate, and the deterministic `golden_v1` fixture set.
+This is an MMM-owned declaration of compatibility for producer artifacts. It covers the public export bundle, typed failure packet and outcome, run manifest and manifest outcome, artifact reference, calibration-treatment lineage, diagnostics/limitations aggregate, supported-range evidence, and the deterministic `golden_v1` fixture set.
 
 MMM owns producer schema identities, versions, compatibility classification, deprecation declarations, fixture-version declarations, and producer-side evidence. MIP owns consumer parsing implementation, parser configuration, user-facing compatibility errors, intent routing, conversational handling, TrustReport assembly, and recommendation or optimization authorization. This policy does not prescribe MIP UI or conversational behavior.
 
@@ -24,6 +24,7 @@ Only the versions recorded in the registry are supported. No historical MMM–MI
 | `MMMRunManifest` / `MMMExportManifestOutcome` / `MMMArtifactReference` | `mmm_mip_run_manifest_v1` for the manifest; compositions/reference have no independent version | Strictly rejects unknown fields. | Required fields reject; manifest schema version defaults when absent and rejects unsupported supplied values. |
 | `MMMCalibrationTreatmentLineage` | `mmm_calibration_treatment_lineage_v1` | Strictly rejects unknown fields. | Required fields reject; schema version defaults when absent and rejects unsupported supplied values. |
 | `MMMDiagnosticsLimitations` | `mmm_diagnostics_limitations_v1` | Strictly rejects unknown fields. | Required fields reject; schema version defaults when absent and rejects unsupported supplied values. |
+| `MMMSupportedRangeEvidence` | `mmm_supported_range_evidence_v1` | Strictly rejects unknown fields. | Required identity and records reject; absent optional linkage never means unrestricted support. |
 | `golden_v1` fixture-set index | `mmm_producer_golden_fixture_set_v1` | There is no production parser; the fixture test asserts this exact version. | Missing index/version is invalid fixture evidence and fails fixture validation. |
 
 The differences above are intentional observations, not a claim that all contracts have uniform runtime enforcement. In particular, this policy must not be read as claiming that an absent schema-version field is detected at runtime where a Pydantic default currently supplies it, or that `MMMExportBundle` runtime parsing rejects an arbitrary non-empty version. A future enforcement task would need separate authorization; this task does not change those paths.
@@ -87,3 +88,13 @@ The policy evidence audit is complete. The next narrow producer prerequisite is
 simulation export and R12 response-surface evidence both need a positive,
 versioned supported-range record. This does not change runtime compatibility
 behavior, authorize an interface freeze, or unblock R16 MIP consumer readiness.
+
+## Follow-up — supported-range evidence
+
+`MMM_MIP_HANDOFF_V1_SUPPORTED_RANGE_EVIDENCE_001` adds the active, strict
+`mmm_supported_range_evidence_v1` producer contract and a separate additive
+`supported_range_v1` fixture collection; it leaves `golden_v1` semantics
+unchanged. The contract is additive to the current manifest/export composition
+through an optional stable reference, but future serialized changes need a new
+compatibility review. R11/R12 remain partial, R16 remains blocked, and interface
+freeze remains unauthorized.

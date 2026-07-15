@@ -253,3 +253,13 @@ model-family selection, recommendation authorization, budget optimization,
 final platform `DecisionSurface`, TrustReport assembly, MIP user-intent routing,
 cross-engine orchestration, live scheduling, automatic promotion, unsupported
 ROI claims, or unsupported causal claims.
+
+## Follow-up status — supported-range evidence
+
+This labeled follow-up preserves the historical `a803da2` verdict. The shared
+R11/R12 prerequisite is now implemented as typed producer evidence with no new
+statistical derivation rule. R11/R12 remain partial, R16 remains blocked,
+interface freeze remains unauthorized, and all downstream authorization flags
+remain false. The next narrow producer task is
+`MMM_MIP_HANDOFF_V1_PUBLIC_SIMULATION_EXPORT_001`; this follow-up does not
+authorize its implementation.

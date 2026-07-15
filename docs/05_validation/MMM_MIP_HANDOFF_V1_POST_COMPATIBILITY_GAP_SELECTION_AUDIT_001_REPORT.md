@@ -121,3 +121,12 @@ blocked. Interface freeze remains unauthorized. The following remain false:
 MIP consumer readiness, producer interface freeze, recommendation, budget
 optimization, candidate-plan simulation, response-surface production, Bayesian
 production, LLM decisioning, and live scheduling authorization.
+
+## Follow-up — supported-range evidence implemented
+
+The selected Model C prerequisite is implemented as `MMMSupportedRangeEvidence`
+with truthful observed/support/validation distinction and deterministic fixtures.
+No response surface or simulation export is implemented. R11/R12 remain partial,
+R16 remains blocked, interface freeze remains unauthorized, and all downstream
+authorization flags remain false. The evidence-based next narrow producer task
+is `MMM_MIP_HANDOFF_V1_PUBLIC_SIMULATION_EXPORT_001`.

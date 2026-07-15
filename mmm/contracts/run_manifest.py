@@ -163,6 +163,7 @@ class MMMRunManifest(BaseModel):
     calibration_status: CalibrationStatus | None = None
     calibration_lineage_id: str | None = Field(default=None, max_length=200)
     diagnostics_limitations_id: str | None = Field(default=None, max_length=200)
+    supported_range_evidence_id: str | None = Field(default=None, max_length=200)
     validation_result_ids: list[str] = Field(default_factory=list)
     diagnostic_ids: list[str] = Field(default_factory=list)
     steps: list[MMMRunStep] = Field(default_factory=list)
@@ -172,7 +173,7 @@ class MMMRunManifest(BaseModel):
     @field_validator(
         "manifest_id", "run_id", "producer_package_name", "producer_package_version", "producer_contract_version",
         "model_id", "model_family", "model_version", "estimator_identity", "configuration_hash",
-        "dataset_fingerprint", "data_grain", "kpi_identity", "time_range", "market_scope", "calibration_lineage_id", "diagnostics_limitations_id",
+        "dataset_fingerprint", "data_grain", "kpi_identity", "time_range", "market_scope", "calibration_lineage_id", "diagnostics_limitations_id", "supported_range_evidence_id",
     )
     @classmethod
     def _safe_manifest_text(cls, value: str | None, info: Any) -> str | None:
@@ -240,9 +241,12 @@ class MMMExportManifestOutcome(BaseModel):
 
     export_outcome: MMMExportOutcome
     run_manifest: MMMRunManifest
+    supported_range_evidence_id: str | None = Field(default=None, max_length=200)
 
     @model_validator(mode="after")
     def _outcome_and_manifest_agree(self) -> MMMExportManifestOutcome:
+        if self.supported_range_evidence_id and self.supported_range_evidence_id != self.run_manifest.supported_range_evidence_id:
+            raise ValueError("supported range evidence outcome reference must match the run manifest")
         if self.export_outcome.outcome_type == "success":
             if self.run_manifest.status != MMMRunStatus.SUCCEEDED or self.run_manifest.successful_export is None:
                 raise ValueError("successful export outcomes require a succeeded run manifest")
