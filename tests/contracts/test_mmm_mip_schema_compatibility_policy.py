@@ -10,6 +10,11 @@ import pytest
 from pydantic import ValidationError
 
 import mmm.contracts as contract_package
+from mmm.contracts.calibration_compatibility import (
+    MMM_CALIBRATION_COMPATIBILITY_SCHEMA_VERSION,
+    MMMCalibrationCompatibilityResult,
+    parse_mmm_calibration_compatibility_result,
+)
 from mmm.contracts.calibration_treatment import MMM_CALIBRATION_TREATMENT_LINEAGE_SCHEMA_VERSION
 from mmm.contracts.diagnostics_limitations import MMM_DIAGNOSTICS_LIMITATIONS_SCHEMA_VERSION
 from mmm.contracts.mip_export import SCHEMA_VERSION, MMMExportBundle
@@ -45,6 +50,7 @@ EXPECTED_CONTRACTS = {
     "mmm_export_manifest_outcome",
     "mmm_artifact_reference",
     "mmm_calibration_treatment_lineage",
+    "mmm_calibration_compatibility_result",
     "mmm_diagnostics_limitations",
     "mmm_supported_range_evidence",
     "mmm_public_simulation_export",
@@ -58,6 +64,7 @@ EXPECTED_CONTRACT_ORDER = [
     "mmm_public_simulation_export",
     "mmm_artifact_reference",
     "mmm_calibration_treatment_lineage",
+    "mmm_calibration_compatibility_result",
     "mmm_supported_range_evidence",
     "mmm_diagnostics_limitations",
 ]
@@ -66,6 +73,7 @@ EXPECTED_VERSIONS = {
     "mmm_failure_packet": MMM_FAILURE_SCHEMA_VERSION,
     "mmm_run_manifest": MMM_RUN_MANIFEST_SCHEMA_VERSION,
     "mmm_calibration_treatment_lineage": MMM_CALIBRATION_TREATMENT_LINEAGE_SCHEMA_VERSION,
+    "mmm_calibration_compatibility_result": MMM_CALIBRATION_COMPATIBILITY_SCHEMA_VERSION,
     "mmm_diagnostics_limitations": MMM_DIAGNOSTICS_LIMITATIONS_SCHEMA_VERSION,
     "mmm_supported_range_evidence": MMM_SUPPORTED_RANGE_SCHEMA_VERSION,
     "mmm_public_simulation_export": MMM_PUBLIC_SIMULATION_SCHEMA_VERSION,
@@ -141,6 +149,7 @@ def test_registry_records_current_per_contract_parser_behavior_without_runtime_c
         (MMMExportManifestOutcome, "mmm_export_manifest_outcome"),
         (MMMArtifactReference, "mmm_artifact_reference"),
         (MMMPublicSimulationExport, "mmm_public_simulation_export"),
+        (MMMCalibrationCompatibilityResult, "mmm_calibration_compatibility_result"),
     ):
         assert model.model_config["extra"] == "forbid"
         assert contracts[contract_id]["unknown_field_policy"]["top_level"] == "CURRENT_RUNTIME_REJECT"
@@ -275,6 +284,11 @@ def test_registered_public_simulation_contract_is_exported_from_the_contract_pac
     assert contract_package.parse_mmm_public_simulation_export is parse_mmm_public_simulation_export
 
 
+def test_registered_calibration_compatibility_contract_is_exported_from_the_contract_package() -> None:
+    assert contract_package.MMMCalibrationCompatibilityResult is MMMCalibrationCompatibilityResult
+    assert contract_package.parse_mmm_calibration_compatibility_result is parse_mmm_calibration_compatibility_result
+
+
 def test_fail_closed_and_authorization_boundaries_remain_explicit() -> None:
     registry = _registry()
     fail_closed = set(registry["fail_closed_rules"])
@@ -293,6 +307,9 @@ def test_fail_closed_and_authorization_boundaries_remain_explicit() -> None:
         "unsupported_public_simulation_schema_version",
         "missing_public_simulation_required_envelope_identity",
         "inconsistent_public_simulation_terminal_state",
+        "unsupported_calibration_compatibility_schema_version",
+        "missing_calibration_compatibility_required_envelope_identity",
+        "unknown_calibration_compatibility_required_identity",
     } <= fail_closed
     assert all(value is False for value in registry["authorization_flags"].values())
     assert registry["interface_freeze_status"] == "unauthorized"

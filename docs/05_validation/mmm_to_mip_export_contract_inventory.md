@@ -121,6 +121,18 @@ Every governed MMM → MIP export artifact (or future schema) **must** carry:
 | **Demo fixture** | Allowed later only with `demo_fixture_allowed=true` and synthetic labeling |
 | **Required adapter** | Fit → `MMMModelFitArtifact` schema (EXPORT-002/003) |
 
+### 6.1a MMMCalibrationCompatibilityResult — P2A technical evidence boundary
+
+| Dimension | Definition |
+|-----------|------------|
+| **Purpose** | Deterministically compare one normalized external calibration readout with one already-identified MMM model context before any later calibration workflow. |
+| **Callable / contract** | `evaluate_mmm_calibration_compatibility(...)` returns `MMMCalibrationCompatibilityResult`; strict parsing is via `parse_mmm_calibration_compatibility_result(...)`. Schema: `mmm_calibration_compatibility_result_v1`. |
+| **Recorded evidence** | Source readout/package provenance when supplied; model/run/KPI/unit/estimand/channel/geography/grain; evidence/model windows; freshness; uncertainty; method/instrument status; and evidence/model/configuration/panel/evaluation lineage. |
+| **States** | `compatible`, `compatible_with_warning`, `stale`, `incompatible`, or `blocked`; missing or unknown required identities fail closed. |
+| **Boundary** | The normalized MMM input deliberately does not import a provisional GeoX readout schema. Cross-repository certification waits for GeoX’s final public contract, commit, and package version. |
+| **Non-actions** | This evaluator does not refit or promote MMM, modify priors or parameters, run simulation, generate plans, optimize budgets, or create/authorize recommendations. |
+| **Fixtures** | Deterministic state fixtures live at `tests/fixtures/mip_export/calibration_compatibility_v1/`; contract coverage is in `tests/contracts/test_mmm_calibration_compatibility.py`. |
+
 ---
 
 ### 6.2 MMMModelDiagnosticArtifact
