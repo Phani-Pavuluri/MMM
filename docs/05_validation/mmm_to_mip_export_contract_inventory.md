@@ -218,6 +218,23 @@ Every governed MMM → MIP export artifact (or future schema) **must** carry:
 
 ---
 
+### 6.6a MMMPublicSimulationExport — P1 technical scenario-comparison handoff
+
+| Dimension | Definition |
+|-----------|------------|
+| **Purpose** | Typed, full-panel Ridge baseline-versus-candidate scenario comparison for technical evidence; `candidate μ − baseline μ` is the governed Δμ direction. |
+| **Callable / request / response** | `build_mmm_public_simulation_export(...)` accepts caller-supplied `MMMSimulationPlan` baseline and candidate plans; `MMMPublicSimulationExport` is the terminal response. `parse_mmm_public_simulation_export(...)` is the strict consumer parser. |
+| **Artifact contract** | `artifact_kind=MMMPublicSimulationExport`; `artifact_schema_version=mmm_public_simulation_export_v1`; `MMMRunManifest` and analytical-artifact `MMMExportManifestOutcome` are linked for every terminal state. |
+| **Lineage** | Run ID; model ID/family/version; configuration hash; panel identity as `dataset_fingerprint`; evaluation window; scope; baseline/candidate plan references; and resolved supported-range evidence when present. |
+| **Range / uncertainty** | Candidate spend is never rewritten or clipped. Missing, unusable, or out-of-range governed evidence is BLOCKED; only explicitly eligible range evidence reaches Ridge. Uncertainty is explicitly `UNAVAILABLE` unless a future governed path supplies it. |
+| **Terminal semantics** | SUCCEEDED has a comparison and logical output identity; BLOCKED retains typed blocker/failure evidence and no successful output; FAILED retains typed failure evidence and no successful output. |
+| **Fixtures** | Deterministic examples and verification live at `tests/fixtures/mip_export/simulation_v1/` and `tests/contracts/test_mmm_public_simulation_golden_fixtures.py`. |
+| **MIP boundary** | A future MIP consumer may parse and display this governed artifact but must not reproduce the calculation. This handoff does **not** authorize candidate generation, optimization, recommendations, causal/incrementality claims, Bayesian production, or MIP consumer readiness. |
+
+This is separate from `MMMExportBundle`: neither is a migration target for the other, and a public simulation never parses as a bundle.
+
+---
+
 ### 6.7 MMMOptimizerResultArtifact
 
 | Dimension | Definition |
@@ -297,10 +314,11 @@ Every governed MMM → MIP export artifact (or future schema) **must** carry:
 | ROI / ROAS | Partial diagnostic reporting / **not** governed export | **No** | Only if `demo_fixture_allowed` + synthetic UI | `MMMChannelROIArtifact` + uncertainty gates |
 | Response curves | Partial / diagnostic | **No** for recommendations | Synthetic only later | `MMMResponseCurveArtifact` + forbidden allocator claims |
 | Simulator / optimizer | Internal / governance-partial | **No** | Synthetic only later | Sim/opt export + gate mapping |
+| Public Ridge scenario comparison | `MMMPublicSimulationExport` technical evidence | Parse/display only after a consumer is separately implemented; no recomputation | Deterministic `simulation_v1` fixtures | Preserve terminal/range/lineage semantics; no recommendation authority |
 | RecommendationContract | `PLANNED_NOT_IMPLEMENTED` / missing | **No** | Demo fake recs only with labels | Design + implement contract |
 | MMMExportBundle | `PLANNED_NOT_IMPLEMENTED` | **No** | Demo bundle later | EXPORT-002 fixture bundle |
 
-**Overall inventory verdict:** **No** MMM family is currently `EXISTS_GOVERNED_AND_CONSUMABLE_BY_MIP`. MIP may only give **meta readiness** answers that cite this inventory (“fit internals exist; governed ROI/recommendation exports do not”).
+**Overall inventory verdict:** No MMM family is authorized for production recommendation or broad MIP consumption. `MMMPublicSimulationExport` is a narrow technical scenario-comparison envelope with strict parser and fixtures; a future consumer may use its governed result without reproducing calculations, but consumer readiness and every downstream authorization remain blocked.
 
 ### EXPORT-002 progress
 

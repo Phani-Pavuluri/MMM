@@ -7,11 +7,13 @@ production claims and never manufactures absent artifact families.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
+from mmm.contracts.calibration_treatment import MMMCalibrationTreatmentLineage
+from mmm.contracts.diagnostics_limitations import MMMDiagnosticsLimitations
 from mmm.contracts.mip_export import (
     ArtifactSafetyStatus,
     CalibrationStatus,
@@ -39,13 +41,23 @@ from mmm.contracts.run_manifest import (
     MMMRunStepStatus,
     build_mmm_run_manifest,
 )
-from mmm.contracts.calibration_treatment import MMMCalibrationTreatmentLineage
-from mmm.contracts.diagnostics_limitations import MMMDiagnosticsLimitations
 from mmm.contracts.supported_range import MMMSupportedRangeEvidence
 
 
 class MMMExportAdapterError(ValueError):
     """Raised when runtime artifacts cannot be adapted without guessing."""
+
+
+def _stable_first_seen_ids(*sources: Iterable[str]) -> list[str]:
+    """Return the deterministic union of already-validated identifier sources."""
+    seen: set[str] = set()
+    merged: list[str] = []
+    for source in sources:
+        for identifier in source:
+            if identifier not in seen:
+                seen.add(identifier)
+                merged.append(identifier)
+    return merged
 
 
 @dataclass(frozen=True)
@@ -396,7 +408,9 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
         "market_scope": context.geo_scope,
         "channel_scope": list(context.channel_scope),
         "calibration_lineage_id": calibration_lineage.lineage_id if calibration_lineage else None,
-        "calibration_signal_ids": [record.signal_id for record in calibration_lineage.records] if calibration_lineage else [],
+        "calibration_signal_ids": _stable_first_seen_ids(
+            [record.signal_id for record in calibration_lineage.records] if calibration_lineage else []
+        ),
         "diagnostics_limitations_id": diagnostics_limitations.aggregate_id if diagnostics_limitations else None,
         "supported_range_evidence_id": supported_range_evidence.evidence_id if supported_range_evidence else None,
     }
@@ -430,11 +444,13 @@ def adapt_runtime_artifacts_to_export_manifest_outcome(
         assert packet is not None
         manifest_status = MMMRunStatus.BLOCKED if packet.failure_status == "blocked" else MMMRunStatus.FAILED
         step_status = MMMRunStepStatus.BLOCKED if packet.failure_status == "blocked" else MMMRunStepStatus.FAILED
+        common["calibration_signal_ids"] = _stable_first_seen_ids(
+            common["calibration_signal_ids"], packet.calibration_signal_ids
+        )
         manifest = build_mmm_run_manifest(
             **common,
             status=manifest_status,
             failure_packet=packet,
-            calibration_signal_ids=packet.calibration_signal_ids,
             validation_result_ids=packet.validation_result_ids,
             diagnostic_ids=packet.diagnostic_ids,
             steps=[

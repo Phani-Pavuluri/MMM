@@ -7,7 +7,7 @@
   "policy_status": "IMPLEMENTED_POLICY_ONLY",
   "interface_freeze_status": "unauthorized",
   "consumer_readiness_status": "blocked",
-  "deterministic_verdict": "supported_versions_are_declared_from_current_public_contract_evidence_without_runtime_or_fixture_change",
+  "deterministic_verdict": "supported_versions_and_current_fail_closed_parsers_are_declared_from_public_contract_evidence",
   "authorization_flags": {
     "mip_consumer_readiness_authorized": false,
     "producer_interface_freeze_authorized": false,
@@ -111,6 +111,26 @@
       "evidence_references": ["mmm/contracts/run_manifest.py", "tests/contracts/test_mmm_run_manifest.py"]
     },
     {
+      "contract_id": "mmm_public_simulation_export",
+      "public_type": "MMMPublicSimulationExport",
+      "module": "mmm.contracts.public_simulation",
+      "current_parser": "parse_mmm_public_simulation_export",
+      "artifact_kind": "MMMPublicSimulationExport",
+      "current_schema_version": "mmm_public_simulation_export_v1",
+      "current_contract_version": null,
+      "supported_versions": ["mmm_public_simulation_export_v1"],
+      "support_status": "ACTIVE_TECHNICAL_SIMULATION_EVIDENCE_ONLY",
+      "fixture_coverage": ["tests/fixtures/mip_export/simulation_v1", "tests/contracts/test_mmm_public_simulation_golden_fixtures.py"],
+      "unknown_field_policy": {"top_level": "CURRENT_RUNTIME_REJECT", "nested": "CURRENT_RUNTIME_REJECT", "optional_metadata": "NO_OPEN_EXTENSION_SURFACE", "required_semantic": "FAIL_CLOSED"},
+      "missing_field_policy": {"required": "PARSER_REJECTS_MISSING_ENVELOPE_IDENTITY_AND_TERMINAL_EVIDENCE", "optional": "STATUS_CONDITIONAL_ABSENCE_IS_VALID_ONLY_WHEN_MODEL_VALIDATION_PERMITS", "newly_introduced_field": "ABSENT_IS_NOT_NEW_SEMANTIC_SUPPORT", "schema_version": "PARSER_REJECTS_ABSENT_OR_UNSUPPORTED_VALUE", "terminal_state": "MODEL_VALIDATION_REJECTS_INCONSISTENT_COMPARISON_FAILURE_BLOCKER_OR_LIMITATION_EVIDENCE", "cross_artifact_reference": "MODEL_VALIDATION_REJECTS_RUN_PRODUCER_STATUS_ARTIFACT_AND_FAILURE_INCONSISTENCY"},
+      "enum_expansion_policy": "CURRENT_TYPED_ENUMS_REJECT_UNKNOWN_VALUES; terminal status, failure code, blocker, uncertainty, and artifact identity semantics are FAIL_CLOSED",
+      "additive_field_policy": "BREAKING_CURRENT_PARSER_REJECTS_UNKNOWN_FIELDS",
+      "breaking_change_policy": "BREAKING_NEW_VERSION_AND_EVIDENCE_REQUIRED; delta_mu direction, uncertainty availability, terminal status, artifact identity, failure code, and blocker semantics are contract elements",
+      "deprecation_state": "ACTIVE",
+      "replacement": null,
+      "evidence_references": ["mmm/contracts/public_simulation.py", "tests/contracts/test_mmm_public_simulation.py", "tests/contracts/test_mmm_public_simulation_golden_fixtures.py", "tests/contracts/test_mmm_mip_schema_compatibility_policy.py"]
+    },
+    {
       "contract_id": "mmm_artifact_reference",
       "public_type": "MMMArtifactReference",
       "module": "mmm.contracts.run_manifest",
@@ -156,7 +176,7 @@
       "support_status": "ACTIVE",
       "fixture_coverage": ["tests/fixtures/mip_export/supported_range_v1", "tests/contracts/test_mmm_supported_range_evidence.py"],
       "unknown_field_policy": {"top_level": "CURRENT_RUNTIME_REJECT", "nested": "CURRENT_RUNTIME_REJECT", "optional_metadata": "NO_OPEN_EXTENSION_SURFACE", "required_semantic": "FAIL_CLOSED"},
-      "missing_field_policy": {"required": "PYDANTIC_REJECTS", "optional": "ABSENT_DOES_NOT_IMPLY_UNRESTRICTED_SUPPORT", "schema_version": "CURRENT_RUNTIME_DEFAULTS_WHEN_ABSENT_AND_REJECTS_UNSUPPORTED_SUPPLIED_VALUE"},
+      "missing_field_policy": {"required": "PYDANTIC_REJECTS", "optional": "ABSENT_DOES_NOT_IMPLY_UNRESTRICTED_SUPPORT", "newly_introduced_field": "ABSENT_IS_NOT_NEW_SEMANTIC_SUPPORT", "schema_version": "CURRENT_RUNTIME_DEFAULTS_WHEN_ABSENT_AND_REJECTS_UNSUPPORTED_SUPPLIED_VALUE"},
       "enum_expansion_policy": "CURRENT_TYPED_ENUMS_REJECT_UNKNOWN_VALUES; range availability and extrapolation semantics are FAIL_CLOSED",
       "additive_field_policy": "BREAKING_CURRENT_PARSER_REJECTS_UNKNOWN_FIELDS",
       "breaking_change_policy": "BREAKING_NEW_VERSION_AND_EVIDENCE_REQUIRED",
@@ -196,6 +216,19 @@
       "removal_policy": "BREAKING_FOR_FIXTURE_CONSUMERS_AND_PROHIBITED_UNTIL_AUTHORIZED",
       "historical_retention_policy": "RETAIN_SUPPORTED_FIXTURE_SET_AND_EVIDENCE_UNTIL_SEPARATE_REMOVAL_AUTHORIZATION",
       "consumer_regression_expectation": "MIP may use supported fixtures for regression only; fixture support does not authorize consumer readiness or interface freeze"
+    },
+    {
+      "fixture_set_id": "mmm_public_simulation_v1",
+      "fixture_set_version": "mmm_public_simulation_fixture_set_v1",
+      "support_status": "ACTIVE_TECHNICAL_SIMULATION_EVIDENCE_ONLY",
+      "index_path": "tests/fixtures/mip_export/simulation_v1/index.json",
+      "represented_contract_versions": {"mmm_public_simulation_export": "mmm_public_simulation_export_v1", "mmm_run_manifest": "mmm_mip_run_manifest_v1", "mmm_failure_packet": "mmm_mip_failure_v1"},
+      "required_scenarios": ["blocked_unsupported_extrapolation", "blocked_unusable_range_evidence", "failed_malformed_caller_plan", "failed_scope_mismatch", "ridge_equal_plan_success", "ridge_in_range_success"],
+      "addition_policy": "BACKWARD_COMPATIBLE_ONLY_IF_EXISTING_SCENARIO_SEMANTICS_ARE_UNCHANGED",
+      "modification_policy": "BREAKING_REQUIRES_NEW_FIXTURE_SET_VERSION",
+      "removal_policy": "BREAKING_FOR_FIXTURE_CONSUMERS_AND_PROHIBITED_UNTIL_AUTHORIZED",
+      "historical_retention_policy": "RETAIN_SUPPORTED_FIXTURE_SET_AND_EVIDENCE_UNTIL_SEPARATE_REMOVAL_AUTHORIZATION",
+      "consumer_regression_expectation": "Simulation fixtures provide technical producer regression evidence only; they do not authorize MIP readiness, interface freeze, recommendations, optimization, or production use"
     }
   ],
   "compatibility_rules": [
@@ -230,7 +263,11 @@
     "unresolved_required_artifact_reference",
     "inconsistent_cross_artifact_run_id",
     "contradictory_success_and_failure_terminal_state",
-    "research_only_artifact_presented_as_production_supported"
+    "research_only_artifact_presented_as_production_supported",
+    "unknown_public_simulation_artifact_kind",
+    "unsupported_public_simulation_schema_version",
+    "missing_public_simulation_required_envelope_identity",
+    "inconsistent_public_simulation_terminal_state"
   ],
   "status_record": {
     "R6_CALIBRATION_LINEAGE": "IMPLEMENTED",

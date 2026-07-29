@@ -22,11 +22,47 @@ from mmm.contracts.mip_failure import (
     MMMFailureCode,
     MMMFailurePacket,
     MMMFailureStage,
-    MMMRemediationAction,
     MMMRemediationActionCode,
     MMMRetryDisposition,
     build_mmm_failure_packet,
 )
+
+
+def test_invalid_plan_input_is_a_typed_retry_after_input_change_failure() -> None:
+    packet = build_mmm_failure_packet(
+        failure_id="failure-invalid-plan-001",
+        created_at=CREATED_AT,
+        run_id="run-invalid-plan-001",
+        code=MMMFailureCode.INVALID_PLAN_INPUT,
+        stage=MMMFailureStage.SIMULATION,
+        source_component="mmm.contracts.public_simulation",
+        technical_summary="Caller-supplied simulation plan failed contract validation.",
+        affected_resource="candidate-plan-001",
+        failure_status="failed",
+    )
+    assert packet.retry_disposition == MMMRetryDisposition.RETRY_AFTER_INPUT_CHANGE
+    assert packet.remediation_actions[0].action_code == MMMRemediationActionCode.INPUT_DATA
+    assert MMMFailurePacket.from_json(packet.to_json()) == packet
+
+
+def test_unusable_supported_range_evidence_is_distinct_and_round_trips() -> None:
+    packet = build_mmm_failure_packet(
+        failure_id="failure-range-evidence-001",
+        created_at=CREATED_AT,
+        run_id="run-range-evidence-001",
+        code=MMMFailureCode.SUPPORTED_RANGE_EVIDENCE_UNUSABLE,
+        stage=MMMFailureStage.SIMULATION,
+        source_component="mmm.contracts.public_simulation",
+        technical_summary="Supported-range evidence is unavailable for the requested technical scope.",
+        affected_resource="supported-range-evidence",
+        failure_status="blocked",
+        technical_context={"reason": "scope_incompatible"},
+    )
+    assert packet.code not in {MMMFailureCode.INVALID_PLAN_INPUT, MMMFailureCode.UNSUPPORTED_EXTRAPOLATION}
+    assert packet.retry_disposition == MMMRetryDisposition.RETRY_AFTER_INPUT_CHANGE
+    assert packet.remediation_actions[0].action_code == MMMRemediationActionCode.INPUT_DATA
+    assert MMMFailurePacket.from_json(packet.to_json()) == packet
+
 
 FIXTURE_DIR = Path(__file__).resolve().parents[1] / "fixtures" / "mip_export"
 CREATED_AT = datetime(2026, 7, 13, 12, 0, tzinfo=timezone.utc)
@@ -40,7 +76,9 @@ REQUIRED_CODES = {
     "CALIBRATION_SIGNAL_EXPIRED",
     "MODEL_INSTABILITY",
     "HOLDOUT_FAILURE",
+    "INVALID_PLAN_INPUT",
     "UNSUPPORTED_EXTRAPOLATION",
+    "SUPPORTED_RANGE_EVIDENCE_UNUSABLE",
     "IDENTIFIABILITY_FAILURE",
     "MODEL_NOT_PROMOTED",
 }
@@ -178,9 +216,7 @@ def test_export_outcome_requires_exactly_one_payload_and_preserves_success() -> 
         (MMMFailureCode.UNSUPPORTED_EXTRAPOLATION, MMMFailureStage.SIMULATION),
     ],
 )
-def test_producer_boundary_emits_explicitly_mapped_known_failures(
-    code: MMMFailureCode, stage: MMMFailureStage
-) -> None:
+def test_producer_boundary_emits_explicitly_mapped_known_failures(code: MMMFailureCode, stage: MMMFailureStage) -> None:
     outcome = emit_known_failure_outcome(
         failure_id=f"failure-{code.value.lower()}",
         created_at=CREATED_AT,

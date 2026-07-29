@@ -21,6 +21,8 @@ MMM_FAILURE_SCHEMA_VERSION = "mmm_mip_failure_v1"
 
 
 class MMMFailureCode(str, Enum):
+    INVALID_PLAN_INPUT = "INVALID_PLAN_INPUT"
+    SUPPORTED_RANGE_EVIDENCE_UNUSABLE = "SUPPORTED_RANGE_EVIDENCE_UNUSABLE"
     INSUFFICIENT_HISTORY = "INSUFFICIENT_HISTORY"
     INCOMPATIBLE_GRAIN = "INCOMPATIBLE_GRAIN"
     KPI_NOT_SUPPORTED = "KPI_NOT_SUPPORTED"
@@ -89,9 +91,15 @@ class MMMRemediationAction(BaseModel):
         return cleaned
 
 
-DEFAULT_FAILURE_POLICY: dict[
-    MMMFailureCode, tuple[MMMRetryDisposition, MMMRemediationActionCode]
-] = {
+DEFAULT_FAILURE_POLICY: dict[MMMFailureCode, tuple[MMMRetryDisposition, MMMRemediationActionCode]] = {
+    MMMFailureCode.INVALID_PLAN_INPUT: (
+        MMMRetryDisposition.RETRY_AFTER_INPUT_CHANGE,
+        MMMRemediationActionCode.INPUT_DATA,
+    ),
+    MMMFailureCode.SUPPORTED_RANGE_EVIDENCE_UNUSABLE: (
+        MMMRetryDisposition.RETRY_AFTER_INPUT_CHANGE,
+        MMMRemediationActionCode.INPUT_DATA,
+    ),
     MMMFailureCode.INSUFFICIENT_HISTORY: (
         MMMRetryDisposition.RETRY_AFTER_INPUT_CHANGE,
         MMMRemediationActionCode.INPUT_DATA,
@@ -187,7 +195,7 @@ class MMMFailurePacket(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    schema_version: Literal[MMM_FAILURE_SCHEMA_VERSION] = MMM_FAILURE_SCHEMA_VERSION
+    schema_version: Literal["mmm_mip_failure_v1"] = "mmm_mip_failure_v1"
     failure_id: str = Field(min_length=1, max_length=200)
     created_at: datetime
     producer_package_version: str | None = Field(default=None, max_length=100)
@@ -271,9 +279,7 @@ class MMMFailurePacket(BaseModel):
             action.required for action in self.remediation_actions
         ):
             raise ValueError("retryable failures require at least one required remediation action")
-        if not override and not any(
-            action.action_code == default_action for action in self.remediation_actions
-        ):
+        if not override and not any(action.action_code == default_action for action in self.remediation_actions):
             raise ValueError(f"{self.code.value} requires a {default_action.value} remediation action")
         return self
 

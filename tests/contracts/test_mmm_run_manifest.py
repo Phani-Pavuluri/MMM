@@ -12,15 +12,18 @@ from pydantic import ValidationError
 from mmm.contracts.mip_export import CalibrationStatus, PromotionStatus
 from mmm.contracts.mip_export_adapter import (
     MMMExportRuntimeContext,
+    _stable_first_seen_ids,
     adapt_runtime_artifacts_to_export_manifest_outcome,
 )
 from mmm.contracts.mip_failure import (
     MMMFailureCode,
+    MMMFailurePacket,
     MMMFailureStage,
     build_mmm_failure_packet,
 )
 from mmm.contracts.run_manifest import (
     MMM_RUN_MANIFEST_SCHEMA_VERSION,
+    MMMAnalyticalArtifactOutcome,
     MMMArtifactReference,
     MMMExportManifestOutcome,
     MMMRunManifest,
@@ -43,7 +46,21 @@ def _artifact() -> MMMArtifactReference:
     )
 
 
-def _packet(*, code: MMMFailureCode = MMMFailureCode.INSUFFICIENT_HISTORY, stage: MMMFailureStage = MMMFailureStage.DATA_VALIDATION, status: str = "failed"):
+def _analytical_artifact() -> MMMArtifactReference:
+    return MMMArtifactReference(
+        artifact_type="MMMPublicSimulationExport",
+        artifact_id="mmm_public_simulation:run-manifest-001",
+        contract_version="mmm_public_simulation_export_v1",
+        logical_name="mmm_public_simulation",
+    )
+
+
+def _packet(
+    *,
+    code: MMMFailureCode = MMMFailureCode.INSUFFICIENT_HISTORY,
+    stage: MMMFailureStage = MMMFailureStage.DATA_VALIDATION,
+    status: str = "failed",
+):
     return build_mmm_failure_packet(
         failure_id="failure-manifest-001",
         created_at=CREATED_AT,
@@ -52,6 +69,20 @@ def _packet(*, code: MMMFailureCode = MMMFailureCode.INSUFFICIENT_HISTORY, stage
         source_component="mmm.contracts.run_manifest",
         technical_summary=f"Governed failure: {code.value}.",
         affected_resource="governed-input",
+        failure_status=status,
+    )
+
+
+def _analytical_packet(status: str) -> MMMFailurePacket:
+    return build_mmm_failure_packet(
+        failure_id=f"analytical-{status}",
+        created_at=CREATED_AT,
+        run_id="run-manifest-001",
+        code=MMMFailureCode.INVALID_PLAN_INPUT,
+        stage=MMMFailureStage.SIMULATION,
+        source_component="mmm.contracts.run_manifest",
+        technical_summary="Public simulation input validation failed.",
+        affected_resource="simulation-plan",
         failure_status=status,
     )
 
@@ -103,11 +134,197 @@ def test_success_failed_and_blocked_terminal_manifests_are_consistent() -> None:
     success = MMMRunManifest(**_values(status=MMMRunStatus.SUCCEEDED, successful_export=_artifact()))
     failed_packet = _packet()
     failed = MMMRunManifest(**_values(status=MMMRunStatus.FAILED, failure_packet=failed_packet))
-    blocked_packet = _packet(code=MMMFailureCode.MODEL_NOT_PROMOTED, stage=MMMFailureStage.PROMOTION_GATE, status="blocked")
+    blocked_packet = _packet(
+        code=MMMFailureCode.MODEL_NOT_PROMOTED, stage=MMMFailureStage.PROMOTION_GATE, status="blocked"
+    )
     blocked = MMMRunManifest(**_values(status=MMMRunStatus.BLOCKED, failure_packet=blocked_packet))
     assert success.successful_export is not None
     assert failed.failure_packet == failed_packet
     assert blocked.failure_packet == blocked_packet
+
+
+def test_limited_success_is_terminal_and_requires_typed_limitations() -> None:
+    limited = MMMRunManifest(
+        **_values(
+            status=MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS,
+            successful_export=_artifact(),
+            limitation_ids=["limitation:range"],
+        )
+    )
+    assert MMMRunManifest.from_json(limited.to_json()) == limited
+    with pytest.raises(ValidationError, match="limitation_ids"):
+        MMMRunManifest(**_values(status=MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS, successful_export=_artifact()))
+    with pytest.raises(ValidationError, match="limited-success"):
+        MMMRunManifest(
+            **_values(status=MMMRunStatus.SUCCEEDED, successful_export=_artifact(), limitation_ids=["limitation:range"])
+        )
+
+
+@pytest.mark.parametrize(
+    "status",
+    [MMMRunStatus.SUCCEEDED, MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS, MMMRunStatus.BLOCKED, MMMRunStatus.FAILED],
+)
+def test_analytical_artifact_outcomes_round_trip_for_every_terminal_status(status: MMMRunStatus) -> None:
+    artifact = _analytical_artifact()
+    if status == MMMRunStatus.SUCCEEDED:
+        outcome = MMMAnalyticalArtifactOutcome(
+            status=status, run_id="run-manifest-001", producer_package_version="0.1.0", output_artifact=artifact
+        )
+        manifest = MMMRunManifest(**_values(status=status, successful_export=artifact))
+    elif status == MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS:
+        outcome = MMMAnalyticalArtifactOutcome(
+            status=status,
+            run_id="run-manifest-001",
+            producer_package_version="0.1.0",
+            output_artifact=artifact,
+            limitation_ids=["limitation:range"],
+        )
+        manifest = MMMRunManifest(
+            **_values(status=status, successful_export=artifact, limitation_ids=["limitation:range"])
+        )
+    else:
+        packet = _analytical_packet(status.value.lower())
+        outcome = MMMAnalyticalArtifactOutcome(
+            status=status,
+            run_id="run-manifest-001",
+            producer_package_version="0.1.0",
+            failure_packet=packet,
+            blocker_references=["range"] if status == MMMRunStatus.BLOCKED else [],
+        )
+        manifest = MMMRunManifest(**_values(status=status, failure_packet=packet))
+    linked = MMMExportManifestOutcome(
+        outcome_kind="analytical_artifact", analytical_outcome=outcome, run_manifest=manifest
+    )
+    assert MMMExportManifestOutcome.model_validate_json(linked.model_dump_json()) == linked
+
+
+def test_analytical_artifact_outcome_and_manifest_linkage_fail_closed() -> None:
+    artifact = _analytical_artifact()
+    success = MMMAnalyticalArtifactOutcome(
+        status=MMMRunStatus.SUCCEEDED,
+        run_id="run-manifest-001",
+        producer_package_version="0.1.0",
+        output_artifact=artifact,
+    )
+    manifest = MMMRunManifest(**_values(status=MMMRunStatus.SUCCEEDED, successful_export=artifact))
+    linked = MMMExportManifestOutcome(
+        outcome_kind="analytical_artifact", analytical_outcome=success, run_manifest=manifest
+    )
+    assert linked.export_outcome is None and linked.analytical_outcome == success
+    with pytest.raises(ValidationError, match="logical output artifact"):
+        MMMAnalyticalArtifactOutcome(
+            status=MMMRunStatus.SUCCEEDED, run_id="run-manifest-001", producer_package_version="0.1.0"
+        )
+    with pytest.raises(ValidationError, match="limitations"):
+        MMMAnalyticalArtifactOutcome(
+            status=MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS,
+            run_id="run-manifest-001",
+            producer_package_version="0.1.0",
+            output_artifact=artifact,
+        )
+    blocked_packet = _analytical_packet("blocked")
+    with pytest.raises(ValidationError, match="without output artifact"):
+        MMMAnalyticalArtifactOutcome(
+            status=MMMRunStatus.BLOCKED,
+            run_id="run-manifest-001",
+            producer_package_version="0.1.0",
+            failure_packet=blocked_packet,
+            output_artifact=artifact,
+        )
+    with pytest.raises(ValidationError, match="without output artifact or blockers"):
+        MMMAnalyticalArtifactOutcome(
+            status=MMMRunStatus.FAILED,
+            run_id="run-manifest-001",
+            producer_package_version="0.1.0",
+            failure_packet=_analytical_packet("failed"),
+            blocker_references=["blocker"],
+        )
+    with pytest.raises(ValidationError, match="terminal status"):
+        MMMExportManifestOutcome(
+            outcome_kind="analytical_artifact",
+            analytical_outcome=success,
+            run_manifest=MMMRunManifest(
+                **_values(
+                    status=MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS,
+                    successful_export=artifact,
+                    limitation_ids=["limitation:range"],
+                )
+            ),
+        )
+    with pytest.raises(ValidationError, match="identity"):
+        MMMExportManifestOutcome(
+            outcome_kind="analytical_artifact",
+            analytical_outcome=success.model_copy(update={"run_id": "other"}),
+            run_manifest=manifest,
+        )
+    with pytest.raises(ValidationError, match="identity"):
+        MMMExportManifestOutcome(
+            outcome_kind="analytical_artifact",
+            analytical_outcome=success.model_copy(update={"producer_package_version": "0.2.0"}),
+            run_manifest=manifest,
+        )
+    with pytest.raises(ValidationError, match="output artifact"):
+        MMMExportManifestOutcome(
+            outcome_kind="analytical_artifact",
+            analytical_outcome=success.model_copy(update={"output_artifact": _artifact()}),
+            run_manifest=manifest,
+        )
+    limited_manifest = MMMRunManifest(
+        **_values(
+            status=MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS,
+            successful_export=artifact,
+            limitation_ids=["limitation:range"],
+        )
+    )
+    limited = MMMAnalyticalArtifactOutcome(
+        status=MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS,
+        run_id="run-manifest-001",
+        producer_package_version="0.1.0",
+        output_artifact=artifact,
+        limitation_ids=["limitation:other"],
+    )
+    with pytest.raises(ValidationError, match="limitation IDs"):
+        MMMExportManifestOutcome(
+            outcome_kind="analytical_artifact", analytical_outcome=limited, run_manifest=limited_manifest
+        )
+    blocked_packet = _analytical_packet("blocked")
+    blocked_manifest = MMMRunManifest(**_values(status=MMMRunStatus.BLOCKED, failure_packet=blocked_packet))
+    other_packet = build_mmm_failure_packet(
+        failure_id="other-blocked",
+        created_at=CREATED_AT,
+        run_id="run-manifest-001",
+        code=MMMFailureCode.INVALID_PLAN_INPUT,
+        stage=MMMFailureStage.SIMULATION,
+        source_component="mmm.contracts.run_manifest",
+        technical_summary="Different failure.",
+        affected_resource="simulation-plan",
+        failure_status="blocked",
+    )
+    with pytest.raises(ValidationError, match="failure packet"):
+        MMMExportManifestOutcome(
+            outcome_kind="analytical_artifact",
+            analytical_outcome=MMMAnalyticalArtifactOutcome(
+                status=MMMRunStatus.BLOCKED,
+                run_id="run-manifest-001",
+                producer_package_version="0.1.0",
+                failure_packet=other_packet,
+            ),
+            run_manifest=blocked_manifest,
+        )
+    with pytest.raises(ValidationError):
+        MMMAnalyticalArtifactOutcome.model_validate(
+            {
+                "status": "SUCCEEDED",
+                "run_id": "run-manifest-001",
+                "producer_package_version": "0.1.0",
+                "output_artifact": artifact.model_dump(),
+                "export_bundle": {},
+            }
+        )
+    with pytest.raises(ValidationError, match="only an MMMExportOutcome payload"):
+        MMMExportManifestOutcome(outcome_kind="export_bundle", analytical_outcome=success, run_manifest=manifest)
+    with pytest.raises(ValidationError):
+        MMMExportManifestOutcome.model_validate({"outcome_kind": "unknown", "run_manifest": manifest.model_dump()})
 
 
 def test_model_calibration_and_pre_model_failure_linkage_are_optional_and_safe() -> None:
@@ -131,6 +348,25 @@ def test_model_calibration_and_pre_model_failure_linkage_are_optional_and_safe()
     assert pre_model.model_id is None
 
 
+@pytest.mark.parametrize(
+    ("sources", "expected"),
+    [
+        (([], []), []),
+        ((["signal-001"], []), ["signal-001"]),
+        ((["signal-001", "signal-001"], []), ["signal-001"]),
+        (
+            (["signal-001", "signal-002"], ["signal-002", "signal-003", "signal-001"]),
+            ["signal-001", "signal-002", "signal-003"],
+        ),
+    ],
+)
+def test_calibration_signal_id_union_is_first_seen_and_deterministic(
+    sources: tuple[list[str], list[str]], expected: list[str]
+) -> None:
+    assert _stable_first_seen_ids(*sources) == expected
+    assert _stable_first_seen_ids(*sources) == expected
+
+
 def test_manifest_validation_rejects_terminal_conflicts_and_bad_ordering() -> None:
     packet = _packet()
     with pytest.raises(ValidationError, match="successful_export"):
@@ -146,7 +382,11 @@ def test_manifest_validation_rejects_terminal_conflicts_and_bad_ordering() -> No
     with pytest.raises(ValidationError, match="contiguous sequence"):
         MMMRunManifest(
             **_values(
-                steps=[MMMRunStep(sequence=1, step_name="export", stage=MMMFailureStage.EXPORT, status=MMMRunStepStatus.PENDING)]
+                steps=[
+                    MMMRunStep(
+                        sequence=1, step_name="export", stage=MMMFailureStage.EXPORT, status=MMMRunStepStatus.PENDING
+                    )
+                ]
             )
         )
 
@@ -171,7 +411,9 @@ def test_manifest_validation_rejects_bad_timestamps_failed_step_and_unsafe_value
             )
         )
     with pytest.raises(ValidationError, match="failure_packet_id"):
-        MMMRunStep(sequence=0, step_name="validate", stage=MMMFailureStage.DATA_VALIDATION, status=MMMRunStepStatus.FAILED)
+        MMMRunStep(
+            sequence=0, step_name="validate", stage=MMMFailureStage.DATA_VALIDATION, status=MMMRunStepStatus.FAILED
+        )
     with pytest.raises(ValidationError, match="paths"):
         MMMArtifactReference(artifact_type="MMMExportBundle", artifact_id="/tmp/model", contract_version="v1")
     with pytest.raises(ValidationError):
@@ -183,7 +425,11 @@ def test_manifest_validation_rejects_bad_timestamps_failed_step_and_unsafe_value
 def test_serialization_is_deterministic_and_round_trips_without_python_leakage() -> None:
     manifest = MMMRunManifest(
         **_values(
-            steps=[MMMRunStep(sequence=0, step_name="intake", stage=MMMFailureStage.DATA_INTAKE, status=MMMRunStepStatus.SUCCEEDED)]
+            steps=[
+                MMMRunStep(
+                    sequence=0, step_name="intake", stage=MMMFailureStage.DATA_INTAKE, status=MMMRunStepStatus.SUCCEEDED
+                )
+            ]
         )
     )
     serialized = manifest.to_json()
@@ -204,9 +450,12 @@ def test_serialization_is_deterministic_and_round_trips_without_python_leakage()
         (MMMFailureCode.UNSUPPORTED_EXTRAPOLATION, MMMFailureStage.SIMULATION),
     ],
 )
-def test_export_boundary_links_success_and_known_failures_to_manifests(code: MMMFailureCode | None, stage: MMMFailureStage | None) -> None:
+def test_export_boundary_links_success_and_known_failures_to_manifests(
+    code: MMMFailureCode | None, stage: MMMFailureStage | None
+) -> None:
     packet = None
     if code is not None:
+        assert stage is not None
         packet = _packet(code=code, stage=stage, status="blocked")
     result = adapt_runtime_artifacts_to_export_manifest_outcome(
         context=_context(),
@@ -216,6 +465,11 @@ def test_export_boundary_links_success_and_known_failures_to_manifests(code: MMM
         extension_report={"ridge_fit_summary": {"coef": [0.2]}},
     )
     assert isinstance(result, MMMExportManifestOutcome)
+    assert result.outcome_kind == "export_bundle" and result.analytical_outcome is None
+    assert result.export_outcome is not None
+    legacy_payload = result.model_dump()
+    legacy_payload.pop("outcome_kind")
+    assert MMMExportManifestOutcome.model_validate(legacy_payload) == result
     if packet is None:
         assert result.export_outcome.outcome_type == "success"
         assert result.run_manifest.status == MMMRunStatus.SUCCEEDED

@@ -4,22 +4,38 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any, cast
 
+import pytest
+from pydantic import ValidationError
+
+import mmm.contracts as contract_package
 from mmm.contracts.calibration_treatment import MMM_CALIBRATION_TREATMENT_LINEAGE_SCHEMA_VERSION
 from mmm.contracts.diagnostics_limitations import MMM_DIAGNOSTICS_LIMITATIONS_SCHEMA_VERSION
-from mmm.contracts.mip_export import MMMExportBundle, SCHEMA_VERSION
+from mmm.contracts.mip_export import SCHEMA_VERSION, MMMExportBundle
 from mmm.contracts.mip_failure import MMM_FAILURE_SCHEMA_VERSION, MMMExportOutcome, MMMFailurePacket
+from mmm.contracts.public_simulation import (
+    MMM_PUBLIC_SIMULATION_ARTIFACT_KIND,
+    MMM_PUBLIC_SIMULATION_SCHEMA_VERSION,
+    MMMPublicSimulationExport,
+    parse_mmm_public_simulation_export,
+)
 from mmm.contracts.run_manifest import (
     MMM_RUN_MANIFEST_SCHEMA_VERSION,
     MMMArtifactReference,
     MMMExportManifestOutcome,
     MMMRunManifest,
 )
-
+from mmm.contracts.supported_range import (
+    MMM_SUPPORTED_RANGE_RECORD_SCHEMA_VERSION,
+    MMM_SUPPORTED_RANGE_SCHEMA_VERSION,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_PATH = ROOT / "docs/05_validation/archives/MMM_MIP_HANDOFF_V1_SCHEMA_COMPATIBILITY_POLICY_001_registry.json"
 GOLDEN_INDEX_PATH = ROOT / "tests/fixtures/mip_export/golden_v1/index.json"
+SIMULATION_FIXTURE_ROOT = ROOT / "tests/fixtures/mip_export/simulation_v1"
+SIMULATION_FIXTURE_INDEX_PATH = SIMULATION_FIXTURE_ROOT / "index.json"
 
 EXPECTED_CONTRACTS = {
     "mmm_export_bundle",
@@ -30,13 +46,36 @@ EXPECTED_CONTRACTS = {
     "mmm_artifact_reference",
     "mmm_calibration_treatment_lineage",
     "mmm_diagnostics_limitations",
+    "mmm_supported_range_evidence",
+    "mmm_public_simulation_export",
 }
+EXPECTED_CONTRACT_ORDER = [
+    "mmm_export_bundle",
+    "mmm_failure_packet",
+    "mmm_export_outcome",
+    "mmm_run_manifest",
+    "mmm_export_manifest_outcome",
+    "mmm_public_simulation_export",
+    "mmm_artifact_reference",
+    "mmm_calibration_treatment_lineage",
+    "mmm_supported_range_evidence",
+    "mmm_diagnostics_limitations",
+]
 EXPECTED_VERSIONS = {
     "mmm_export_bundle": SCHEMA_VERSION,
     "mmm_failure_packet": MMM_FAILURE_SCHEMA_VERSION,
     "mmm_run_manifest": MMM_RUN_MANIFEST_SCHEMA_VERSION,
     "mmm_calibration_treatment_lineage": MMM_CALIBRATION_TREATMENT_LINEAGE_SCHEMA_VERSION,
     "mmm_diagnostics_limitations": MMM_DIAGNOSTICS_LIMITATIONS_SCHEMA_VERSION,
+    "mmm_supported_range_evidence": MMM_SUPPORTED_RANGE_SCHEMA_VERSION,
+    "mmm_public_simulation_export": MMM_PUBLIC_SIMULATION_SCHEMA_VERSION,
+}
+EXPECTED_SUPPORTED_VERSIONS = {
+    **{contract_id: [version] for contract_id, version in EXPECTED_VERSIONS.items()},
+    "mmm_supported_range_evidence": [
+        MMM_SUPPORTED_RANGE_SCHEMA_VERSION,
+        MMM_SUPPORTED_RANGE_RECORD_SCHEMA_VERSION,
+    ],
 }
 EXPECTED_RULES = {
     "optional_field_addition",
@@ -54,12 +93,16 @@ EXPECTED_RULES = {
 }
 
 
-def _registry() -> dict[str, object]:
-    return json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+def _registry() -> dict[str, Any]:
+    return cast(dict[str, Any], json.loads(REGISTRY_PATH.read_text(encoding="utf-8")))
 
 
-def _contracts(registry: dict[str, object]) -> dict[str, dict[str, object]]:
-    return {record["contract_id"]: record for record in registry["public_contracts"]}  # type: ignore[index]
+def _contracts(registry: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {record["contract_id"]: record for record in registry["public_contracts"]}
+
+
+def _simulation_fixture_payload(name: str) -> dict[str, Any]:
+    return cast(dict[str, Any], json.loads((SIMULATION_FIXTURE_ROOT / name).read_text(encoding="utf-8")))
 
 
 def test_registry_is_deterministic_complete_and_has_no_invented_versions() -> None:
@@ -70,29 +113,37 @@ def test_registry_is_deterministic_complete_and_has_no_invented_versions() -> No
     contracts = _contracts(registry)
     assert set(contracts) == EXPECTED_CONTRACTS
     assert len(contracts) == len(registry["public_contracts"])
+    assert [record["contract_id"] for record in registry["public_contracts"]] == EXPECTED_CONTRACT_ORDER
     for contract_id, version in EXPECTED_VERSIONS.items():
         record = contracts[contract_id]
         assert record["current_schema_version"] == version
-        assert record["supported_versions"] == [version]
+        assert record["supported_versions"] == EXPECTED_SUPPORTED_VERSIONS[contract_id]
     for contract_id in {"mmm_export_outcome", "mmm_export_manifest_outcome", "mmm_artifact_reference"}:
         assert contracts[contract_id]["current_schema_version"] is None
         assert contracts[contract_id]["supported_versions"] == []
+    simulation = contracts["mmm_public_simulation_export"]
+    assert simulation["artifact_kind"] == MMM_PUBLIC_SIMULATION_ARTIFACT_KIND
+    assert simulation["current_parser"] == "parse_mmm_public_simulation_export"
+    assert simulation["replacement"] is None
+    assert "MMMExportBundle" not in simulation["support_status"]
+    assert "MMMExportOutcome" not in simulation["support_status"]
 
 
 def test_registry_records_current_per_contract_parser_behavior_without_runtime_change() -> None:
     registry = _registry()
     contracts = _contracts(registry)
     assert MMMExportBundle.model_config["extra"] == "allow"
-    assert contracts["mmm_export_bundle"]["unknown_field_policy"]["top_level"] == "CURRENT_RUNTIME_ALLOW_AND_PRESERVE"  # type: ignore[index]
+    assert contracts["mmm_export_bundle"]["unknown_field_policy"]["top_level"] == "CURRENT_RUNTIME_ALLOW_AND_PRESERVE"
     for model, contract_id in (
         (MMMFailurePacket, "mmm_failure_packet"),
         (MMMExportOutcome, "mmm_export_outcome"),
         (MMMRunManifest, "mmm_run_manifest"),
         (MMMExportManifestOutcome, "mmm_export_manifest_outcome"),
         (MMMArtifactReference, "mmm_artifact_reference"),
+        (MMMPublicSimulationExport, "mmm_public_simulation_export"),
     ):
         assert model.model_config["extra"] == "forbid"
-        assert contracts[contract_id]["unknown_field_policy"]["top_level"] == "CURRENT_RUNTIME_REJECT"  # type: ignore[index]
+        assert contracts[contract_id]["unknown_field_policy"]["top_level"] == "CURRENT_RUNTIME_REJECT"
     for record in contracts.values():
         missing = record["missing_field_policy"]
         assert {"required", "optional", "newly_introduced_field", "schema_version"} <= set(missing)
@@ -103,10 +154,17 @@ def test_registry_records_current_per_contract_parser_behavior_without_runtime_c
 
 def test_policy_classifies_required_changes_and_deprecation_lifecycle() -> None:
     registry = _registry()
-    rules = {rule["rule_id"]: rule for rule in registry["compatibility_rules"]}  # type: ignore[index]
+    rules = {rule["rule_id"]: rule for rule in registry["compatibility_rules"]}
     assert set(rules) == EXPECTED_RULES
     assert rules["optional_field_addition"]["classification"] == "CONDITIONALLY_COMPATIBLE"
-    for rule_id in {"required_field_addition", "field_removal", "field_rename", "field_type_or_nullability_change", "semantic_change", "fixture_scenario_removal"}:
+    for rule_id in {
+        "required_field_addition",
+        "field_removal",
+        "field_rename",
+        "field_type_or_nullability_change",
+        "semantic_change",
+        "fixture_scenario_removal",
+    }:
         assert rules[rule_id]["classification"] == "BREAKING"
     assert rules["version_reuse"]["classification"] == "PROHIBITED_UNTIL_AUTHORIZED"
     lifecycle = registry["deprecation_lifecycle"]
@@ -118,7 +176,7 @@ def test_policy_classifies_required_changes_and_deprecation_lifecycle() -> None:
 
 def test_golden_fixture_set_support_and_safety_status_are_evidence_backed() -> None:
     registry = _registry()
-    fixture = registry["fixture_sets"][0]  # type: ignore[index]
+    fixture = next(item for item in registry["fixture_sets"] if item["fixture_set_id"] == "mmm_producer_golden_v1")
     index = json.loads(GOLDEN_INDEX_PATH.read_text(encoding="utf-8"))
     assert fixture["fixture_set_id"] == index["fixture_set_id"]
     assert fixture["fixture_set_version"] == index["schema_version"] == "mmm_producer_golden_fixture_set_v1"
@@ -131,6 +189,90 @@ def test_golden_fixture_set_support_and_safety_status_are_evidence_backed() -> N
     }
     assert fixture["removal_policy"] == "BREAKING_FOR_FIXTURE_CONSUMERS_AND_PROHIBITED_UNTIL_AUTHORIZED"
     assert "interface freeze" in fixture["consumer_regression_expectation"]
+    simulation = next(item for item in registry["fixture_sets"] if item["fixture_set_id"] == "mmm_public_simulation_v1")
+    index = json.loads(SIMULATION_FIXTURE_INDEX_PATH.read_text(encoding="utf-8"))
+    assert simulation["fixture_set_version"] == index["schema_version"] == "mmm_public_simulation_fixture_set_v1"
+    assert (
+        simulation["represented_contract_versions"]["mmm_public_simulation_export"]
+        == MMM_PUBLIC_SIMULATION_SCHEMA_VERSION
+    )
+    assert simulation["required_scenarios"] == sorted(item["scenario_id"] for item in index["scenarios"])
+    assert "do not authorize" in simulation["consumer_regression_expectation"]
+
+
+@pytest.mark.parametrize(
+    "fixture_name",
+    [
+        "blocked_unsupported_extrapolation.json",
+        "blocked_unusable_range_evidence.json",
+        "failed_malformed_caller_plan.json",
+        "failed_scope_mismatch.json",
+        "ridge_equal_plan_success.json",
+        "ridge_in_range_success.json",
+    ],
+)
+def test_registered_public_simulation_parser_round_trips_all_current_fixtures(fixture_name: str) -> None:
+    payload = _simulation_fixture_payload(fixture_name)
+    parsed = parse_mmm_public_simulation_export(payload)
+    assert isinstance(parsed, MMMPublicSimulationExport)
+    assert parsed.artifact_kind == MMM_PUBLIC_SIMULATION_ARTIFACT_KIND
+    assert parsed.artifact_schema_version == MMM_PUBLIC_SIMULATION_SCHEMA_VERSION
+    assert parse_mmm_public_simulation_export(json.loads(parsed.to_json())) == parsed
+    assert MMMPublicSimulationExport.from_json(parsed.to_json()) == parsed
+
+
+@pytest.mark.parametrize(
+    "required_field",
+    [
+        "artifact_kind",
+        "artifact_schema_version",
+        "artifact_id",
+        "export_id",
+        "run_id",
+        "created_at",
+        "baseline_plan",
+        "candidate_plan",
+        "producer_package_name",
+        "producer_package_version",
+        "status",
+        "supported_range_evidence_id",
+        "run_manifest",
+        "export_manifest_outcome",
+    ],
+)
+def test_registered_public_simulation_parser_rejects_missing_required_envelope_fields(required_field: str) -> None:
+    payload = _simulation_fixture_payload("ridge_in_range_success.json")
+    payload.pop(required_field)
+    with pytest.raises(ValueError, match="required envelope fields"):
+        parse_mmm_public_simulation_export(payload)
+
+
+def test_registered_public_simulation_parser_is_fail_closed_and_distinct_from_export_bundles() -> None:
+    payload = _simulation_fixture_payload("ridge_in_range_success.json")
+    unknown_schema = {**payload, "schema_version": "mmm_public_simulation_export_v2"}
+    with pytest.raises(ValueError, match="unsupported public simulation schema version"):
+        parse_mmm_public_simulation_export(unknown_schema)
+    unknown_kind = {**payload, "artifact_kind": "UnknownSimulationArtifact"}
+    with pytest.raises(ValueError, match="unknown public simulation artifact kind"):
+        parse_mmm_public_simulation_export(unknown_kind)
+    status_inconsistent = {**payload, "comparison": None}
+    with pytest.raises(ValidationError):
+        parse_mmm_public_simulation_export(status_inconsistent)
+    bundle_variant = {
+        **payload,
+        "export_manifest_outcome": {**payload["export_manifest_outcome"], "outcome_kind": "export_bundle"},
+    }
+    with pytest.raises(ValidationError):
+        parse_mmm_public_simulation_export(bundle_variant)
+    with pytest.raises(ValidationError):
+        MMMExportBundle.model_validate(payload)
+
+
+def test_registered_public_simulation_contract_is_exported_from_the_contract_package() -> None:
+    assert contract_package.MMMPublicSimulationExport is MMMPublicSimulationExport
+    assert contract_package.MMM_PUBLIC_SIMULATION_ARTIFACT_KIND == MMM_PUBLIC_SIMULATION_ARTIFACT_KIND
+    assert contract_package.MMM_PUBLIC_SIMULATION_SCHEMA_VERSION == MMM_PUBLIC_SIMULATION_SCHEMA_VERSION
+    assert contract_package.parse_mmm_public_simulation_export is parse_mmm_public_simulation_export
 
 
 def test_fail_closed_and_authorization_boundaries_remain_explicit() -> None:
@@ -147,6 +289,10 @@ def test_fail_closed_and_authorization_boundaries_remain_explicit() -> None:
         "inconsistent_cross_artifact_run_id",
         "contradictory_success_and_failure_terminal_state",
         "research_only_artifact_presented_as_production_supported",
+        "unknown_public_simulation_artifact_kind",
+        "unsupported_public_simulation_schema_version",
+        "missing_public_simulation_required_envelope_identity",
+        "inconsistent_public_simulation_terminal_state",
     } <= fail_closed
     assert all(value is False for value in registry["authorization_flags"].values())
     assert registry["interface_freeze_status"] == "unauthorized"

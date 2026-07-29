@@ -24,6 +24,7 @@ MMM_RUN_MANIFEST_SCHEMA_VERSION = "mmm_mip_run_manifest_v1"
 class MMMRunStatus(str, Enum):
     RUNNING = "RUNNING"
     SUCCEEDED = "SUCCEEDED"
+    SUCCEEDED_WITH_LIMITATIONS = "SUCCEEDED_WITH_LIMITATIONS"
     FAILED = "FAILED"
     BLOCKED = "BLOCKED"
 
@@ -96,6 +97,7 @@ class MMMRunStep(BaseModel):
     output_artifacts: list[MMMArtifactReference] = Field(default_factory=list)
     validation_result_ids: list[str] = Field(default_factory=list)
     diagnostic_ids: list[str] = Field(default_factory=list)
+    limitation_ids: list[str] = Field(default_factory=list)
     failure_packet_id: str | None = Field(default=None, max_length=200)
     technical_detail: str | None = Field(default=None, max_length=500)
 
@@ -137,7 +139,7 @@ class MMMRunManifest(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    schema_version: Literal[MMM_RUN_MANIFEST_SCHEMA_VERSION] = MMM_RUN_MANIFEST_SCHEMA_VERSION
+    schema_version: Literal["mmm_mip_run_manifest_v1"] = "mmm_mip_run_manifest_v1"
     manifest_id: str = Field(min_length=1, max_length=200)
     run_id: str = Field(min_length=1, max_length=200)
     created_at: datetime
@@ -166,20 +168,38 @@ class MMMRunManifest(BaseModel):
     supported_range_evidence_id: str | None = Field(default=None, max_length=200)
     validation_result_ids: list[str] = Field(default_factory=list)
     diagnostic_ids: list[str] = Field(default_factory=list)
+    limitation_ids: list[str] = Field(default_factory=list)
     steps: list[MMMRunStep] = Field(default_factory=list)
     successful_export: MMMArtifactReference | None = None
     failure_packet: MMMFailurePacket | None = None
 
     @field_validator(
-        "manifest_id", "run_id", "producer_package_name", "producer_package_version", "producer_contract_version",
-        "model_id", "model_family", "model_version", "estimator_identity", "configuration_hash",
-        "dataset_fingerprint", "data_grain", "kpi_identity", "time_range", "market_scope", "calibration_lineage_id", "diagnostics_limitations_id", "supported_range_evidence_id",
+        "manifest_id",
+        "run_id",
+        "producer_package_name",
+        "producer_package_version",
+        "producer_contract_version",
+        "model_id",
+        "model_family",
+        "model_version",
+        "estimator_identity",
+        "configuration_hash",
+        "dataset_fingerprint",
+        "data_grain",
+        "kpi_identity",
+        "time_range",
+        "market_scope",
+        "calibration_lineage_id",
+        "diagnostics_limitations_id",
+        "supported_range_evidence_id",
     )
     @classmethod
     def _safe_manifest_text(cls, value: str | None, info: Any) -> str | None:
         return None if value is None else _safe_text(value, field_name=info.field_name)
 
-    @field_validator("channel_scope", "calibration_signal_ids", "validation_result_ids", "diagnostic_ids")
+    @field_validator(
+        "channel_scope", "calibration_signal_ids", "validation_result_ids", "diagnostic_ids", "limitation_ids"
+    )
     @classmethod
     def _safe_manifest_identifiers(cls, values: list[str], info: Any) -> list[str]:
         return [_safe_text(value, field_name=info.field_name) for value in values]
@@ -206,6 +226,20 @@ class MMMRunManifest(BaseModel):
                 raise ValueError("succeeded manifests cannot contain a terminal failure packet")
             if any(step.status in {MMMRunStepStatus.FAILED, MMMRunStepStatus.BLOCKED} for step in self.steps):
                 raise ValueError("succeeded manifests cannot contain failed or blocked steps")
+            if self.limitation_ids:
+                raise ValueError("succeeded manifests with material limitations require limited-success status")
+        elif self.status == MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS:
+            if (
+                self.successful_export is None
+                or self.successful_export.availability != MMMArtifactAvailability.AVAILABLE
+            ):
+                raise ValueError("limited-success manifests require an available successful_export")
+            if not self.limitation_ids:
+                raise ValueError("limited-success manifests require limitation_ids")
+            if self.failure_packet is not None or any(
+                step.status in {MMMRunStepStatus.FAILED, MMMRunStepStatus.BLOCKED} for step in self.steps
+            ):
+                raise ValueError("limited-success manifests cannot contain terminal failure or blocking evidence")
         elif self.status in {MMMRunStatus.FAILED, MMMRunStatus.BLOCKED}:
             if self.failure_packet is None:
                 raise ValueError("failed or blocked manifests require a typed failure_packet")
@@ -234,30 +268,121 @@ class MMMRunManifest(BaseModel):
         return cls.model_validate_json(payload)
 
 
+class MMMAnalyticalArtifactOutcome(BaseModel):
+    """A typed logical producer artifact outcome that is not an MMMExportBundle."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    outcome_kind: Literal["analytical_artifact"] = "analytical_artifact"
+    status: MMMRunStatus
+    run_id: str = Field(min_length=1, max_length=200)
+    producer_package_name: Literal["mmm"] = "mmm"
+    producer_package_version: str = Field(min_length=1, max_length=100)
+    output_artifact: MMMArtifactReference | None = None
+    limitation_ids: list[str] = Field(default_factory=list)
+    blocker_references: list[str] = Field(default_factory=list)
+    failure_packet: MMMFailurePacket | None = None
+
+    @field_validator("run_id", "producer_package_version")
+    @classmethod
+    def _safe_analytical_text(cls, value: str, info: Any) -> str:
+        return _safe_text(value, field_name=info.field_name)
+
+    @field_validator("limitation_ids", "blocker_references")
+    @classmethod
+    def _safe_analytical_identifiers(cls, values: list[str], info: Any) -> list[str]:
+        return [_safe_text(value, field_name=info.field_name) for value in values]
+
+    @model_validator(mode="after")
+    def _consistent_analytical_terminal_state(self) -> MMMAnalyticalArtifactOutcome:
+        if self.status == MMMRunStatus.SUCCEEDED:
+            if self.output_artifact is None or self.output_artifact.availability != MMMArtifactAvailability.AVAILABLE:
+                raise ValueError("successful analytical outcomes require an available logical output artifact")
+            if self.failure_packet is not None or self.blocker_references or self.limitation_ids:
+                raise ValueError("successful analytical outcomes cannot contain failure, blockers, or limitations")
+        elif self.status == MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS:
+            if self.output_artifact is None or self.output_artifact.availability != MMMArtifactAvailability.AVAILABLE:
+                raise ValueError("limited-success analytical outcomes require an available logical output artifact")
+            if self.failure_packet is not None or self.blocker_references or not self.limitation_ids:
+                raise ValueError("limited-success analytical outcomes require limitations without failure or blockers")
+        elif self.status == MMMRunStatus.BLOCKED:
+            if self.output_artifact is not None or self.failure_packet is None:
+                raise ValueError("blocked analytical outcomes require a failure packet without output artifact")
+            if self.failure_packet.failure_status != "blocked" or self.failure_packet.run_id != self.run_id:
+                raise ValueError("blocked analytical outcome failure packet must match the blocked run")
+            if self.limitation_ids:
+                raise ValueError("blocked analytical outcomes cannot contain limitation IDs")
+        elif self.status == MMMRunStatus.FAILED:
+            if self.output_artifact is not None or self.failure_packet is None or self.blocker_references:
+                raise ValueError(
+                    "failed analytical outcomes require a failure packet without output artifact or blockers"
+                )
+            if self.failure_packet.failure_status != "failed" or self.failure_packet.run_id != self.run_id:
+                raise ValueError("failed analytical outcome failure packet must match the failed run")
+            if self.limitation_ids:
+                raise ValueError("failed analytical outcomes cannot contain limitation IDs")
+        else:
+            raise ValueError("analytical artifact outcomes must be terminal")
+        return self
+
+
 class MMMExportManifestOutcome(BaseModel):
     """Additive producer-boundary result linking a typed outcome to its manifest."""
 
     model_config = ConfigDict(extra="forbid")
 
-    export_outcome: MMMExportOutcome
+    outcome_kind: Literal["export_bundle", "analytical_artifact"] = "export_bundle"
+    export_outcome: MMMExportOutcome | None = None
+    analytical_outcome: MMMAnalyticalArtifactOutcome | None = None
     run_manifest: MMMRunManifest
     supported_range_evidence_id: str | None = Field(default=None, max_length=200)
 
     @model_validator(mode="after")
     def _outcome_and_manifest_agree(self) -> MMMExportManifestOutcome:
-        if self.supported_range_evidence_id and self.supported_range_evidence_id != self.run_manifest.supported_range_evidence_id:
+        if (
+            self.supported_range_evidence_id
+            and self.supported_range_evidence_id != self.run_manifest.supported_range_evidence_id
+        ):
             raise ValueError("supported range evidence outcome reference must match the run manifest")
-        if self.export_outcome.outcome_type == "success":
-            if self.run_manifest.status != MMMRunStatus.SUCCEEDED or self.run_manifest.successful_export is None:
-                raise ValueError("successful export outcomes require a succeeded run manifest")
-            if self.run_manifest.successful_export.artifact_id != self.export_outcome.export_bundle.model_run_id:  # type: ignore[union-attr]
-                raise ValueError("successful manifest export reference must match the export bundle run ID")
-        else:
-            packet = self.export_outcome.failure_packet
-            if self.run_manifest.status not in {MMMRunStatus.FAILED, MMMRunStatus.BLOCKED}:
-                raise ValueError("failed export outcomes require a failed or blocked run manifest")
-            if self.run_manifest.failure_packet != packet:
-                raise ValueError("failed export outcome and run manifest must carry the same failure packet")
+        if self.outcome_kind == "export_bundle":
+            if self.export_outcome is None or self.analytical_outcome is not None:
+                raise ValueError("export_bundle outcomes require only an MMMExportOutcome payload")
+            if self.export_outcome.outcome_type == "success":
+                if (
+                    self.run_manifest.status not in {MMMRunStatus.SUCCEEDED, MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS}
+                    or self.run_manifest.successful_export is None
+                ):
+                    raise ValueError("successful export outcomes require a succeeded run manifest")
+                if self.run_manifest.successful_export.artifact_id != self.export_outcome.export_bundle.model_run_id:  # type: ignore[union-attr]
+                    raise ValueError("successful manifest export reference must match the export bundle run ID")
+            else:
+                packet = self.export_outcome.failure_packet
+                if self.run_manifest.status not in {MMMRunStatus.FAILED, MMMRunStatus.BLOCKED}:
+                    raise ValueError("failed export outcomes require a failed or blocked run manifest")
+                if self.run_manifest.failure_packet != packet:
+                    raise ValueError("failed export outcome and run manifest must carry the same failure packet")
+            return self
+        if self.analytical_outcome is None or self.export_outcome is not None:
+            raise ValueError("analytical_artifact outcomes require only an MMMAnalyticalArtifactOutcome payload")
+        outcome = self.analytical_outcome
+        if (
+            outcome.run_id != self.run_manifest.run_id
+            or outcome.producer_package_name != self.run_manifest.producer_package_name
+            or outcome.producer_package_version != self.run_manifest.producer_package_version
+        ):
+            raise ValueError("analytical outcome identity must match the run manifest")
+        if outcome.status != self.run_manifest.status:
+            raise ValueError("analytical outcome terminal status must match the run manifest")
+        if outcome.status in {MMMRunStatus.SUCCEEDED, MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS}:
+            if self.run_manifest.successful_export != outcome.output_artifact:
+                raise ValueError("analytical outcome output artifact must match the run manifest")
+            if (
+                outcome.status == MMMRunStatus.SUCCEEDED_WITH_LIMITATIONS
+                and outcome.limitation_ids != self.run_manifest.limitation_ids
+            ):
+                raise ValueError("analytical outcome limitation IDs must match the run manifest")
+        elif self.run_manifest.failure_packet != outcome.failure_packet:
+            raise ValueError("analytical outcome failure packet must match the run manifest")
         return self
 
 
@@ -316,7 +441,13 @@ def build_run_manifest(extension_report: dict[str, Any], *, run_id: str | None =
         "run_id": run_id,
         "extension_report_top_level_keys": keys,
         "surface_tier_by_key": tiers,
-        "canonical_decision_inputs": ["ridge_fit_summary", "governance", "model_release", "operational_health", "panel_qa"],
+        "canonical_decision_inputs": [
+            "ridge_fit_summary",
+            "governance",
+            "model_release",
+            "operational_health",
+            "panel_qa",
+        ],
         "notes": [
             "Curve/decomposition/ROI-like blocks remain diagnostic unless promoted by separate decision bundle policy.",
             "Use mmm.decision.service paths for prod decision JSON; do not treat this manifest as decision truth.",
@@ -328,6 +459,7 @@ __all__ = [
     "MMM_RUN_MANIFEST_SCHEMA_VERSION",
     "MMMArtifactAvailability",
     "MMMArtifactReference",
+    "MMMAnalyticalArtifactOutcome",
     "MMMExportManifestOutcome",
     "MMMRunManifest",
     "MMMRunStatus",

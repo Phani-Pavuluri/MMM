@@ -16,7 +16,6 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from mmm.contracts.diagnostics_limitations import (
-    MMMAffectedScope,
     MMMClaimEffect,
     MMMTechnicalClaim,
     MMMTechnicalClaimDisposition,
@@ -44,6 +43,14 @@ class MMMRangeAvailabilityStatus(str, Enum):
     UNAVAILABLE = "UNAVAILABLE"
     BLOCKED = "BLOCKED"
     RESEARCH_ONLY = "RESEARCH_ONLY"
+
+
+class MMMSupportedRangeSimulationEligibility(str, Enum):
+    """Narrow MMM producer eligibility for technical Ridge simulation only."""
+
+    ELIGIBLE_FOR_TECHNICAL_SIMULATION = "ELIGIBLE_FOR_TECHNICAL_SIMULATION"
+    NOT_ELIGIBLE = "NOT_ELIGIBLE"
+    NOT_ASSESSED = "NOT_ASSESSED"
 
 
 class MMMRangeRelation(str, Enum):
@@ -126,13 +133,32 @@ class MMMRangeScope(BaseModel):
     data_grain: str | None = None
     transformation_id: str | None = None
 
-    @field_validator("channel", "kpi", "geography", "segment", "time_window", "outcome_or_estimand", "data_grain", "transformation_id")
+    @field_validator(
+        "channel",
+        "kpi",
+        "geography",
+        "segment",
+        "time_window",
+        "outcome_or_estimand",
+        "data_grain",
+        "transformation_id",
+    )
     @classmethod
     def _text_values(cls, value: str | None, info: Any) -> str | None:
         return None if value is None else _text(value, info.field_name)
 
     def is_explicit(self) -> bool:
-        return any((self.channel, self.kpi, self.geography, self.segment, self.time_window, self.outcome_or_estimand, self.data_grain))
+        return any(
+            (
+                self.channel,
+                self.kpi,
+                self.geography,
+                self.segment,
+                self.time_window,
+                self.outcome_or_estimand,
+                self.data_grain,
+            )
+        )
 
 
 class MMMRangeRestriction(BaseModel):
@@ -182,7 +208,7 @@ class MMMSupportedRangeRecord(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    schema_version: Literal[MMM_SUPPORTED_RANGE_RECORD_SCHEMA_VERSION] = MMM_SUPPORTED_RANGE_RECORD_SCHEMA_VERSION
+    schema_version: Literal["mmm_supported_range_record_v1"] = "mmm_supported_range_record_v1"
     range_record_id: str
     run_id: str
     model_id: str | None = None
@@ -198,6 +224,7 @@ class MMMSupportedRangeRecord(BaseModel):
     validated_upper: MMMRangeBound | None = None
     evidence_basis: list[MMMRangeEvidenceBasis] = Field(default_factory=list)
     availability_status: MMMRangeAvailabilityStatus
+    simulation_eligibility: MMMSupportedRangeSimulationEligibility = MMMSupportedRangeSimulationEligibility.NOT_ASSESSED
     range_relation: MMMRangeRelation = MMMRangeRelation.UNKNOWN
     extrapolation_classification: MMMExtrapolationClassification = MMMExtrapolationClassification.UNKNOWN
     restrictions: list[MMMRangeRestriction] = Field(default_factory=list)
@@ -213,12 +240,30 @@ class MMMSupportedRangeRecord(BaseModel):
     uncertainty_semantics: str | None = None
     technical_detail: str | None = None
 
-    @field_validator("range_record_id", "run_id", "model_id", "model_family", "model_version", "configuration_hash", "failure_packet_reference", "uncertainty_artifact_reference", "uncertainty_semantics", "technical_detail")
+    @field_validator(
+        "range_record_id",
+        "run_id",
+        "model_id",
+        "model_family",
+        "model_version",
+        "configuration_hash",
+        "failure_packet_reference",
+        "uncertainty_artifact_reference",
+        "uncertainty_semantics",
+        "technical_detail",
+    )
     @classmethod
     def _safe_optional_text(cls, value: str | None, info: Any) -> str | None:
         return None if value is None else _text(value, info.field_name)
 
-    @field_validator("diagnostic_references", "limitation_references", "calibration_lineage_references", "validation_evidence_references", "data_evidence_references", "governed_extrapolation_evidence")
+    @field_validator(
+        "diagnostic_references",
+        "limitation_references",
+        "calibration_lineage_references",
+        "validation_evidence_references",
+        "data_evidence_references",
+        "governed_extrapolation_evidence",
+    )
     @classmethod
     def _safe_references(cls, values: list[str], info: Any) -> list[str]:
         return [_text(value, info.field_name) for value in values]
@@ -228,35 +273,71 @@ class MMMSupportedRangeRecord(BaseModel):
         _pair_ok(self.observed_lower, self.observed_upper, "observed")
         _pair_ok(self.supported_lower, self.supported_upper, "supported")
         _pair_ok(self.validated_lower, self.validated_upper, "validated")
-        pairs = [(self.observed_lower, self.observed_upper), (self.supported_lower, self.supported_upper), (self.validated_lower, self.validated_upper)]
+        pairs = [
+            (self.observed_lower, self.observed_upper),
+            (self.supported_lower, self.supported_upper),
+            (self.validated_lower, self.validated_upper),
+        ]
         bounds = [bound for pair in pairs for bound in pair if bound is not None]
         if len({(bound.unit, bound.scale, bound.transformation_id) for bound in bounds}) > 1:
             raise ValueError("observed, supported, and validated bounds must not mix units or scale semantics")
         supported = self.supported_lower is not None
         validated = self.validated_lower is not None
-        if self.availability_status == MMMRangeAvailabilityStatus.AVAILABLE and (not supported or not self.scope.is_explicit()):
+        if self.availability_status == MMMRangeAvailabilityStatus.AVAILABLE and (
+            not supported or not self.scope.is_explicit()
+        ):
             raise ValueError("available range evidence requires supported bounds and explicit scope")
-        if self.availability_status == MMMRangeAvailabilityStatus.PARTIALLY_AVAILABLE and not (self.observed_lower or self.data_evidence_references or self.validation_evidence_references):
+        if self.availability_status == MMMRangeAvailabilityStatus.PARTIALLY_AVAILABLE and not (
+            self.observed_lower or self.data_evidence_references or self.validation_evidence_references
+        ):
             raise ValueError("partially available evidence must identify available evidence")
         if self.availability_status == MMMRangeAvailabilityStatus.UNAVAILABLE and supported:
             raise ValueError("unavailable range evidence cannot claim supported bounds")
-        if self.availability_status == MMMRangeAvailabilityStatus.BLOCKED and not (self.diagnostic_references or self.limitation_references or self.failure_packet_reference):
+        if self.availability_status == MMMRangeAvailabilityStatus.BLOCKED and not (
+            self.diagnostic_references or self.limitation_references or self.failure_packet_reference
+        ):
             raise ValueError("blocked range evidence requires a blocking reference")
-        if self.availability_status == MMMRangeAvailabilityStatus.RESEARCH_ONLY and MMMRangeEvidenceBasis.RESEARCH_ONLY not in self.evidence_basis:
+        if (
+            self.availability_status == MMMRangeAvailabilityStatus.RESEARCH_ONLY
+            and MMMRangeEvidenceBasis.RESEARCH_ONLY not in self.evidence_basis
+        ):
             raise ValueError("research-only range evidence requires RESEARCH_ONLY basis")
+        if (
+            self.simulation_eligibility == MMMSupportedRangeSimulationEligibility.ELIGIBLE_FOR_TECHNICAL_SIMULATION
+            and self.availability_status != MMMRangeAvailabilityStatus.AVAILABLE
+        ):
+            raise ValueError("technical simulation eligibility requires AVAILABLE range evidence")
         if validated and not self.validation_evidence_references:
             raise ValueError("validated ranges require validation evidence")
-        if self.range_relation in {MMMRangeRelation.WITHIN_SUPPORTED_RANGE, MMMRangeRelation.AT_LOWER_BOUNDARY, MMMRangeRelation.AT_UPPER_BOUNDARY, MMMRangeRelation.OUTSIDE_OBSERVED_BUT_SUPPORTED} and not supported:
+        if (
+            self.range_relation
+            in {
+                MMMRangeRelation.WITHIN_SUPPORTED_RANGE,
+                MMMRangeRelation.AT_LOWER_BOUNDARY,
+                MMMRangeRelation.AT_UPPER_BOUNDARY,
+                MMMRangeRelation.OUTSIDE_OBSERVED_BUT_SUPPORTED,
+            }
+            and not supported
+        ):
             raise ValueError("supported range relation requires explicit supported bounds")
         if self.extrapolation_classification == MMMExtrapolationClassification.INTERPOLATION and not supported:
             raise ValueError("interpolation requires explicit supported bounds")
-        if self.extrapolation_classification == MMMExtrapolationClassification.BOUNDARY and self.range_relation not in {MMMRangeRelation.AT_LOWER_BOUNDARY, MMMRangeRelation.AT_UPPER_BOUNDARY}:
+        if self.extrapolation_classification == MMMExtrapolationClassification.BOUNDARY and self.range_relation not in {
+            MMMRangeRelation.AT_LOWER_BOUNDARY,
+            MMMRangeRelation.AT_UPPER_BOUNDARY,
+        }:
             raise ValueError("boundary extrapolation classification requires a boundary relation")
-        if self.extrapolation_classification == MMMExtrapolationClassification.LIMITED_EXTRAPOLATION and not self.governed_extrapolation_evidence:
+        if (
+            self.extrapolation_classification == MMMExtrapolationClassification.LIMITED_EXTRAPOLATION
+            and not self.governed_extrapolation_evidence
+        ):
             raise ValueError("limited extrapolation requires explicit governed evidence")
-        if self.extrapolation_classification == MMMExtrapolationClassification.UNSUPPORTED_EXTRAPOLATION:
-            if not any(effect.disposition in {MMMTechnicalClaimDisposition.BLOCKED, MMMTechnicalClaimDisposition.RESTRICTED} for restriction in self.restrictions for effect in restriction.claim_effects):
-                raise ValueError("unsupported extrapolation requires a restriction or blocked claim")
+        if self.extrapolation_classification == MMMExtrapolationClassification.UNSUPPORTED_EXTRAPOLATION and not any(
+            effect.disposition in {MMMTechnicalClaimDisposition.BLOCKED, MMMTechnicalClaimDisposition.RESTRICTED}
+            for restriction in self.restrictions
+            for effect in restriction.claim_effects
+        ):
+            raise ValueError("unsupported extrapolation requires a restriction or blocked claim")
         if self.uncertainty_available and not self.uncertainty_artifact_reference:
             raise ValueError("available uncertainty requires an artifact reference")
         if not self.uncertainty_available and (self.uncertainty_artifact_reference or self.uncertainty_semantics):
@@ -264,7 +345,10 @@ class MMMSupportedRangeRecord(BaseModel):
         if self.availability_status == MMMRangeAvailabilityStatus.RESEARCH_ONLY:
             for restriction in self.restrictions:
                 for effect in restriction.claim_effects:
-                    if effect.claim == MMMTechnicalClaim.PRODUCTION_USE and effect.disposition in {MMMTechnicalClaimDisposition.SUPPORTED, MMMTechnicalClaimDisposition.SUPPORTED_WITH_WARNING}:
+                    if effect.claim == MMMTechnicalClaim.PRODUCTION_USE and effect.disposition in {
+                        MMMTechnicalClaimDisposition.SUPPORTED,
+                        MMMTechnicalClaimDisposition.SUPPORTED_WITH_WARNING,
+                    }:
                         raise ValueError("research-only range evidence cannot support production use")
         return self
 
@@ -274,7 +358,7 @@ class MMMSupportedRangeEvidence(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    schema_version: Literal[MMM_SUPPORTED_RANGE_SCHEMA_VERSION] = MMM_SUPPORTED_RANGE_SCHEMA_VERSION
+    schema_version: Literal["mmm_supported_range_evidence_v1"] = "mmm_supported_range_evidence_v1"
     evidence_id: str
     run_id: str
     created_at: datetime
@@ -288,7 +372,17 @@ class MMMSupportedRangeEvidence(BaseModel):
     export_artifact_reference: str | None = None
     terminal_failure_reference: str | None = None
 
-    @field_validator("evidence_id", "run_id", "producer_package_name", "producer_package_version", "run_manifest_reference", "diagnostics_limitations_reference", "calibration_lineage_reference", "export_artifact_reference", "terminal_failure_reference")
+    @field_validator(
+        "evidence_id",
+        "run_id",
+        "producer_package_name",
+        "producer_package_version",
+        "run_manifest_reference",
+        "diagnostics_limitations_reference",
+        "calibration_lineage_reference",
+        "export_artifact_reference",
+        "terminal_failure_reference",
+    )
     @classmethod
     def _safe_aggregate_text(cls, value: str | None, info: Any) -> str | None:
         return None if value is None else _text(value, info.field_name)
@@ -304,21 +398,34 @@ class MMMSupportedRangeEvidence(BaseModel):
     def _aggregate_consistency(self) -> MMMSupportedRangeEvidence:
         if not self.records:
             raise ValueError("supported range evidence requires at least one record")
-        if [record.range_record_id for record in self.records] != sorted(record.range_record_id for record in self.records):
+        if [record.range_record_id for record in self.records] != sorted(
+            record.range_record_id for record in self.records
+        ):
             raise ValueError("range records must be deterministically ordered by range_record_id")
         if len({record.range_record_id for record in self.records}) != len(self.records):
             raise ValueError("range record IDs must be unique")
         if any(record.run_id != self.run_id for record in self.records):
             raise ValueError("range record run IDs must match aggregate run ID")
         counts = {
-            "available": sum(record.availability_status == MMMRangeAvailabilityStatus.AVAILABLE for record in self.records),
-            "partially_available": sum(record.availability_status == MMMRangeAvailabilityStatus.PARTIALLY_AVAILABLE for record in self.records),
-            "unavailable": sum(record.availability_status == MMMRangeAvailabilityStatus.UNAVAILABLE for record in self.records),
+            "available": sum(
+                record.availability_status == MMMRangeAvailabilityStatus.AVAILABLE for record in self.records
+            ),
+            "partially_available": sum(
+                record.availability_status == MMMRangeAvailabilityStatus.PARTIALLY_AVAILABLE for record in self.records
+            ),
+            "unavailable": sum(
+                record.availability_status == MMMRangeAvailabilityStatus.UNAVAILABLE for record in self.records
+            ),
             "blocked": sum(record.availability_status == MMMRangeAvailabilityStatus.BLOCKED for record in self.records),
-            "research_only": sum(record.availability_status == MMMRangeAvailabilityStatus.RESEARCH_ONLY for record in self.records),
+            "research_only": sum(
+                record.availability_status == MMMRangeAvailabilityStatus.RESEARCH_ONLY for record in self.records
+            ),
             "supported": sum(record.supported_lower is not None for record in self.records),
             "restricted": sum(bool(record.restrictions) for record in self.records),
-            "unsupported_extrapolation": sum(record.extrapolation_classification == MMMExtrapolationClassification.UNSUPPORTED_EXTRAPOLATION for record in self.records),
+            "unsupported_extrapolation": sum(
+                record.extrapolation_classification == MMMExtrapolationClassification.UNSUPPORTED_EXTRAPOLATION
+                for record in self.records
+            ),
         }
         if self.summary_counts is not None and self.summary_counts != counts:
             raise ValueError("summary_counts must be derived exactly from records")
@@ -342,9 +449,18 @@ def build_mmm_supported_range_evidence(**fields: Any) -> MMMSupportedRangeEviden
 
 
 __all__ = [
-    "MMM_SUPPORTED_RANGE_RECORD_SCHEMA_VERSION", "MMM_SUPPORTED_RANGE_SCHEMA_VERSION",
-    "MMMExtrapolationClassification", "MMMRangeAvailabilityStatus", "MMMRangeBound",
-    "MMMRangeEvidenceBasis", "MMMRangeRelation", "MMMRangeRestriction", "MMMRangeScale",
-    "MMMRangeScope", "MMMSupportedRangeEvidence", "MMMSupportedRangeRecord",
+    "MMM_SUPPORTED_RANGE_RECORD_SCHEMA_VERSION",
+    "MMM_SUPPORTED_RANGE_SCHEMA_VERSION",
+    "MMMExtrapolationClassification",
+    "MMMRangeAvailabilityStatus",
+    "MMMRangeBound",
+    "MMMSupportedRangeSimulationEligibility",
+    "MMMRangeEvidenceBasis",
+    "MMMRangeRelation",
+    "MMMRangeRestriction",
+    "MMMRangeScale",
+    "MMMRangeScope",
+    "MMMSupportedRangeEvidence",
+    "MMMSupportedRangeRecord",
     "build_mmm_supported_range_evidence",
 ]
