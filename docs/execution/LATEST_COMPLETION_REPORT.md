@@ -1,74 +1,52 @@
-# TASK_COMPLETION_REPORT_V1
+# TASK_COMPLETION_REPORT_V2
 
 ## Identity
 
-- **Task ID:** `MMM_REPO_NATIVE_EXECUTION_HANDOFF_ADOPTION_001`
+- **Task ID:** `MMM_REPO_NATIVE_EXECUTION_HANDOFF_V2_RECONCILIATION_001`
 - **Repository:** `Phani-Pavuluri/MMM`
 - **Execution mode:** `branch_and_fast_forward`
-- **Base branch and code checkpoint:** `main` at
-  `9a3aa5cb9a48c9a59d45e266685228835237f328`
-- **Task-authoring metadata checkpoint:**
-  `ef63068c37041bdde55373cc08ef19333aa0fb5e`
-- **Feature branch:** `feat/mmm-repo-native-execution-handoff-adoption-001`
-- **Implementation commit:** `f0b0ae35619739a4ff3d95f2cf7c93bf7ec523a0`
+- **Pre-authoring base:** `ad55fef6799a8bd717108781ad44fc88fa116df7`
+- **Feature branch:** `feat/mmm-repo-native-execution-handoff-v2-reconciliation-001`
+- **Canonical MIP V2 pin:**
+  `Phani-Pavuluri/marketing_intelligence_platform@38f88467f55d5bc4cc64e5a58b0f08f1639a40d0`
+- **Recovery target:** `MMM_REPO_NATIVE_EXECUTION_HANDOFF_ADOPTION_001`
 
-## Prerequisites and deliverables
+## Verified reconciliation trigger
 
-Local and remote MMM `main` matched the task-authoring checkpoint before branch
-creation. The code checkpoint was an ancestor and the only intervening tracked
-paths were `docs/execution/ACTIVE_TASK.md` and
-`docs/execution/EXECUTION_STATE.json`. The pinned canonical MIP standard and
-all seven MIP `docs/program/` files were verified at
-`Phani-Pavuluri/marketing_intelligence_platform@5eebba6750a3754e4026397d6762c601b1d6a708`.
+MMM PR #19 externally merged the V1 adoption branch at
+`ea16ab7e7b1089f5de479eeffb236fad2767edf1` into merge commit
+`ad55fef6799a8bd717108781ad44fc88fa116df7` while the committed execution state
+remained `ready_for_review`, `merge_authorized: false`, with null reviewed and
+approval SHAs. The repository also remained pinned to obsolete MIP commit
+`5eebba6750a3754e4026397d6762c601b1d6a708` and the legacy
+`approved_for_merge` lifecycle.
 
-Changed paths:
+This authorized task reconciles that state and upgrades MMM to the closed MIP V2
+standard. It does not retroactively approve PR #19, rewrite history, or authorize
+an analytical capability.
 
-- `AGENTS.md`
-- `docs/execution/ACTIVE_TASK.md`
-- `docs/execution/EXECUTION_STATE.json`
-- `docs/execution/LATEST_COMPLETION_REPORT.md`
-- `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
-- `tests/test_repo_native_execution_handoff.py`
+## Authorized-task placeholder
 
-The adoption adds fail-closed active-task execution and approved-merge rules,
-stable replace-in-place execution records, a pinned canonical MIP reference,
-a fresh-chat bootstrap, and one reusable state/task/report consistency test.
+Before `ready_for_review`, replace this placeholder with the complete evidence
+required by `docs/execution/ACTIVE_TASK.md`, including:
 
-## Acceptance and validation
+- task-authoring boundary and synchronized-main evidence;
+- PR #19 metadata, exact lineage, changed paths, and approval-record findings;
+- canonical MIP V2 pin verification;
+- AGENTS, context-index, state-schema, and focused-test V2 changes;
+- focused/full/Docker validation, Ruff, mypy, and diff results;
+- exact reconciliation implementation commit and published review head;
+- stale V1 branch status, limitations, deferred work, and cleanup plan;
+- GeoX unchanged confirmation and authority impact.
 
-- Checkpoint ancestry, exact tracked-file boundary, state/task agreement, and
-  local-only-path guard: **passed**.
-- Pinned MIP execution standard and seven program files: **passed**.
-- Focused execution-handoff, schema-policy, public-simulation, and calibration
-  compatibility regressions: **passed**.
-- Changed-path Ruff: **passed**.
-- Focused mypy: **passed**.
-- `git diff --check`: **passed**.
-- Docker-backed `make validate`: **passed**; the complete non-slow suite
-  reached 100% (with pre-existing runtime warnings only).
+## Current authority
 
-The GitHub-observed evidence is the fetched MMM and MIP `origin/main` state at
-the checkpoints above. The execution agent pushes this review-ready branch
-after committing this report; any GitHub CI review remains reviewer work.
+`capability_authorizations_changed` remains `false`. This task changes workflow
+governance only. It does not authorize or change model fitting, calibration,
+simulation, supported-range semantics, optimization, recommendations, Bayesian
+production, automatic refit/model promotion, public export schemas, numerical
+truth, live integration, real data, persistence, pilot, production, or
+package-side agents.
 
-## Limitations and deferred work
-
-This task creates workflow metadata only. It does not create a workflow engine,
-scheduler, GitHub Action, custom agent, PR, package-side agent, or independent
-execution standard. `.codex/` and `docs/tasks/` remain local-only and unstaged.
-
-## Authority and merge readiness
-
-No capability changed or was authorized: model fitting/calibration behavior,
-simulation/supported-range semantics, optimization/candidate generation,
-recommendation authority, Bayesian production, automatic refit/model promotion,
-public export schemas, and numerical truth all remain unchanged and
-unauthorized.
-
-The branch is `ready_for_review`; execution authorization remains true, merge
-authorization remains false, and reviewed/approval SHAs are null. A reviewer
-must verify the exact head and explicitly authorize a future fast-forward merge.
-
-## Boundary
-
-This workflow-metadata task does not authorize or change MMM capabilities.
+No execution result, review approval, merge approval, or reconciliation
+completion is implied by this placeholder.
