@@ -1,6 +1,6 @@
 # Active Task
 
-**Status:** authorized
+**Status:** ready_for_review
 **Owner:** MMM repository governance
 **Last updated:** 2026-07-30
 **Task ID:** `MMM_REPO_NATIVE_EXECUTION_HANDOFF_ADOPTION_001`
