@@ -1,6 +1,6 @@
 # Active Task
 
-**Status:** authorized reconciliation
+**Status:** ready_for_review
 **Owner:** MMM repository governance
 **Last updated:** 2026-07-30
 **Last verified:** 2026-07-30
