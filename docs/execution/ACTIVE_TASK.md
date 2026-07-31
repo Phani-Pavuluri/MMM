@@ -1,177 +1,178 @@
 # Active Task
 
-**Status:** ready_for_review
+**Status:** authorized reconciliation
 **Owner:** MMM repository governance
 **Last updated:** 2026-07-30
-**Task ID:** `MMM_REPO_NATIVE_EXECUTION_HANDOFF_ADOPTION_001`
+**Last verified:** 2026-07-30
+**Verified against:** MMM `main` / `ad55fef6799a8bd717108781ad44fc88fa116df7`
+**Update trigger:** execution-state transition, review decision, or task closure.
 
 ## Identity
 
-- **Repository:** `Phani-Pavuluri/MMM`
-- **Verified code checkpoint:** `9a3aa5cb9a48c9a59d45e266685228835237f328`
-- **Base branch:** `main`
-- **Feature branch:** `feat/mmm-repo-native-execution-handoff-adoption-001`
+- **Task ID:** `MMM_REPO_NATIVE_EXECUTION_HANDOFF_V2_RECONCILIATION_001`
+- **Base branch/SHA:** `main` / `ad55fef6799a8bd717108781ad44fc88fa116df7`
+- **Feature branch:** `feat/mmm-repo-native-execution-handoff-v2-reconciliation-001`
 - **Execution mode:** `branch_and_fast_forward`
-- **Canonical MIP workflow pin:** `Phani-Pavuluri/marketing_intelligence_platform@5eebba6750a3754e4026397d6762c601b1d6a708`
-- **Canonical standard:** `docs/execution/TASK_EXECUTION_STANDARD.md` in the pinned MIP commit
+- **Canonical MIP V2 pin:** `Phani-Pavuluri/marketing_intelligence_platform@38f88467f55d5bc4cc64e5a58b0f08f1639a40d0`
+- **Recovery target:** `MMM_REPO_NATIVE_EXECUTION_HANDOFF_ADOPTION_001`
+- **External PR:** `#19`
+- **External branch head:** `ea16ab7e7b1089f5de479eeffb236fad2767edf1`
+- **External merge commit:** `ad55fef6799a8bd717108781ad44fc88fa116df7`
+- **Capability authorizations changed:** `false`
 
-The task-authoring commits that add this file and `EXECUTION_STATE.json` to MMM
-`main` are metadata only. Before creating the feature branch, verify the pinned
-code checkpoint is an ancestor of current `main` and that every change since it
-is limited to those two task-authoring files. Stop on any product-code or other
-unexpected change.
+## Why reconciliation is required
+
+PR #19 placed the V1 workflow implementation on `main` while the committed MMM
+state remained `ready_for_review`, with `merge_authorized: false`, no reviewed
+head, and no approval commit. No conforming exact-head approval record is present.
+The merge used a GitHub merge commit rather than the canonical V2 fast-forward
+path. MMM also remains pinned to obsolete MIP commit `5eebba6` and retains the
+legacy `approved_for_merge` lifecycle.
+
+Preserve those facts. Do not retroactively describe PR #19 as an approved or
+conforming merge, and do not rewrite or revert Git history merely to make it look
+conforming.
 
 ## Objective
 
-Adopt the MIP repo-native task, completion-report, review, merge, and fresh-chat
-handoff workflow in MMM without creating an independent competing governance
-framework. This task changes workflow metadata only.
+Reconcile the externally merged V1 adoption, upgrade MMM to the final MIP V2
+repository-native execution workflow, and publish an auditable review head that
+can later be approved and fast-forward merged. The resulting closure will make
+MMM ready for normal repository-native technical tasks.
 
-## Prerequisites
-
-1. Local and remote MMM `main` agree.
-2. MMM checkpoint `9a3aa5cb9a48c9a59d45e266685228835237f328`
-   exists and is an ancestor of current `main`.
-3. MIP pin `5eebba6750a3754e4026397d6762c601b1d6a708`
-   exists on MIP `main` and contains the canonical execution standard, fresh-chat
-   bootstrap, stable-path model, and merged closure state.
-4. `.codex/` and `docs/tasks/` remain local-only and untracked.
-5. No prior MMM execution-handoff adoption is already present.
+This is workflow governance only. No MMM model, contract, parser, fixture,
+numerical output, or capability authority is owned or authorized.
 
 ## Owned files
 
-Create or replace only:
+Execution may modify only:
 
 - `AGENTS.md`
-- `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
 - `docs/execution/ACTIVE_TASK.md`
-- `docs/execution/LATEST_COMPLETION_REPORT.md`
 - `docs/execution/EXECUTION_STATE.json`
-- one focused reusable consistency test in the repository's existing governance
-  or documentation test location
-- one documentation index only when required for discoverability
+- `docs/execution/LATEST_COMPLETION_REPORT.md`
+- `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
+- `tests/test_repo_native_execution_handoff.py`
 
-Do not copy the MIP `TASK_EXECUTION_STANDARD.md` into MMM. Pin and reference the
-canonical MIP commit instead.
+Do not modify MMM product code, contracts, fixtures, roadmaps, validation
+registries, MIP, or GeoX. If the existing focused test cannot represent the V2
+workflow within these owned files, stop and report the conflict rather than
+expanding scope.
+
+## Task-authoring boundary
+
+The pre-authoring base is `ad55fef6799a8bd717108781ad44fc88fa116df7`.
+Verify `base_sha..authorization_head_sha` changes only the three stable execution
+files. Because a commit cannot contain its own SHA, one final state-only commit
+may be present immediately after `authorization_head_sha` solely to record that
+boundary. No other path or commit is permitted between the authorization head
+and synchronized `main`.
+
+Create the feature branch from the exact synchronized post-authoring `main`, not
+from stale local state or the pre-authoring base.
+
+## Prerequisites
+
+1. Complete the mandatory bootstrap from the pinned MIP V2 standard before task
+   discovery: classify the worktree, permit untracked content only below
+   `.codex/` and `docs/tasks/`, run `git fetch --prune origin`, hydrate missing
+   history, switch to `main`, pull with `--ff-only`, and prove local
+   `main == origin/main`.
+2. Verify the canonical MIP V2 pin
+   `38f88467f55d5bc4cc64e5a58b0f08f1639a40d0` exists on MIP `main`, contains
+   `docs/execution/TASK_EXECUTION_STANDARD.md`, and records the closed MIP V2
+   recovery.
+3. Verify PR #19 lineage:
+   - base `ef63068c37041bdde55373cc08ef19333aa0fb5e`;
+   - original implementation `f0b0ae35619739a4ff3d95f2cf7c93bf7ec523a0`;
+   - external branch head `ea16ab7e7b1089f5de479eeffb236fad2767edf1`;
+   - merge commit `ad55fef6799a8bd717108781ad44fc88fa116df7`;
+   - no conforming approval record may be invented.
+4. Verify the external head descends from the V1 task-authoring checkpoint and
+   that its changed paths are limited to the original workflow-adoption files.
+5. Verify the stale remote branch
+   `feat/mmm-repo-native-execution-handoff-adoption-001` still exists or record
+   accurately if it was already removed.
+6. Verify GeoX is not modified and remains paused pending its separate V2
+   adoption task.
 
 ## Required implementation
 
-### `AGENTS.md`
+1. Create and switch to
+   `feat/mmm-repo-native-execution-handoff-v2-reconciliation-001` from exact
+   synchronized post-authoring `main`.
+2. Upgrade `AGENTS.md` to require the full MIP V2 bootstrap before task
+   discovery: worktree classification, fetch/prune, history hydration,
+   `git switch main`, `git pull --ff-only origin main`, and exact
+   `main == origin/main` verification.
+3. Replace the legacy merge lifecycle with MIP V2 semantics:
+   - no persisted `approved_for_merge` state;
+   - external user approval binds the exact remote feature-branch head;
+   - no pre-merge approval metadata commit;
+   - persisted `merge_authorized` remains false until closure;
+   - merge uses `git merge --ff-only` with no PR, squash, rebase, merge commit,
+     or force update;
+   - exactly one post-merge closure commit records approval, validation,
+     lineage, authority, synchronization, and cleanup.
+4. Update `REPOSITORY_CONTEXT_INDEX.md` and its Fresh Chat Bootstrap to pin MIP
+   V2 closure `38f88467f55d5bc4cc64e5a58b0f08f1639a40d0`, require synchronized Git before
+   reading task state, and preserve MMM producer/context references.
+5. Upgrade the execution state and focused test to
+   `mmm_repo_execution_state_v2`. Use only V2 statuses: `idle`, `proposed`,
+   `authorized`, `in_progress`, `blocked`, `ready_for_review`,
+   `changes_requested`, `merged`, and `superseded`.
+6. Update the focused test to enforce the canonical MIP pin, mandatory bootstrap
+   commands, permitted local-only paths, exact-head external approval, Docker
+   validation, no pre-merge approval commit, fast-forward merge, and exactly one
+   closure commit.
+7. Preserve the external PR #19 record separately from the conforming V2
+   reconciliation. Do not claim the earlier merge was approved.
+8. Run focused execution-handoff and relevant documentation/governance tests,
+   JSON and Markdown/path checks, Ruff, mypy, `git diff --check`, and
+   Docker-backed `make validate`.
+9. If a prerequisite or validation fails, update only owned files to an accurate
+   `blocked` state, commit and push the branch, and stop.
+10. If all gates pass, publish a `ready_for_review` branch state with:
+    - `task_execution_authorized: true`;
+    - `merge_authorized: false`;
+    - `reviewed_head_sha: null`;
+    - `approval_commit_sha: null`;
+    - populated `implementation_commit_sha`;
+    - `capability_authorizations_changed: false`;
+    - no blockers.
+11. Commit and push the exact remote branch head, verify local/remote equality,
+    and stop for ChatGPT review. Do not create a pull request, merge, or delete
+    branches during execution.
 
-Require every Codex session to read, in order:
+## Completion report requirements
 
-1. `docs/execution/EXECUTION_STATE.json`
-2. `docs/execution/ACTIVE_TASK.md`
-3. `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
-4. relevant MMM contracts, roadmaps, validation evidence, and the pinned MIP
-   standard/program files
+The report must include:
 
-For `Execute the active task`, require fail-closed verification of authorization,
-checkpoint ancestry, task/state agreement, exact feature branch, prerequisites,
-owned files, focused/full validation, completion-report creation, state change to
-`ready_for_review`, commit/push, and stop without merging.
+- V1 task-authoring, implementation, external-head, PR #19, and merge lineage;
+- explicit absence of a conforming exact-head approval record;
+- MIP V2 canonical pin and task-authoring boundary;
+- exact changed paths and MMM/GeoX scope confirmation;
+- focused and full validation, Docker, Ruff, mypy, and diff evidence;
+- recovery implementation commit and exact published review head;
+- limitations, deferred work, local-only paths, and authority impact;
+- `capability_authorizations_changed: false`.
 
-For `Merge the approved active task`, require exact reviewed-head integrity,
-`approved_for_merge`, `merge_authorized: true`, fast-forward-only merge, push,
-synchronization, closure metadata, and local/remote branch cleanup. No PR is
-required. Stop rather than guess.
+## Later approved merge and closure
 
-### `REPOSITORY_CONTEXT_INDEX.md`
+Only after the user approves the exact remote V2 reconciliation head may Codex
+run `Merge the approved active task`. The merge session must re-fetch and verify
+the approved head, rerun required validation, fast-forward merge without a PR,
+push and verify `main`, delete the V2 reconciliation branch and the stale V1
+adoption branch where present, then create exactly one post-merge closure commit.
 
-Create a concise navigation index, not a duplicate roadmap. Include:
+That closure becomes the canonical MMM execution-workflow pin. It must preserve
+PR #19 as a separate nonconforming historical merge and must not authorize any
+MMM analytical capability.
 
-- the pinned MIP execution standard and seven canonical MIP `docs/program/*`
-  files;
-- MMM public simulation handoff and `MMMPublicSimulationExport` evidence;
-- supported-range evidence;
-- `MMMCalibrationCompatibilityResult` contract, parser, fixtures, and schema
-  compatibility policy;
-- current MMM roadmap, validation/platform status, open investigations, and
-  deferred package-side agent roadmap;
-- GeoX as the experiment-readout producer and MIP as consumer/orchestrator;
-- exact checkpoint verification requirements.
+## Prohibited scope and authority
 
-Add a **Fresh Chat Bootstrap** prompt that instructs a fresh ChatGPT chat to use
-connected GitHub as source of truth, read the stable MMM execution files and
-pinned MIP program files, verify current main and cross-repository checkpoints,
-and summarize current state, active task, latest completion, blockers,
-dependencies, authority boundaries, and next eligible work without modifying or
-authorizing anything.
-
-### Stable execution files
-
-Use one replace-in-place copy of:
-
-- `docs/execution/ACTIVE_TASK.md`
-- `docs/execution/LATEST_COMPLETION_REPORT.md`
-- `docs/execution/EXECUTION_STATE.json`
-
-Git history preserves prior versions. Do not create per-task report archives.
-
-The completed branch state must use schema
-`mmm_repo_execution_state_v1`, task ID
-`MMM_REPO_NATIVE_EXECUTION_HANDOFF_ADOPTION_001`, status
-`ready_for_review`, `task_execution_authorized: true`,
-`merge_authorized: false`, null reviewed/approval SHAs, a populated
-implementation commit SHA, `capability_authorizations_changed: false`, and no
-blockers.
-
-### Completion report
-
-Write `TASK_COMPLETION_REPORT_V1` with exact changed files, prerequisites,
-deliverables, acceptance results, focused and full validation, Ruff, mypy,
-`git diff --check`, Docker-backed `make validate`, GitHub-observed versus local
-evidence, limitations, deferred work, merge readiness, and local-only paths.
-
-Also report explicitly whether the task changed or authorized any of:
-
-- model fitting or calibration behavior;
-- simulation or supported-range semantics;
-- optimization or candidate generation;
-- recommendation authority;
-- Bayesian production status;
-- automatic refit or model promotion;
-- public export schemas or numerical truth.
-
-For this adoption task, every item above must remain unchanged and unauthorized.
-
-## Focused test
-
-Add a reusable test that derives the task ID from state rather than hardcoding
-this bootstrap task forever. Verify required paths, JSON parsing, schema/status
-vocabulary, task/state/report agreement, boolean fields, stable AGENTS paths,
-fresh-chat bootstrap, and state-specific invariants:
-
-- `ready_for_review` requires execution authorized, merge unauthorized,
-  implementation SHA populated, and reviewed/approval SHAs null;
-- `approved_for_merge` requires execution and merge authorization plus populated
-  reviewed and approval SHAs;
-- this adoption task specifically requires
-  `capability_authorizations_changed: false`.
-
-## Validation
-
-Run repository-standard JSON and Markdown/path checks, the focused execution
-consistency test, relevant documentation/governance tests, Ruff, mypy,
-`git diff --check`, and Docker-backed `make validate`.
-
-If Docker, dependency download, repository state, or prerequisite verification
-fails, stop and preserve the branch. Do not claim success.
-
-## Prohibited scope
-
-Do not change MMM models, contracts, parsers, fixtures, numerical outputs,
-calibration, simulation, optimization, Bayesian authority, recommendations,
-production status, MIP, or GeoX. Do not add a scheduler, GitHub Action, workflow
-engine, custom agent, PR template, or package-side agent.
-
-## Commit, push, and stop
-
-After successful validation:
-
-- commit with message `Adopt repo-native execution handoff workflow`;
-- push `feat/mmm-repo-native-execution-handoff-adoption-001`;
-- do not create a PR;
-- do not merge;
-- do not delete the branch;
-- stop for ChatGPT review.
+Do not change or authorize model fitting, calibration behavior, simulation or
+supported-range semantics, optimization or candidate generation,
+recommendations, Bayesian production, automatic refit/model promotion, public
+export schemas, numerical truth, live MIP/GeoX integration, real data,
+persistence, pilot, production, or package-side agents.
