@@ -4,20 +4,23 @@
 **Owner:** MMM repository governance
 **Last updated:** 2026-07-30
 **Canonical execution standard:**
-`Phani-Pavuluri/marketing_intelligence_platform@5eebba6750a3754e4026397d6762c601b1d6a708`
+`Phani-Pavuluri/marketing_intelligence_platform@38f88467f55d5bc4cc64e5a58b0f08f1639a40d0`
 
 ## Fresh Chat Bootstrap
 
 Use this prompt in a fresh ChatGPT chat:
 
-> Use connected GitHub as the source of truth. Read MMM `AGENTS.md` and all
-> stable `docs/execution/` files, then read the pinned MIP execution standard
-> and seven canonical MIP `docs/program/` files at
-> `Phani-Pavuluri/marketing_intelligence_platform@5eebba6750a3754e4026397d6762c601b1d6a708`.
-> Verify current MMM `main` and cross-repository checkpoints. Summarize current
-> state, active task, latest completion, blockers, dependencies, authority
-> boundaries, and next eligible work. Do not modify files or authorize work
-> unless explicitly requested.
+> Use connected GitHub as the source of truth. First classify the MMM worktree:
+> inspect status including untracked files, permit local-only content only below
+> `.codex/` and `docs/tasks/`, fetch and prune `origin`, hydrate required
+> history, switch to `main`, pull with `--ff-only`, and prove local `main` equals
+> `origin/main`. Only then read MMM `EXECUTION_STATE.json`, `ACTIVE_TASK.md`,
+> `REPOSITORY_CONTEXT_INDEX.md`, and the pinned MIP V2 execution standard and
+> seven canonical MIP program files at
+> `Phani-Pavuluri/marketing_intelligence_platform@38f88467f55d5bc4cc64e5a58b0f08f1639a40d0`.
+> Summarize current state, active task, latest completion, blockers,
+> dependencies, authority boundaries, and next eligible work. Do not modify
+> files or authorize work unless explicitly requested.
 
 ## Stable execution handoff
 
@@ -25,7 +28,7 @@ Use this prompt in a fresh ChatGPT chat:
 - `docs/execution/ACTIVE_TASK.md`
 - `docs/execution/LATEST_COMPLETION_REPORT.md`
 - this index
-- pinned MIP standard:
+- pinned MIP V2 standard:
   `docs/execution/TASK_EXECUTION_STANDARD.md` at the canonical commit above
 
 ## Canonical MIP program memory
@@ -69,4 +72,5 @@ Use this prompt in a fresh ChatGPT chat:
 - Verify exact checkpoints from connected GitHub repositories before dependent
   work; repository completion does not imply authority or production readiness.
 - The active task state records the required MMM checkpoint and canonical MIP
-  commit. Never infer a replacement checkpoint from local files or chat text.
+  V2 commit. Never infer a replacement checkpoint from local files or chat
+  text.
