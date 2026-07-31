@@ -37,9 +37,9 @@ or invented, and the GitHub merge commit is preserved as a separate,
 nonconforming historical event.
 
 The stale remote V1 branch
-`feat/mmm-repo-native-execution-handoff-adoption-001` still exists. It is not
-deleted during this execution; a later approved V2 merge/closure will observe
-and perform that cleanup if authorized.
+`feat/mmm-repo-native-execution-handoff-adoption-001` was deleted during the
+approved V2 merge closure; it is not treated as evidence of a conforming V1
+approval.
 
 ## Deliverables and validation
 
@@ -83,11 +83,31 @@ export schemas, numerical truth, live integration, real data, persistence,
 pilot, production, and package-side agents remain unchanged and unauthorized.
 `capability_authorizations_changed` is `false`.
 
-The state is `ready_for_review`: execution authorization is true, persisted
-merge authorization is false, and reviewed/approval SHAs are null. The exact
-published review head is the remote V2 feature-branch ref after this state/report
-commit; it is reported externally because a commit cannot embed its own SHA.
-A future merge session requires explicit user approval of that exact remote
-head, repeat validation, a `git merge --ff-only`, cleanup, and exactly one
-post-merge closure commit. `.codex/` and `docs/tasks/` remain local-only and
-unstaged.
+## Conforming V2 merge closure
+
+- **Approval source:** explicit user approval of exact remote V2 reconciliation
+  head `5bc26f987d191bd2251cd12a35de5d0a49a3cbc5`.
+- **Authorization head:** `dda1f31a1e429a4cede791b4f21a979aefe375c5`.
+- **Implementation commit:** `9187b5bfe7fe13c4a6b3be7aa742b627027eaa84`.
+- **Merged-main head before this closure:**
+  `5bc26f987d191bd2251cd12a35de5d0a49a3cbc5`.
+- **Merge mechanism:** `git merge --ff-only` after a fresh remote-head,
+  authorization-ancestry, owned-path, MIP-pin, and exact-state verification.
+  No pull request, squash, rebase, merge commit, force update, or pre-merge
+  approval metadata commit was created.
+- **Validation:** Docker-backed `make validate` passed before the fast-forward
+  on the exact approved commit and again after the fast-forward on `main`.
+  The full non-slow suite reached 100%; focused workflow, JSON, Markdown/path,
+  Ruff, mypy, and diff checks had passed for the review head.
+- **Synchronization:** local `main` and `origin/main` both equaled the approved
+  implementation head before this closure record.
+- **Cleanup:** local and remote V2 reconciliation branches were deleted; the
+  stale remote V1 adoption branch was also deleted. `.codex/` and `docs/tasks/`
+  remain local-only and unstaged.
+
+The earlier GitHub PR #19 merge remains separately recorded as nonconforming:
+it had no exact-head approval record and is not retroactively approved by this
+closure. This is the single post-merge workflow closure commit. The merged state
+sets both execution and merge authorization false, records the reviewed head,
+keeps `approval_commit_sha` null, and leaves
+`capability_authorizations_changed` false.
