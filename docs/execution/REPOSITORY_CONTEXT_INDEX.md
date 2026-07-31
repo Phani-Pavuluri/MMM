@@ -1,0 +1,72 @@
+# MMM Repository Context Index
+
+**Status:** active navigation index
+**Owner:** MMM repository governance
+**Last updated:** 2026-07-30
+**Canonical execution standard:**
+`Phani-Pavuluri/marketing_intelligence_platform@5eebba6750a3754e4026397d6762c601b1d6a708`
+
+## Fresh Chat Bootstrap
+
+Use this prompt in a fresh ChatGPT chat:
+
+> Use connected GitHub as the source of truth. Read MMM `AGENTS.md` and all
+> stable `docs/execution/` files, then read the pinned MIP execution standard
+> and seven canonical MIP `docs/program/` files at
+> `Phani-Pavuluri/marketing_intelligence_platform@5eebba6750a3754e4026397d6762c601b1d6a708`.
+> Verify current MMM `main` and cross-repository checkpoints. Summarize current
+> state, active task, latest completion, blockers, dependencies, authority
+> boundaries, and next eligible work. Do not modify files or authorize work
+> unless explicitly requested.
+
+## Stable execution handoff
+
+- `docs/execution/EXECUTION_STATE.json`
+- `docs/execution/ACTIVE_TASK.md`
+- `docs/execution/LATEST_COMPLETION_REPORT.md`
+- this index
+- pinned MIP standard:
+  `docs/execution/TASK_EXECUTION_STANDARD.md` at the canonical commit above
+
+## Canonical MIP program memory
+
+- `docs/program/PROGRAM_CHARTER.md`
+- `docs/program/PROGRAM_CURRENT_STATE.md`
+- `docs/program/REPOSITORY_CHECKPOINTS.md`
+- `docs/program/AUTHORITY_AND_FREEZE_MATRIX.md`
+- `docs/program/NEXT_EXECUTION_SEQUENCE.md`
+- `docs/program/DECISION_REGISTER.md`
+- `docs/program/DEFERRED_AND_PARKED_WORK.md`
+
+## MMM technical producer evidence
+
+- Public scenario comparison: `mmm/contracts/public_simulation.py`,
+  `MMMPublicSimulationExport`, and
+  `tests/fixtures/mip_export/simulation_v1/`.
+- Supported-range evidence: `mmm/contracts/supported_range.py` and
+  `tests/contracts/test_mmm_supported_range_evidence.py`.
+- Calibration compatibility: `mmm/contracts/calibration_compatibility.py`,
+  `MMMCalibrationCompatibilityResult`, strict parser, fixtures at
+  `tests/fixtures/mip_export/calibration_compatibility_v1/`, and the policy
+  registry at
+  `docs/05_validation/archives/MMM_MIP_HANDOFF_V1_SCHEMA_COMPATIBILITY_POLICY_001_registry.json`.
+- Contract inventory and producer boundary:
+  `docs/05_validation/mmm_to_mip_export_contract_inventory.md`.
+
+## MMM program context
+
+- Current roadmap: `docs/05_validation/platform_roadmap.md`.
+- Validation/platform evidence: `docs/05_validation/validation_registry.md`.
+- Open investigations: `docs/06_investigations/investigation_index.md`.
+- Deferred package-side agents:
+  `docs/05_validation/mmm_package_side_agents_roadmap.md`.
+
+## Connected repositories and checkpoints
+
+- GeoX (`Phani-Pavuluri/panel_exp`) is the experiment-readout producer.
+- MIP (`Phani-Pavuluri/marketing_intelligence_platform`) is consumer and
+  orchestrator.
+- Verify exact checkpoints from connected GitHub repositories before dependent
+  work; repository completion does not imply authority or production readiness.
+- The active task state records the required MMM checkpoint and canonical MIP
+  commit. Never infer a replacement checkpoint from local files or chat text.
