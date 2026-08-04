@@ -2,9 +2,9 @@
 
 **Status:** active navigation index
 **Owner:** MMM repository governance
-**Last updated:** 2026-07-30
+**Last updated:** 2026-08-03
 **Canonical execution standard:**
-`Phani-Pavuluri/marketing_intelligence_platform@38f88467f55d5bc4cc64e5a58b0f08f1639a40d0`
+`Phani-Pavuluri/marketing_intelligence_platform@369805d923454a51ce98845cea29bdb1ee3c3895`
 
 ## Fresh Chat Bootstrap
 
@@ -16,8 +16,8 @@ Use this prompt in a fresh ChatGPT chat:
 > history, switch to `main`, pull with `--ff-only`, and prove local `main` equals
 > `origin/main`. Only then read MMM `EXECUTION_STATE.json`, `ACTIVE_TASK.md`,
 > `REPOSITORY_CONTEXT_INDEX.md`, and the pinned MIP V2 execution standard and
-> seven canonical MIP program files at
-> `Phani-Pavuluri/marketing_intelligence_platform@38f88467f55d5bc4cc64e5a58b0f08f1639a40d0`.
+> MIP execution/coordination standards at
+> `Phani-Pavuluri/marketing_intelligence_platform@369805d923454a51ce98845cea29bdb1ee3c3895`.
 > Summarize current state, active task, latest completion, blockers,
 > dependencies, authority boundaries, and next eligible work. Do not modify
 > files or authorize work unless explicitly requested.
@@ -28,18 +28,18 @@ Use this prompt in a fresh ChatGPT chat:
 - `docs/execution/ACTIVE_TASK.md`
 - `docs/execution/LATEST_COMPLETION_REPORT.md`
 - this index
+- `docs/execution/TASK_EXECUTION_STANDARD.md`
+- `docs/program/LEAN_REPOSITORY_DELIVERY_STANDARD.md`
 - pinned MIP V2 standard:
   `docs/execution/TASK_EXECUTION_STANDARD.md` at the canonical commit above
 
-## Canonical MIP program memory
+## Canonical MIP protocol navigation
 
-- `docs/program/PROGRAM_CHARTER.md`
-- `docs/program/PROGRAM_CURRENT_STATE.md`
-- `docs/program/REPOSITORY_CHECKPOINTS.md`
-- `docs/program/AUTHORITY_AND_FREEZE_MATRIX.md`
-- `docs/program/NEXT_EXECUTION_SEQUENCE.md`
-- `docs/program/DECISION_REGISTER.md`
-- `docs/program/DEFERRED_AND_PARKED_WORK.md`
+- `docs/execution/TASK_EXECUTION_STANDARD.md`
+- `docs/program/LEAN_REPOSITORY_DELIVERY_STANDARD.md`
+- `docs/program/CROSS_REPOSITORY_COORDINATION_PROTOCOL.md`
+- `docs/program/CROSS_REPOSITORY_COORDINATION_STATE.json`
+- `docs/program/CROSS_REPOSITORY_COORDINATION_HISTORY.md`
 
 ## MMM technical producer evidence
 

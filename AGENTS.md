@@ -1,50 +1,80 @@
 # MMM Codex Execution Rules
 
-## Mandatory session bootstrap
+Durable task instructions live in Git. Prompts cannot repair, expand, or
+reinterpret a missing or incomplete active task.
+
+## Mandatory bootstrap
 
 Before task discovery or implementation:
 
-1. Inspect `git status --porcelain=v1 --untracked-files=all`. Fail closed on
-   unrelated tracked changes or unexpected untracked paths. During an authorized
-   resumption, every tracked change must be task-owned and explained.
-   Untracked content is permitted only below `.codex/` and `docs/tasks/`; never
-   stage or commit it.
-2. Run `git fetch --prune origin`. If the clone is shallow, run
-   `git fetch --unshallow origin`; if a required ancestor is still absent,
-   fetch enough additional history and verify that commit explicitly.
-3. Run `git switch main` and `git pull --ff-only origin main`.
-4. Verify `git rev-parse main` exactly equals `git rev-parse origin/main`.
-5. Only then read, in order:
-   - `docs/execution/EXECUTION_STATE.json`
-   - `docs/execution/ACTIVE_TASK.md`
-   - `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
-   - relevant MMM evidence and the pinned MIP execution standard/program files.
+1. Inspect `git status --porcelain=v1 --untracked-files=all`; fail on unrelated
+   tracked changes or untracked paths outside `.codex/` and `docs/tasks/`.
+2. Run `git fetch --prune origin`; hydrate shallow or missing required history.
+3. Run `git switch main` then `git pull --ff-only origin main`.
+4. Prove `git rev-parse main` equals `git rev-parse origin/main`.
+5. Only then read `EXECUTION_STATE.json`, `ACTIVE_TASK.md`, the context index,
+   the applicable MMM standards, and pinned MIP coordination evidence.
 
-Stop rather than guess if synchronization, history hydration, execution files,
-authorization, prerequisites, or repository state cannot be verified. Chats
-and pasted summaries are never authoritative repository state.
+Missing synchronization, evidence, authority, Docker, dependencies, or safe
+authorized write target is fail-closed. A successful orientation is non-terminal:
+continue through implementation, validation, publication, and push to one
+Git-durable `ready_for_review` or `blocked` outcome.
+
+## Invocation-only contract
+
+The normal execution/correction invocation is exactly:
+`Synchronize from Git and execute the active task.`
+
+The merge invocation is exactly:
+`Synchronize from Git and execute the active task's merge and closure workflow. Approved exact remote head: <SHA>.`
+
+Use no prompt text as durable task instruction. If Git-authored instructions
+are missing or contradictory, publish `blocked` on the safe authorized branch
+with the exact diagnostic, attempted evidence, validation-category status, and
+live resolution condition; stop externally only when no such branch exists.
 
 ## Execute the active task
 
-Verify the authorized task, its task-authoring boundary, prerequisites, owned
-files, and exact feature branch. Run focused and full validation, including
-Docker-backed `make validate`; write `docs/execution/LATEST_COMPLETION_REPORT.md`;
-update `docs/execution/EXECUTION_STATE.json` to `ready_for_review` with
-`merge_authorized: false`; commit and publish the exact remote feature-branch
-head; then stop without a pull request, merge, or branch deletion.
+Require one independently mergeable outcome; exact behavior/boundaries;
+surface-appropriate resolved decisions; inputs, outputs, invariants, failures;
+compatibility or migration policy (or `not_applicable`); named evidence; owned
+and prohibited paths; risk tier; validation; deferred successors; and
+`unresolved execution-blocking design questions: none`. Split instead of
+choosing among material meanings or silently widening after one correction.
 
-## Merge the externally approved head
+Verify main authorization provenance and the declared exact remote branch
+identity, ancestry, task-owned state, and lifecycle. Main authorizes; the exact
+remote branch supplies resumed lifecycle state. Before review freeze the
+task-owned tree, run every required gate on that exact tree, write the report,
+and commit a durable exact-tree receipt. No task-owned file may change after the
+receipt; any change requires a new validated publication head. Publish only
+`ready_for_review` with execution true, correction/merge/PR false, null
+reviewed/approval SHAs, and unchanged capability authority.
 
-External user approval must identify the exact remote feature-branch head SHA.
-Re-run the mandatory bootstrap, re-fetch the feature branch, verify its head
-still equals the approved SHA, verify `main` has not moved beyond the
-authorization boundary, and rerun required validation. Use
-`git merge --ff-only`; never create a pull request, squash, rebase, merge
-commit, force update, or pre-merge approval-metadata commit.
+Use Tier 1/2/3 focused evidence from
+`docs/program/LEAN_REPOSITORY_DELIVERY_STANDARD.md`, but never waive MMM's
+repository-authored full Docker gate: run `make validate` whenever the task,
+Tier 3, an analytical/public/package surface, or existing MMM rules require it.
+Do not start duplicate validation containers. Mark inapplicable categories
+`not_required`; a required category that cannot run is `blocked`.
 
-After the fast-forwarded implementation is pushed and branch cleanup is
-observed, update only the stable task/state/report files in exactly one
-post-merge closure commit. Record approval provenance, reviewed head,
-validation, authority impact, resulting main lineage, synchronization, and
-cleanup results. Persisted `merge_authorized` remains false until that closure.
-No capability authority follows from task execution metadata.
+Before work affecting MIP or GeoX, apply
+`docs/execution/TASK_EXECUTION_STANDARD.md` and the pinned MIP coordination
+protocol: verify live sibling mains/execution files, mutable branch evidence,
+workstream/owner/dependency/blocker overlap, and consumer verification. A
+feature branch never proves a merged dependency; coordination metadata does not
+authorize sibling work.
+
+## Merge and closure
+
+External user approval binds the exact remote feature-branch SHA. Re-bootstrap,
+verify unchanged authorization ancestry and exact head, rerun the exact-tree
+gate, use only `git merge --ff-only`, rerun the gate after fast-forward, push
+and verify main equality, and delete only the task branches. Never create a PR,
+squash, rebase, merge commit, force update, or pre-merge approval commit.
+
+After cleanup, create exactly one closure commit limited to the stable
+task/state/report files. Record approval, reviewed/implementation lineage,
+validation categories, synchronization, cleanup, deferred work, and authority.
+The closure sets execution and merge authority false. Historical PR #19 remains
+nonconforming and never acquires retroactive approval.
