@@ -1,113 +1,87 @@
-# TASK_COMPLETION_REPORT_V2
+# TASK_AUTHORIZATION_REPORT
 
-## Identity and reconciliation lineage
+## Current decision
 
-- **Task ID:** `MMM_REPO_NATIVE_EXECUTION_HANDOFF_V2_RECONCILIATION_001`
+- **Task ID:** `MMM_REPOSITORY_EXECUTION_PROTOCOL_ADOPTION_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Execution mode:** `branch_and_fast_forward`
-- **Pre-authoring base:** `ad55fef6799a8bd717108781ad44fc88fa116df7`
-- **Task authorization head:** `dda1f31a1e429a4cede791b4f21a979aefe375c5`
-- **Synchronized task-start main:** `5ea5809c4211f483d541c854f0285842a5ce55c0`
-- **Feature branch:**
-  `feat/mmm-repo-native-execution-handoff-v2-reconciliation-001`
-- **Recovery implementation commit:**
-  `9187b5bfe7fe13c4a6b3be7aa742b627027eaa84`
-- **Canonical MIP V2 pin:**
-  `Phani-Pavuluri/marketing_intelligence_platform@38f88467f55d5bc4cc64e5a58b0f08f1639a40d0`
+- **Status:** `authorized`
+- **Pre-authoring base:** `1b75d1d3c9f49d40f2b7ab71f524fbd2dc6d1421`
+- **Feature branch:** `docs/mmm-repository-execution-protocol-adoption-001`
+- **Canonical MIP standard:** `369805d923454a51ce98845cea29bdb1ee3c3895`
+- **Risk tier:** Tier 1 governance with MMM Docker-backed full validation still mandatory
+- **Implementation SHA:** not yet created
+- **Capability authority:** unchanged
 
-`ad55fef..dda1f31` changes only `ACTIVE_TASK.md` and
-`LATEST_COMPLETION_REPORT.md`. The single later state-only record
-`5ea5809` is the permitted synchronized task boundary. No other path or commit
-was present between the authorization head and task-start `main`.
+## Orientation and eligibility evidence
 
-## External V1 merge record
+Connected GitHub established that MMM `main` was synchronized at
+`1b75d1d3c9f49d40f2b7ab71f524fbd2dc6d1421` before authoring. The prior task is
+merged and closed; task execution and merge authority were false. MMM had no
+open pull request and every retained non-main remote branch was zero commits
+ahead of `main`, so no active or overlapping MMM implementation was found.
 
-The recovery target is `MMM_REPO_NATIVE_EXECUTION_HANDOFF_ADOPTION_001`. Its
-task-authoring checkpoint was `ef63068c37041bdde55373cc08ef19333aa0fb5e`; the
-original implementation was `f0b0ae35619739a4ff3d95f2cf7c93bf7ec523a0`; and
-its externally published branch head was
-`ea16ab7e7b1089f5de479eeffb236fad2767edf1`. GitHub PR #19 merged that head as
-merge commit `ad55fef6799a8bd717108781ad44fc88fa116df7`.
+MIP `369805d923454a51ce98845cea29bdb1ee3c3895` is the merged control checkpoint
+containing invocation-only prompts, successful-orientation terminal enforcement,
+lean delivery, exact-tree receipts, and cross-repository coordination rules.
 
-The V1 branch changed only the original workflow-adoption files and descends
-from its task-authoring checkpoint. PR #19 was externally merged while the
-committed V1 state was `ready_for_review`, `merge_authorized: false`, with null
-reviewed and approval SHAs. No conforming exact-head approval record is claimed
-or invented, and the GitHub merge commit is preserved as a separate,
-nonconforming historical event.
+The MIP coordination snapshot is stale for GeoX. The required live overlay
+observed GeoX `a4bf6bfaa4311dacd3642d289dca3917543e0309`: the prior oversized builder
+task is superseded and `GEOX_LEAN_REPOSITORY_DELIVERY_STANDARD_ADOPTION_001` is
+authorized in GeoX only. Its branch is currently identical to GeoX `main`. This
+is non-overlapping governance work and does not grant or consume MMM authority.
 
-The stale remote V1 branch
-`feat/mmm-repo-native-execution-handoff-adoption-001` was deleted during the
-approved V2 merge closure; it is not treated as evidence of a conforming V1
-approval.
+No unresolved execution-blocking design question, duplicate owner, or sibling
+conflict was found for this MMM-only task.
 
-## Deliverables and validation
+## Proposed-task disposition
 
-Changed paths:
+`MMM_CROSS_REPOSITORY_COORDINATION_PROTOCOL_ADOPTION_001` is absorbed into
+`MMM_REPOSITORY_EXECUTION_PROTOCOL_ADOPTION_001`. The existing coordination
+workstream ID `WS-MMM-PROTOCOL-ADOPTION-001` is retained. No separate MMM task or
+branch may duplicate that proposal. MIP coordination-state refresh remains
+MIP-owned and is not authorized here.
 
-- `AGENTS.md`
+## Primary outcome and scope
+
+The authorized outcome is one MMM execution-governance contract adopting:
+
+- definition-ready lean task boundaries;
+- invocation-only Codex prompts;
+- successful orientation as non-terminal;
+- continued execution to Git-durable `ready_for_review` or `blocked`;
+- resumed branch authority and exact-tree validation receipts;
+- Tier 1/2/3 metadata without weakening MMM's required Docker `make validate`;
+- live-overlay cross-repository coordination;
+- exact-head approval, fast-forward merge, one closure commit, and cleanup; and
+- preservation of the historical nonconforming PR #19 record.
+
+Owned and prohibited paths, exact behaviors, focused tests, full validation,
+blocked semantics, authoring boundaries, and deferred successors are fully
+specified in `docs/execution/ACTIVE_TASK.md`.
+
+## Task-authoring boundary
+
+The authoring range starts at
+`1b75d1d3c9f49d40f2b7ab71f524fbd2dc6d1421` and changes only:
+
 - `docs/execution/ACTIVE_TASK.md`
-- `docs/execution/EXECUTION_STATE.json`
 - `docs/execution/LATEST_COMPLETION_REPORT.md`
-- `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
-- `tests/test_repo_native_execution_handoff.py`
 
-The repository now adopts the MIP V2 bootstrap, allowed-local-path policy,
-exact-head external approval rule, no-pre-merge-approval-commit rule,
-fast-forward-only merge rule, and single post-merge closure rule. The focused
-test asserts V2 state vocabulary, canonical MIP pin, bootstrap ordering, and
-review/merged fail-closed invariants.
+The commit containing this report is the task-authoring/authorization head. The
+immediate next commit must be state-only, changing only
+`docs/execution/EXECUTION_STATE.json` to record that exact head and executable
+authorization. The feature branch must be created from the resulting synchronized
+state-only `main`.
 
-- V2 execution-handoff test: **passed**.
-- Documentation and governance regressions: **23 passed**.
-- JSON parsing, Markdown/path consistency, and `git diff --check`: **passed**.
-- Ruff and mypy for the focused test: **passed**.
-- Docker-backed `make validate`: **passed**; the complete non-slow suite
-  reached 100% (with existing runtime warnings only).
+## Authority and non-actions
 
-These validation results are locally execution-reported. GitHub-observed
-evidence is limited to the fetched MMM/MIP remote-main and PR lineage above;
-no GitHub approval or CI result is claimed.
+This authorization is MMM repository governance only. It does not modify or
+authorize model fitting, calibration, GeoX normalization, simulation,
+supported-range behavior, optimization, recommendations, Bayesian production,
+automatic refit or promotion, contracts, fixtures, schemas, numerical truth,
+MIP or GeoX work, live integration, real data, persistence, pilot, production,
+or package-side agents.
 
-## Scope, authority, and review readiness
-
-MMM product code, contracts, fixtures, numerical outputs, roadmaps, validation
-registries, MIP, and GeoX were not modified. GeoX remains paused for its
-separate V2 adoption task; its local untracked handoff files were observed only
-and not used as evidence or changed here.
-
-No capability was changed or authorized: model fitting, calibration,
-simulation/supported-range behavior, optimization/candidate generation,
-recommendations, Bayesian production, automatic refit/model promotion, public
-export schemas, numerical truth, live integration, real data, persistence,
-pilot, production, and package-side agents remain unchanged and unauthorized.
-`capability_authorizations_changed` is `false`.
-
-## Conforming V2 merge closure
-
-- **Approval source:** explicit user approval of exact remote V2 reconciliation
-  head `5bc26f987d191bd2251cd12a35de5d0a49a3cbc5`.
-- **Authorization head:** `dda1f31a1e429a4cede791b4f21a979aefe375c5`.
-- **Implementation commit:** `9187b5bfe7fe13c4a6b3be7aa742b627027eaa84`.
-- **Merged-main head before this closure:**
-  `5bc26f987d191bd2251cd12a35de5d0a49a3cbc5`.
-- **Merge mechanism:** `git merge --ff-only` after a fresh remote-head,
-  authorization-ancestry, owned-path, MIP-pin, and exact-state verification.
-  No pull request, squash, rebase, merge commit, force update, or pre-merge
-  approval metadata commit was created.
-- **Validation:** Docker-backed `make validate` passed before the fast-forward
-  on the exact approved commit and again after the fast-forward on `main`.
-  The full non-slow suite reached 100%; focused workflow, JSON, Markdown/path,
-  Ruff, mypy, and diff checks had passed for the review head.
-- **Synchronization:** local `main` and `origin/main` both equaled the approved
-  implementation head before this closure record.
-- **Cleanup:** local and remote V2 reconciliation branches were deleted; the
-  stale remote V1 adoption branch was also deleted. `.codex/` and `docs/tasks/`
-  remain local-only and unstaged.
-
-The earlier GitHub PR #19 merge remains separately recorded as nonconforming:
-it had no exact-head approval record and is not retroactively approved by this
-closure. This is the single post-merge workflow closure commit. The merged state
-sets both execution and merge authorization false, records the reviewed head,
-keeps `approval_commit_sha` null, and leaves
-`capability_authorizations_changed` false.
+Merge authority, PR authority, correction authority, sibling authority, and
+capability authority remain false. No implementation occurred in this authoring
+session.
