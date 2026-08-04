@@ -1,291 +1,332 @@
 # Active Task
 
-**Status:** merged
+**Status:** proposed — dependency not yet merged
 **Owner:** MMM repository governance
 **Last updated:** 2026-08-03
 **Last verified:** 2026-08-03
-**Verified merged review head:**
-`c370dc7cd59a61cc2e19025d1a2328c7867b63be`
-**Closure:** fast-forwarded to `main`; local and remote task branches deleted;
-all capability authority remains unchanged.
 
 ## Identity
 
-- **Task ID:** `MMM_REPOSITORY_EXECUTION_PROTOCOL_ADOPTION_001`
+- **Task ID:** `MMM_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_ADOPTION_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Pre-authoring base:** `1b75d1d3c9f49d40f2b7ab71f524fbd2dc6d1421`
-- **Feature branch:** `docs/mmm-repository-execution-protocol-adoption-001`
-- **Execution mode:** `branch_and_fast_forward`
-- **Risk tier:** Tier 1 governance, with MMM's existing Docker-backed full validation retained as mandatory
-- **Canonical MIP execution-standard pin:** `Phani-Pavuluri/marketing_intelligence_platform@369805d923454a51ce98845cea29bdb1ee3c3895`
-- **Live GeoX checkpoint observed at task authorization:** `Phani-Pavuluri/panel_exp@a4bf6bfaa4311dacd3642d289dca3917543e0309`
-- **Rejected review head:** `ccb25680b90fa6eb4ce4dc2d6f84051797641fa6`
-- **Coordination workstream:** `WS-MMM-PROTOCOL-ADOPTION-001`
+- **Pre-authoring base:** `ac546548784385baab67d7c935e5a4fcdfc9e1af`
+- **Intended feature branch:** `docs/mmm-git-authoritative-thin-launcher-standard-adoption-001`
+- **Feature branch created:** `false`
+- **Execution mode after authorization:** `branch_and_fast_forward`
+- **Risk tier:** Tier 1 repository-execution governance with MMM's Docker-backed full validation retained as mandatory
+- **Coordination workstream:** `WS-MMM-THIN-LAUNCHER-ADOPTION-001`
 - **Capability owner:** MMM repository governance
 - **Capability authorizations changed:** `false`
 
-## Historical review decision — changes requested
+## Current decision
 
-Exact remote head `ccb25680b90fa6eb4ce4dc2d6f84051797641fa6` is rejected for merge. The substantive direction is acceptable, but the published tree does not yet satisfy its frozen acceptance contract.
+This task is **proposed, not authorized**. Do not create its feature branch, run
+Codex implementation, modify task-owned implementation paths, publish review
+evidence, create a pull request, or merge.
 
-Required correction:
+The upstream MIP standard is currently available only on an unmerged feature
+branch:
 
-1. Make current lifecycle metadata coherent: final publication must set `status` and `review_decision` to `ready_for_review`, with correction authorization false, merge and PR authority false, null reviewed/approval SHAs, and one implementation SHA.
-2. Strengthen the seven focused tests so each independently asserts every semantic behavior named in the acceptance contract, not only a subset of representative phrases.
-3. Rerun the complete MMM validation gate and record exact Docker `make validate` test counts and warning counts/disposition in the completion report.
-4. Publish a new exact-tree receipt whose commit message records the full implementation parent, exact-tree scope, gate/result, focused count, JSON/Markdown/current-state/task-boundary/changed-path/diff results, Docker count/disposition, Ruff/mypy result, worktree state, evidence source, and unchanged authority.
-5. Refresh the live sibling overlay before republishing. At review, MIP `main` was `976d3a1daeae9c52c8772e5112574f698951a57c` and GeoX `main` was `d17bb81c9dbc67f773fd71068c26b14c92989f42`; both are non-overlapping owner-repository governance work. Do not modify either sibling.
-6. Preserve all owned/prohibited paths, PR #19 history, analytical boundaries, and capability freezes.
+- MIP task: `MIP_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_001`
+- MIP `main` observed at proposal: `9bed0f30879e68473a37b0e65d449ea0b6a6e3f3`
+- MIP feature branch: `docs/mip-git-authoritative-thin-launcher-standard-001`
+- MIP candidate review head: `e390f1b47f8a7c5dfaa7a05613c2c4de73e4a548`
+- MIP candidate implementation SHA: `dde6969b1192b97aea519c9589d27186f19b6db2`
+- MIP candidate state: `ready_for_review`
 
-One correction cycle is authorized. Any task-owned change requires a new full validation run and new exact-tree receipt head.
+A feature branch never satisfies this task's dependency. The candidate SHAs are
+orientation evidence only and must not be reused as an eventual merged pin.
 
-## Conforming merge closure
+## Dependency and live resolution condition
 
-The user approved the exact remote review head
-`c370dc7cd59a61cc2e19025d1a2328c7867b63be`. It was validated on that head,
-fast-forwarded to `main`, validated again on `main`, and pushed without a pull
-request, squash, rebase, merge commit, force update, or pre-merge approval
-commit. The local and remote task branches were then deleted. This closure does
-not alter analytical, sibling, product, or capability authority.
+### Dependency ID
 
-## Primary mergeable outcome
+`DEP-MMM-THIN-LAUNCHER-MIP-STANDARD-MERGED-001`
 
-Adopt the latest merged MIP repository-execution controls as MMM-owned governance so future MMM tasks are definition-ready, independently mergeable, invoked only through Git-resolving commands, required to continue after successful orientation to one Git-durable terminal outcome, validated on the exact published tree, and coordinated through live sibling evidence without weakening MMM's existing Docker-backed full validation requirement.
+### Current blocker
 
-This is one bounded execution-governance outcome. It changes no analytical, package, contract, fixture, numerical, sibling, or capability behavior.
+`BLOCK-MMM-THIN-LAUNCHER-UPSTREAM-NOT-MERGED-001`
+
+### Resolution condition
+
+Before this MMM task may be authorized, connected GitHub must prove all of the
+following from the then-current MIP `main` and stable execution files:
+
+1. `MIP_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_001` is `merged` on MIP
+   `main` through an externally approved exact review head.
+2. MIP has one post-merge closure record with the merged implementation lineage,
+   validation disposition, synchronization, branch cleanup, limitations,
+   validation debt, sibling impact, consumer-verification disposition, and
+   unchanged capability authority.
+3. The exact merged MIP `main` SHA and exact canonical standard paths are read
+   directly from GitHub.
+4. The merged standard remains compatible with MMM's repository-owned rule that
+   Docker-backed `make validate` is mandatory for this adoption task.
+5. No live MMM task, branch, pull request, or workstream overlaps this execution
+   governance surface.
+
+After those conditions are verified, update this task on synchronized MMM
+`main` with the exact merged MIP pin and any material semantic differences. Then
+create one immediate state-only authorization commit, create the declared branch
+from that exact authorization boundary, and only then issue the hybrid execution
+launcher.
+
+## Primary independently mergeable outcome after authorization
+
+Adopt the exact merged MIP Git-authoritative thin-launcher standard as
+MMM-owned repository execution governance.
+
+Git remains the sole durable source for task identity, authorization, scope,
+observable behavior, owned paths, implementation decisions, dependencies,
+blockers, corrections, validation, authority, and stop conditions. A launcher
+may carry only stable operational controls needed to make execution reliable:
+repository location, synchronization and repository reads, resolution and
+resumption of the Git-declared branch, continuation to durable publication,
+non-terminal progress semantics, permitted terminal outcomes, prohibited
+operations, and the externally approved exact SHA for merge.
+
+This outcome changes no MMM analytical, model-fitting, calibration, simulation,
+optimization, contract, adapter, fixture, numerical-truth, runtime, package,
+release, sibling, product, or capability behavior.
 
 ## Why this task cannot be split further
 
-Lean task definition, invocation-only prompts, terminal-outcome enforcement, exact-tree receipts, risk-tier metadata, live-overlay coordination, and exact-head merge/closure rules jointly form one repository execution contract. Partial adoption would leave contradictory task-authoring and execution behavior. The implementation remains limited to execution guidance, stable navigation, lifecycle metadata, and one focused semantic test module.
+The allowed launcher boundary, execution/correction/merge launcher patterns,
+main-versus-feature-branch authority, non-terminal progress behavior, durable
+terminal outcomes, exact-head merge discipline, focused semantic tests, and MMM
+validation preservation form one execution contract. Updating only prose or
+only tests would leave contradictory repository behavior.
 
-## Source verification and conflict decision
+## Proposed observable behavior
 
-Connected GitHub verification established:
+The exact merged MIP standard is authoritative at authorization. Subject to that
+final pin, MMM must preserve the following behavior.
 
-- MMM `origin/main` is `1b75d1d3c9f49d40f2b7ab71f524fbd2dc6d1421` before authoring.
-- The prior MMM task `MMM_REPO_NATIVE_EXECUTION_HANDOFF_V2_RECONCILIATION_001` is merged and closed; execution and merge authority are false.
-- MMM has no open pull request and no remote branch ahead of `main`; retained historical branches are fully behind `main` and do not represent unmerged work.
-- MIP `369805d923454a51ce98845cea29bdb1ee3c3895` is the merged execution-standard checkpoint.
-- The MIP coordination snapshot was stale for GeoX at authorization. The authorization-time live overlay was GeoX `a4bf6bfaa4311dacd3642d289dca3917543e0309`.
-- Review-time live overlay observed MIP `976d3a1daeae9c52c8772e5112574f698951a57c` and GeoX `d17bb81c9dbc67f773fd71068c26b14c92989f42`; neither repository modifies or owns this MMM task.
-- No unresolved ownership conflict blocks this MMM-only correction.
+### 1. Git-only durable task meaning
 
-### Proposed-task disposition
+The launcher cannot define, repair, expand, override, or reinterpret:
 
-`MMM_CROSS_REPOSITORY_COORDINATION_PROTOCOL_ADOPTION_001` is **absorbed** into this task rather than duplicated. Its proposed workstream `WS-MMM-PROTOCOL-ADOPTION-001` is retained, and live-overlay coordination adoption is one required semantic behavior below. The former proposed task must not be separately authored or executed. A later MIP coordination refresh may record the absorbed disposition, but this task does not modify MIP state.
+- task ID, lifecycle state, authorization provenance, or feature branch;
+- scope, observable behavior, owned/prohibited paths, or implementation choices;
+- acceptance tests, validation commands/counts, dependencies, blockers,
+  correction details, rejected heads, or sibling state; or
+- review, merge, cleanup, release, analytical, or capability authority.
 
-## Semantic gaps to close
+Missing, contradictory, stale, or incomplete Git-authored instructions remain a
+fail-closed blocker.
 
-1. **Invocation-only prompts:** current MMM guidance contains durable execution scope but does not require the exact minimal execution/correction invocation or prohibit chat from repairing Git instructions.
-2. **Successful orientation:** current MMM guidance allows orientation to end in a summary; it does not define successful orientation as non-terminal.
-3. **Durable terminal outcome:** current MMM guidance requires `ready_for_review` on success but does not require continued execution to either Git-durable `ready_for_review` or Git-durable `blocked` when a safe authorized branch exists.
-4. **Exact-tree receipts:** current MMM reporting does not require a frozen task-owned tree and a final publication commit message that cryptographically binds the validation receipt to that exact tree.
-5. **Definition-ready authorization:** current MMM guidance lacks the lean one-outcome rule, split triggers, surface-appropriate resolved decisions, explicit failure semantics, deferred successors, and `unresolved execution-blocking design questions: none`.
-6. **Risk-tiered validation:** current MMM requires Docker-backed full validation but lacks risk-tier metadata and category dispositions. MMM's full Docker gate must remain mandatory for this task and future tasks whenever existing MMM rules require it; the tier model cannot waive that requirement.
-7. **Live-overlay coordination:** current MMM guidance says to verify siblings but lacks the MIP live-overlay, workstream-overlap, producer-versus-consumer-verification, dependency-resolution, and cross-repository impact contract.
-8. **Review and closure:** exact-head approval, fast-forward merge, one closure commit, and cleanup already exist and must be preserved while adding explicit PR authority false, exact-tree gate repetition, and validation-category receipts.
-9. **Historical PR #19:** the nonconforming merge evidence already exists and must remain explicit and must never be retroactively described as approved or conforming.
-10. **Authority:** analytical ownership and all capability flags are already unchanged and must remain unchanged.
+### 2. Allowed thin-launcher content
 
-## Exact observable behavior
+Execution and correction launchers may contain only:
 
-### 1. Lean definition-ready task authoring
+- the local MMM repository path;
+- synchronization and required Git-authored reads;
+- resolution and resumption of the exact branch declared by synchronized main;
+- continuation through implementation, required validation, exact-tree
+  publication, push, and remote-head verification;
+- explicit non-terminal progress semantics;
+- the only permitted durable terminal outcomes;
+- prohibition on PR, merge, force operations, and capability changes; and
+- for merge only, the externally approved exact remote review SHA.
 
-MMM execution guidance must require every executable task to declare:
+They must not copy task IDs, branch names, non-approved SHAs, scope, paths,
+tests, counts, dependencies, correction details, implementation guidance, or
+sibling lifecycle state from chat.
 
-- one primary independently mergeable outcome;
-- why it cannot be split further;
-- exact observable behavior and preserved boundaries;
-- resolved design, schema, policy, compatibility, migration, and authority decisions appropriate to the changed surface;
-- inputs, outputs, invariants, and failure semantics appropriate to that surface;
-- compatibility or migration policy when applicable, otherwise `not_applicable`;
-- named acceptance tests or deterministic evidence;
-- exact owned and prohibited paths;
-- risk tier, focused validation, and MMM-required full validation;
-- deferred successor tasks; and
-- `unresolved execution-blocking design questions: none`.
+### 3. Canonical execution launcher pattern
 
-A task remains `proposed`, becomes design-blocked, or is split when Codex would otherwise need to choose among materially different meanings. A meaningful independently valid checkpoint becomes a successor task. One correction cycle is the default; newly discovered independent outcomes, contracts, migrations, or integration surfaces must not silently widen the active branch.
+```text
+Work in <local MMM repository path>.
 
-### 2. Invocation-only Codex prompts
+Synchronize main from Git and read AGENTS.md and the repository execution files. Resolve authorization provenance and the exact feature branch from synchronized main, then fetch and resume that remote feature branch and read its current execution files.
 
-Durable instructions live only in Git. The normal execution/correction invocation is exactly:
+Execute the active task through implementation, required validation, exact-tree publication, push, and remote-head verification.
 
-`Synchronize from Git and execute the active task.`
+Progress updates are non-terminal. Do not stop or return control merely to report orientation or progress. Stop only when the remote feature branch durably records ready_for_review or a genuine blocked state.
 
-The merge invocation is exactly:
+Do not create a pull request, merge, or change analytical or capability authority.
+```
 
-`Synchronize from Git and execute the active task's merge and closure workflow. Approved exact remote head: <SHA>.`
+### 4. Canonical correction launcher pattern
 
-Prompt text must not restate, repair, expand, override, or reinterpret scope, owned paths, behavior, validation, workflow, authority, cleanup, or stop conditions. Missing Git-authored instructions are a fail-closed blocker.
+```text
+Work in <local MMM repository path>.
 
-### 3. Successful orientation and terminal outcomes
+Synchronize main from Git and read AGENTS.md and the repository execution files. Resolve authorization provenance and the exact feature branch from synchronized main, then fetch and resume that remote feature branch and read its current execution files.
 
-After successful orientation verifies an executable task and safe authorized branch, execution is non-terminal and must continue without another user prompt through implementation, validation, publication, and push.
+Execute the Git-authored changes_requested correction through the complete required validation, a new exact-tree publication, push, and remote-head verification.
 
-The only valid terminal outcomes are:
+Progress updates are non-terminal. Do not stop or return control merely to report orientation or progress. Stop only when the remote feature branch durably records a new ready_for_review or a genuine blocked state.
 
-- `ready_for_review` with a durable exact-tree receipt; or
-- Git-durable `blocked` on the safe authorized branch, with exact blocker, attempted evidence, validation-category statuses, and a live resolution condition.
+Do not create a pull request, merge, or change analytical or capability authority.
+```
 
-An orientation-only, chat-only, terminal-only, or “no changes made” summary is not completion evidence. External stopping is permitted only when no safe authorized write target exists and must identify that condition.
+Rejected heads and correction details come from Git, not the launcher.
 
-### 4. Resumed feature-branch authority
+### 5. Canonical merge launcher pattern
 
-Synchronize and read `main` first for task identity, authorization provenance, and declared branch. Then verify the exact remote feature branch's repository identity, task ID, branch, authorization ancestry, and task-owned state. `main` remains authoritative for authorization provenance; the verified branch is authoritative for current lifecycle state. Do not stop merely because `main` has an older lifecycle snapshot. Fail closed on mismatch and publish `blocked` to the safe authorized branch when one exists.
+```text
+Work in <local MMM repository path>.
 
-### 5. Durable exact-tree validation receipt
+Synchronize main from Git and read AGENTS.md and the repository execution files. Execute the active task's merge and closure workflow.
 
-Before publication, freeze the task-owned tree and run the applicable gate on that exact tree. The final review-publication commit message must record:
+Approved exact remote head: <FULL_SHA>
 
-- task ID and implementation parent;
-- receipt scope `exact-commit-tree`;
-- validation gate and result;
-- focused-test count;
-- JSON, Markdown/current-state, task-authoring-boundary, changed-path, and `git diff --check` results;
-- Docker-backed `make validate` result and exact count/disposition;
-- Ruff and mypy result for changed executable test code;
-- worktree state and evidence source; and
-- unchanged capability authority.
+Revalidate the approved head, fast-forward merge only, validate after fast-forward, push main, perform task-branch cleanup, create exactly one closure commit, and verify local and remote main equality.
 
-No task-owned file may change after the receipt commit. Any change requires a new validated publication head.
+Do not create a pull request, squash, rebase, force-push, or create a merge commit.
+```
 
-### 6. Risk-tier metadata with MMM full validation preserved
+Only the local path and approved exact review SHA are caller-supplied values.
 
-Adopt Tier 1/2/3 classification for task sizing and minimum focused evidence. It must not weaken MMM's existing full-validation gate:
+### 6. Main and feature-branch authority
 
-- this Tier 1 adoption task still requires Docker-backed `make validate` during execution, exact-head review, and post-fast-forward validation;
-- future tasks must run Docker-backed full validation whenever MMM's repository-authored gate, the active task, Tier 3, or the changed analytical/public/package surface requires it;
-- required categories that cannot run produce Git-durable `blocked`;
-- categories truly outside an applicable gate are `not_required`, never silently omitted; and
-- do not start duplicate validation containers.
+Synchronized `main` owns repository identity, task identity, authorization
+provenance, and the declared branch. The verified remote feature branch owns
+current lifecycle state, blockers, correction state, implementation evidence,
+and completion reporting. Cached prompt values cannot substitute for either.
 
-### 7. Live-overlay cross-repository coordination
+### 7. Progress and terminal outcomes
 
-Before proposing or executing work affecting MIP or GeoX, MMM must:
+Orientation and progress messages are checkpoints, not terminal outcomes. After
+a safe authorized branch is verified, execution continues without another user
+prompt until the remote branch durably records:
 
-1. read the pinned MIP `CROSS_REPOSITORY_COORDINATION_PROTOCOL.md`, state, and history;
-2. verify every affected sibling live remote `main` and execution files;
-3. read exact remote feature-branch execution files when mutable branch state matters;
-4. apply a live overlay when the shared snapshot SHA is stale without rewriting historical observations;
-5. inspect workstream IDs, capability owners, dependencies, blockers, and recent closures;
-6. stop on duplicate ownership, overlapping implementation, stale unresolved evidence, or unclear authority;
-7. distinguish producer completion from required consumer verification; and
-8. report affected repositories, workstream/capability owner, dependency and blocker transitions, merged evidence SHA/paths, consumer verification, newly eligible work, validation debt, and authority impact.
+- `ready_for_review` with an exact-tree receipt; or
+- a genuine Git-durable `blocked` state with exact diagnostics, attempted
+  evidence, validation-category dispositions, and a live resolution condition.
 
-A feature branch never satisfies a merged dependency. Coordination metadata cannot override live sibling Git or authorize sibling work.
+### 8. Preserve MMM validation and merge rules
 
-### 8. Exact-head review, merge, closure, and cleanup
+The thin launcher does not weaken:
 
-Preserve and test:
+- Docker-backed `make validate` during implementation, exact-head review, and
+  post-fast-forward validation for this task;
+- exact-tree publication receipts;
+- exact-head external approval;
+- fast-forward-only merge;
+- one closure commit limited to the three stable execution files;
+- task-branch cleanup and local/remote equality verification; or
+- the prohibition on PRs, squash, rebase, merge commits, force updates,
+  pre-merge approval commits, and capability changes.
 
-- external approval binds the exact remote feature-branch head;
-- `merge_authorized` and `pr_creation_authorized` remain false in the reviewed tree;
-- no pre-merge approval commit;
-- rerun the required exact-tree gate on the approved head;
-- `git merge --ff-only` only, with no PR, squash, rebase, merge commit, or force update;
-- rerun the required gate after fast-forward;
-- push and verify local/remote `main` equality;
-- delete the task's remote and local feature branches; and
-- create exactly one post-merge closure commit limited to the three stable execution files.
+## Named acceptance evidence after authorization
 
-### 9. Preserve historical nonconforming PR #19 evidence
+Update `tests/test_repo_native_execution_handoff.py` with separate assertions
+that prove:
 
-The current and future state/report must retain:
+1. Git remains the sole durable task authority and launchers cannot repair or
+   duplicate task meaning.
+2. Execution and correction launchers contain the allowed operational controls,
+   make progress non-terminal, and require remote durable terminal outcomes.
+3. The merge launcher permits only repository path and approved exact SHA as
+   caller-supplied values while retaining MMM validation, fast-forward, closure,
+   cleanup, and prohibited-operation rules.
+4. Task IDs, branch names, non-approved SHAs, scope, paths, tests/counts,
+   dependencies, correction details, implementation instructions, and sibling
+   state are prohibited from launchers.
+5. Existing bootstrap, exact-tree receipt, resumed-branch, risk-tier,
+   cross-repository, historical PR #19, validation, merge/closure, and authority
+   invariants continue to pass.
 
-- original task: `MMM_REPO_NATIVE_EXECUTION_HANDOFF_ADOPTION_001`;
-- external reviewed branch head: `ea16ab7e7b1089f5de479eeffb236fad2767edf1`;
-- GitHub PR: `#19`;
-- merge commit: `ad55fef6799a8bd717108781ad44fc88fa116df7`;
-- `external_merge_was_authorized: false`; and
-- no conforming exact-head approval record.
+Equivalent names are acceptable only when these semantic groups remain separate
+and explicit.
 
-Do not rewrite history or retroactively mark that merge conforming.
+## Intended owned paths after authorization
 
-### 10. Stable navigation
+Implementation may modify only:
 
-`REPOSITORY_CONTEXT_INDEX.md` must navigate to stable execution, MMM evidence, and pinned MIP protocol locations without mirroring mutable task status, branch heads, or sibling lifecycle state. Current lifecycle comes from `EXECUTION_STATE.json`, `ACTIVE_TASK.md`, and the exact feature branch where applicable.
+1. `AGENTS.md`
+2. `docs/execution/TASK_EXECUTION_STANDARD.md`
+3. `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
+4. `tests/test_repo_native_execution_handoff.py`
+5. `docs/execution/ACTIVE_TASK.md`
+6. `docs/execution/EXECUTION_STATE.json`
+7. `docs/execution/LATEST_COMPLETION_REPORT.md`
 
-## Owned paths
+Do not modify any other path.
 
-Execution may modify only:
+## Prohibited scope
 
-- `AGENTS.md`
-- `docs/program/LEAN_REPOSITORY_DELIVERY_STANDARD.md`
-- `docs/execution/TASK_EXECUTION_STANDARD.md`
-- `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
-- `tests/test_repo_native_execution_handoff.py`
-- `docs/execution/ACTIVE_TASK.md`
-- `docs/execution/EXECUTION_STATE.json`
-- `docs/execution/LATEST_COMPLETION_REPORT.md`
+Do not modify or authorize:
 
-The two standard files may be created if absent. Do not modify any other path.
+- `mmm/**` or any analytical, model, calibration, simulation, optimization,
+  contract, adapter, parser, fixture, schema, numerical-truth, runtime, package,
+  release, or CI surface;
+- MIP or GeoX repositories, branches, tasks, evidence, coordination files, or
+  authority;
+- live integration, real data, persistence, scheduled execution, candidate
+  generation, recommendations, automatic refit/promotion, Bayesian production,
+  pilot, production, or package-side agents; or
+- retained unrelated historical branches.
 
-## Prohibited paths and scope
+No PR, squash, rebase, merge commit, force-push, or pre-merge approval commit is
+permitted.
 
-Do not modify:
+## Proposed MMM validation gate after authorization
 
-- `mmm/**`;
-- any analytical, contract, adapter, parser, fixture, schema registry, model, calibration, simulation, optimization, or numerical-truth test;
-- `docs/05_validation/**`, `docs/06_investigations/**`, or other product/roadmap evidence;
-- MIP or GeoX repositories, branches, tasks, coordination files, or producer evidence;
-- retained historical remote branches unrelated to this task; or
-- package versions, release artifacts, CI workflows, or runtime configuration.
-
-Do not implement or authorize model fitting, calibration behavior, GeoX normalization, public simulation, supported-range semantics, candidate generation, optimization, recommendations, Bayesian production, automatic refit/promotion, live integration, real data, persistence, pilot, production, or package-side agents.
-
-## Named focused acceptance tests
-
-Update `tests/test_repo_native_execution_handoff.py` so independent assertions prove:
-
-1. `test_lean_definition_ready_delivery_is_adopted` — one mergeable outcome, split triggers, surface-appropriate resolved decisions, failure semantics, compatibility/migration applicability, named evidence, deferred successors, and no unresolved execution-blocking design questions.
-2. `test_invocation_only_and_terminal_outcomes_are_adopted` — exact invocation strings, no prompt restatement/repair, successful orientation as non-terminal, continued execution, durable `ready_for_review`/`blocked`, and external-stop exception only when no safe branch exists.
-3. `test_resumed_branch_and_exact_tree_receipt_are_adopted` — main authorization provenance, exact remote branch lifecycle authority, mismatch blocking, frozen tree, durable receipt fields, and no post-receipt changes.
-4. `test_risk_tiers_preserve_mmm_full_validation` — Tier 1/2/3 exist while Docker-backed `make validate` remains mandatory for this task and all existing MMM full-gate triggers.
-5. `test_live_overlay_coordination_is_adopted` — protocol/state/history reads, live SHA verification, exact branch evidence, stale-overlay handling, workstream/owner conflict stops, producer-versus-consumer verification, and cross-repository impact fields.
-6. `test_exact_head_merge_closure_and_pr19_history_are_preserved` — exact-head approval, PR authority false, fast-forward-only merge, one closure commit, cleanup, and exact nonconforming PR #19 lineage.
-7. `test_repository_context_index_is_navigation_only` — no mutable task status, current feature branch, or sibling lifecycle snapshot is mirrored.
-
-Equivalent names are acceptable only if all seven semantic groups remain separately and explicitly asserted.
-
-## MMM-specific validation gate
-
-Run on the exact task-owned tree during execution, exact-head review, and after fast-forward:
+Run on the frozen exact task-owned tree during implementation, exact-head review,
+and after fast-forward:
 
 - parse `docs/execution/EXECUTION_STATE.json` as JSON;
-- verify Markdown/current-state and path consistency;
-- prove the task-authoring boundary and immediate state-only authorization boundary;
+- verify Markdown/current-state and task/branch consistency;
+- prove the task-authoring boundary and immediate state-only authorization
+  boundary;
 - verify exact changed paths against the owned-path list;
-- `git diff --check`;
-- `pytest -q tests/test_repo_native_execution_handoff.py`;
-- Ruff and mypy for `tests/test_repo_native_execution_handoff.py`;
-- Docker-backed `make validate` with exact counts and warnings recorded;
-- inspect final publication-receipt trailers; and
-- verify local/remote exact branch-head equality after push.
+- run `git diff --check`;
+- run `pytest -q tests/test_repo_native_execution_handoff.py` and record the
+  exact count;
+- run Ruff and configured mypy for the changed test;
+- run Docker-backed `make validate` and record exact passed, failed, skipped,
+  deselected, warning counts, and warning disposition;
+- inspect the final exact-tree receipt fields; and
+- prove local/remote exact branch-head equality after push.
 
-If Docker, required dependencies, Git history, sibling verification, or any required validation cannot complete, publish accurate Git-durable `blocked` state on the safe authorized branch and stop. Do not narrow the gate, substitute cached evidence, or report success from focused checks alone.
+A required category that cannot run produces Git-durable `blocked`; it is not
+silently omitted or replaced with cached evidence. Do not start duplicate
+validation containers.
 
-## Task-authoring and authorization boundaries
+## Publication and reporting requirements after authorization
 
-- Pre-authoring base: `1b75d1d3c9f49d40f2b7ab71f524fbd2dc6d1421`.
-- The task-authoring range may change only `docs/execution/ACTIVE_TASK.md` and `docs/execution/LATEST_COMPLETION_REPORT.md`.
-- The resulting task-authoring head is the `authorization_head_sha` recorded by the immediate next commit.
-- The immediate next commit is state-only and may change only `docs/execution/EXECUTION_STATE.json` to record executable authorization.
-- Create the exact feature branch from the synchronized state-only main head.
-- No other commit or path may occur between those boundaries.
+A successful remote `ready_for_review` head must contain one implementation SHA
+and one exact-tree receipt, empty blockers, task execution true, correction,
+merge, and PR authority false, null reviewed/approval SHAs, and unchanged
+analytical and capability authority.
+
+The completion report and receipt must distinguish GitHub-observed evidence from
+locally reported evidence and explicitly list:
+
+- exact validation counts and warning disposition;
+- blockers, limitations, and validation debt;
+- affected repositories and sibling impact;
+- consumer-verification disposition;
+- newly eligible and deferred work;
+- authority impact;
+- exact worktree state and evidence source; and
+- local/remote branch-head equality.
+
+This requirement carries forward the minor reporting debt identified in the
+closure of `MMM_REPOSITORY_EXECUTION_PROTOCOL_ADOPTION_001`; it does not reopen
+or amend that completed task.
 
 ## Deferred successors
 
-- MMM GeoX-readout normalization and cross-repository certified fixtures remain a separate proposed analytical/integration task, blocked on exact producer evidence and separate authorization.
-- MIP coordination-state refresh remains MIP-owned and separately authorized.
-- Cleanup of fully merged historical MMM branches is separate repository hygiene, not part of this task.
+- GeoX-readout normalization and certified cross-repository fixtures remain
+  separately proposed and blocked on exact merged GeoX producer evidence plus
+  declared MMM consumer verification.
+- Any technical MMM roadmap task remains separate and requires a fresh
+  evidence-based selection and authorization.
+- MIP and GeoX adoption, coordination refresh, product work, and capability
+  changes remain owner-repository tasks.
 
-## Failure and blocked semantics
+## Authorization boundary to use only after dependency resolution
 
-Publish `blocked` only for a genuine synchronization, history, ownership, dependency, authority, Docker, environment, or required-validation obstruction. The blocked state must include exact diagnostics, attempted evidence, validation-category statuses, and a live resolution condition. Unfinished implementation, orientation completion, or a desire for another prompt is not a blocker.
+After verifying the merged MIP standard, update this proposed task and its
+proposal report on synchronized MMM `main`. The final task-authoring commit is
+the future `authorization_head_sha`. The immediate next commit may change only
+`docs/execution/EXECUTION_STATE.json` to set `status: authorized`, record the
+exact merged MIP pin and declared branch, and enable task execution. Create the
+feature branch only from that synchronized state-only authorization head.
 
-## Publication requirements
-
-On success, publish `ready_for_review` with one implementation SHA, one final exact-tree receipt head, execution authorization true, correction authorization false, merge and PR authority false, null reviewed/approval SHAs, empty blockers, and unchanged capability authority. Push the exact branch head and stop without PR or merge.
-
-**Unresolved execution-blocking design questions: none.**
+**Unresolved execution-blocking design questions:** exact upstream merged MIP
+standard pin and final merged text are pending.
