@@ -1,332 +1,116 @@
 # Active Task
 
-**Status:** proposed — dependency not yet merged
+**Status:** proposed pending state-only authorization
 **Owner:** MMM repository governance
-**Last updated:** 2026-08-03
-**Last verified:** 2026-08-03
+**Last updated:** 2026-08-04
+**Last verified:** 2026-08-04
 
 ## Identity
 
-- **Task ID:** `MMM_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_ADOPTION_001`
+- **Task ID:** `MMM_EXECUTION_AUTHORITY_AND_OPERATIONAL_LAUNCHER_ALIGNMENT_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Pre-authoring base:** `ac546548784385baab67d7c935e5a4fcdfc9e1af`
-- **Intended feature branch:** `docs/mmm-git-authoritative-thin-launcher-standard-adoption-001`
-- **Feature branch created:** `false`
-- **Execution mode after authorization:** `branch_and_fast_forward`
-- **Risk tier:** Tier 1 repository-execution governance with MMM's Docker-backed full validation retained as mandatory
-- **Coordination workstream:** `WS-MMM-THIN-LAUNCHER-ADOPTION-001`
-- **Capability owner:** MMM repository governance
+- **Pre-authoring base:** `f2e0eade0ad917c1b28ab5521e6d35a35047d988`
+- **Feature branch:** `docs/mmm-execution-authority-operational-launcher-alignment-001`
+- **Execution mode:** `branch_and_fast_forward`
+- **Risk tier:** Tier 1 repository-execution governance with mandatory MMM Docker-backed full validation
 - **Capability authorizations changed:** `false`
 
-## Current decision
+## Superseded prior proposal
 
-This task is **proposed, not authorized**. Do not create its feature branch, run
-Codex implementation, modify task-owned implementation paths, publish review
-evidence, create a pull request, or merge.
+`MMM_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_ADOPTION_001` is `superseded_without_execution`.
+Its intended branch was never created; its MIP dependency and blocker are retired; and it had no implementation, review, correction, merge, PR, analytical, sibling, or capability authority. It is prior-task history only and must not be revived.
 
-The upstream MIP standard is currently available only on an unmerged feature
-branch:
+## Primary independently reviewable outcome
 
-- MIP task: `MIP_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_001`
-- MIP `main` observed at proposal: `9bed0f30879e68473a37b0e65d449ea0b6a6e3f3`
-- MIP feature branch: `docs/mip-git-authoritative-thin-launcher-standard-001`
-- MIP candidate review head: `e390f1b47f8a7c5dfaa7a05613c2c4de73e4a548`
-- MIP candidate implementation SHA: `dde6969b1192b97aea519c9589d27186f19b6db2`
-- MIP candidate state: `ready_for_review`
+Adopt a simple MMM-owned execution model: synchronized `main` owns task identity and authorization provenance; the verified remote feature branch owns current lifecycle; `ACTIVE_TASK.md` owns implementation meaning; and `LATEST_COMPLETION_REPORT.md` owns execution and validation evidence. Compact operational launchers may direct Git synchronization and continuation but never copy or reinterpret task meaning.
 
-A feature branch never satisfies this task's dependency. The candidate SHAs are
-orientation evidence only and must not be reused as an eventual merged pin.
-
-## Dependency and live resolution condition
-
-### Dependency ID
-
-`DEP-MMM-THIN-LAUNCHER-MIP-STANDARD-MERGED-001`
-
-### Current blocker
-
-`BLOCK-MMM-THIN-LAUNCHER-UPSTREAM-NOT-MERGED-001`
-
-### Resolution condition
-
-Before this MMM task may be authorized, connected GitHub must prove all of the
-following from the then-current MIP `main` and stable execution files:
-
-1. `MIP_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_001` is `merged` on MIP
-   `main` through an externally approved exact review head.
-2. MIP has one post-merge closure record with the merged implementation lineage,
-   validation disposition, synchronization, branch cleanup, limitations,
-   validation debt, sibling impact, consumer-verification disposition, and
-   unchanged capability authority.
-3. The exact merged MIP `main` SHA and exact canonical standard paths are read
-   directly from GitHub.
-4. The merged standard remains compatible with MMM's repository-owned rule that
-   Docker-backed `make validate` is mandatory for this adoption task.
-5. No live MMM task, branch, pull request, or workstream overlaps this execution
-   governance surface.
-
-After those conditions are verified, update this task on synchronized MMM
-`main` with the exact merged MIP pin and any material semantic differences. Then
-create one immediate state-only authorization commit, create the declared branch
-from that exact authorization boundary, and only then issue the hybrid execution
-launcher.
-
-## Primary independently mergeable outcome after authorization
-
-Adopt the exact merged MIP Git-authoritative thin-launcher standard as
-MMM-owned repository execution governance.
-
-Git remains the sole durable source for task identity, authorization, scope,
-observable behavior, owned paths, implementation decisions, dependencies,
-blockers, corrections, validation, authority, and stop conditions. A launcher
-may carry only stable operational controls needed to make execution reliable:
-repository location, synchronization and repository reads, resolution and
-resumption of the Git-declared branch, continuation to durable publication,
-non-terminal progress semantics, permitted terminal outcomes, prohibited
-operations, and the externally approved exact SHA for merge.
-
-This outcome changes no MMM analytical, model-fitting, calibration, simulation,
-optimization, contract, adapter, fixture, numerical-truth, runtime, package,
-release, sibling, product, or capability behavior.
+This is governance only. It changes no analytical, contract, fixture, numerical, runtime, package, MIP, GeoX, sibling, product, or capability behavior.
 
 ## Why this task cannot be split further
 
-The allowed launcher boundary, execution/correction/merge launcher patterns,
-main-versus-feature-branch authority, non-terminal progress behavior, durable
-terminal outcomes, exact-head merge discipline, focused semantic tests, and MMM
-validation preservation form one execution contract. Updating only prose or
-only tests would leave contradictory repository behavior.
+Authority hierarchy, fail-closed conflicts, launcher limits, output handoff, exact-tree validation, focused semantic checks, and retained MMM merge controls are one execution surface. Prose-only or test-only work would be contradictory. Independently valid work, public contracts, migrations, integration surfaces, or authority boundaries must be separate successors rather than silent widening.
 
-## Proposed observable behavior
+## Resolved behavior
 
-The exact merged MIP standard is authoritative at authorization. Subject to that
-final pin, MMM must preserve the following behavior.
+### Authority hierarchy
 
-### 1. Git-only durable task meaning
+Synchronized `main/docs/execution/EXECUTION_STATE.json` owns repository identity, task identity, authorization provenance, authorization head, and declared feature branch. Codex resolves that branch from synchronized `main`, fetches its exact remote branch, and verifies repository identity, task identity, declared branch name, and authorization-head ancestry.
 
-The launcher cannot define, repair, expand, override, or reinterpret:
+The verified remote feature branch's `EXECUTION_STATE.json` owns `authorized`, `in_progress`, `blocked`, `changes_requested`, and `ready_for_review`; blockers, corrections, implementation evidence, and completion reporting. `ACTIVE_TASK.md` owns objective, behavior, prerequisites, owned/prohibited paths, acceptance evidence, validation, and stop conditions. `LATEST_COMPLETION_REPORT.md` is evidence only and cannot authorize execution, correction, merge, sibling, analytical, or capability work.
 
-- task ID, lifecycle state, authorization provenance, or feature branch;
-- scope, observable behavior, owned/prohibited paths, or implementation choices;
-- acceptance tests, validation commands/counts, dependencies, blockers,
-  correction details, rejected heads, or sibling state; or
-- review, merge, cleanup, release, analytical, or capability authority.
+### Fail-closed conflicts
 
-Missing, contradictory, stale, or incomplete Git-authored instructions remain a
-fail-closed blocker.
+Codex never chooses whichever file appears newer. Disagreement involving repository, task ID, feature branch, authorization head, branch ancestry, implementation SHA, or incompatible lifecycle/authority flags stops implementation. With a safe authorized feature branch, publish Git-durable `blocked` with the exact mismatch, attempted evidence, affected validation categories, and a live resolution condition. Chat, cached prompts, and completion prose cannot resolve conflict.
 
-### 2. Allowed thin-launcher content
+### Compact operational launcher
 
-Execution and correction launchers may contain only:
-
-- the local MMM repository path;
-- synchronization and required Git-authored reads;
-- resolution and resumption of the exact branch declared by synchronized main;
-- continuation through implementation, required validation, exact-tree
-  publication, push, and remote-head verification;
-- explicit non-terminal progress semantics;
-- the only permitted durable terminal outcomes;
-- prohibition on PR, merge, force operations, and capability changes; and
-- for merge only, the externally approved exact remote review SHA.
-
-They must not copy task IDs, branch names, non-approved SHAs, scope, paths,
-tests, counts, dependencies, correction details, implementation guidance, or
-sibling lifecycle state from chat.
-
-### 3. Canonical execution launcher pattern
+Launchers may contain only local repository path; synchronization and required Git reads; task/branch resolution from synchronized Git; remote branch verification/resumption; continuation through implementation, validation, publication, push, and remote verification; non-terminal progress; durable terminal outcomes; prohibited Git operations; and the external exact SHA for merge. They may not define, copy, repair, override, or reinterpret task ID, branch name, non-approved SHA, objective, implementation meaning, paths, prerequisites, tests/counts, correction defects, sibling lifecycle, analytical, or capability authority.
 
 ```text
-Work in <local MMM repository path>.
+Work in <local repository path>.
 
-Synchronize main from Git and read AGENTS.md and the repository execution files. Resolve authorization provenance and the exact feature branch from synchronized main, then fetch and resume that remote feature branch and read its current execution files.
+Synchronize main from Git and read AGENTS.md and the repository execution
+files. Resolve the authorized task, authorization provenance and exact feature
+branch from synchronized main.
 
-Execute the active task through implementation, required validation, exact-tree publication, push, and remote-head verification.
+Fetch and verify that remote feature branch, including repository identity,
+task identity, authorization ancestry and current execution state.
 
-Progress updates are non-terminal. Do not stop or return control merely to report orientation or progress. Stop only when the remote feature branch durably records ready_for_review or a genuine blocked state.
+Execute the Git-authored active task through required validation, durable
+publication, push and remote-head verification.
 
-Do not create a pull request, merge, or change analytical or capability authority.
+Do not guess through conflicting state. Publish a Git-durable blocked state
+with the exact mismatch when a safe authorized branch exists.
+
+Progress reports are non-terminal. Stop only at a remotely published
+ready_for_review or genuine blocked state.
+
+Do not create a PR, merge, squash, rebase, force-push or change sibling,
+analytical or capability authority.
 ```
 
-### 4. Canonical correction launcher pattern
+Correction uses the same launcher and reads rejected SHAs/fixes from the remote branch's Git-authored `changes_requested` state. Merge adds only `Approved exact remote head: <FULL_SHA>`.
 
-```text
-Work in <local MMM repository path>.
+### Output handoff
 
-Synchronize main from Git and read AGENTS.md and the repository execution files. Resolve authorization provenance and the exact feature branch from synchronized main, then fetch and resume that remote feature branch and read its current execution files.
+Successful or Git-durable blocked execution requires only repository, feature branch, and exact remote head SHA. Chat output is diagnostic context only when no durable remote state was published.
 
-Execute the Git-authored changes_requested correction through the complete required validation, a new exact-tree publication, push, and remote-head verification.
+## Inputs, outputs, invariants, and failure semantics
 
-Progress updates are non-terminal. Do not stop or return control merely to report orientation or progress. Stop only when the remote feature branch durably records a new ready_for_review or a genuine blocked state.
+- **Inputs:** synchronized MMM main, its execution files, and the verified exact remote branch.
+- **Outputs:** standards/tests expressing this model and a remote `ready_for_review` receipt or durable `blocked` state.
+- **Invariants:** Git authority; no stale MIP dependency/blocker; unchanged analytical, sibling, and capability authority; retained exact-tree, exact-head, fast-forward-only, cleanup, and PR #19 history.
+- **Failure semantics:** conflicts, unavailable required validation, unsafe branch, or unresolvable Git evidence fail closed; new independent decisions become successors.
+- **Compatibility/migration:** `not_applicable`; no public contract migration occurs.
 
-Do not create a pull request, merge, or change analytical or capability authority.
-```
+## Acceptance evidence
 
-Rejected heads and correction details come from Git, not the launcher.
+`tests/test_repo_native_execution_handoff.py` separately proves: main and branch authority separation; mandatory remote identity/ancestry verification; `ACTIVE_TASK.md` implementation authority; evidence-only completion reports; fail-closed prompt-irreconcilable conflicts; launcher bounds; non-terminal progress; remote `ready_for_review`/`blocked` outcomes; repository/branch/SHA handoff; and retained full validation, exact-tree, exact-head, fast-forward, closure, cleanup, and PR #19 controls. Tests use structural current task/state checks, not a transient workstream ID.
 
-### 5. Canonical merge launcher pattern
-
-```text
-Work in <local MMM repository path>.
-
-Synchronize main from Git and read AGENTS.md and the repository execution files. Execute the active task's merge and closure workflow.
-
-Approved exact remote head: <FULL_SHA>
-
-Revalidate the approved head, fast-forward merge only, validate after fast-forward, push main, perform task-branch cleanup, create exactly one closure commit, and verify local and remote main equality.
-
-Do not create a pull request, squash, rebase, force-push, or create a merge commit.
-```
-
-Only the local path and approved exact review SHA are caller-supplied values.
-
-### 6. Main and feature-branch authority
-
-Synchronized `main` owns repository identity, task identity, authorization
-provenance, and the declared branch. The verified remote feature branch owns
-current lifecycle state, blockers, correction state, implementation evidence,
-and completion reporting. Cached prompt values cannot substitute for either.
-
-### 7. Progress and terminal outcomes
-
-Orientation and progress messages are checkpoints, not terminal outcomes. After
-a safe authorized branch is verified, execution continues without another user
-prompt until the remote branch durably records:
-
-- `ready_for_review` with an exact-tree receipt; or
-- a genuine Git-durable `blocked` state with exact diagnostics, attempted
-  evidence, validation-category dispositions, and a live resolution condition.
-
-### 8. Preserve MMM validation and merge rules
-
-The thin launcher does not weaken:
-
-- Docker-backed `make validate` during implementation, exact-head review, and
-  post-fast-forward validation for this task;
-- exact-tree publication receipts;
-- exact-head external approval;
-- fast-forward-only merge;
-- one closure commit limited to the three stable execution files;
-- task-branch cleanup and local/remote equality verification; or
-- the prohibition on PRs, squash, rebase, merge commits, force updates,
-  pre-merge approval commits, and capability changes.
-
-## Named acceptance evidence after authorization
-
-Update `tests/test_repo_native_execution_handoff.py` with separate assertions
-that prove:
-
-1. Git remains the sole durable task authority and launchers cannot repair or
-   duplicate task meaning.
-2. Execution and correction launchers contain the allowed operational controls,
-   make progress non-terminal, and require remote durable terminal outcomes.
-3. The merge launcher permits only repository path and approved exact SHA as
-   caller-supplied values while retaining MMM validation, fast-forward, closure,
-   cleanup, and prohibited-operation rules.
-4. Task IDs, branch names, non-approved SHAs, scope, paths, tests/counts,
-   dependencies, correction details, implementation instructions, and sibling
-   state are prohibited from launchers.
-5. Existing bootstrap, exact-tree receipt, resumed-branch, risk-tier,
-   cross-repository, historical PR #19, validation, merge/closure, and authority
-   invariants continue to pass.
-
-Equivalent names are acceptable only when these semantic groups remain separate
-and explicit.
-
-## Intended owned paths after authorization
-
-Implementation may modify only:
+## Owned paths
 
 1. `AGENTS.md`
 2. `docs/execution/TASK_EXECUTION_STANDARD.md`
-3. `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
-4. `tests/test_repo_native_execution_handoff.py`
-5. `docs/execution/ACTIVE_TASK.md`
-6. `docs/execution/EXECUTION_STATE.json`
-7. `docs/execution/LATEST_COMPLETION_REPORT.md`
-
-Do not modify any other path.
+3. `tests/test_repo_native_execution_handoff.py`
+4. `docs/execution/ACTIVE_TASK.md`
+5. `docs/execution/EXECUTION_STATE.json`
+6. `docs/execution/LATEST_COMPLETION_REPORT.md`
 
 ## Prohibited scope
 
-Do not modify or authorize:
+Do not modify or authorize `mmm/**`; analytical code/tests; models, diagnostics, calibration, simulation, optimization, numerical truth; contracts, adapters, parsers, fixtures, schemas, runtime, package, release, CI, or deployment; MIP/GeoX; CalibrationSignal, TrustReport, DecisionSurface, planning, recommendations, real data, or production; task manifests, prompt/Markdown generators, validation registries, repository adapters, lookup ledgers, incident generators, `taskctl`, or cross-repository orchestration. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge approval commit.
 
-- `mmm/**` or any analytical, model, calibration, simulation, optimization,
-  contract, adapter, parser, fixture, schema, numerical-truth, runtime, package,
-  release, or CI surface;
-- MIP or GeoX repositories, branches, tasks, evidence, coordination files, or
-  authority;
-- live integration, real data, persistence, scheduled execution, candidate
-  generation, recommendations, automatic refit/promotion, Bayesian production,
-  pilot, production, or package-side agents; or
-- retained unrelated historical branches.
+## Validation
 
-No PR, squash, rebase, merge commit, force-push, or pre-merge approval commit is
-permitted.
+On the frozen exact task-owned tree run `python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null`, `poetry run pytest -q tests/test_repo_native_execution_handoff.py`, `poetry run ruff check tests/test_repo_native_execution_handoff.py`, `poetry run mypy tests/test_repo_native_execution_handoff.py`, `git diff --check`, and `make validate`. Also verify changed paths, task/repository/branch consistency, authorization-head ancestry, lifecycle/authority compatibility, implementation/report consistency, no stale MIP dependency/blocker, and exact local/remote feature-head equality. Repair host Poetry reasonably before calling it an environment blocker; do not start duplicate validation containers.
 
-## Proposed MMM validation gate after authorization
+## Publication and stop conditions
 
-Run on the frozen exact task-owned tree during implementation, exact-head review,
-and after fast-forward:
-
-- parse `docs/execution/EXECUTION_STATE.json` as JSON;
-- verify Markdown/current-state and task/branch consistency;
-- prove the task-authoring boundary and immediate state-only authorization
-  boundary;
-- verify exact changed paths against the owned-path list;
-- run `git diff --check`;
-- run `pytest -q tests/test_repo_native_execution_handoff.py` and record the
-  exact count;
-- run Ruff and configured mypy for the changed test;
-- run Docker-backed `make validate` and record exact passed, failed, skipped,
-  deselected, warning counts, and warning disposition;
-- inspect the final exact-tree receipt fields; and
-- prove local/remote exact branch-head equality after push.
-
-A required category that cannot run produces Git-durable `blocked`; it is not
-silently omitted or replaced with cached evidence. Do not start duplicate
-validation containers.
-
-## Publication and reporting requirements after authorization
-
-A successful remote `ready_for_review` head must contain one implementation SHA
-and one exact-tree receipt, empty blockers, task execution true, correction,
-merge, and PR authority false, null reviewed/approval SHAs, and unchanged
-analytical and capability authority.
-
-The completion report and receipt must distinguish GitHub-observed evidence from
-locally reported evidence and explicitly list:
-
-- exact validation counts and warning disposition;
-- blockers, limitations, and validation debt;
-- affected repositories and sibling impact;
-- consumer-verification disposition;
-- newly eligible and deferred work;
-- authority impact;
-- exact worktree state and evidence source; and
-- local/remote branch-head equality.
-
-This requirement carries forward the minor reporting debt identified in the
-closure of `MMM_REPOSITORY_EXECUTION_PROTOCOL_ADOPTION_001`; it does not reopen
-or amend that completed task.
+Create one implementation commit and one final exact-tree receipt commit. The receipt records milestone, branch, implementation SHA, exact remote branch head, changed paths, behavior, every validation result and exact full-suite counts, validations not run, blockers, limitations, validation debt, repository/sibling and consumer impact, authority impact, worktree/evidence source, and no PR/merge. Publish `ready_for_review` with execution true; correction/merge/PR false; empty blockers; implementation SHA; null reviewed/approval SHAs; and unchanged analytical, sibling, and capability authority. Push, verify remote equality, and stop for external review.
 
 ## Deferred successors
 
-- GeoX-readout normalization and certified cross-repository fixtures remain
-  separately proposed and blocked on exact merged GeoX producer evidence plus
-  declared MMM consumer verification.
-- Any technical MMM roadmap task remains separate and requires a fresh
-  evidence-based selection and authorization.
-- MIP and GeoX adoption, coordination refresh, product work, and capability
-  changes remain owner-repository tasks.
+- Cross-repository coordination or orchestration implementation.
+- Any analytical, package, public-contract, or capability work.
 
-## Authorization boundary to use only after dependency resolution
-
-After verifying the merged MIP standard, update this proposed task and its
-proposal report on synchronized MMM `main`. The final task-authoring commit is
-the future `authorization_head_sha`. The immediate next commit may change only
-`docs/execution/EXECUTION_STATE.json` to set `status: authorized`, record the
-exact merged MIP pin and declared branch, and enable task execution. Create the
-feature branch only from that synchronized state-only authorization head.
-
-**Unresolved execution-blocking design questions:** exact upstream merged MIP
-standard pin and final merged text are pending.
+**Unresolved execution-blocking design questions: none.**
