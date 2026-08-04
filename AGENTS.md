@@ -18,20 +18,68 @@ Before task discovery or implementation:
 Missing synchronization, evidence, authority, Docker, dependencies, or safe
 authorized write target is fail-closed. A successful orientation is non-terminal:
 continue through implementation, validation, publication, and push to one
-Git-durable `ready_for_review` or `blocked` outcome.
+Git-durable `ready_for_review` or `blocked` outcome. Stop externally only when no safe authorized branch exists.
 
-## Invocation-only contract
+## Authority hierarchy and operational launcher
 
-The normal execution/correction invocation is exactly:
-`Synchronize from Git and execute the active task.`
+Synchronized `main/docs/execution/EXECUTION_STATE.json` owns repository
+identity, task identity, authorization provenance, authorization head, and the
+declared feature branch. Codex resolves that branch from synchronized main,
+fetches the exact remote branch, and verifies repository identity, task ID,
+declared branch name, and authorization-head ancestry. The verified remote feature branch state owns `authorized`, `in_progress`, `blocked`,
+`changes_requested`, and `ready_for_review`, plus blockers, corrections,
+implementation evidence, and completion reporting. `ACTIVE_TASK.md` owns the
+objective, behavior, prerequisites, owned/prohibited paths, acceptance,
+validation, and stop conditions. `LATEST_COMPLETION_REPORT.md` is evidence only;
+it cannot authorize execution, correction, merge, sibling, analytical,
+or capability work.
 
-The merge invocation is exactly:
-`Synchronize from Git and execute the active task's merge and closure workflow. Approved exact remote head: <SHA>.`
+Codex never chooses whichever file appears newer. Conflicting repository, task,
+branch, ancestry, implementation, lifecycle, or authority evidence produces no
+implementation continuation and requires a Git-durable blocked state on the
+safe authorized branch with exact mismatch, attempted evidence, affected
+validation categories, and a live resolution condition. Chat, cached prompts,
+and completion prose cannot resolve conflicts.
 
-Use no prompt text as durable task instruction. If Git-authored instructions
-are missing or contradictory, publish `blocked` on the safe authorized branch
-with the exact diagnostic, attempted evidence, validation-category status, and
-live resolution condition; stop externally only when no such branch exists.
+Compact operational launchers may contain only synchronization, required Git
+reads, task/branch resolution, remote verification/resumption, continuation
+through validation/publication/push, non-terminal progress, durable terminal
+outcomes, prohibited Git operations, and an externally approved exact merge
+SHA. They may not define, copy, repair, override, or reinterpret task meaning,
+paths, prerequisites, tests/counts, sibling state, or authority.
+
+The normal execution invocation is exactly `Synchronize from Git and execute the active task.` The merge invocation adds only
+`Approved exact remote head: <FULL_SHA>` to the same launcher.
+
+Canonical launcher:
+
+```text
+Work in <local repository path>.
+
+Synchronize main from Git and read AGENTS.md and the repository execution
+files. Resolve the authorized task, authorization provenance and exact feature
+branch from synchronized main.
+
+Fetch and verify that remote feature branch, including repository identity,
+task identity, authorization ancestry and current execution state.
+
+Execute the Git-authored active task through required validation, durable
+publication, push and remote-head verification.
+
+Do not guess through conflicting state. Publish a Git-durable blocked state
+with the exact mismatch when a safe authorized branch exists.
+
+Progress reports are non-terminal. Stop only at a remotely published
+ready_for_review or genuine blocked state.
+
+Do not create a PR, merge, squash, rebase, force-push or change sibling,
+analytical or capability authority.
+```
+
+Correction uses the same launcher and reads rejected SHAs/fixes from the
+branch's Git-authored state. Merge adds only `Approved exact remote head:
+<FULL_SHA>`. Successful or blocked handoff requires only repository, feature
+branch, and exact remote head SHA; chat output is diagnostic context only.
 
 ## Execute the active task
 
@@ -74,7 +122,7 @@ gate, use only `git merge --ff-only`, rerun the gate after fast-forward, push
 and verify main equality, and delete only the task branches. Never create a PR,
 squash, rebase, merge commit, force update, or pre-merge approval commit.
 
-After cleanup, create exactly one closure commit limited to the stable
+After cleanup and branch cleanup, create exactly one closure commit limited to the stable
 task/state/report files. Record approval, reviewed/implementation lineage,
 validation categories, synchronization, cleanup, deferred work, and authority.
 The closure sets execution and merge authority false. Historical PR #19 remains

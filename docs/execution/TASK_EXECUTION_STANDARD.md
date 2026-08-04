@@ -1,5 +1,25 @@
 # MMM Task Execution Standard
 
+## Authority and launcher boundary
+
+Synchronized main owns repository/task identity, authorization provenance,
+authorization head, and declared feature branch. Resolve and verify the exact
+remote branch, including repository identity, task identity, branch name, and
+authorization-head ancestry. The remote feature branch owns mutable lifecycle
+state, blockers, corrections, implementation evidence, and completion
+reporting. `ACTIVE_TASK.md` is the implementation contract; the completion report is evidence only and cannot authorize work.
+
+Conflicting identity, ancestry, implementation, lifecycle, or authority evidence
+fails closed with an exact Git-durable blocked state, attempted evidence,
+validation-category status, and live resolution condition. Prompts and cached
+prose cannot repair the conflict. Compact launchers may carry operational Git
+controls and the approved merge SHA, but may not duplicate task meaning,
+paths, prerequisites, tests, counts, sibling lifecycle, or authority.
+
+Normal handoff is only repository, feature branch, and exact remote head SHA.
+Progress is non-terminal; only remotely published `ready_for_review` or
+`blocked` is terminal.
+
 ## Exact-tree publication
 
 Before review, freeze the task-owned tree and run the active risk-tier gate on that
