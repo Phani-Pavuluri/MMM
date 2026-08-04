@@ -9,8 +9,8 @@ new independent work becomes a deferred successor.
 
 An executable task declares exact observable behavior and preserved boundaries,
 surface-appropriate resolved decisions, inputs/outputs/invariants/failures,
-compatibility or migration policy (or `not_applicable`), named deterministic
-evidence, owned/prohibited paths, risk tier, validation, deferred successors,
+compatibility or migration policy (or `not_applicable`), named deterministic evidence,
+named acceptance tests, owned/prohibited paths, risk tier, validation, deferred successors,
 and `unresolved execution-blocking design questions: none`. Otherwise it stays
 proposed, becomes design-blocked, or is split.
 

@@ -17,12 +17,18 @@ STATE = json.loads((ROOT / "docs/execution/EXECUTION_STATE.json").read_text(enco
 def test_lean_definition_ready_delivery_is_adopted() -> None:
     for phrase in (
         "one independently mergeable outcome",
+        "Split when a",
+        "public contract, migration",
+        "surface-appropriate resolved decisions",
+        "inputs/outputs/invariants/failures",
         "compatibility or migration policy",
+        "named deterministic evidence",
         "deferred successor",
         "unresolved execution-blocking design questions: none",
     ):
         assert phrase in AGENTS or phrase in LEAN
     assert "Why this task cannot be split further" in TASK
+    assert "Failure and blocked semantics" in TASK
 
 
 def test_invocation_only_and_terminal_outcomes_are_adopted() -> None:
@@ -31,6 +37,8 @@ def test_invocation_only_and_terminal_outcomes_are_adopted() -> None:
     assert "Prompts cannot repair" in AGENTS
     assert "successful orientation is non-terminal" in AGENTS
     assert "Git-durable `ready_for_review` or `blocked`" in AGENTS
+    assert "continue through implementation, validation, publication, and push" in AGENTS
+    assert "stop externally only when no such branch exists" in AGENTS
 
 
 def test_resumed_branch_and_exact_tree_receipt_are_adopted() -> None:
@@ -39,24 +47,42 @@ def test_resumed_branch_and_exact_tree_receipt_are_adopted() -> None:
         "exact remote branch",
         "freeze the task-owned tree",
         "exact-commit-tree",
+        "implementation parent",
+        "Docker `make validate` count/disposition",
+        "worktree state",
+        "evidence source",
         "Any post-receipt change",
     ):
         assert phrase in AGENTS or phrase in STANDARD
+    assert "Fail closed on mismatch" in TASK
 
 
 def test_risk_tiers_preserve_mmm_full_validation() -> None:
     assert all(f"| {tier} |" in LEAN for tier in ("1", "2", "3"))
     assert "never waive MMM's" in AGENTS
     assert "make validate" in AGENTS and STATE["full_suite_validation_required"] is True
+    for phrase in (
+        "Tier 3",
+        "analytical/public/package surface",
+        "required category that cannot run is `blocked`",
+        "Do not start duplicate validation containers",
+    ):
+        assert phrase in AGENTS or phrase in LEAN
 
 
 def test_live_overlay_coordination_is_adopted() -> None:
     for phrase in (
         "pinned MIP coordination protocol",
         "live `origin/main`",
+        "exact remote feature-branch execution files",
         "stale shared snapshot",
+        "duplicate ownership",
+        "overlapping implementation",
         "producer completion",
         "consumer verification",
+        "dependency/blocker transitions",
+        "validation debt",
+        "authority impact",
     ):
         assert phrase in AGENTS or phrase in STANDARD
     assert STATE["coordination_workstream_id"] == "WS-MMM-PROTOCOL-ADOPTION-001"
@@ -65,13 +91,20 @@ def test_live_overlay_coordination_is_adopted() -> None:
 def test_exact_head_merge_closure_and_pr19_history_are_preserved() -> None:
     for phrase in (
         "exact remote feature-branch SHA",
+        "pr_creation_authorized",
         "git merge --ff-only",
         "pre-merge approval commit",
         "exactly one closure commit",
         "Historical PR #19",
     ):
         assert phrase in AGENTS
-    assert STATE["historical_nonconforming_merge"]["external_merge_was_authorized"] is False
+    history = STATE["historical_nonconforming_merge"]
+    assert STATE["pr_creation_authorized"] is False
+    assert history["external_merge_pr_number"] == 19
+    assert history["external_branch_head_sha"] == "ea16ab7e7b1089f5de479eeffb236fad2767edf1"
+    assert history["external_merge_commit_sha"] == "ad55fef6799a8bd717108781ad44fc88fa116df7"
+    assert history["external_merge_was_authorized"] is False
+    assert history["conforming_exact_head_approval_record_exists"] is False
 
 
 def test_repository_context_index_is_navigation_only() -> None:

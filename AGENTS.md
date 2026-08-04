@@ -48,7 +48,8 @@ remote branch supplies resumed lifecycle state. Before review freeze the
 task-owned tree, run every required gate on that exact tree, write the report,
 and commit a durable exact-tree receipt. No task-owned file may change after the
 receipt; any change requires a new validated publication head. Publish only
-`ready_for_review` with execution true, correction/merge/PR false, null
+`ready_for_review` with execution true, correction/merge/PR false,
+`pr_creation_authorized: false`, null
 reviewed/approval SHAs, and unchanged capability authority.
 
 Use Tier 1/2/3 focused evidence from
