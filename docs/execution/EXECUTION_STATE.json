@@ -1,47 +1,69 @@
 {
   "schema_version": "mmm_repo_execution_state_v2",
   "repository": "Phani-Pavuluri/MMM",
-  "task_id": "MMM_REPOSITORY_EXECUTION_PROTOCOL_ADOPTION_001",
-  "status": "merged",
-  "execution_mode": "branch_and_fast_forward",
+  "task_id": "MMM_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_ADOPTION_001",
+  "status": "proposed",
+  "execution_mode": "branch_and_fast_forward_after_authorization",
   "base_branch": "main",
-  "base_sha": "1b75d1d3c9f49d40f2b7ab71f524fbd2dc6d1421",
-  "authorization_head_sha": "c3c84956ad968532b81b36e8d5f41670cc96367c",
-  "feature_branch": "docs/mmm-repository-execution-protocol-adoption-001",
+  "base_sha": "ac546548784385baab67d7c935e5a4fcdfc9e1af",
+  "task_authoring_head_sha": "a7d45e0b6451e8c64cf3a94c8c888afd9fecf070",
+  "authorization_head_sha": null,
+  "feature_branch": "docs/mmm-git-authoritative-thin-launcher-standard-adoption-001",
+  "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
   "completion_report_path": "docs/execution/LATEST_COMPLETION_REPORT.md",
   "canonical_mip_standard_repository": "Phani-Pavuluri/marketing_intelligence_platform",
-  "canonical_mip_standard_commit": "369805d923454a51ce98845cea29bdb1ee3c3895",
+  "canonical_mip_standard_commit": null,
   "task_execution_authorized": false,
   "correction_execution_authorized": false,
   "merge_authorized": false,
   "pr_creation_authorized": false,
-  "reviewed_head_sha": "c370dc7cd59a61cc2e19025d1a2328c7867b63be",
-  "rejected_review_head_sha": "ccb25680b90fa6eb4ce4dc2d6f84051797641fa6",
-  "implementation_commit_sha": "0e77ce6b787bd508600c1496288a459b8d821edf",
+  "reviewed_head_sha": null,
+  "implementation_commit_sha": null,
   "approval_commit_sha": null,
   "capability_authorizations_changed": false,
   "last_updated": "2026-08-03",
-  "blockers": [],
-  "risk_tier": "tier_1_governance_with_mmm_mandatory_full_validation",
+  "blockers": [
+    "BLOCK-MMM-THIN-LAUNCHER-UPSTREAM-NOT-MERGED-001"
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-MMM-THIN-LAUNCHER-MIP-STANDARD-MERGED-001",
+      "repository": "Phani-Pavuluri/marketing_intelligence_platform",
+      "task_id": "MIP_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_001",
+      "state": "pending_merged_main_evidence",
+      "observed_main_sha": "9bed0f30879e68473a37b0e65d449ea0b6a6e3f3",
+      "observed_feature_branch": "docs/mip-git-authoritative-thin-launcher-standard-001",
+      "observed_review_head_sha": "e390f1b47f8a7c5dfaa7a05613c2c4de73e4a548",
+      "observed_implementation_sha": "dde6969b1192b97aea519c9589d27186f19b6db2",
+      "observed_feature_branch_status": "ready_for_review",
+      "resolution_condition": "Live MIP main must record MIP_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_001 as merged through an externally approved exact head with one closure commit, exact merged standard pin, validation and synchronization evidence, cleanup disposition, and unchanged authority. Feature-branch evidence does not satisfy this dependency."
+    }
+  ],
+  "risk_tier": "tier_1_repository_execution_governance_with_mmm_mandatory_full_validation",
   "full_suite_validation_required": true,
-  "validation_scope": "json_markdown_authoring_boundary_changed_paths_diff_focused_handoff_test_ruff_mypy_docker_make_validate_exact_tree_receipt",
-  "unresolved_execution_blocking_design_questions": [],
+  "validation_scope_after_authorization": "json_markdown_task_authoring_boundary_state_authorization_boundary_changed_paths_diff_focused_handoff_test_ruff_mypy_docker_make_validate_exact_tree_receipt_remote_head_equality",
+  "unresolved_execution_blocking_design_questions": [
+    "exact_upstream_merged_mip_standard_pin",
+    "final_merged_mip_standard_text"
+  ],
   "affected_repositories": [
     "Phani-Pavuluri/MMM"
   ],
-  "coordination_workstream_id": "WS-MMM-PROTOCOL-ADOPTION-001",
+  "modified_repositories": [
+    "Phani-Pavuluri/MMM"
+  ],
+  "coordination_workstream_id": "WS-MMM-THIN-LAUNCHER-ADOPTION-001",
   "coordination_capability_owner": "mmm_repository_governance",
-  "absorbed_task_id": "MMM_CROSS_REPOSITORY_COORDINATION_PROTOCOL_ADOPTION_001",
-  "absorbed_task_disposition": "absorbed_into_MMM_REPOSITORY_EXECUTION_PROTOCOL_ADOPTION_001",
-  "mip_standard_checkpoint": "369805d923454a51ce98845cea29bdb1ee3c3895",
-  "mip_live_main_observed_at_review": "976d3a1daeae9c52c8772e5112574f698951a57c",
-  "mip_live_task_id_at_review": "MIP_P2_ROADMAP_AND_COORDINATION_RECONCILIATION_AFTER_GEOX_SUPERSESSION_001",
-  "mip_live_task_status_at_review": "authorized",
-  "geox_live_overlay_checkpoint": "d17bb81c9dbc67f773fd71068c26b14c92989f42",
-  "geox_live_overlay_task_id": "GEOX_EXECUTION_BRANCH_BINDING_001",
-  "geox_live_overlay_task_status": "authorized",
-  "geox_work_modified_or_authorized": false,
+  "prior_task_id": "MMM_REPOSITORY_EXECUTION_PROTOCOL_ADOPTION_001",
+  "prior_task_status": "merged",
+  "prior_task_closure_sha": "ac546548784385baab67d7c935e5a4fcdfc9e1af",
+  "prior_task_reviewed_head_sha": "c370dc7cd59a61cc2e19025d1a2328c7867b63be",
+  "prior_task_implementation_sha": "0e77ce6b787bd508600c1496288a459b8d821edf",
+  "prior_task_reporting_debt": [
+    "future completion report must explicitly separate GitHub-observed and locally reported evidence",
+    "future completion report must enumerate limitations, validation debt, sibling impact, consumer verification, and newly eligible work"
+  ],
   "mmm_analytical_authority_changed": false,
   "sibling_authority_changed": false,
   "historical_nonconforming_merge": {
@@ -52,7 +74,7 @@
     "external_merge_was_authorized": false,
     "conforming_exact_head_approval_record_exists": false
   },
-  "review_decision": "merged",
-  "review_decision_source": "docs/execution/LATEST_COMPLETION_REPORT.md",
-  "task_authoring_note": "External review rejected ccb25680b90fa6eb4ce4dc2d6f84051797641fa6; the user later approved exact head c370dc7cd59a61cc2e19025d1a2328c7867b63be. That head was validated, fast-forwarded to main, validated again, pushed, and its local and remote task branches were deleted. Merge, PR, sibling, analytical, and capability authority remain false."
+  "review_decision": "proposed",
+  "review_decision_source": "docs/execution/ACTIVE_TASK.md",
+  "task_authoring_note": "The proposal authoring range ac546548784385baab67d7c935e5a4fcdfc9e1af..a7d45e0b6451e8c64cf3a94c8c888afd9fecf070 changes only ACTIVE_TASK.md and LATEST_COMPLETION_REPORT.md. This immediate state-only commit changes only EXECUTION_STATE.json and records a non-executable proposal. No feature branch exists. Execution, correction, merge, PR, sibling, analytical, and capability authority remain false until a later state-only authorization after exact merged MIP evidence is verified."
 }
