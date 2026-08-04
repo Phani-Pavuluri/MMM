@@ -5,6 +5,18 @@
 - Branch: `docs/mmm-execution-authority-closure-consistency-fix-001`.
 - This repair makes lifecycle tests structural and closes the merged launcher
   task metadata without changing launcher or product behavior.
+- Implementation commit: `43b34e278a739dbbca892a80832efc5e11e8b0bc`.
+- Corrected fields: lifecycle status, execution authority, review decision,
+  reviewed/approval semantics, merged lineage, and task/branch identity.
+- Focused Docker tests: 11 passed. JSON validation and `git diff --check`
+  passed. Host Poetry remained unavailable (`[Errno 2] No such file or
+  directory: 'python'`); Docker is the validation fallback.
+- Full Docker-backed `make validate` is required on the final receipt tree;
+  no blockers are known. No PR or merge is created for this repair.
+- Final Docker-backed `make validate`: passed (1324 passed, 6 skipped, 28
+  deselected, 36 warnings). Existing warnings are unchanged and non-blocking.
+- Changed paths are limited to the four authorized execution/test files;
+  `docs/tasks/` remains local-only. No PR or merge was created.
 
 ## Lifecycle-consistency repair authoring boundary
 
