@@ -31,9 +31,13 @@ def test_lean_definition_ready_delivery_is_adopted() -> None:
     assert "Failure semantics" in TASK
 
 
-def test_invocation_only_and_terminal_outcomes_are_adopted() -> None:
-    assert "Synchronize from Git and execute the active task." in AGENTS
-    assert "Approved exact remote head: <FULL_SHA>" in AGENTS
+def test_operational_launcher_and_terminal_outcomes_are_adopted() -> None:
+    assert "Canonical launcher" in AGENTS
+    assert "The normal execution invocation is exactly" not in AGENTS
+    assert "exact one-line command" not in STANDARD
+    assert "Approved exact remote head:" in AGENTS
+    assert "<FULL_SHA>" in AGENTS
+    assert "Correction uses the same launcher" in AGENTS
     assert "Prompts cannot repair" in AGENTS
     assert "successful orientation is non-terminal" in AGENTS
     assert "Git-durable `ready_for_review` or `blocked`" in AGENTS
@@ -41,7 +45,8 @@ def test_invocation_only_and_terminal_outcomes_are_adopted() -> None:
     assert "Stop externally only when no safe authorized branch exists" in AGENTS
     launcher = "Work in <local repository path>."
     assert launcher in AGENTS
-    assert "Approved exact remote head: <FULL_SHA>" in AGENTS
+    assert "Approved exact remote head:" in AGENTS
+    assert "<FULL_SHA>" in AGENTS
     assert "chat output is diagnostic context only" in AGENTS
 
 

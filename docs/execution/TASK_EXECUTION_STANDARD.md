@@ -16,6 +16,11 @@ prose cannot repair the conflict. Compact launchers may carry operational Git
 controls and the approved merge SHA, but may not duplicate task meaning,
 paths, prerequisites, tests, counts, sibling lifecycle, or authority.
 
+The canonical normal execution launcher is the multi-line operational launcher
+recorded in `AGENTS.md`; a one-line command is optional shorthand only and is
+not an exclusive format. Correction uses the same launcher and reads rejected
+SHAs and defects from Git. Merge adds only an externally approved exact SHA.
+
 Normal handoff is only repository, feature branch, and exact remote head SHA.
 Progress is non-terminal; only remotely published `ready_for_review` or
 `blocked` is terminal.

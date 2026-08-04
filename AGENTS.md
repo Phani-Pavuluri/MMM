@@ -48,8 +48,12 @@ outcomes, prohibited Git operations, and an externally approved exact merge
 SHA. They may not define, copy, repair, override, or reinterpret task meaning,
 paths, prerequisites, tests/counts, sibling state, or authority.
 
-The normal execution invocation is exactly `Synchronize from Git and execute the active task.` The merge invocation adds only
-`Approved exact remote head: <FULL_SHA>` to the same launcher.
+The canonical normal execution launcher is the operational launcher below. A
+one-line command is optional shorthand only when the executor already follows
+these committed rules; it is not exclusive and carries no task meaning.
+Correction uses the same launcher and obtains rejected SHAs and defects from
+Git. Merge uses the same launcher and adds only `Approved exact remote head:
+<FULL_SHA>`.
 
 Canonical launcher:
 
