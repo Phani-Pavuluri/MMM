@@ -1,9 +1,13 @@
 # Active Task
 
-**Status:** ready_for_review
+**Status:** merged
 **Owner:** MMM repository governance
 **Last updated:** 2026-08-03
 **Last verified:** 2026-08-03
+**Verified merged review head:**
+`c370dc7cd59a61cc2e19025d1a2328c7867b63be`
+**Closure:** fast-forwarded to `main`; local and remote task branches deleted;
+all capability authority remains unchanged.
 
 ## Identity
 
@@ -20,7 +24,7 @@
 - **Capability owner:** MMM repository governance
 - **Capability authorizations changed:** `false`
 
-## Review decision — changes requested
+## Historical review decision — changes requested
 
 Exact remote head `ccb25680b90fa6eb4ce4dc2d6f84051797641fa6` is rejected for merge. The substantive direction is acceptable, but the published tree does not yet satisfy its frozen acceptance contract.
 
@@ -34,6 +38,15 @@ Required correction:
 6. Preserve all owned/prohibited paths, PR #19 history, analytical boundaries, and capability freezes.
 
 One correction cycle is authorized. Any task-owned change requires a new full validation run and new exact-tree receipt head.
+
+## Conforming merge closure
+
+The user approved the exact remote review head
+`c370dc7cd59a61cc2e19025d1a2328c7867b63be`. It was validated on that head,
+fast-forwarded to `main`, validated again on `main`, and pushed without a pull
+request, squash, rebase, merge commit, force update, or pre-merge approval
+commit. The local and remote task branches were then deleted. This closure does
+not alter analytical, sibling, product, or capability authority.
 
 ## Primary mergeable outcome
 
