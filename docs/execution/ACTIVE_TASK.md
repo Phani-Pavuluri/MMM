@@ -1,6 +1,6 @@
 # Active Task
 
-**Status:** ready_for_review
+**Status:** changes_requested
 **Owner:** MMM repository governance
 **Last updated:** 2026-08-03
 **Last verified:** 2026-08-03
@@ -14,10 +14,26 @@
 - **Execution mode:** `branch_and_fast_forward`
 - **Risk tier:** Tier 1 governance, with MMM's existing Docker-backed full validation retained as mandatory
 - **Canonical MIP execution-standard pin:** `Phani-Pavuluri/marketing_intelligence_platform@369805d923454a51ce98845cea29bdb1ee3c3895`
-- **Live GeoX checkpoint observed:** `Phani-Pavuluri/panel_exp@a4bf6bfaa4311dacd3642d289dca3917543e0309`
+- **Live GeoX checkpoint observed at task authorization:** `Phani-Pavuluri/panel_exp@a4bf6bfaa4311dacd3642d289dca3917543e0309`
+- **Rejected review head:** `ccb25680b90fa6eb4ce4dc2d6f84051797641fa6`
 - **Coordination workstream:** `WS-MMM-PROTOCOL-ADOPTION-001`
 - **Capability owner:** MMM repository governance
 - **Capability authorizations changed:** `false`
+
+## Review decision — changes requested
+
+Exact remote head `ccb25680b90fa6eb4ce4dc2d6f84051797641fa6` is rejected for merge. The substantive direction is acceptable, but the published tree does not yet satisfy its frozen acceptance contract.
+
+Required correction:
+
+1. Make current lifecycle metadata coherent: final publication must set `status` and `review_decision` to `ready_for_review`, with correction authorization false, merge and PR authority false, null reviewed/approval SHAs, and one implementation SHA.
+2. Strengthen the seven focused tests so each independently asserts every semantic behavior named in the acceptance contract, not only a subset of representative phrases.
+3. Rerun the complete MMM validation gate and record exact Docker `make validate` test counts and warning counts/disposition in the completion report.
+4. Publish a new exact-tree receipt whose commit message records the full implementation parent, exact-tree scope, gate/result, focused count, JSON/Markdown/current-state/task-boundary/changed-path/diff results, Docker count/disposition, Ruff/mypy result, worktree state, evidence source, and unchanged authority.
+5. Refresh the live sibling overlay before republishing. At review, MIP `main` was `976d3a1daeae9c52c8772e5112574f698951a57c` and GeoX `main` was `d17bb81c9dbc67f773fd71068c26b14c92989f42`; both are non-overlapping owner-repository governance work. Do not modify either sibling.
+6. Preserve all owned/prohibited paths, PR #19 history, analytical boundaries, and capability freezes.
+
+One correction cycle is authorized. Any task-owned change requires a new full validation run and new exact-tree receipt head.
 
 ## Primary mergeable outcome
 
@@ -27,7 +43,7 @@ This is one bounded execution-governance outcome. It changes no analytical, pack
 
 ## Why this task cannot be split further
 
-Lean task definition, invocation-only prompts, terminal-outcome enforcement, exact-tree receipts, risk-tier metadata, live-overlay coordination, and exact-head merge/closure rules jointly form one repository execution contract. Partial adoption would leave contradictory MMM authoring and execution behavior. The implementation remains limited to execution guidance, stable navigation, lifecycle metadata, and one focused semantic test module.
+Lean task definition, invocation-only prompts, terminal-outcome enforcement, exact-tree receipts, risk-tier metadata, live-overlay coordination, and exact-head merge/closure rules jointly form one repository execution contract. Partial adoption would leave contradictory task-authoring and execution behavior. The implementation remains limited to execution guidance, stable navigation, lifecycle metadata, and one focused semantic test module.
 
 ## Source verification and conflict decision
 
@@ -37,8 +53,9 @@ Connected GitHub verification established:
 - The prior MMM task `MMM_REPO_NATIVE_EXECUTION_HANDOFF_V2_RECONCILIATION_001` is merged and closed; execution and merge authority are false.
 - MMM has no open pull request and no remote branch ahead of `main`; retained historical branches are fully behind `main` and do not represent unmerged work.
 - MIP `369805d923454a51ce98845cea29bdb1ee3c3895` is the merged execution-standard checkpoint.
-- The MIP coordination snapshot is stale for GeoX. Live overlay shows GeoX `a4bf6bfaa4311dacd3642d289dca3917543e0309`, where the oversized builder task is superseded and `GEOX_LEAN_REPOSITORY_DELIVERY_STANDARD_ADOPTION_001` is authorized on its own identical feature branch. That GeoX governance work does not overlap MMM-owned files or authority.
-- No unresolved ownership conflict blocks this MMM-only task.
+- The MIP coordination snapshot was stale for GeoX at authorization. The authorization-time live overlay was GeoX `a4bf6bfaa4311dacd3642d289dca3917543e0309`.
+- Review-time live overlay observed MIP `976d3a1daeae9c52c8772e5112574f698951a57c` and GeoX `d17bb81c9dbc67f773fd71068c26b14c92989f42`; neither repository modifies or owns this MMM task.
+- No unresolved ownership conflict blocks this MMM-only correction.
 
 ### Proposed-task disposition
 
