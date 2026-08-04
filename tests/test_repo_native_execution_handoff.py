@@ -132,7 +132,6 @@ def test_authority_hierarchy_and_current_task_consistency_are_adopted() -> None:
     assert "The verified remote feature branch state owns" in AGENTS
     assert "`ACTIVE_TASK.md` owns" in AGENTS
     assert "`LATEST_COMPLETION_REPORT.md` is evidence only" in AGENTS
-    assert STATE["task_id"] == "MMM_EXECUTION_AUTHORITY_AND_OPERATIONAL_LAUNCHER_ALIGNMENT_001"
     assert STATE["task_id"] in TASK
     assert STATE["task_id"] in (ROOT / "docs/execution/LATEST_COMPLETION_REPORT.md").read_text()
     assert STATE["feature_branch"] in TASK
@@ -151,9 +150,22 @@ def test_fail_closed_conflicts_and_handoff_semantics_are_adopted() -> None:
         "only repository, feature branch, and exact remote head SHA",
     ):
         assert phrase in AGENTS or phrase in STANDARD
-    assert STATE["task_execution_authorized"] is True
-    assert STATE["merge_authorized"] is False
-    assert STATE["pr_creation_authorized"] is False
+    lifecycle = STATE["status"]
+    assert lifecycle in {"authorized", "in_progress", "blocked", "changes_requested", "ready_for_review", "merged"}
+    if lifecycle == "merged":
+        assert STATE["task_execution_authorized"] is False
+        assert STATE["correction_execution_authorized"] is False
+        assert STATE["merge_authorized"] is False
+        assert STATE["pr_creation_authorized"] is False
+        assert STATE["reviewed_head_sha"]
+        assert STATE["review_decision"] == "merged"
+        assert STATE["implementation_commit_sha"]
+    else:
+        assert STATE["task_execution_authorized"] is True
+        assert STATE["merge_authorized"] is False
+        assert STATE["pr_creation_authorized"] is False
+        if lifecycle == "ready_for_review":
+            assert STATE["implementation_commit_sha"]
     assert STATE["blockers"] == []
 
 

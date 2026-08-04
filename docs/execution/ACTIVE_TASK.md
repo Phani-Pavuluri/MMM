@@ -1,6 +1,6 @@
 # Active Task
 
-**Status:** proposed pending state-only authorization
+**Status:** ready_for_review
 **Owner:** MMM repository governance
 **Last updated:** 2026-08-04
 **Last verified:** 2026-08-04
@@ -14,10 +14,10 @@ metadata only; unresolved execution-blocking design questions: none.
 
 ## Identity
 
-- **Task ID:** `MMM_EXECUTION_AUTHORITY_AND_OPERATIONAL_LAUNCHER_ALIGNMENT_001`
+- **Task ID:** `MMM_EXECUTION_AUTHORITY_CLOSURE_CONSISTENCY_FIX_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Pre-authoring base:** `f2e0eade0ad917c1b28ab5521e6d35a35047d988`
-- **Feature branch:** `docs/mmm-execution-authority-operational-launcher-alignment-001`
+- **Pre-authoring base:** `f7bad95854846bad5ab81deb372dd9f0d8330536`
+- **Feature branch:** `docs/mmm-execution-authority-closure-consistency-fix-001`
 - **Execution mode:** `branch_and_fast_forward`
 - **Risk tier:** Tier 1 repository-execution governance with mandatory MMM Docker-backed full validation
 - **Capability authorizations changed:** `false`
