@@ -1,6 +1,6 @@
 # Active Task
 
-**Status:** authorized
+**Status:** ready_for_review
 **Owner:** MMM repository governance
 **Last updated:** 2026-08-03
 **Last verified:** 2026-08-03
