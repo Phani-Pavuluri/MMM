@@ -44,3 +44,36 @@ fast-forward, closure, cleanup, and PR #19 historical controls remain intact.
 
 No MIP or GeoX files were modified. Analytical, sibling, and capability
 authority remain unchanged. No PR or merge was created.
+
+## Correction review disposition
+
+- Rejected review head: `d48cbb02058b1c8bdf8e6125dac3ba9366874785`.
+- Original implementation commit: `a2c91c9ec547504c8fa7af083066a6aadc100fa9`.
+- Correction implementation commit: `3ab8e5fb8f2ffe573e88e61121264ebadf537641`.
+- Correction implementation: launcher wording and semantic-test corrections
+  are confined to `AGENTS.md`, `docs/execution/TASK_EXECUTION_STANDARD.md`,
+  and `tests/test_repo_native_execution_handoff.py`.
+- Publication-head disposition: the final review head is the remote commit
+  containing the completed exact-tree receipt; its literal SHA is reported in
+  the terminal handoff after push and is not claimed inside that receipt.
+- Changed paths: the three correction files plus the two lifecycle evidence
+  files (`EXECUTION_STATE.json` and this report).
+- Behavior: the multi-line operational launcher is canonical; one-line text is
+  optional shorthand only; correction reads defects from Git and merge adds
+  only the approved exact SHA.
+- Validation commands: JSON parse, focused Docker pytest, focused Ruff, focused
+  mypy, `git diff --check`, and Docker-backed `make validate`.
+- Final Docker gate: passed with 1324 passed, 6 skipped, 28 deselected, and 36
+  warnings; focused semantic tests passed (11).
+- Validation not run on host: Poetry failed with
+  `[Errno 2] No such file or directory: 'python'`; Docker fallback passed.
+- Blockers: none. Limitations: host Poetry unavailable; Docker is the
+  authoritative validation environment. Validation debt: existing warnings
+  only, with no task-owned findings.
+- Worktree/evidence: local and remote feature heads are required to match;
+  evidence is Git state plus repository Docker validation. Affected
+  repositories: MMM only. Sibling impact: none. Consumer verification:
+  not applicable. Newly eligible work: external review only. Deferred work:
+  merge/closure and all product or analytical capabilities.
+- Authority impact: correction, merge, PR, analytical, sibling, and capability
+  authority remain false after publication; no PR or merge was created.
