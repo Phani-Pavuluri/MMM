@@ -60,5 +60,5 @@
   },
   "review_decision": "ready_for_review",
   "review_decision_source": "docs/execution/LATEST_COMPLETION_REPORT.md",
-  "task_authoring_note": "The superseded thin-launcher proposal is prior history only. Authoring commit 9d59a431e239ee7f07ad0ddab31358d2a4b1264c and state-only authorization commit 3ea64116d44d18aeec456da2263baf9f1ee4d2aa establish this task. Review rejected exact head d48cbb02058b1c8bdf8e6125dac3ba9366874785; correction implementation 3ab8e5fb8f2ffe573e88e61121264ebadf537641 resolves the launcher ambiguity and durable-report defects. Merge, PR, MIP, sibling, analytical, and capability authority remain false."
+  "task_authoring_note": "The superseded thin-launcher proposal is prior history only. Authoring commit 9d59a431e239ee7f07ad0ddab31358d2a4b1264c and state-only authorization commit 3ea64116d44d18aeec456da2263baf9f1ee4d2aa establish this task. Approved head 26d90dcc10d026a33601889fba87eacc278de0c3 was fast-forwarded to main and the task branch was cleaned up. Implementation a2c91c9ec547504c8fa7af083066a6aadc100fa9, correction 3ab8e5fb8f2ffe573e88e61121264ebadf537641, and receipt 26d90dcc10d026a33601889fba87eacc278de0c3 remain the lineage; merge, PR, MIP, sibling, analytical, and capability authority remain false."
 }

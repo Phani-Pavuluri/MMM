@@ -77,3 +77,21 @@ authority remain unchanged. No PR or merge was created.
   merge/closure and all product or analytical capabilities.
 - Authority impact: correction, merge, PR, analytical, sibling, and capability
   authority remain false after publication; no PR or merge was created.
+
+## Merge and closure
+
+- Approved exact head: `26d90dcc10d026a33601889fba87eacc278de0c3`.
+- The approved head was merged to `main` using `git merge --ff-only` only.
+- Post-fast-forward Docker-backed `make validate` passed with 1324 passed, 6
+  skipped, 28 deselected, and 36 warnings.
+- `main` was pushed and verified equal to `origin/main` at the approved head.
+- The completed local and remote task branch were deleted; no other branch was
+  touched.
+- Closure commit is limited to `ACTIVE_TASK.md`, `EXECUTION_STATE.json`, and
+  `LATEST_COMPLETION_REPORT.md`.
+- Lineage: implementation `a2c91c9ec547504c8fa7af083066a6aadc100fa9`,
+  correction `3ab8e5fb8f2ffe573e88e61121264ebadf537641`, receipt
+  `26d90dcc10d026a33601889fba87eacc278de0c3`.
+- Limitations and validation debt are unchanged: host Poetry is unavailable;
+  existing validation warnings remain. Analytical, sibling, and capability
+  authority remain unchanged.
