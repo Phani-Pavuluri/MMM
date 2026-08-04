@@ -5,6 +5,13 @@
 **Last updated:** 2026-08-04
 **Last verified:** 2026-08-04
 
+This task is superseded by `MMM_EXECUTION_AUTHORITY_CLOSURE_CONSISTENCY_FIX_001`.
+The prior implementation and correction are merged and remain valid. Closure
+commit `f7bad95854846bad5ab81deb372dd9f0d8330536` recorded merge evidence but
+did not close lifecycle fields, and the semantic tests correctly prevented an
+unambiguous merged state. This repair changes lifecycle tests and closure
+metadata only; unresolved execution-blocking design questions: none.
+
 ## Identity
 
 - **Task ID:** `MMM_EXECUTION_AUTHORITY_AND_OPERATIONAL_LAUNCHER_ALIGNMENT_001`
