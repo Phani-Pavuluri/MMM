@@ -24,6 +24,21 @@
   deselected, 36 warnings). JSON, Ruff, mypy, and `git diff --check` passed;
   host Poetry remains unavailable because `python` is missing.
 
+## Merge and closure
+
+- Task is `merged`; reviewed/approved head:
+  `60998f502b71257a67ace892c3dfc8d93f0ccf08`.
+- Implementation: `d930ecf93ea7d66a1c2c35e7ca2a22869aa3f595`.
+- Rejected head: `bacf4064603a3d37946724fa12b5d54706193174`.
+- Prior implementations remain historical lineage only; approval commit SHA is
+  null because no separate approval commit exists.
+- Post-merge Docker validation passed: 1324 passed, 6 skipped, 28 deselected,
+  36 warnings. Main was synchronized and pushed; local and remote main match.
+- The completed task branch was deleted locally and remotely.
+- No PR, squash, rebase, force-push, or merge commit was created. Analytical,
+  sibling, and capability authority remain unchanged. Host Poetry remains
+  unavailable and existing warning debt is non-blocking.
+
 - Rejected head: `4c8345daf2ab2d752c4192b2c93494a02c5f9f27`.
 - Correction implementation: `0e36e23336c5e686ff7cd08e3683c9319aafaef3`.
 - Added an independent lifecycle helper and executed all seven supported cases:
