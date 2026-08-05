@@ -16,6 +16,8 @@
 
 ## Lifecycle validator correction
 
+- Rejected review head: `bacf4064603a3d37946724fa12b5d54706193174`.
+
 - Rejected head: `4c8345daf2ab2d752c4192b2c93494a02c5f9f27`.
 - Correction implementation: `0e36e23336c5e686ff7cd08e3683c9319aafaef3`.
 - Added an independent lifecycle helper and executed all seven supported cases:
