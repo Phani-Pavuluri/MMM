@@ -13,6 +13,23 @@
   directory: 'python'`); Docker is the validation fallback.
 - Full Docker-backed `make validate` is required on the final receipt tree;
   no blockers are known. No PR or merge is created for this repair.
+
+## Lifecycle validator correction
+
+- Rejected head: `4c8345daf2ab2d752c4192b2c93494a02c5f9f27`.
+- Correction implementation: `0e36e23336c5e686ff7cd08e3683c9319aafaef3`.
+- Added an independent lifecycle helper and executed all seven supported cases:
+  proposed, authorized, in_progress, blocked, changes_requested,
+  ready_for_review, and merged.
+- Executed seven negative cases covering invalid authority, blocker, review,
+  and lineage combinations. Focused suite count: 25 passed.
+- Current ready_for_review state passes the helper; no transient task or
+  workstream ID is hard-coded. Host Poetry remains unavailable; Docker is the
+  validation fallback. No PR or merge was created.
+- Final Docker-backed `make validate`: passed (1324 passed, 6 skipped, 28
+  deselected, 36 warnings). JSON, diff-check, focused Ruff, and focused mypy
+  validation passed; host Poetry was not run successfully because `python` is
+  unavailable.
 - Final Docker-backed `make validate`: passed (1324 passed, 6 skipped, 28
   deselected, 36 warnings). Existing warnings are unchanged and non-blocking.
 - Changed paths are limited to the four authorized execution/test files;
