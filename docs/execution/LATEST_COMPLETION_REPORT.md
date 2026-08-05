@@ -17,6 +17,12 @@
 ## Lifecycle validator correction
 
 - Rejected review head: `bacf4064603a3d37946724fa12b5d54706193174`.
+- Current correction implementation: `d930ecf93ea7d66a1c2c35e7ca2a22869aa3f595`.
+- Final focused lifecycle suite: 25 passed, including seven positive lifecycle
+  states and seven isolated negative mutations.
+- Final Docker-backed `make validate`: passed (1324 passed, 6 skipped, 28
+  deselected, 36 warnings). JSON, Ruff, mypy, and `git diff --check` passed;
+  host Poetry remains unavailable because `python` is missing.
 
 - Rejected head: `4c8345daf2ab2d752c4192b2c93494a02c5f9f27`.
 - Correction implementation: `0e36e23336c5e686ff7cd08e3683c9319aafaef3`.
