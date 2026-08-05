@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENTS = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
@@ -12,6 +15,59 @@ CONTEXT = (ROOT / "docs/execution/REPOSITORY_CONTEXT_INDEX.md").read_text(encodi
 LEAN = (ROOT / "docs/program/LEAN_REPOSITORY_DELIVERY_STANDARD.md").read_text(encoding="utf-8")
 STANDARD = (ROOT / "docs/execution/TASK_EXECUTION_STANDARD.md").read_text(encoding="utf-8")
 STATE = json.loads((ROOT / "docs/execution/EXECUTION_STATE.json").read_text(encoding="utf-8"))
+
+
+def assert_lifecycle_consistency(state: dict[str, object]) -> None:
+    lifecycle = state["status"]
+    assert lifecycle in {"proposed", "authorized", "in_progress", "blocked", "changes_requested", "ready_for_review", "merged"}
+    assert state["merge_authorized"] is False
+    assert state["pr_creation_authorized"] is False
+    assert state["mmm_analytical_authority_changed"] is False
+    assert state["sibling_authority_changed"] is False
+    assert state["capability_authorizations_changed"] is False
+    if lifecycle == "proposed":
+        assert state["task_execution_authorized"] is False
+        assert state["correction_execution_authorized"] is False
+        assert state["implementation_commit_sha"] is None
+        assert state["reviewed_head_sha"] is None
+        assert state["approval_commit_sha"] is None
+        assert state["feature_branch_created"] is False
+    elif lifecycle == "authorized":
+        assert state["task_execution_authorized"] is True
+        assert state["correction_execution_authorized"] is False
+        assert state["blockers"] == []
+        assert state["implementation_commit_sha"] is None
+        assert state["reviewed_head_sha"] is None
+    elif lifecycle == "in_progress":
+        assert state["task_execution_authorized"] is True
+        assert state["correction_execution_authorized"] is False
+        assert state["reviewed_head_sha"] is None
+    elif lifecycle == "blocked":
+        assert state["blockers"]
+        assert state["review_decision"] == "blocked"
+        assert state.get("live_resolution_condition")
+    elif lifecycle == "changes_requested":
+        assert state["task_execution_authorized"] is False
+        assert state["correction_execution_authorized"] is True
+        assert state["rejected_review_head_sha"]
+        assert state["reviewed_head_sha"] is None
+        assert state["approval_commit_sha"] is None
+        assert state["review_decision"] == "changes_requested"
+    elif lifecycle == "ready_for_review":
+        assert state["task_execution_authorized"] is True
+        assert state["correction_execution_authorized"] is False
+        assert state["implementation_commit_sha"]
+        assert state["blockers"] == []
+        assert state["reviewed_head_sha"] is None
+        assert state["approval_commit_sha"] is None
+        assert state["review_decision"] == "ready_for_review"
+    elif lifecycle == "merged":
+        assert state["task_execution_authorized"] is False
+        assert state["correction_execution_authorized"] is False
+        assert state["reviewed_head_sha"]
+        assert state["implementation_commit_sha"]
+        assert state["blockers"] == []
+        assert state["review_decision"] == "merged"
 
 
 def test_lean_definition_ready_delivery_is_adopted() -> None:
@@ -135,6 +191,46 @@ def test_authority_hierarchy_and_current_task_consistency_are_adopted() -> None:
     assert STATE["task_id"] in TASK
     assert STATE["task_id"] in (ROOT / "docs/execution/LATEST_COMPLETION_REPORT.md").read_text()
     assert STATE["feature_branch"] in TASK
+    assert_lifecycle_consistency(STATE)
+
+
+@pytest.mark.parametrize("lifecycle", ("proposed", "authorized", "in_progress", "blocked", "changes_requested", "ready_for_review", "merged"))
+def test_lifecycle_validator_exercises_every_supported_state(lifecycle: str) -> None:
+    state = deepcopy(STATE)
+    state.update({"status": lifecycle, "review_decision": lifecycle, "blockers": []})
+    state["feature_branch_created"] = lifecycle != "proposed"
+    state["task_execution_authorized"] = lifecycle in {"authorized", "in_progress", "ready_for_review"}
+    state["correction_execution_authorized"] = lifecycle == "changes_requested"
+    state["implementation_commit_sha"] = "impl" if lifecycle in {"ready_for_review", "merged"} else None
+    state["reviewed_head_sha"] = "review" if lifecycle == "merged" else None
+    state["approval_commit_sha"] = None
+    state["rejected_review_head_sha"] = "rejected" if lifecycle == "changes_requested" else None
+    state["blockers"] = [{"reason": "diagnostic"}] if lifecycle == "blocked" else []
+    if lifecycle == "blocked":
+        state["live_resolution_condition"] = "external evidence update"
+    assert_lifecycle_consistency(state)
+
+
+@pytest.mark.parametrize(
+    "mutations",
+    (
+        {"status": "proposed", "task_execution_authorized": True},
+        {"status": "blocked", "blockers": []},
+        {"status": "changes_requested", "correction_execution_authorized": False},
+        {"status": "changes_requested", "rejected_review_head_sha": None},
+        {"status": "ready_for_review", "implementation_commit_sha": None},
+        {"status": "merged", "task_execution_authorized": True},
+        {"status": "merged", "reviewed_head_sha": None},
+    ),
+)
+def test_lifecycle_validator_rejects_invalid_combinations(mutations: dict[str, object]) -> None:
+    state = deepcopy(STATE)
+    state.update({"status": "ready_for_review", "review_decision": "ready_for_review"})
+    state.update(mutations)
+    if state["status"] == "blocked":
+        state["review_decision"] = "blocked"
+    with pytest.raises(AssertionError):
+        assert_lifecycle_consistency(state)
 
 
 def test_fail_closed_conflicts_and_handoff_semantics_are_adopted() -> None:
@@ -150,23 +246,7 @@ def test_fail_closed_conflicts_and_handoff_semantics_are_adopted() -> None:
         "only repository, feature branch, and exact remote head SHA",
     ):
         assert phrase in AGENTS or phrase in STANDARD
-    lifecycle = STATE["status"]
-    assert lifecycle in {"authorized", "in_progress", "blocked", "changes_requested", "ready_for_review", "merged"}
-    if lifecycle == "merged":
-        assert STATE["task_execution_authorized"] is False
-        assert STATE["correction_execution_authorized"] is False
-        assert STATE["merge_authorized"] is False
-        assert STATE["pr_creation_authorized"] is False
-        assert STATE["reviewed_head_sha"]
-        assert STATE["review_decision"] == "merged"
-        assert STATE["implementation_commit_sha"]
-    else:
-        assert STATE["task_execution_authorized"] is True
-        assert STATE["merge_authorized"] is False
-        assert STATE["pr_creation_authorized"] is False
-        if lifecycle == "ready_for_review":
-            assert STATE["implementation_commit_sha"]
-    assert STATE["blockers"] == []
+    assert_lifecycle_consistency(STATE)
 
 
 def test_full_validation_and_closure_controls_remain_preserved() -> None:
