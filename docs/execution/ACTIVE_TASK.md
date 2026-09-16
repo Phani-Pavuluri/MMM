@@ -1,131 +1,292 @@
 # Active Task
 
-**Status:** merged — closed
+**Lifecycle:** `authorized` after the immediate state-only authorization commit
 **Owner:** MMM repository governance
-**Last updated:** 2026-08-04
-**Last verified:** 2026-08-04
-
-This task is superseded by `MMM_EXECUTION_AUTHORITY_CLOSURE_CONSISTENCY_FIX_001`.
-The prior implementation and correction are merged and remain valid. Closure
-commit `f7bad95854846bad5ab81deb372dd9f0d8330536` recorded merge evidence but
-did not close lifecycle fields, and the semantic tests correctly prevented an
-unambiguous merged state. This repair changes lifecycle tests and closure
-metadata only; unresolved execution-blocking design questions: none.
+**Last updated:** 2026-09-15
+**Last verified:** 2026-09-15
 
 ## Identity
 
-- **Task ID:** `MMM_EXECUTION_AUTHORITY_CLOSURE_CONSISTENCY_FIX_001`
+- **Task ID:** `MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Pre-authoring base:** `f7bad95854846bad5ab81deb372dd9f0d8330536`
-- **Feature branch:** `docs/mmm-execution-authority-closure-consistency-fix-001`
+- **Synchronized base:** `fe8e784923994406a2e4907d28debd872d61fd73`
+- **Feature branch:** `feat/mmm-repository-single-source-taskctl-adoption-001`
 - **Execution mode:** `branch_and_fast_forward`
 - **Risk tier:** Tier 1 repository-execution governance with mandatory MMM Docker-backed full validation
 - **Capability authorizations changed:** `false`
 
-Approved/reviewed head `60998f502b71257a67ace892c3dfc8d93f0ccf08` is merged.
-Implementation `d930ecf93ea7d66a1c2c35e7ca2a22869aa3f595` and rejected head
-`bacf4064603a3d37946724fa12b5d54706193174` are retained as lineage. Branch
-cleanup is complete; no execution, correction, merge, PR, analytical, sibling,
-or capability authority remains.
-
-## Superseded prior proposal
-
-`MMM_GIT_AUTHORITATIVE_THIN_LAUNCHER_STANDARD_ADOPTION_001` is `superseded_without_execution`.
-Its intended branch was never created; its MIP dependency and blocker are retired; and it had no implementation, review, correction, merge, PR, analytical, sibling, or capability authority. It is prior-task history only and must not be revived.
+The preceding task, `MMM_EXECUTION_AUTHORITY_CLOSURE_CONSISTENCY_FIX_001`, is
+merged and closed at the synchronized base. No product or sibling dependency is
+required for this MMM-only governance task. Remote branch inspection found no
+overlapping taskctl work. Unresolved execution-blocking design questions: none.
 
 ## Primary independently reviewable outcome
 
-Adopt a simple MMM-owned execution model: synchronized `main` owns task identity and authorization provenance; the verified remote feature branch owns current lifecycle; `ACTIVE_TASK.md` owns implementation meaning; and `LATEST_COMPLETION_REPORT.md` owns execution and validation evidence. Compact operational launchers may direct Git synchronization and continuation but never copy or reinterpret task meaning.
+Make `docs/execution/EXECUTION_STATE.json` the single machine-readable source
+for MMM execution lifecycle state and add an MMM-owned executable controller at
+`python -m mmm.execution.taskctl`. The controller must validate canonical
+state and Git identity, synchronize deterministic lifecycle blocks in the two
+human views, and apply only fail-closed allowed lifecycle transitions.
 
-This is governance only. It changes no analytical, contract, fixture, numerical, runtime, package, MIP, GeoX, sibling, product, or capability behavior.
+This task changes repository-execution governance only. It does not change MMM
+analytical, numerical, model, calibration, simulation, optimization, contract,
+fixture, package API, runtime, product, MIP, GeoX, or capability behavior.
 
 ## Why this task cannot be split further
 
-Authority hierarchy, fail-closed conflicts, launcher limits, output handoff, exact-tree validation, focused semantic checks, and retained MMM merge controls are one execution surface. Prose-only or test-only work would be contradictory. Independently valid work, public contracts, migrations, integration surfaces, or authority boundaries must be separate successors rather than silent widening.
-
-## Resolved behavior
-
-### Authority hierarchy
-
-Synchronized `main/docs/execution/EXECUTION_STATE.json` owns repository identity, task identity, authorization provenance, authorization head, and declared feature branch. Codex resolves that branch from synchronized `main`, fetches its exact remote branch, and verifies repository identity, task identity, declared branch name, and authorization-head ancestry.
-
-The verified remote feature branch's `EXECUTION_STATE.json` owns `authorized`, `in_progress`, `blocked`, `changes_requested`, and `ready_for_review`; blockers, corrections, implementation evidence, and completion reporting. `ACTIVE_TASK.md` owns objective, behavior, prerequisites, owned/prohibited paths, acceptance evidence, validation, and stop conditions. `LATEST_COMPLETION_REPORT.md` is evidence only and cannot authorize execution, correction, merge, sibling, analytical, or capability work.
-
-### Fail-closed conflicts
-
-Codex never chooses whichever file appears newer. Disagreement involving repository, task ID, feature branch, authorization head, branch ancestry, implementation SHA, or incompatible lifecycle/authority flags stops implementation. With a safe authorized feature branch, publish Git-durable `blocked` with the exact mismatch, attempted evidence, affected validation categories, and a live resolution condition. Chat, cached prompts, and completion prose cannot resolve conflict.
-
-### Compact operational launcher
-
-Launchers may contain only local repository path; synchronization and required Git reads; task/branch resolution from synchronized Git; remote branch verification/resumption; continuation through implementation, validation, publication, push, and remote verification; non-terminal progress; durable terminal outcomes; prohibited Git operations; and the external exact SHA for merge. They may not define, copy, repair, override, or reinterpret task ID, branch name, non-approved SHA, objective, implementation meaning, paths, prerequisites, tests/counts, correction defects, sibling lifecycle, analytical, or capability authority.
-
-```text
-Work in <local repository path>.
-
-Synchronize main from Git and read AGENTS.md and the repository execution
-files. Resolve the authorized task, authorization provenance and exact feature
-branch from synchronized main.
-
-Fetch and verify that remote feature branch, including repository identity,
-task identity, authorization ancestry and current execution state.
-
-Execute the Git-authored active task through required validation, durable
-publication, push and remote-head verification.
-
-Do not guess through conflicting state. Publish a Git-durable blocked state
-with the exact mismatch when a safe authorized branch exists.
-
-Progress reports are non-terminal. Stop only at a remotely published
-ready_for_review or genuine blocked state.
-
-Do not create a PR, merge, squash, rebase, force-push or change sibling,
-analytical or capability authority.
-```
-
-Correction uses the same launcher and reads rejected SHAs/fixes from the remote branch's Git-authored `changes_requested` state. Merge adds only `Approved exact remote head: <FULL_SHA>`.
-
-### Output handoff
-
-Successful or Git-durable blocked execution requires only repository, feature branch, and exact remote head SHA. Chat output is diagnostic context only when no durable remote state was published.
+Canonical-state validation, generated views, lifecycle transitions, migration
+of the current manual state, and focused semantic tests are one consistency
+boundary. Shipping only a writer, renderer, or validator would leave multiple
+editable lifecycle sources. CLI extensions, cross-repository orchestration,
+and product behavior remain separate successors.
 
 ## Inputs, outputs, invariants, and failure semantics
 
-- **Inputs:** synchronized MMM main, its execution files, and the verified exact remote branch.
-- **Outputs:** standards/tests expressing this model and a remote `ready_for_review` receipt or durable `blocked` state.
-- **Invariants:** Git authority; no stale MIP dependency/blocker; unchanged analytical, sibling, and capability authority; retained exact-tree, exact-head, fast-forward-only, cleanup, and PR #19 history.
-- **Failure semantics:** conflicts, unavailable required validation, unsafe branch, or unresolvable Git evidence fail closed; new independent decisions become successors.
-- **Compatibility/migration:** `not_applicable`; no public contract migration occurs.
+- **Inputs:** the synchronized MMM Git checkout, canonical execution JSON, the
+  active-task and completion-report Markdown views, and local Git metadata.
+- **Outputs:** an internal `mmm.execution.taskctl` module, deterministic
+  generated lifecycle blocks, migrated canonical state, updated repository
+  governance rules, and focused tests.
+- **Invariants:** repository identity is `Phani-Pavuluri/MMM`; base branch is
+  `main`; execution mode is `branch_and_fast_forward`; the declared feature
+  branch is not `main`; canonical SHA values are lowercase 40-character commit
+  IDs or null where explicitly allowed; the authorization head is an ancestor
+  of the checked head; merge, PR, analytical, sibling, and capability authority
+  stay false; completion prose never grants authority.
+- **Failure semantics:** malformed JSON, unsupported schema/status, missing or
+  extra required lifecycle evidence, invalid Git repository/remote/branch/SHA
+  evidence, marker corruption, view divergence, forbidden transition, missing
+  correction/blocker/review/cleanup evidence, protected-authority change, or a
+  write failure produces a stable reason-coded error and exit status `2`.
+  `check` never writes. `sync` and `transition` validate complete candidates
+  before any replacement and use same-directory atomic replacement per file.
+
+### Fail-closed conflicts
+
+Taskctl never chooses whichever file, branch, or evidence value appears newer.
+Repository, task, branch, ancestry, lifecycle, implementation, correction,
+cleanup, or authority disagreement is an error until the canonical Git evidence
+is repaired through an authorized lifecycle action.
+
+## Exact implementation behavior
+
+### Canonical MMM state and schema migration
+
+1. Adopt `mmm_repo_execution_state_v3`. Preserve all current durable MMM
+   lineage and coordination fields unless this task explicitly supersedes a
+   lifecycle field.
+2. Validate the existing v2 fields plus these v3 lifecycle fields:
+   `rejected_implementation_commit_sha`, `correction_cycles_completed`,
+   `correction_cycles_remaining`, `live_resolution_condition`,
+   `local_feature_branch_cleanup`, and `remote_feature_branch_cleanup`.
+3. Require non-negative integer correction counters whose completed plus
+   remaining value equals `max_correction_cycles`. Require blocker strings to
+   be nonempty and require a nonempty live resolution condition only for
+   `blocked`. Cleanup values are `not_started`, `not_required`, or
+   `observed_deleted`; `merged` requires both cleanup fields to be
+   `observed_deleted`.
+4. `sync` is the only command allowed to migrate the exact current v2 manual
+   state. The deterministic v2-to-v3 mapping adds null rejected-implementation
+   and resolution evidence, zero completed corrections, the existing maximum
+   as remaining corrections, and `not_started` cleanup. `check` and
+   `transition` reject v2 with `E_MIGRATION_REQUIRED`. Unsupported or ambiguous
+   legacy state fails closed and is not rewritten.
+5. Migration removes only the leading manual lifecycle line in
+   `ACTIVE_TASK.md`, inserts one generated block immediately after each
+   document H1, and otherwise preserves both Markdown files byte-for-byte.
+   After migration, synchronization may replace only the bytes within the
+   unique marker pair.
+
+### Lifecycle and authority policy
+
+Supported statuses remain `proposed`, `authorized`, `in_progress`, `blocked`,
+`changes_requested`, `ready_for_review`, and `merged`. The allowlist is:
+
+- `proposed -> authorized`;
+- `authorized -> in_progress | blocked | ready_for_review`;
+- `in_progress -> blocked | ready_for_review`;
+- `blocked -> in_progress | ready_for_review`;
+- `ready_for_review -> changes_requested | merged`;
+- `changes_requested -> in_progress | blocked | ready_for_review`;
+- `merged` has no outgoing transition.
+
+Lifecycle evidence is exact:
+
+- `proposed` has no execution/correction authority, implementation, review,
+  rejection, approval, blockers, or created feature branch.
+- `authorized` and `in_progress` have task execution authority, no correction
+  authority, no blockers, and no review or approval evidence.
+- `blocked` closes task and correction execution authority, requires at least
+  one blocker plus a live resolution condition, and records decision
+  `blocked`.
+- `changes_requested` closes task execution authority, opens correction
+  authority, and requires the current implementation SHA plus paired rejected
+  review-head and rejected-implementation SHAs.
+- `ready_for_review` retains task execution authority as required by current
+  MMM rules, closes correction authority, requires an implementation SHA,
+  empty blockers, null reviewed/approval SHAs, and decision
+  `ready_for_review`. Completing a correction is explicit and increments the
+  completed counter exactly once while decrementing remaining.
+- `merged` closes execution and correction authority, requires implementation
+  and reviewed-head SHAs, empty blockers, decision `merged`, and observed local
+  and remote task-branch deletion. No pre-merge approval commit is introduced.
+
+`merge_authorized`, `pr_creation_authorized`,
+`mmm_analytical_authority_changed`, `sibling_authority_changed`, and
+`capability_authorizations_changed` must remain false in every state and cannot
+be changed by `transition`. Taskctl does not grant product, sibling, analytical,
+merge, or PR authority.
+
+### Git identity and branch rules
+
+Discover the repository root from an explicit `--root` or the current path.
+Validate the Git top level, canonical `origin` identity, task/repository/branch
+fields, commit-shaped SHA fields, existence of required commits, and
+authorization-head ancestry. Permit lifecycle checking on synchronized `main`
+or the exact declared feature branch only. `proposed -> authorized` and
+`ready_for_review -> merged` are main-only; mutable execution and correction
+transitions are feature-branch-only. Never fetch, pull, push, create/delete a
+branch, commit, merge, rebase, squash, force-update, or contact sibling repos.
+
+### Generated views
+
+Use exactly one `<!-- BEGIN MMM TASKCTL EXECUTION VIEW -->` / `<!-- END MMM
+TASKCTL EXECUTION VIEW -->` block in each view. Render fields in fixed order
+with fixed newline behavior: task/repository, status or decision, execution
+mode, base/authoring/authorization SHAs, feature branch/created flag,
+execution/correction/merge/PR authority, implementation/review/rejection/
+approval evidence, blockers and resolution condition, correction counters,
+cleanup evidence, and unchanged capability-authority flags.
+
+`check` validates state and requires both rendered blocks to match exactly.
+`sync` renders complete candidates, preserves every byte outside the blocks,
+skips writes whose bytes already match, writes changed candidates atomically,
+and finishes by running the same check. Running `sync` twice is byte-identical.
+Missing, duplicated, nested, or reversed markers after migration fail closed.
+
+### Command surface
+
+Provide only:
+
+```text
+python -m mmm.execution.taskctl [--root PATH] check
+python -m mmm.execution.taskctl [--root PATH] sync
+python -m mmm.execution.taskctl [--root PATH] transition --to STATUS [evidence options]
+```
+
+Evidence options must cover implementation, rejected review and implementation,
+reviewed head, repeatable blockers, blocker clearing, live resolution,
+correction completion, and local/remote cleanup. Success returns `0`; every
+`TaskControlError` prints its stable code and message to stderr and returns `2`.
+Unexpected exceptions are not converted into a false success.
+
+## Compatibility and migration policy
+
+This is an internal repository-governance schema migration from
+`mmm_repo_execution_state_v2` to v3. It adds no public package entry point and
+does not change the existing `mmm` CLI. Existing durable task, historical PR
+#19, prior-task, coordination, validation, and authority evidence is preserved.
+After the one-time exact v2 migration, v2 is rejected rather than guessed
+through. Markdown prose outside the generated regions remains byte-preserved.
+No public contract, analytical artifact, or consumer migration applies.
 
 ## Acceptance evidence
 
-`tests/test_repo_native_execution_handoff.py` separately proves: main and branch authority separation; mandatory remote identity/ancestry verification; `ACTIVE_TASK.md` implementation authority; evidence-only completion reports; fail-closed prompt-irreconcilable conflicts; launcher bounds; non-terminal progress; remote `ready_for_review`/`blocked` outcomes; repository/branch/SHA handoff; and retained full validation, exact-tree, exact-head, fast-forward, closure, cleanup, and PR #19 controls. Tests use structural current task/state checks, not a transient workstream ID.
+Add `tests/test_repository_taskctl.py` with isolated temporary repositories and
+focused positive/negative coverage for:
+
+1. exact migration of the authorized task from v2 to v3;
+2. malformed JSON, wrong root type, schema/status/key/type/SHA/branch/repository
+   failures, and mismatched correction counters;
+3. origin/repository, current-branch, missing-commit, and authorization-ancestry
+   failures;
+4. missing/duplicate/reversed markers and generated-view divergence;
+5. byte preservation outside both blocks and byte-identical repeated `sync`;
+6. every allowed edge and representative forbidden edges;
+7. protected merge/PR/analytical/sibling/capability authority rejection;
+8. blocked-state evidence and live-resolution requirements;
+9. paired correction provenance, explicit correction completion, and correction
+   counter exhaustion;
+10. review-ready implementation evidence and merged reviewed-head/cleanup
+    evidence;
+11. candidate validation before writes, stable stderr reason codes, and CLI
+    exit statuses.
+
+Update `tests/test_repo_native_execution_handoff.py` so current repository
+semantics require the canonical v3 state, generated views, taskctl command
+surface, v2 migration boundary, lifecycle/authority invariants, and retained
+exact-tree, exact-head, Docker, cleanup, and historical PR #19 controls. Tests
+must assert behavior rather than copy either sibling implementation.
 
 ## Owned paths
 
-1. `AGENTS.md`
-2. `docs/execution/TASK_EXECUTION_STANDARD.md`
-3. `tests/test_repo_native_execution_handoff.py`
-4. `docs/execution/ACTIVE_TASK.md`
-5. `docs/execution/EXECUTION_STATE.json`
-6. `docs/execution/LATEST_COMPLETION_REPORT.md`
+1. `mmm/execution/__init__.py`
+2. `mmm/execution/taskctl.py`
+3. `tests/test_repository_taskctl.py`
+4. `tests/test_repo_native_execution_handoff.py`
+5. `AGENTS.md`
+6. `docs/execution/TASK_EXECUTION_STANDARD.md`
+7. `docs/execution/ACTIVE_TASK.md`
+8. `docs/execution/EXECUTION_STATE.json`
+9. `docs/execution/LATEST_COMPLETION_REPORT.md`
+
+No other path is owned. In particular, do not modify `pyproject.toml`; the
+module invocation is the executable surface for this milestone.
 
 ## Prohibited scope
 
-Do not modify or authorize `mmm/**`; analytical code/tests; models, diagnostics, calibration, simulation, optimization, numerical truth; contracts, adapters, parsers, fixtures, schemas, runtime, package, release, CI, or deployment; MIP/GeoX; CalibrationSignal, TrustReport, DecisionSurface, planning, recommendations, real data, or production; task manifests, prompt/Markdown generators, validation registries, repository adapters, lookup ledgers, incident generators, `taskctl`, or cross-repository orchestration. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge approval commit.
+Do not modify or authorize analytical code/tests; models; diagnostics;
+calibration; simulation; optimization; numerical truth; contracts; adapters;
+parsers; schemas outside the execution-state schema; fixtures; package/public
+APIs; the existing `mmm` CLI; release, CI, or deployment; validation registries;
+MIP or GeoX; cross-repository orchestration; CalibrationSignal; TrustReport;
+DecisionSurface; planning; recommendations; real data; pilot; or production.
+Do not copy MIP or GeoX taskctl blindly. Do not create a PR, merge, squash,
+rebase, force-push, merge commit, or pre-merge approval commit.
 
 ## Validation
 
-On the frozen exact task-owned tree run `python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null`, `poetry run pytest -q tests/test_repo_native_execution_handoff.py`, `poetry run ruff check tests/test_repo_native_execution_handoff.py`, `poetry run mypy tests/test_repo_native_execution_handoff.py`, `git diff --check`, and `make validate`. Also verify changed paths, task/repository/branch consistency, authorization-head ancestry, lifecycle/authority compatibility, implementation/report consistency, no stale MIP dependency/blocker, and exact local/remote feature-head equality. Repair host Poetry reasonably before calling it an environment blocker; do not start duplicate validation containers.
+On the frozen exact task-owned tree run:
 
-## Publication and stop conditions
+```text
+python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null
+poetry run python -m mmm.execution.taskctl check
+poetry run pytest -q tests/test_repository_taskctl.py tests/test_repo_native_execution_handoff.py
+poetry run ruff check mmm/execution tests/test_repository_taskctl.py tests/test_repo_native_execution_handoff.py
+poetry run mypy mmm/execution tests/test_repository_taskctl.py tests/test_repo_native_execution_handoff.py
+git diff --check
+make validate
+```
 
-Create one implementation commit and one final exact-tree receipt commit. The receipt records milestone, branch, implementation SHA, exact remote branch head, changed paths, behavior, every validation result and exact full-suite counts, validations not run, blockers, limitations, validation debt, repository/sibling and consumer impact, authority impact, worktree/evidence source, and no PR/merge. Publish `ready_for_review` with execution true; correction/merge/PR false; empty blockers; implementation SHA; null reviewed/approval SHAs; and unchanged analytical, sibling, and capability authority. Push, verify remote equality, and stop for external review.
+Also prove the exact changed-path allowlist, authoring/authorization ancestry,
+task/repository/branch consistency, local/remote feature-head equality, and no
+post-receipt task-owned changes. Repair the host Poetry environment reasonably
+before treating it as unavailable; use the repository Docker path and do not
+start duplicate validation containers. The full Docker gate is mandatory even
+though this is Tier 1 because MMM repository rules and this task require it.
 
-Closure evidence: approved head `26d90dcc10d026a33601889fba87eacc278de0c3` was fast-forwarded to `main`, validated again, and the task branch was removed locally and remotely. The closure commit is limited to these stable execution files; no product, analytical, sibling, or capability authority changed.
+## Implementation, publication, and stop conditions
+
+Create the declared feature branch from the synchronized authorization-state
+commit; do not reinterpret this contract from chat. Make one implementation
+commit and one final exact-tree receipt commit. The receipt records milestone,
+branch, implementation SHA, exact remote head, exact changed paths, behavior,
+focused and full validation commands/results/counts, validations not run,
+blockers, limitations, validation debt, worktree/evidence source, authority and
+sibling/consumer impact, and confirmation of no PR or merge.
+
+Publish only `ready_for_review` with task execution true; correction, merge, and
+PR authority false; empty blockers; implementation SHA; null reviewed and
+approval SHAs; unchanged analytical, sibling, and capability authority; and an
+exact-tree receipt. Push and verify the exact remote branch head, then stop for
+external review. A genuine execution blocker must be recorded durably on the
+safe authorized feature branch with exact evidence and a live resolution
+condition.
 
 ## Deferred successors
 
-- Cross-repository coordination or orchestration implementation.
-- Any analytical, package, public-contract, or capability work.
+- Additional taskctl commands or external automation.
+- Cross-repository execution orchestration.
+- Any analytical, public/package, runtime, or product capability.
 
 **Unresolved execution-blocking design questions: none.**
