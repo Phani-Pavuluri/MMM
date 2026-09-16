@@ -27,6 +27,11 @@ Progress is non-terminal; only remotely published `ready_for_review` or
 
 ## Exact-tree publication
 
+The repository execution state is a single-source v3 document. Generated
+execution blocks in human-facing views are synchronized by
+`python -m mmm.execution.taskctl`; manual lifecycle edits are rejected after
+the one-time v2 migration.
+
 Before review, freeze the task-owned tree and run the active risk-tier gate on that
 tree, and make the final publication commit a receipt containing task ID,
 implementation parent, `exact-commit-tree` scope, gate/result, focused count,

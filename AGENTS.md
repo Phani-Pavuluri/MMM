@@ -87,6 +87,12 @@ branch, and exact remote head SHA; chat output is diagnostic context only.
 
 ## Execute the active task
 
+MMM execution lifecycle state is canonical in
+`docs/execution/EXECUTION_STATE.json`. Use the task-owned controller
+(`python -m mmm.execution.taskctl check|sync|transition`) for lifecycle
+validation, deterministic human-view synchronization, and allowed transitions;
+the Markdown views and completion report never grant authority.
+
 Require one independently mergeable outcome; exact behavior/boundaries;
 surface-appropriate resolved decisions; inputs, outputs, invariants, failures;
 compatibility or migration policy (or `not_applicable`); named evidence; owned

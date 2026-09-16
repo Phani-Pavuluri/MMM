@@ -19,7 +19,15 @@ STATE = json.loads((ROOT / "docs/execution/EXECUTION_STATE.json").read_text(enco
 
 def assert_lifecycle_consistency(state: dict[str, object]) -> None:
     lifecycle = state["status"]
-    assert lifecycle in {"proposed", "authorized", "in_progress", "blocked", "changes_requested", "ready_for_review", "merged"}
+    assert lifecycle in {
+        "proposed",
+        "authorized",
+        "in_progress",
+        "blocked",
+        "changes_requested",
+        "ready_for_review",
+        "merged",
+    }
     assert state["merge_authorized"] is False
     assert state["pr_creation_authorized"] is False
     assert state["mmm_analytical_authority_changed"] is False
@@ -205,6 +213,9 @@ def test_authority_hierarchy_and_current_task_consistency_are_adopted() -> None:
     assert "`ACTIVE_TASK.md` owns" in AGENTS
     assert "`LATEST_COMPLETION_REPORT.md` is evidence only" in AGENTS
     assert STATE["task_id"] in TASK
+    assert STATE["schema_version"] == "mmm_repo_execution_state_v3"
+    assert "python -m mmm.execution.taskctl" in TASK
+    assert "rejected_implementation_commit_sha" in STATE
     assert STATE["task_id"] in (ROOT / "docs/execution/LATEST_COMPLETION_REPORT.md").read_text()
     assert STATE["feature_branch"] in TASK
     report = (ROOT / "docs/execution/LATEST_COMPLETION_REPORT.md").read_text()
@@ -215,7 +226,9 @@ def test_authority_hierarchy_and_current_task_consistency_are_adopted() -> None:
     assert_lifecycle_consistency(STATE)
 
 
-@pytest.mark.parametrize("lifecycle", ("proposed", "authorized", "in_progress", "blocked", "changes_requested", "ready_for_review", "merged"))
+@pytest.mark.parametrize(
+    "lifecycle", ("proposed", "authorized", "in_progress", "blocked", "changes_requested", "ready_for_review", "merged")
+)
 def test_lifecycle_validator_exercises_every_supported_state(lifecycle: str) -> None:
     state = valid_state_for(lifecycle)
     assert_lifecycle_consistency(state)
@@ -273,6 +286,16 @@ def test_full_validation_and_closure_controls_remain_preserved() -> None:
     assert STATE["mmm_analytical_authority_changed"] is False
     assert STATE["sibling_authority_changed"] is False
     assert STATE["capability_authorizations_changed"] is False
+
+
+def test_single_source_taskctl_contract_is_adopted() -> None:
+    assert "mmm_repo_execution_state_v3" in TASK
+    assert "v2 is rejected" in TASK
+    assert "generated lifecycle blocks" in TASK
+    assert "python -m mmm.execution.taskctl check" in TASK
+    assert "taskctl [--root PATH] sync" in TASK
+    assert "taskctl [--root PATH] transition" in TASK
+    assert STATE["schema_version"] == "mmm_repo_execution_state_v3"
 
 
 def test_launcher_does_not_duplicate_task_meaning() -> None:
