@@ -440,6 +440,13 @@ def validate_git_identity(root: Path, state: dict[str, Any]) -> None:
         origin_main = _git(root, "rev-parse", "origin/main")
         if _git(root, "rev-parse", "HEAD") != origin_main:
             fail("E_MAIN_SYNC", "main must equal origin/main")
+    if state["status"] == "merged":
+        for ref in (f"refs/heads/{state['feature_branch']}", f"refs/remotes/origin/{state['feature_branch']}"):
+            if subprocess.run(
+                ["git", "-C", str(root), "show-ref", "--verify", "--quiet", ref],
+                check=False,
+            ).returncode == 0:
+                fail("E_CLEANUP", f"merged task branch ref still exists: {ref}")
 
 
 def render_view(state: dict[str, Any]) -> str:

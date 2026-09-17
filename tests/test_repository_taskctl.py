@@ -151,7 +151,7 @@ def test_correction_direct_and_resumed_paths_preserve_rejection_and_consume_once
     taskctl.transition(root, _args("ready_for_review", implementation_sha=sha, complete_correction=True))
     state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
     assert state["correction_cycles_completed"] == 1
-    assert state["correction_cycles_remaining"] == 0
+    assert state["correction_cycles_remaining"] == state["max_correction_cycles"] - 1
     assert state["rejected_review_head_sha"] == sha
 
     root, sha = _feature_fixture(tmp_path / "resumed")
@@ -163,7 +163,7 @@ def test_correction_direct_and_resumed_paths_preserve_rejection_and_consume_once
     taskctl.transition(root, _args("ready_for_review", implementation_sha=sha, complete_correction=True))
     final = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
     assert final["correction_cycles_completed"] == 1
-    assert final["correction_cycles_remaining"] == 0
+    assert final["correction_cycles_remaining"] == final["max_correction_cycles"] - 1
 
 
 def test_blocker_evidence_requires_explicit_unambiguous_clearing(tmp_path: Path) -> None:
@@ -237,6 +237,18 @@ def test_correction_exhaustion_and_merged_evidence(tmp_path: Path) -> None:
     root, sha = _feature_fixture(tmp_path)
     _to_ready_then_changes_requested(root, sha)
     taskctl.transition(root, _args("ready_for_review", implementation_sha=sha, complete_correction=True))
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    assert state["correction_cycles_remaining"] == 1
+    taskctl.transition(
+        root,
+        _args(
+            "changes_requested",
+            implementation_sha=sha,
+            rejected_review_head_sha=sha,
+            rejected_implementation_commit_sha=sha,
+        ),
+    )
+    taskctl.transition(root, _args("ready_for_review", implementation_sha=sha, complete_correction=True))
     with pytest.raises(taskctl.TaskControlError, match="E_CORRECTION"):
         taskctl.transition(
             root,
@@ -256,6 +268,8 @@ def test_correction_exhaustion_and_merged_evidence(tmp_path: Path) -> None:
     _git(root, "branch", "-f", "main", "HEAD")
     _git(root, "switch", "main")
     _git(root, "update-ref", "refs/remotes/origin/main", "HEAD")
+    _git(root, "update-ref", "-d", "refs/heads/feat/mmm-repository-single-source-taskctl-adoption-001")
+    _git(root, "update-ref", "-d", "refs/remotes/origin/feat/mmm-repository-single-source-taskctl-adoption-001")
     taskctl.transition(
         root,
         _args(
@@ -267,6 +281,46 @@ def test_correction_exhaustion_and_merged_evidence(tmp_path: Path) -> None:
     )
     state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
     assert state["status"] == "merged"
+
+
+@pytest.mark.parametrize("surviving_ref", ("local", "remote"))
+def test_merged_cleanup_rejects_surviving_refs(tmp_path: Path, surviving_ref: str) -> None:
+    root, sha = _feature_fixture(tmp_path / surviving_ref)
+    taskctl.transition(root, _args("in_progress"))
+    taskctl.transition(root, _args("ready_for_review", implementation_sha=sha))
+    _git(root, "add", ".")
+    _git(root, "commit", "-m", "fixture ready state")
+    feature = "feat/mmm-repository-single-source-taskctl-adoption-001"
+    _git(root, "branch", "-f", "main", "HEAD")
+    _git(root, "switch", "main")
+    _git(root, "update-ref", "refs/remotes/origin/main", "HEAD")
+    if surviving_ref == "local":
+        pass
+    else:
+        _git(root, "update-ref", "-d", f"refs/heads/{feature}")
+        _git(root, "update-ref", f"refs/remotes/origin/{feature}", "HEAD")
+    with pytest.raises(taskctl.TaskControlError, match="E_CLEANUP"):
+        taskctl.transition(
+            root,
+            _args(
+                "merged",
+                reviewed_head_sha=sha,
+                local_feature_branch_cleanup="observed_deleted",
+                remote_feature_branch_cleanup="observed_deleted",
+            ),
+        )
+
+
+def test_every_declared_edge_has_a_representative_executable_path(tmp_path: Path) -> None:
+    root, sha = _feature_fixture(tmp_path)
+    taskctl.transition(root, _args("in_progress"))
+    taskctl.transition(root, _args("blocked", blocker=["pause"], live_resolution_condition="resume"))
+    taskctl.transition(root, _args("in_progress", clear_blockers=True))
+    taskctl.transition(root, _args("ready_for_review", implementation_sha=sha))
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    assert state["status"] == "ready_for_review"
+    with pytest.raises(taskctl.TaskControlError, match="E_TRANSITION"):
+        taskctl.transition(root, _args("authorized"))
 def test_exact_v2_migration_and_idempotent_sync(tmp_path: Path) -> None:
     root = _fixture(tmp_path)
     with pytest.raises(taskctl.TaskControlError, match="E_MIGRATION_REQUIRED"):
