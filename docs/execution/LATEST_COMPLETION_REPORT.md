@@ -32,37 +32,12 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-## MMM_MACOS_FINDER_METADATA_HYGIENE_001 — authorization evidence
+## MMM_TASKCTL_FIXTURE_STATE_DRIVEN_FEATURE_BRANCH_CLEANUP_001 — proposed task-authoring evidence
 
-- Main-only controller transition: `proposed -> authorized` was applied from
-  synchronized `main` after taskctl identity, ancestry, and generated-view
-  checks passed.
-- Authority: task execution is now authorized solely for the declared
-  `feat/mmm-macos-finder-metadata-hygiene-001` branch. Correction, merge, PR,
-  MIP, GeoX, analytical, sibling, and capability authority remain false.
-- Branch boundary: authorization does not create the feature branch; its local
-  and remote refs were verified absent at authorization time. No Finder file,
-  ignore policy, local draft, implementation, PR, or merge was changed.
-- The future execution must use the Git-authored task contract and publish a
-  durable `ready_for_review` or `blocked` outcome after its required validation.
-
-## MMM_MACOS_FINDER_METADATA_HYGIENE_001 — proposed successor authoring evidence
-
-- Synchronized main evidence: `main` and `origin/main` both resolve to
-  `afac689a80efd3f324645d9fb4585e1e0fd66617`, which closes
-  `MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001`.
-- Scope: one MMM-only Tier 1 repository-metadata outcome—index-only removal of
-  the tracked root `.DS_Store`, one recursive basename ignore rule, and proof
-  that no Finder metadata remains tracked without altering unrelated drafts.
-- Authority: this is proposed task authoring only. No feature branch exists;
-  task execution, correction, merge, PR, MIP, GeoX, analytical, sibling, and
-  capability authority are false.
-- Planned evidence: isolated-worktree inventory before/after, local-file and
-  primary-draft preservation, `git check-ignore`, basename-exact tracked-file
-  inventory, changed-path/diff checks, taskctl/state checks, and exact remote
-  head equality. Docker-backed `make validate` is mandatory under MMM's
-  repository-authored full gate; standalone executable/lint/type categories are
-  not required for this Tier 1 ignore-policy-only change.
-- No Finder file, draft, product code, analytical behavior, public/package
-  surface, MIP, GeoX, or other authority was changed during authoring.
+- Isolated `main` and `origin/main` equal `add1eb2d953412bbc5d413d17a548841459f90f6` before authoring.
+- Finder branch `edb4fb10c1870edb468a72cd09ef91b9ae6674e3` descends from authorization `719844e1a4c29c87c0443320ed3eb91fb55e1dad` and contains the valid blocked receipt whose resolution names this narrow successor. The branch and receipt are preserved unchanged.
+- Scope is one MMM-only Tier 1 fixture repair: state-derived cleanup refs plus arbitrary declared task/branch merged-lifecycle proof; production taskctl and non-test surfaces are preserved.
+- Authority remains proposed authoring only: no feature branch, execution, implementation, correction, PR, merge, MIP, GeoX, analytical, sibling, or capability authority change.
+- Future evidence requires focused fixture tests, source identity proof, JSON/taskctl/diff checks, changed-path/remote-head proof, and Docker-backed `make validate`; a required failure is Git-durable `blocked`.
+- Finder-hygiene files, production taskctl behavior, MIP, GeoX, analytical/public/product/package behavior, capability authority, PR creation, merge, rebase, squash, and force-push are prohibited.
 - Unresolved execution-blocking design questions: none.

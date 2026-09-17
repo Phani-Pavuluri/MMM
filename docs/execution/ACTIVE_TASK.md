@@ -32,196 +32,77 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-**Owner:** MMM repository hygiene
+**Owner:** MMM repository governance
 **Last updated:** 2026-09-17
 **Last verified:** 2026-09-17
 
-## Identity
+## Identity and supersession prerequisite
 
-- **Task ID:** `MMM_MACOS_FINDER_METADATA_HYGIENE_001`
+- **Task ID:** `MMM_TASKCTL_FIXTURE_STATE_DRIVEN_FEATURE_BRANCH_CLEANUP_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Synchronized base:** `afac689a80efd3f324645d9fb4585e1e0fd66617`
-- **Feature branch:** `feat/mmm-macos-finder-metadata-hygiene-001`
+- **Synchronized base:** `add1eb2d953412bbc5d413d17a548841459f90f6`
+- **Declared future feature branch:** `feat/mmm-taskctl-fixture-state-driven-feature-branch-cleanup-001`
 - **Execution mode:** `branch_and_fast_forward`
-- **Risk tier:** Tier 1 MMM repository metadata hygiene with focused validation
-- **Capability authorizations changed:** `false`
+- **Risk tier:** Tier 1 MMM repository-governance test-fixture repair with mandatory full repository validation
+- **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior
 
-`MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001` is closed on synchronized
-`main` at `afac689a80efd3f324645d9fb4585e1e0fd66617`. This is one independent
-MMM-only repository-hygiene successor. It has no MIP, GeoX, analytical, public,
-package, runtime, product, consumer, or capability dependency. Unresolved
-execution-blocking design questions: none.
+This is an independent MMM-only successor, not a correction, to the blocked Finder-hygiene task. Before future authorization, bootstrap a clean isolated worktree from synchronized `origin/main`, preserve the primary checkout and all drafts, and verify main equality to the declared base. Verify `origin/feat/mmm-macos-finder-metadata-hygiene-001` remains the valid blocked receipt at `edb4fb10c1870edb468a72cd09ef91b9ae6674e3`, descends from authorization head `719844e1a4c29c87c0443320ed3eb91fb55e1dad`, and retains its taskctl-fixture blocker. This task does not overwrite, reinterpret, abandon, or alter that receipt or branch.
+
+Any disagreement in main equality, task identity, branch identity, authorization ancestry, blocked receipt, or ownership evidence is fail-closed: do not create a successor branch; publish `blocked` only on a safe authorized branch with exact mismatch, attempted evidence, validation categories, and live resolution condition.
 
 ## Primary independently reviewable outcome
 
-Remove the tracked root Finder metadata file `.DS_Store` from MMM's Git index
-without deleting its local filesystem copy, and add the repository-level
-`.DS_Store` ignore rule that prevents Finder metadata at the repository root or
-below it from being tracked in future. Prove that no tracked path is Finder
-`.DS_Store` metadata and that unrelated local drafts and repository behavior
-are preserved.
+In `tests/test_repository_taskctl.py`, replace the hard-coded cleanup refs `feat/mmm-repository-single-source-taskctl-adoption-001` with the fixture state's declared `feature_branch`. Prove the merged-lifecycle fixture succeeds for an arbitrary declared task ID and feature branch.
 
-This changes Git tracking policy only. It does not change MMM source, tests,
-configuration behavior, package/public surface, analytical behavior, MIP,
-GeoX, or any authority.
+The repair is test-fixture setup and cleanup only. It preserves taskctl production behavior, lifecycle semantics, MMM authority controls, and all non-test surfaces.
 
-## Why this task cannot be split further
+## Atomic boundary
 
-The index-only removal, recursive ignore policy, and proof that the repository
-has no tracked Finder metadata form one atomic hygiene boundary. Shipping only
-an ignore rule leaves the already-tracked root file tracked; shipping only an
-index removal permits its return. No product or cross-repository change is
-needed.
+State-driven cleanup and an arbitrary-identity merged-lifecycle proof are one regression boundary. Replacing literals alone does not prove arbitrary identity; a new proof alone leaves the faulty cleanup literals. No production or cross-repository change is required.
 
-## Inputs, outputs, invariants, and Failure semantics
+## Inputs, outputs, invariants, and failure behavior
 
-- **Inputs:** synchronized `origin/main` at the declared base, the tracked root
-  `.DS_Store` inventory, the existing `.gitignore`, and a clean isolated
-  execution worktree.
-- **Outputs:** the root `.DS_Store` removed from Git tracking only and one
-  `.DS_Store` repository ignore pattern in `.gitignore`.
-- **Invariants:** the local root `.DS_Store` file is not deleted; no unrelated
-  local file, draft, index entry, or repository behavior changes; the ignore
-  pattern applies to `.DS_Store` at any directory depth; `git ls-files` reports
-  no path whose basename is exactly `.DS_Store`; all MIP, GeoX, analytical,
-  public, product, package, and capability authority remains unchanged.
-- **Failure semantics:** if the base or tracked-file inventory differs, the
-  worktree is not clean/isolated, `.gitignore` has ambiguous or conflicting
-  Finder rules, index-only removal would delete a local file, a Finder path
-  remains tracked, unrelated paths are changed, or a required validation fails,
-  do not guess or broaden scope. Record a Git-durable `blocked` state on the
-  safe authorized branch with the exact evidence, validation-category status,
-  and a live resolution condition.
-
-## Fail-closed conflicts
-
-The proposed task remains governed by `mmm_repo_execution_state_v3` and its
-generated lifecycle blocks. The prior one-time v2 migration is complete; v2 is rejected
-rather than guessed through. Repository, task, branch, ancestry,
-tracked-Finder inventory, lifecycle, or authority disagreement is an error
-until corrected by a permitted Git-authored lifecycle action.
-
-The controller surface remains `python -m mmm.execution.taskctl check`,
-`taskctl [--root PATH] sync`, and `taskctl [--root PATH] transition`; it does
-not authorize this proposed task to execute.
+- **Inputs:** synchronized main; the named blocked receipt; `tests/test_repository_taskctl.py`; existing fixture-state contract; clean isolated worktree.
+- **Outputs:** local and remote cleanup refs derive from `state["feature_branch"]`; the merged fixture declares arbitrary valid task and branch identities before branch creation, deletes those declared refs, and reaches `merged`.
+- **Invariants:** no cleanup ref encodes `feat/mmm-repository-single-source-taskctl-adoption-001`; surviving declared local or remote refs still fail with `E_CLEANUP`; `mmm/execution/taskctl.py`, all production behavior, lifecycle semantics, and authority controls stay unchanged; no Finder-hygiene, MIP, GeoX, analytical, public, product, package, runtime, configuration, schema, contract, or capability-authority change.
+- **Failure behavior:** if arbitrary identity cannot be established before branch creation, cleanup cannot derive from the state, the merged transition fails, validation fails, a prohibited path changes, or the Finder receipt conflicts, do not broaden scope. Publish Git-durable `blocked` with exact evidence, category results, and a live resolution condition.
 
 ## Exact implementation behavior
 
-1. Bootstrap according to `AGENTS.md` in a clean isolated worktree based on
-   synchronized `origin/main`; never use, stage, stash, delete, or otherwise
-   alter a user's primary checkout or its unrelated drafts.
-2. Verify that the declared base has exactly the root `.DS_Store` as tracked
-   Finder metadata before changing the index. If additional tracked Finder
-   metadata is present, stop as scope is not authorized.
-3. Remove only the root `.DS_Store` from the Git index. Preserve its working
-   tree file and bytes; this is an index-only operation, not filesystem removal.
-4. Add one root `.gitignore` rule, `.DS_Store`, using Git's basename matching
-   behavior so it covers Finder metadata in every repository directory. Do not
-   add broad macOS, editor, build, or unrelated ignore patterns.
-5. Do not alter the content or tracking of any other path. The implementation
-   diff must contain only `.gitignore` and the index deletion of `.DS_Store`,
-   plus the task-owned execution-state/report receipt paths required by MMM
-   publication.
-
-## Compatibility and migration policy
-
-No public, package, schema, data, analytical, runtime, or consumer migration
-applies. Existing local Finder files remain local and are deliberately ignored;
-the repository's tracked root `.DS_Store` is removed only from version control.
-Clones after the change no longer receive this machine-specific metadata. This
-is backward-compatible for repository behavior because Finder metadata is not a
-repository input or artifact.
-
-## Acceptance evidence
-
-On the frozen exact task-owned tree, record all of the following:
-
-1. the pre-change tracked-Finder inventory proves the declared base contains
-   only the root `.DS_Store`;
-2. `git diff --cached --name-status` (or equivalent committed-tree evidence)
-   proves `.DS_Store` is deleted from the index and no local file deletion was
-   performed;
-3. `.gitignore` contains exactly one `.DS_Store` policy rule, and
-   `git check-ignore -v --no-index .DS_Store` proves that rule applies;
-4. a basename-exact `git ls-files` inventory returns no `.DS_Store` path;
-5. the changed-path proof contains only `.gitignore`, `.DS_Store`, and the
-   authorized task publication paths; and
-6. primary-checkout status captured before task execution is unchanged after
-   the work, including any unrelated local drafts. The execution worktree is
-   clean except for the intended task changes before publication.
+1. Replace both local and remote hard-coded cleanup refs in the merged-lifecycle path with refs constructed from the fixture state `feature_branch`.
+2. Declare a valid arbitrary task ID and valid arbitrary feature branch before the fixture creates the feature branch; do not use a historical MMM identity as the oracle.
+3. Delete the declared local and remote refs, exercise the existing merged transition, and assert `merged`; retain negative coverage for each surviving declared ref failing with `E_CLEANUP`.
+4. Do not change `mmm/execution/taskctl.py`, transition edges, schema, generated views, cleanup semantics, authority validation, or fixture helpers beyond what is necessary for state-driven cleanup.
 
 ## Owned paths
 
-1. `.gitignore`
-2. `.DS_Store` (Git index removal only; preserve the local file)
-3. `docs/execution/ACTIVE_TASK.md`
-4. `docs/execution/EXECUTION_STATE.json`
-5. `docs/execution/LATEST_COMPLETION_REPORT.md`
+1. `tests/test_repository_taskctl.py`
+2. `docs/execution/ACTIVE_TASK.md`
+3. `docs/execution/EXECUTION_STATE.json`
+4. `docs/execution/LATEST_COMPLETION_REPORT.md`
 
 No other path is owned.
 
 ## Prohibited scope
 
-Do not delete any local `.DS_Store` file; modify any source, tests, packages,
-public APIs, schemas, fixtures, contracts, configurations, dependency files,
-CI, releases, deployment, documentation outside the three execution files,
-or validation registries; alter any unrelated local draft; or create a PR,
-merge, squash, rebase, force-push, merge commit, or pre-merge approval commit.
-Do not change MIP, GeoX, analytical, public, product, runtime, consumer,
-sibling, or capability authority.
+Do not change `.DS_Store`, `.gitignore`, or any other Finder-hygiene file; `mmm/execution/taskctl.py`; source, fixtures other than the owned test, packages, public APIs, schemas, contracts, configuration, dependencies, CI, releases, deployment, documentation outside the three execution files, validation registries, MIP, GeoX, analytical, public, product, package, runtime, or consumer behavior. Do not change capability authority. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge approval commit.
 
-## Validation
+## Acceptance evidence and validation
 
-Required Tier 1 evidence on the exact frozen task tree:
+On the frozen exact task-owned tree record focused proof of arbitrary declared identity, state-derived local/remote deletion, and `merged`; negative `E_CLEANUP` coverage for surviving local and remote refs; source proof of no historical cleanup ref and fixture-state usage; changed-path proof limited to owned paths; JSON/taskctl/diff checks; remote feature-head equality; and Docker-backed `make validate`.
 
-```text
-python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null
-poetry run python -m mmm.execution.taskctl check
-git check-ignore -v --no-index .DS_Store
-basename-exact tracked-Finder inventory returns empty
-git diff --check
-make validate
-exact changed-path allowlist and index-only-removal proof
-authoring/authorization ancestry, task/repository/branch consistency,
-local/remote feature-head equality, primary-draft preservation, and no
-post-receipt task-owned changes
-```
+Required validation: `python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null`; `poetry run pytest tests/test_repository_taskctl.py`; `poetry run python -m mmm.execution.taskctl check`; `git diff --check`; `make validate`; and exact changed-path/state-derived-cleanup/identity evidence. `make validate` is mandatory. Separate Ruff and mypy categories are `not_required` because only this test fixture changes, but are not waived from `make validate`. A required category that cannot run is `blocked`.
 
-Docker-backed `make validate` is mandatory under MMM's repository-authored full
-gate even though this is Tier 1. Standalone pytest, Ruff, and mypy categories
-are `not_required` because the task changes no executable, analytical,
-public/package, or runtime surface; `make validate` remains the required full
-validation evidence. A required category that cannot run is `blocked`.
+## Publication and stop conditions
 
-## Implementation, publication, and stop conditions
+This is proposed authoring only: no feature branch, execution, implementation, correction, PR, merge, MIP, GeoX, analytical, sibling, or capability authority. Only a future main-only `proposed -> authorized` transition may create the declared branch and begin execution.
 
-Only after a future main-only `proposed -> authorized` transition may the
-declared feature branch be created and execution begin. Create one
-implementation commit and one final exact-tree receipt commit. The receipt must
-record the task ID, implementation parent, exact commit-tree scope, tracked
-Finder inventory before/after, `.gitignore` rule evidence, local-file
-preservation method/result, primary-draft preservation evidence, required and
-`not_required` validation categories, changed-path and diff results, remote
-feature head, worktree/evidence source, blockers/limitations/debt, and
-unchanged authority.
-
-Publish only `ready_for_review` with execution true; correction, merge, and PR
-authority false; empty blockers; implementation SHA; null reviewed and approval
-SHAs; unchanged analytical, sibling, and capability authority; and the exact
-tree receipt. Push and verify exact remote feature-head equality, then stop for
-external review. A genuine execution blocker must be published on the safe
-authorized branch with the exact evidence and live resolution condition.
-
-External approval, if ever supplied, must bind the exact remote review head;
-exact-head validation repeats before and after only `git merge --ff-only`.
-After branch cleanup, a separate one closure commit is the only permitted
-closure action. Historical PR #19 remains nonconforming and is not authority
-for this task.
+Future execution creates one implementation and one exact-tree receipt commit. The receipt records arbitrary task/branch identity, state-driven cleanup evidence, negative coverage, required validation categories, changed paths, exact remote feature head, blockers/debt, and unchanged authority. Publish only `ready_for_review` with correction, merge, and PR authority false, no blockers, null reviewed/approval SHAs, and remote-head equality. A genuine failure publishes `blocked` on the safe authorized branch.
 
 ## Deferred successors
 
-- Broader repository hygiene for other operating-system or editor metadata.
-- Any policy change affecting generated artifacts, tooling, CI, package/public,
-  analytical, MIP, GeoX, or product surfaces.
+- Generalize unrelated taskctl fixtures only after a distinct demonstrated identity defect.
+- Resume the preserved Finder-hygiene task after this successor merges and its full gate reruns under its own authority.
+- Production taskctl, lifecycle, authority, MIP, GeoX, analytical, public, product, or package change.
 
 **Unresolved execution-blocking design questions: none.**
