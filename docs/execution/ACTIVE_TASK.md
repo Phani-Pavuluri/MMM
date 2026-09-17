@@ -93,6 +93,14 @@ needed.
   safe authorized branch with the exact evidence, validation-category status,
   and a live resolution condition.
 
+## Fail-closed conflicts
+
+The proposed task remains governed by `mmm_repo_execution_state_v3` and its
+generated lifecycle blocks. The prior one-time v2 migration is complete; v2 is
+rejected rather than guessed through. Repository, task, branch, ancestry,
+tracked-Finder inventory, lifecycle, or authority disagreement is an error
+until corrected by a permitted Git-authored lifecycle action.
+
 ## Exact implementation behavior
 
 1. Bootstrap according to `AGENTS.md` in a clean isolated worktree based on
@@ -199,6 +207,12 @@ SHAs; unchanged analytical, sibling, and capability authority; and the exact
 tree receipt. Push and verify exact remote feature-head equality, then stop for
 external review. A genuine execution blocker must be published on the safe
 authorized branch with the exact evidence and live resolution condition.
+
+External approval, if ever supplied, must bind the exact remote review head;
+exact-head validation repeats before and after only `git merge --ff-only`.
+After branch cleanup, a separate one closure commit is the only permitted
+closure action. Historical PR #19 remains nonconforming and is not authority
+for this task.
 
 ## Deferred successors
 
