@@ -7,7 +7,9 @@ import json
 import re
 import subprocess
 import sys
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -238,17 +240,19 @@ def test_correction_exhaustion_and_merged_evidence(tmp_path: Path) -> None:
     _to_ready_then_changes_requested(root, sha)
     taskctl.transition(root, _args("ready_for_review", implementation_sha=sha, complete_correction=True))
     state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
-    assert state["correction_cycles_remaining"] == 1
-    taskctl.transition(
-        root,
-        _args(
-            "changes_requested",
-            implementation_sha=sha,
-            rejected_review_head_sha=sha,
-            rejected_implementation_commit_sha=sha,
-        ),
-    )
-    taskctl.transition(root, _args("ready_for_review", implementation_sha=sha, complete_correction=True))
+    assert state["correction_cycles_remaining"] == state["max_correction_cycles"] - 1
+    while state["correction_cycles_remaining"]:
+        taskctl.transition(
+            root,
+            _args(
+                "changes_requested",
+                implementation_sha=sha,
+                rejected_review_head_sha=sha,
+                rejected_implementation_commit_sha=sha,
+            ),
+        )
+        taskctl.transition(root, _args("ready_for_review", implementation_sha=sha, complete_correction=True))
+        state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
     with pytest.raises(taskctl.TaskControlError, match="E_CORRECTION"):
         taskctl.transition(
             root,
@@ -378,5 +382,107 @@ def test_transition_requires_branch_and_evidence(tmp_path: Path) -> None:
                     "local_feature_branch_cleanup": None,
                     "remote_feature_branch_cleanup": None,
                 },
-            )(),
+        )(),
         )
+
+
+@pytest.mark.parametrize("payload", ("not json", "[]", "null", "\"text\""))
+def test_malformed_json_and_non_object_roots_fail_closed(tmp_path: Path, payload: str) -> None:
+    root = _fixture(tmp_path)
+    (root / taskctl.STATE_PATH).write_text(payload, encoding="utf-8")
+    with pytest.raises(taskctl.TaskControlError, match="E_(JSON|STATE_TYPE)"):
+        taskctl.check(root)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "reason"),
+    (
+        (lambda state: state.pop("status"), "E_SCHEMA_KEYS"),
+        (lambda state: state.__setitem__("unexpected", True), "E_SCHEMA_KEYS"),
+        (lambda state: state.__setitem__("blockers", "not-a-list"), "E_TYPE"),
+        (lambda state: state.__setitem__("base_sha", "NOT-A-SHA"), "E_SHA"),
+        (lambda state: state.__setitem__("feature_branch", "bad..branch"), "E_BRANCH"),
+    ),
+)
+def test_schema_types_shas_and_branch_failures(
+    tmp_path: Path, mutation: Callable[[dict[str, Any]], object], reason: str
+) -> None:
+    root = _fixture(tmp_path)
+    taskctl.sync(root)
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    mutation(state)
+    (root / taskctl.STATE_PATH).write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+    with pytest.raises(taskctl.TaskControlError, match=reason):
+        taskctl.check(root)
+
+
+def test_current_branch_and_non_ancestor_authorization_fail_closed(tmp_path: Path) -> None:
+    root = _fixture(tmp_path)
+    taskctl.sync(root)
+    _git(root, "switch", "-c", "unrelated")
+    with pytest.raises(taskctl.TaskControlError, match="E_CURRENT_BRANCH"):
+        taskctl.check(root)
+
+    _git(root, "switch", "main")
+    orphan = subprocess.check_output(
+        ["git", "-C", str(root), "commit-tree", _git(root, "rev-parse", "HEAD^{tree}"), "-m", "orphan"],
+        text=True,
+    ).strip()
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    state["authorization_head_sha"] = orphan
+    (root / taskctl.STATE_PATH).write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+    with pytest.raises(taskctl.TaskControlError, match="E_AUTHORIZATION_ANCESTRY"):
+        taskctl.check(root)
+
+
+@pytest.mark.parametrize("kind", ("missing", "reversed"))
+def test_missing_and_reversed_markers_fail_closed(tmp_path: Path, kind: str) -> None:
+    root = _fixture(tmp_path)
+    taskctl.sync(root)
+    path = root / taskctl.TASK_PATH
+    content = path.read_text(encoding="utf-8")
+    if kind == "missing":
+        content = content.replace(taskctl.END, "", 1)
+    else:
+        begin, end = content.index(taskctl.BEGIN), content.index(taskctl.END)
+        content = (
+            content[:begin]
+            + taskctl.END
+            + content[begin + len(taskctl.BEGIN) : end]
+            + taskctl.BEGIN
+            + content[end + len(taskctl.END) :]
+        )
+    path.write_text(content, encoding="utf-8")
+    with pytest.raises(taskctl.TaskControlError, match="E_MARKERS"):
+        taskctl.check(root)
+
+
+def test_sync_preserves_bytes_outside_generated_blocks(tmp_path: Path) -> None:
+    root = _fixture(tmp_path)
+    taskctl.sync(root)
+    for relative in (taskctl.TASK_PATH, taskctl.REPORT_PATH):
+        path = root / relative
+        path.write_bytes(path.read_bytes() + b"\nUNTOUCHED RECEIPT BYTES\n")
+    taskctl.sync(root)
+    for relative in (taskctl.TASK_PATH, taskctl.REPORT_PATH):
+        assert (root / relative).read_bytes().endswith(b"\nUNTOUCHED RECEIPT BYTES\n")
+
+
+@pytest.mark.parametrize(
+    "authority",
+    (
+        "merge_authorized",
+        "pr_creation_authorized",
+        "mmm_analytical_authority_changed",
+        "sibling_authority_changed",
+        "capability_authorizations_changed",
+    ),
+)
+def test_each_protected_authority_is_rejected(tmp_path: Path, authority: str) -> None:
+    root = _fixture(tmp_path)
+    taskctl.sync(root)
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    state[authority] = True
+    (root / taskctl.STATE_PATH).write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+    with pytest.raises(taskctl.TaskControlError, match="E_PROTECTED_AUTHORITY"):
+        taskctl.check(root)
