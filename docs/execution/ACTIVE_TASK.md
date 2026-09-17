@@ -101,6 +101,10 @@ rather than guessed through. Repository, task, branch, ancestry,
 tracked-Finder inventory, lifecycle, or authority disagreement is an error
 until corrected by a permitted Git-authored lifecycle action.
 
+The controller surface remains `python -m mmm.execution.taskctl check`,
+`taskctl [--root PATH] sync`, and `taskctl [--root PATH] transition`; it does
+not authorize this proposed task to execute.
+
 ## Exact implementation behavior
 
 1. Bootstrap according to `AGENTS.md` in a clean isolated worktree based on
