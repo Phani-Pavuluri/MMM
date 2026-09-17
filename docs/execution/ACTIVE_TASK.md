@@ -96,8 +96,8 @@ needed.
 ## Fail-closed conflicts
 
 The proposed task remains governed by `mmm_repo_execution_state_v3` and its
-generated lifecycle blocks. The prior one-time v2 migration is complete; v2 is
-rejected rather than guessed through. Repository, task, branch, ancestry,
+generated lifecycle blocks. The prior one-time v2 migration is complete; v2 is rejected
+rather than guessed through. Repository, task, branch, ancestry,
 tracked-Finder inventory, lifecycle, or authority disagreement is an error
 until corrected by a permitted Git-authored lifecycle action.
 
