@@ -32,318 +32,177 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-**Owner:** MMM repository governance
-**Last updated:** 2026-09-15
-**Last verified:** 2026-09-15
+**Owner:** MMM repository hygiene
+**Last updated:** 2026-09-17
+**Last verified:** 2026-09-17
 
 ## Identity
 
-- **Task ID:** `MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001`
+- **Task ID:** `MMM_MACOS_FINDER_METADATA_HYGIENE_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Synchronized base:** `fe8e784923994406a2e4907d28debd872d61fd73`
-- **Feature branch:** `feat/mmm-repository-single-source-taskctl-adoption-001`
+- **Synchronized base:** `afac689a80efd3f324645d9fb4585e1e0fd66617`
+- **Feature branch:** `feat/mmm-macos-finder-metadata-hygiene-001`
 - **Execution mode:** `branch_and_fast_forward`
-- **Risk tier:** Tier 1 repository-execution governance with mandatory MMM Docker-backed full validation
+- **Risk tier:** Tier 1 MMM repository metadata hygiene with focused validation
 - **Capability authorizations changed:** `false`
 
-The preceding task, `MMM_EXECUTION_AUTHORITY_CLOSURE_CONSISTENCY_FIX_001`, is
-merged and closed at the synchronized base. No product or sibling dependency is
-required for this MMM-only governance task. Remote branch inspection found no
-overlapping taskctl work. Unresolved execution-blocking design questions: none.
+`MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001` is closed on synchronized
+`main` at `afac689a80efd3f324645d9fb4585e1e0fd66617`. This is one independent
+MMM-only repository-hygiene successor. It has no MIP, GeoX, analytical, public,
+package, runtime, product, consumer, or capability dependency. Unresolved
+execution-blocking design questions: none.
 
 ## Primary independently reviewable outcome
 
-Make `docs/execution/EXECUTION_STATE.json` the single machine-readable source
-for MMM execution lifecycle state and add an MMM-owned executable controller at
-`python -m mmm.execution.taskctl`. The controller must validate canonical
-state and Git identity, synchronize deterministic lifecycle blocks in the two
-human views, and apply only fail-closed allowed lifecycle transitions.
+Remove the tracked root Finder metadata file `.DS_Store` from MMM's Git index
+without deleting its local filesystem copy, and add the repository-level
+`.DS_Store` ignore rule that prevents Finder metadata at the repository root or
+below it from being tracked in future. Prove that no tracked path is Finder
+`.DS_Store` metadata and that unrelated local drafts and repository behavior
+are preserved.
 
-This task changes repository-execution governance only. It does not change MMM
-analytical, numerical, model, calibration, simulation, optimization, contract,
-fixture, package API, runtime, product, MIP, GeoX, or capability behavior.
+This changes Git tracking policy only. It does not change MMM source, tests,
+configuration behavior, package/public surface, analytical behavior, MIP,
+GeoX, or any authority.
 
 ## Why this task cannot be split further
 
-Canonical-state validation, generated views, lifecycle transitions, migration
-of the current manual state, and focused semantic tests are one consistency
-boundary. Shipping only a writer, renderer, or validator would leave multiple
-editable lifecycle sources. CLI extensions, cross-repository orchestration,
-and product behavior remain separate successors.
+The index-only removal, recursive ignore policy, and proof that the repository
+has no tracked Finder metadata form one atomic hygiene boundary. Shipping only
+an ignore rule leaves the already-tracked root file tracked; shipping only an
+index removal permits its return. No product or cross-repository change is
+needed.
 
 ## Inputs, outputs, invariants, and failure semantics
 
-- **Inputs:** the synchronized MMM Git checkout, canonical execution JSON, the
-  active-task and completion-report Markdown views, and local Git metadata.
-- **Outputs:** an internal `mmm.execution.taskctl` module, deterministic
-  generated lifecycle blocks, migrated canonical state, updated repository
-  governance rules, and focused tests.
-- **Invariants:** repository identity is `Phani-Pavuluri/MMM`; base branch is
-  `main`; execution mode is `branch_and_fast_forward`; the declared feature
-  branch is not `main`; canonical SHA values are lowercase 40-character commit
-  IDs or null where explicitly allowed; the authorization head is an ancestor
-  of the checked head; merge, PR, analytical, sibling, and capability authority
-  stay false; completion prose never grants authority.
-- **Failure semantics:** malformed JSON, unsupported schema/status, missing or
-  extra required lifecycle evidence, invalid Git repository/remote/branch/SHA
-  evidence, marker corruption, view divergence, forbidden transition, missing
-  correction/blocker/review/cleanup evidence, protected-authority change, or a
-  write failure produces a stable reason-coded error and exit status `2`.
-  `check` never writes. `sync` and `transition` validate complete candidates
-  before any replacement and use same-directory atomic replacement per file.
-
-### Fail-closed conflicts
-
-Taskctl never chooses whichever file, branch, or evidence value appears newer.
-Repository, task, branch, ancestry, lifecycle, implementation, correction,
-cleanup, or authority disagreement is an error until the canonical Git evidence
-is repaired through an authorized lifecycle action.
+- **Inputs:** synchronized `origin/main` at the declared base, the tracked root
+  `.DS_Store` inventory, the existing `.gitignore`, and a clean isolated
+  execution worktree.
+- **Outputs:** the root `.DS_Store` removed from Git tracking only and one
+  `.DS_Store` repository ignore pattern in `.gitignore`.
+- **Invariants:** the local root `.DS_Store` file is not deleted; no unrelated
+  local file, draft, index entry, or repository behavior changes; the ignore
+  pattern applies to `.DS_Store` at any directory depth; `git ls-files` reports
+  no path whose basename is exactly `.DS_Store`; all MIP, GeoX, analytical,
+  public, product, package, and capability authority remains unchanged.
+- **Failure semantics:** if the base or tracked-file inventory differs, the
+  worktree is not clean/isolated, `.gitignore` has ambiguous or conflicting
+  Finder rules, index-only removal would delete a local file, a Finder path
+  remains tracked, unrelated paths are changed, or a required validation fails,
+  do not guess or broaden scope. Record a Git-durable `blocked` state on the
+  safe authorized branch with the exact evidence, validation-category status,
+  and a live resolution condition.
 
 ## Exact implementation behavior
 
-### Canonical MMM state and schema migration
-
-1. Adopt `mmm_repo_execution_state_v3`. Preserve all current durable MMM
-   lineage and coordination fields unless this task explicitly supersedes a
-   lifecycle field.
-2. Validate the existing v2 fields plus these v3 lifecycle fields:
-   `rejected_implementation_commit_sha`, `correction_cycles_completed`,
-   `correction_cycles_remaining`, `live_resolution_condition`,
-   `local_feature_branch_cleanup`, and `remote_feature_branch_cleanup`.
-3. Require non-negative integer correction counters whose completed plus
-   remaining value equals `max_correction_cycles`. Require blocker strings to
-   be nonempty and require a nonempty live resolution condition only for
-   `blocked`. Cleanup values are `not_started`, `not_required`, or
-   `observed_deleted`; `merged` requires both cleanup fields to be
-   `observed_deleted`.
-4. `sync` is the only command allowed to migrate the exact current v2 manual
-   state. The deterministic v2-to-v3 mapping adds null rejected-implementation
-   and resolution evidence, zero completed corrections, the existing maximum
-   as remaining corrections, and `not_started` cleanup. `check` and
-   `transition` reject v2 with `E_MIGRATION_REQUIRED`. Unsupported or ambiguous
-   legacy state fails closed and is not rewritten.
-5. Migration removes only the leading manual lifecycle line in
-   `ACTIVE_TASK.md`, inserts one generated block immediately after each
-   document H1, and otherwise preserves both Markdown files byte-for-byte.
-   After migration, synchronization may replace only the bytes within the
-   unique marker pair.
-
-### Lifecycle and authority policy
-
-Supported statuses remain `proposed`, `authorized`, `in_progress`, `blocked`,
-`changes_requested`, `ready_for_review`, and `merged`. The allowlist is:
-
-- `proposed -> authorized`;
-- `authorized -> in_progress | blocked | ready_for_review`;
-- `in_progress -> blocked | ready_for_review`;
-- `blocked -> in_progress | ready_for_review`;
-- `ready_for_review -> changes_requested | merged`;
-- `changes_requested -> in_progress | blocked | ready_for_review`;
-- `merged` has no outgoing transition.
-
-Lifecycle evidence is exact:
-
-- `proposed` has no execution/correction authority, implementation, review,
-  rejection, approval, blockers, or created feature branch.
-- `authorized` and `in_progress` have task execution authority, no correction
-  authority, no blockers, and no review or approval evidence.
-- `blocked` closes task and correction execution authority, requires at least
-  one blocker plus a live resolution condition, and records decision
-  `blocked`.
-- `changes_requested` closes task execution authority, opens correction
-  authority, and requires the current implementation SHA plus paired rejected
-  review-head and rejected-implementation SHAs.
-- `ready_for_review` retains task execution authority as required by current
-  MMM rules, closes correction authority, requires an implementation SHA,
-  empty blockers, null reviewed/approval SHAs, and decision
-  `ready_for_review`. Completing a correction is explicit and increments the
-  completed counter exactly once while decrementing remaining.
-- `merged` closes execution and correction authority, requires implementation
-  and reviewed-head SHAs, empty blockers, decision `merged`, and observed local
-  and remote task-branch deletion. No pre-merge approval commit is introduced.
-
-`merge_authorized`, `pr_creation_authorized`,
-`mmm_analytical_authority_changed`, `sibling_authority_changed`, and
-`capability_authorizations_changed` must remain false in every state and cannot
-be changed by `transition`. Taskctl does not grant product, sibling, analytical,
-merge, or PR authority.
-
-### Git identity and branch rules
-
-Discover the repository root from an explicit `--root` or the current path.
-Validate the Git top level, canonical `origin` identity, task/repository/branch
-fields, commit-shaped SHA fields, existence of required commits, and
-authorization-head ancestry. Permit lifecycle checking on synchronized `main`
-or the exact declared feature branch only. `proposed -> authorized` and
-`ready_for_review -> merged` are main-only; mutable execution and correction
-transitions are feature-branch-only. Never fetch, pull, push, create/delete a
-branch, commit, merge, rebase, squash, force-update, or contact sibling repos.
-
-### Generated views
-
-Use exactly one `<!-- BEGIN MMM TASKCTL EXECUTION VIEW -->` / `<!-- END MMM
-TASKCTL EXECUTION VIEW -->` block in each view. Render fields in fixed order
-with fixed newline behavior: task/repository, status or decision, execution
-mode, base/authoring/authorization SHAs, feature branch/created flag,
-execution/correction/merge/PR authority, implementation/review/rejection/
-approval evidence, blockers and resolution condition, correction counters,
-cleanup evidence, and unchanged capability-authority flags.
-
-`check` validates state and requires both rendered blocks to match exactly.
-`sync` renders complete candidates, preserves every byte outside the blocks,
-skips writes whose bytes already match, writes changed candidates atomically,
-and finishes by running the same check. Running `sync` twice is byte-identical.
-Missing, duplicated, nested, or reversed markers after migration fail closed.
-
-### Command surface
-
-Provide only:
-
-```text
-python -m mmm.execution.taskctl [--root PATH] check
-python -m mmm.execution.taskctl [--root PATH] sync
-python -m mmm.execution.taskctl [--root PATH] transition --to STATUS [evidence options]
-```
-
-Evidence options must cover implementation, rejected review and implementation,
-reviewed head, repeatable blockers, blocker clearing, live resolution,
-correction completion, and local/remote cleanup. Success returns `0`; every
-`TaskControlError` prints its stable code and message to stderr and returns `2`.
-Unexpected exceptions are not converted into a false success.
+1. Bootstrap according to `AGENTS.md` in a clean isolated worktree based on
+   synchronized `origin/main`; never use, stage, stash, delete, or otherwise
+   alter a user's primary checkout or its unrelated drafts.
+2. Verify that the declared base has exactly the root `.DS_Store` as tracked
+   Finder metadata before changing the index. If additional tracked Finder
+   metadata is present, stop as scope is not authorized.
+3. Remove only the root `.DS_Store` from the Git index. Preserve its working
+   tree file and bytes; this is an index-only operation, not filesystem removal.
+4. Add one root `.gitignore` rule, `.DS_Store`, using Git's basename matching
+   behavior so it covers Finder metadata in every repository directory. Do not
+   add broad macOS, editor, build, or unrelated ignore patterns.
+5. Do not alter the content or tracking of any other path. The implementation
+   diff must contain only `.gitignore` and the index deletion of `.DS_Store`,
+   plus the task-owned execution-state/report receipt paths required by MMM
+   publication.
 
 ## Compatibility and migration policy
 
-This is an internal repository-governance schema migration from
-`mmm_repo_execution_state_v2` to v3. It adds no public package entry point and
-does not change the existing `mmm` CLI. Existing durable task, historical PR
-#19, prior-task, coordination, validation, and authority evidence is preserved.
-After the one-time exact v2 migration, v2 is rejected rather than guessed
-through. Markdown prose outside the generated regions remains byte-preserved.
-No public contract, analytical artifact, or consumer migration applies.
+No public, package, schema, data, analytical, runtime, or consumer migration
+applies. Existing local Finder files remain local and are deliberately ignored;
+the repository's tracked root `.DS_Store` is removed only from version control.
+Clones after the change no longer receive this machine-specific metadata. This
+is backward-compatible for repository behavior because Finder metadata is not a
+repository input or artifact.
 
 ## Acceptance evidence
 
-Add `tests/test_repository_taskctl.py` with isolated temporary repositories and
-focused positive/negative coverage for:
+On the frozen exact task-owned tree, record all of the following:
 
-1. exact migration of the authorized task from v2 to v3;
-2. malformed JSON, wrong root type, schema/status/key/type/SHA/branch/repository
-   failures, and mismatched correction counters;
-3. origin/repository, current-branch, missing-commit, and authorization-ancestry
-   failures;
-4. missing/duplicate/reversed markers and generated-view divergence;
-5. byte preservation outside both blocks and byte-identical repeated `sync`;
-6. every allowed edge and representative forbidden edges;
-7. protected merge/PR/analytical/sibling/capability authority rejection;
-8. blocked-state evidence and live-resolution requirements;
-9. paired correction provenance, explicit correction completion, and correction
-   counter exhaustion;
-10. review-ready implementation evidence and merged reviewed-head/cleanup
-    evidence;
-11. candidate validation before writes, stable stderr reason codes, and CLI
-    exit statuses.
-
-Update `tests/test_repo_native_execution_handoff.py` so current repository
-semantics require the canonical v3 state, generated views, taskctl command
-surface, v2 migration boundary, lifecycle/authority invariants, and retained
-exact-tree, exact-head, Docker, cleanup, and historical PR #19 controls. Tests
-must assert behavior rather than copy either sibling implementation.
-
-## Exceptional third correction authorization
-
-This is a narrow completion of the already-authorized acceptance matrix, not a
-new capability or successor task. The exact rejected review head is
-`531e1a5be0bb48f24ff75c6680063e92093bb740`; its implementation commit is
-`124b42a867b5f03f150b86a16011f561d6c87b3e`. The first and second rejection
-pairs remain immutable history in the preceding branch commits.
-
-The correction maximum is exceptionally increased to three. Two cycles are
-complete and one remains. Only the existing declared feature branch may resume.
-Task execution is closed and correction execution is authorized solely to add
-the missing acceptance coverage below, rerun the full required validation on
-the final exact tree, and publish a new `ready_for_review` receipt.
-
-The correction must add explicit positive or negative tests for: malformed JSON
-and non-object root; missing and extra schema keys; representative wrong types
-and malformed SHA values; a present but non-ancestor authorization head;
-missing and reversed markers; byte preservation outside each generated block;
-and each protected authority independently. It must retain the completed
-local/remote cleanup and multi-cycle tests. Do not alter lifecycle semantics
-unless one of those tests demonstrates a real defect; if it does, keep the fix
-within the original task contract and validate it completely.
-
-No PR, merge, rebase, squash, force-push, sibling-repository change, analytical
-or capability authorization, public API, runtime, or product work is allowed.
+1. the pre-change tracked-Finder inventory proves the declared base contains
+   only the root `.DS_Store`;
+2. `git diff --cached --name-status` (or equivalent committed-tree evidence)
+   proves `.DS_Store` is deleted from the index and no local file deletion was
+   performed;
+3. `.gitignore` contains exactly one `.DS_Store` policy rule, and
+   `git check-ignore -v --no-index .DS_Store` proves that rule applies;
+4. a basename-exact `git ls-files` inventory returns no `.DS_Store` path;
+5. the changed-path proof contains only `.gitignore`, `.DS_Store`, and the
+   authorized task publication paths; and
+6. primary-checkout status captured before task execution is unchanged after
+   the work, including any unrelated local drafts. The execution worktree is
+   clean except for the intended task changes before publication.
 
 ## Owned paths
 
-1. `mmm/execution/__init__.py`
-2. `mmm/execution/taskctl.py`
-3. `tests/test_repository_taskctl.py`
-4. `tests/test_repo_native_execution_handoff.py`
-5. `AGENTS.md`
-6. `docs/execution/TASK_EXECUTION_STANDARD.md`
-7. `docs/execution/ACTIVE_TASK.md`
-8. `docs/execution/EXECUTION_STATE.json`
-9. `docs/execution/LATEST_COMPLETION_REPORT.md`
+1. `.gitignore`
+2. `.DS_Store` (Git index removal only; preserve the local file)
+3. `docs/execution/ACTIVE_TASK.md`
+4. `docs/execution/EXECUTION_STATE.json`
+5. `docs/execution/LATEST_COMPLETION_REPORT.md`
 
-No other path is owned. In particular, do not modify `pyproject.toml`; the
-module invocation is the executable surface for this milestone.
+No other path is owned.
 
 ## Prohibited scope
 
-Do not modify or authorize analytical code/tests; models; diagnostics;
-calibration; simulation; optimization; numerical truth; contracts; adapters;
-parsers; schemas outside the execution-state schema; fixtures; package/public
-APIs; the existing `mmm` CLI; release, CI, or deployment; validation registries;
-MIP or GeoX; cross-repository orchestration; CalibrationSignal; TrustReport;
-DecisionSurface; planning; recommendations; real data; pilot; or production.
-Do not copy MIP or GeoX taskctl blindly. Do not create a PR, merge, squash,
-rebase, force-push, merge commit, or pre-merge approval commit.
+Do not delete any local `.DS_Store` file; modify any source, tests, packages,
+public APIs, schemas, fixtures, contracts, configurations, dependency files,
+CI, releases, deployment, documentation outside the three execution files,
+or validation registries; alter any unrelated local draft; or create a PR,
+merge, squash, rebase, force-push, merge commit, or pre-merge approval commit.
+Do not change MIP, GeoX, analytical, public, product, runtime, consumer,
+sibling, or capability authority.
 
 ## Validation
 
-On the frozen exact task-owned tree run:
+Required Tier 1 evidence on the exact frozen task tree:
 
 ```text
 python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null
 poetry run python -m mmm.execution.taskctl check
-poetry run pytest -q tests/test_repository_taskctl.py tests/test_repo_native_execution_handoff.py
-poetry run ruff check mmm/execution tests/test_repository_taskctl.py tests/test_repo_native_execution_handoff.py
-poetry run mypy mmm/execution tests/test_repository_taskctl.py tests/test_repo_native_execution_handoff.py
+git check-ignore -v --no-index .DS_Store
+basename-exact tracked-Finder inventory returns empty
 git diff --check
-make validate
+exact changed-path allowlist and index-only-removal proof
+authoring/authorization ancestry, task/repository/branch consistency,
+local/remote feature-head equality, primary-draft preservation, and no
+post-receipt task-owned changes
 ```
 
-Also prove the exact changed-path allowlist, authoring/authorization ancestry,
-task/repository/branch consistency, local/remote feature-head equality, and no
-post-receipt task-owned changes. Repair the host Poetry environment reasonably
-before treating it as unavailable; use the repository Docker path and do not
-start duplicate validation containers. The full Docker gate is mandatory even
-though this is Tier 1 because MMM repository rules and this task require it.
+`pytest`, Ruff, mypy, and Docker-backed `make validate` are `not_required`:
+this Tier 1 task changes only an ignore policy and Git tracking metadata, with
+no executable, analytical, public/package, or runtime surface. If the active
+repository gate later makes any category required, run it; a required category
+that cannot run is `blocked`.
 
 ## Implementation, publication, and stop conditions
 
-Create the declared feature branch from the synchronized authorization-state
-commit; do not reinterpret this contract from chat. Make one implementation
-commit and one final exact-tree receipt commit. The receipt records milestone,
-branch, implementation SHA, exact remote head, exact changed paths, behavior,
-focused and full validation commands/results/counts, validations not run,
-blockers, limitations, validation debt, worktree/evidence source, authority and
-sibling/consumer impact, and confirmation of no PR or merge.
+Only after a future main-only `proposed -> authorized` transition may the
+declared feature branch be created and execution begin. Create one
+implementation commit and one final exact-tree receipt commit. The receipt must
+record the task ID, implementation parent, exact commit-tree scope, tracked
+Finder inventory before/after, `.gitignore` rule evidence, local-file
+preservation method/result, primary-draft preservation evidence, required and
+`not_required` validation categories, changed-path and diff results, remote
+feature head, worktree/evidence source, blockers/limitations/debt, and
+unchanged authority.
 
-Publish only `ready_for_review` with task execution true; correction, merge, and
-PR authority false; empty blockers; implementation SHA; null reviewed and
-approval SHAs; unchanged analytical, sibling, and capability authority; and an
-exact-tree receipt. Push and verify the exact remote branch head, then stop for
-external review. A genuine execution blocker must be recorded durably on the
-safe authorized feature branch with exact evidence and a live resolution
-condition.
+Publish only `ready_for_review` with execution true; correction, merge, and PR
+authority false; empty blockers; implementation SHA; null reviewed and approval
+SHAs; unchanged analytical, sibling, and capability authority; and the exact
+tree receipt. Push and verify exact remote feature-head equality, then stop for
+external review. A genuine execution blocker must be published on the safe
+authorized branch with the exact evidence and live resolution condition.
 
 ## Deferred successors
 
-- Additional taskctl commands or external automation.
-- Cross-repository execution orchestration.
-- Any analytical, public/package, runtime, or product capability.
+- Broader repository hygiene for other operating-system or editor metadata.
+- Any policy change affecting generated artifacts, tooling, CI, package/public,
+  analytical, MIP, GeoX, or product surfaces.
 
 **Unresolved execution-blocking design questions: none.**

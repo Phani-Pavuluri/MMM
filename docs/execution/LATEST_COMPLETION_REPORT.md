@@ -32,52 +32,23 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-## MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001 — acceptance-matrix correction receipt
+## MMM_MACOS_FINDER_METADATA_HYGIENE_001 — proposed successor authoring evidence
 
-- Exact changed paths: `tests/test_repository_taskctl.py`,
-  `docs/execution/ACTIVE_TASK.md`, `docs/execution/EXECUTION_STATE.json`, and
-  `docs/execution/LATEST_COMPLETION_REPORT.md`. No taskctl behavior changed.
-- Lineage: rejected review `531e1a5be0bb48f24ff75c6680063e92093bb740`, rejected
-  implementation `124b42a867b5f03f150b86a16011f561d6c87b3e`, implementation
-  `07f0b5f332ecedaaf7343e3501c707c3e41c7128`.
-- Coverage added: malformed JSON and non-object roots; missing/extra keys;
-  wrong types, malformed SHAs, invalid branches; non-ancestor authorization;
-  current-branch failure; missing/reversed markers; byte preservation;
-  independent merge/PR/analytical/sibling/capability authority rejection.
-  Existing cleanup and multi-cycle tests remain.
-- Results so far: JSON validation, taskctl `check`, focused suite (`63 passed`),
-  Ruff, mypy, and `git diff --check` passed. The Poetry environment lacks the
-  pytest executable, so equivalent `python3 -m pytest` was used.
-- Fresh Docker-backed `make validate` passed on the final receipt tree:
-  research smoke `13 passed`; full suite `1376 passed, 6 skipped`. No required
-  validation category is intentionally waived.
-- Worktree/evidence source: clean isolated feature worktree; primary checkout
-  `.DS_Store` changes and `docs/tasks/` drafts were preserved. Exact-tree scope
-  is the original nine owned governance paths; MIP and GeoX are untouched.
-- Authority impact: `ready_for_review`, execution true, correction false,
-  blockers empty, `3 completed / 0 remaining / 3 maximum`; merge, PR,
-  analytical, sibling, and capability authority remain false; reviewed and
-  approval SHAs are null.
-- No PR, merge, rebase, squash, force-push, or merge commit was created.
+- Synchronized main evidence: `main` and `origin/main` both resolve to
+  `afac689a80efd3f324645d9fb4585e1e0fd66617`, which closes
+  `MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001`.
+- Scope: one MMM-only Tier 1 repository-metadata outcome—index-only removal of
+  the tracked root `.DS_Store`, one recursive basename ignore rule, and proof
+  that no Finder metadata remains tracked without altering unrelated drafts.
+- Authority: this is proposed task authoring only. No feature branch exists;
+  task execution, correction, merge, PR, MIP, GeoX, analytical, sibling, and
+  capability authority are false.
+- Planned evidence: isolated-worktree inventory before/after, local-file and
+  primary-draft preservation, `git check-ignore`, basename-exact tracked-file
+  inventory, changed-path/diff checks, taskctl/state checks, and exact remote
+  head equality. Executable/lint/type/Docker categories are not required for
+  this Tier 1 ignore-policy-only change unless a later repository gate requires
+  them.
+- No Finder file, draft, product code, analytical behavior, public/package
+  surface, MIP, GeoX, or other authority was changed during authoring.
 - Unresolved execution-blocking design questions: none.
-
-## MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001 — closure receipt
-
-- External approval bound the exact remote review head
-  `1e1ade29293e19edf6b7fff2c3f08eabbfdb6004`.
-- Synchronization and merge: `main` equaled `origin/main` at
-  `670901ef21034acb0a1a128347ea5837304377a0` before the approved
-  fast-forward; the published implementation head is
-  `1e1ade29293e19edf6b7fff2c3f08eabbfdb6004`.
-- Validation: JSON validation, taskctl check after remote-main equality,
-  focused taskctl and handoff tests, Ruff, mypy, `git diff --check`, and the
-  mandatory Docker-backed `make validate` gate passed on the approved tree;
-  the applicable post-fast-forward gates also passed before publication.
-- Cleanup: the clean linked feature worktree was detached, and both local and
-  remote `feat/mmm-repository-single-source-taskctl-adoption-001` were
-  observed deleted.
-- Closure authority: execution, correction, merge, and PR authority are
-  false; analytical, sibling, and capability authority remain unchanged.
-- Deferred work: a separate MMM-only macOS metadata hygiene task remains an
-  unauthorized future successor. No MIP, GeoX, analytical, product, or public
-  capability work was authorized or changed.
