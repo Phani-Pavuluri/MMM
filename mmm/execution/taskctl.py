@@ -17,14 +17,13 @@ from typing import Any, NoReturn
 SCHEMA_V2 = "mmm_repo_execution_state_v2"
 SCHEMA_V3 = "mmm_repo_execution_state_v3"
 REPOSITORY = "Phani-Pavuluri/MMM"
-TASK_ID = "MMM_REPOSITORY_SINGLE_SOURCE_TASKCTL_ADOPTION_001"
-FEATURE_BRANCH = "feat/mmm-repository-single-source-taskctl-adoption-001"
 STATE_PATH = Path("docs/execution/EXECUTION_STATE.json")
 TASK_PATH = Path("docs/execution/ACTIVE_TASK.md")
 REPORT_PATH = Path("docs/execution/LATEST_COMPLETION_REPORT.md")
 BEGIN = "<!-- BEGIN MMM TASKCTL EXECUTION VIEW -->"
 END = "<!-- END MMM TASKCTL EXECUTION VIEW -->"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+TASK_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*$")
 STATUSES = {
     "proposed",
     "authorized",
@@ -240,12 +239,17 @@ def _validate_common_types(state: dict[str, Any]) -> None:
 def _validate_identity_fields(state: dict[str, Any]) -> None:
     if state["repository"] != REPOSITORY:
         fail("E_REPOSITORY", f"repository must be {REPOSITORY}")
-    if state["task_id"] != TASK_ID:
-        fail("E_TASK", f"task_id must be {TASK_ID}")
+    if not TASK_RE.fullmatch(state["task_id"]):
+        fail("E_TASK", "task_id must be a nonempty safe identifier")
     if state["base_branch"] != "main" or state["execution_mode"] != "branch_and_fast_forward":
         fail("E_IDENTITY", "base branch and execution mode do not match MMM execution policy")
-    if state["feature_branch"] != FEATURE_BRANCH or state["feature_branch"] == "main":
-        fail("E_BRANCH", f"feature branch must be {FEATURE_BRANCH}")
+    branch = state["feature_branch"]
+    if branch == "main" or not branch or ".." in branch or "//" in branch or "@{" in branch:
+        fail("E_BRANCH", "feature branch must be a safe non-main branch name")
+    if subprocess.run(
+        ["git", "check-ref-format", f"refs/heads/{branch}"], check=False, capture_output=True
+    ).returncode:
+        fail("E_BRANCH", "feature branch is not valid Git branch syntax")
     if state["task_path"] != str(TASK_PATH) or state["completion_report_path"] != str(REPORT_PATH):
         fail("E_PATH", "state view paths do not match the canonical MMM views")
 
@@ -634,7 +638,12 @@ def transition(root: Path, args: argparse.Namespace) -> None:
         candidate["local_feature_branch_cleanup"] = args.local_feature_branch_cleanup
     if args.remote_feature_branch_cleanup is not None:
         candidate["remote_feature_branch_cleanup"] = args.remote_feature_branch_cleanup
+    clear_blockers = getattr(args, "clear_blockers", False)
+    if clear_blockers and args.blocker is not None:
+        fail("E_EVIDENCE", "--clear-blockers cannot be combined with --blocker")
     if target == "blocked":
+        if clear_blockers:
+            fail("E_EVIDENCE", "--clear-blockers is not valid for blocked")
         if args.blocker is not None:
             candidate["blockers"] = args.blocker
         if args.live_resolution_condition is not None:
@@ -642,17 +651,23 @@ def transition(root: Path, args: argparse.Namespace) -> None:
     else:
         if args.blocker is not None or args.live_resolution_condition is not None:
             fail("E_EVIDENCE", "blockers and live resolution evidence are only valid for blocked")
+        if current["blockers"] and not clear_blockers:
+            fail("E_BLOCKER_CLEAR_REQUIRED", "clearing existing blockers requires --clear-blockers")
         candidate["blockers"] = []
         candidate["live_resolution_condition"] = None
+    if target == "in_progress" and current["status"] == "changes_requested":
+        candidate["implementation_commit_sha"] = None
     if target == "changes_requested":
+        if candidate["correction_cycles_remaining"] == 0:
+            fail("E_CORRECTION", "no correction cycles remain")
         _require_sha(candidate["implementation_commit_sha"], "implementation SHA")
         _require_sha(candidate["rejected_review_head_sha"], "rejected review head SHA")
         _require_sha(candidate["rejected_implementation_commit_sha"], "rejected implementation SHA")
     if target == "ready_for_review":
         _require_sha(candidate["implementation_commit_sha"], "implementation SHA")
-        if current["status"] == "changes_requested":
+        if current["status"] in {"changes_requested", "in_progress"} and current["rejected_review_head_sha"]:
             if not args.complete_correction:
-                fail("E_CORRECTION", "changes_requested -> ready_for_review requires --complete-correction")
+                fail("E_CORRECTION", "correction completion requires --complete-correction")
             if candidate["correction_cycles_remaining"] == 0:
                 fail("E_CORRECTION", "no correction cycles remain")
             candidate["correction_cycles_completed"] += 1
@@ -687,6 +702,7 @@ def parser() -> argparse.ArgumentParser:
     change.add_argument("--rejected-implementation-commit-sha")
     change.add_argument("--reviewed-head-sha")
     change.add_argument("--blocker", action="append")
+    change.add_argument("--clear-blockers", action="store_true")
     change.add_argument("--live-resolution-condition")
     change.add_argument("--complete-correction", action="store_true")
     change.add_argument("--local-feature-branch-cleanup", choices=sorted(CLEANUP_VALUES))
