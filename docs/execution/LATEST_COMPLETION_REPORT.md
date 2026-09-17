@@ -46,9 +46,9 @@
 - Planned evidence: isolated-worktree inventory before/after, local-file and
   primary-draft preservation, `git check-ignore`, basename-exact tracked-file
   inventory, changed-path/diff checks, taskctl/state checks, and exact remote
-  head equality. Executable/lint/type/Docker categories are not required for
-  this Tier 1 ignore-policy-only change unless a later repository gate requires
-  them.
+  head equality. Docker-backed `make validate` is mandatory under MMM's
+  repository-authored full gate; standalone executable/lint/type categories are
+  not required for this Tier 1 ignore-policy-only change.
 - No Finder file, draft, product code, analytical behavior, public/package
   surface, MIP, GeoX, or other authority was changed during authoring.
 - Unresolved execution-blocking design questions: none.

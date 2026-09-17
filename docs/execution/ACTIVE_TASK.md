@@ -168,17 +168,18 @@ poetry run python -m mmm.execution.taskctl check
 git check-ignore -v --no-index .DS_Store
 basename-exact tracked-Finder inventory returns empty
 git diff --check
+make validate
 exact changed-path allowlist and index-only-removal proof
 authoring/authorization ancestry, task/repository/branch consistency,
 local/remote feature-head equality, primary-draft preservation, and no
 post-receipt task-owned changes
 ```
 
-`pytest`, Ruff, mypy, and Docker-backed `make validate` are `not_required`:
-this Tier 1 task changes only an ignore policy and Git tracking metadata, with
-no executable, analytical, public/package, or runtime surface. If the active
-repository gate later makes any category required, run it; a required category
-that cannot run is `blocked`.
+Docker-backed `make validate` is mandatory under MMM's repository-authored full
+gate even though this is Tier 1. Standalone pytest, Ruff, and mypy categories
+are `not_required` because the task changes no executable, analytical,
+public/package, or runtime surface; `make validate` remains the required full
+validation evidence. A required category that cannot run is `blocked`.
 
 ## Implementation, publication, and stop conditions
 
