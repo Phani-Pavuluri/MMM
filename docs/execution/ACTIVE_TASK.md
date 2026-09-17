@@ -73,7 +73,7 @@ an ignore rule leaves the already-tracked root file tracked; shipping only an
 index removal permits its return. No product or cross-repository change is
 needed.
 
-## Inputs, outputs, invariants, and failure semantics
+## Inputs, outputs, invariants, and Failure semantics
 
 - **Inputs:** synchronized `origin/main` at the declared base, the tracked root
   `.DS_Store` inventory, the existing `.gitignore`, and a clean isolated
