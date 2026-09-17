@@ -264,7 +264,15 @@ def test_correction_exhaustion_and_merged_evidence(tmp_path: Path) -> None:
             ),
         )
 
-    root, sha = _feature_fixture(tmp_path / "merged")
+    root = _fixture(tmp_path / "merged")
+    taskctl.sync(root)
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    state["task_id"] = "MMM_ARBITRARY_TASK_999"
+    state["feature_branch"] = "feat/arbitrary-task-branch-999"
+    (root / taskctl.STATE_PATH).write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+    taskctl.sync(root)
+    _git(root, "switch", "-c", state["feature_branch"])
+    sha = _git(root, "rev-parse", "HEAD")
     taskctl.transition(root, _args("in_progress"))
     taskctl.transition(root, _args("ready_for_review", implementation_sha=sha))
     _git(root, "add", ".")
@@ -272,8 +280,10 @@ def test_correction_exhaustion_and_merged_evidence(tmp_path: Path) -> None:
     _git(root, "branch", "-f", "main", "HEAD")
     _git(root, "switch", "main")
     _git(root, "update-ref", "refs/remotes/origin/main", "HEAD")
-    _git(root, "update-ref", "-d", "refs/heads/feat/mmm-repository-single-source-taskctl-adoption-001")
-    _git(root, "update-ref", "-d", "refs/remotes/origin/feat/mmm-repository-single-source-taskctl-adoption-001")
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    feature_branch = str(state["feature_branch"])
+    _git(root, "update-ref", "-d", f"refs/heads/{feature_branch}")
+    _git(root, "update-ref", "-d", f"refs/remotes/origin/{feature_branch}")
     taskctl.transition(
         root,
         _args(
