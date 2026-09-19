@@ -12,7 +12,10 @@ Before task discovery or implementation:
 2. Run `git fetch --prune origin`; hydrate shallow or missing required history.
 3. Run `git switch main` then `git pull --ff-only origin main`.
 4. Prove `git rev-parse main` equals `git rev-parse origin/main`.
-5. Only then read `EXECUTION_STATE.json`, `ACTIVE_TASK.md`, the context index,
+5. Read the north-star orientation as context only: the master roadmap pointer in
+   `docs/05_validation/platform_roadmap.md` (current phase). This contextualizes the work; it
+   never overrides authority, which remains exclusively with `EXECUTION_STATE.json` below.
+6. Only then read `EXECUTION_STATE.json`, `ACTIVE_TASK.md`, the context index,
    the applicable MMM standards, and pinned MIP coordination evidence.
 
 Missing synchronization, evidence, authority, Docker, dependencies, or safe
