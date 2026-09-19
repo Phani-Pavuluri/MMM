@@ -32,7 +32,7 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-**Owner:** MMM repository hygiene
+**Owner:** MMM repository hygiene; MMM repository governance
 
 ## Identity
 
