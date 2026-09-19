@@ -38,18 +38,18 @@
 
 ## Identity and supersession prerequisite
 
-- **Task ID:** `MMM_TIER1_BATCH_RUNNER_001`
+- **Task ID:** `MMM_DR04_THRESHOLD_DECISION_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Synchronized base:** `d04675358a1dc562717c23d4e38ee82b93bc3ed5`
-- **Declared future feature branch:** `feat/mmm-tier1-batch-runner-001`
+- **Synchronized base:** `46bd21b1c6cc035949ea29f5de0d1eb4b03f657f`
+- **Declared future feature branch:** `feat/mmm-dr04-threshold-decision-001`
 - **Execution mode:** `branch_and_fast_forward`
-- **Risk tier:** Tier 2 validation-evidence batch runner with mandatory full repository validation
-- **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior; thresholds stay provisional, no gate promotion
+- **Risk tier:** Tier 3 release-gate authority decision with mandatory full repository validation
+- **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior; registry threshold cells change only as ruled, nothing else
 
-This is an independent MMM-only successor. The AGENTS reorder task is merged and the earlier
-Tier-1 batch task is terminal `blocked` for lack of a runner, so the single-active-task lifecycle
-permits authoring this successor, which owns the runner the blocked task was forbidden to build.
-Before creating the feature branch, bootstrap a clean isolated worktree from synchronized
+This is an independent MMM-only successor. The Tier-1 runner task is merged, so the
+single-active-task lifecycle permits authoring this successor. The user's exact-SHA merge
+approval will serve as DR-04 owner sign-off per the registry's change-control rule. Before
+creating the feature branch, bootstrap a clean isolated worktree from synchronized
 `origin/main`, preserve the primary checkout and all drafts, and verify main equality to the
 declared base. This task does not overwrite, reinterpret, or alter any prior receipt or branch.
 
@@ -60,92 +60,87 @@ resolution condition.
 
 ## Primary independently reviewable outcome
 
-Build a deterministic Tier-1 Monte Carlo batch runner that produces N>=100 stratified worlds,
-executes structural certification plus recovery certification per world using existing
-materializer/certification entry points, and publishes a machine-readable characterization plus
-a report-only threshold-recommendation note. No threshold is promoted to `approved`, no release
-gate changes, no modeling change.
+Rule every validation-registry row to `approved` (with versioned numeric bounds and scope) or
+retained provisional, from the committed Tier-1 characterization, and record the rulings in a
+versioned DR-04 decision document. Registry edits follow its change-control rule: replace `TBD`
+markers only as ruled, never redefine row IDs or truth dot-paths. No gate implementation, no
+modeling, no promotion.
 
 ## Atomic boundary
 
-Runner plus focused tests plus one full N>=100 execution with committed evidence is one outcome:
-the runner untested proves nothing, and the evidence without the committed runner is not
-reproducible. Threshold approval (DR-04), gate promotion, modeling expansion, and export work are
-separate successors. No production or cross-repository change is required.
+Decision record plus exactly-as-ruled registry cells is one authority boundary: the record
+without the cells changes nothing enforceable, and cells without the record lack rationale and
+sign-off. Modeling expansion, export work, Tier-2 scale-up, and cross-repo work are separate
+successors. No production or cross-repository change is required.
 
 ## Inputs, outputs, invariants, and failure behavior
 
-- **Inputs:** synchronized main at the declared base; `ScenarioBuilder`, materializer,
-  `certification_runner`, `recovery_certification`, and `monte_carlo_reliability`
-  characterization entry points; WORLD-008–012 anchors; clean isolated worktree.
-- **Outputs:** `mmm/validation/synthetic/tier1_batch_runner.py` (seeded stratified sampler over
-  the program-doc coverage axes with anchor replication, strata minimums, and boundary emphasis;
-  per-world structural + recovery execution; aggregation via existing characterization);
-  `tests/test_tier1_batch_runner.py` (determinism: same seed identical manifest; N>=100 and
-  strata minimums on the full run or a fast small-N smoke for CI); committed
-  `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json` and
-  `docs/05_validation/monte_carlo_tier1_recommendations_001.md` (report-only, thresholds stay
-  provisional, DR-04 deferred).
-- **Invariants:** no `approved` threshold; no `validation_registry.md` threshold edit; no
-  release-gate, optimizer, transform, Bayesian, TrustReport-promotion, MIP, GeoX, analytical,
-  public, product, package, runtime, configuration, schema, contract, or capability-authority
-  change; taskctl production behavior and lifecycle semantics unchanged.
-- **Failure behavior:** if the full batch cannot complete inside the Docker gate window, if
-  determinism or strata minimums cannot be proven, validation fails, a prohibited path changes,
-  or the base conflicts, do not broaden scope and do not fabricate outcomes. Publish Git-durable
-  `blocked` with exact evidence, category results, and a live resolution condition.
+- **Inputs:** synchronized main at the declared base; committed
+  `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json` (read-only
+  evidence, no re-execution required); `docs/05_validation/validation_registry.md` including its
+  §7 change-control rule and governance columns; clean isolated worktree.
+- **Outputs:** `docs/05_validation/dr04_threshold_decision_001.md` (per-row ruling with Tier-1
+  numbers cited, rationale, version scope, and promotion bars for retained rows); registry cells
+  updated exactly as ruled (`threshold_status`, numeric bounds, `required_evidence`).
+- **Invariants:** row IDs VAL-001–014 and truth dot-paths frozen; no release-gate implementation,
+  optimizer, transform, Bayesian, TrustReport-promotion, MIP, GeoX, analytical, public, product,
+  package, runtime, configuration, schema, contract, or capability-authority change beyond the
+  ruled threshold cells; taskctl production behavior and lifecycle semantics unchanged. A ruling
+  of "retain provisional" is an available honest outcome for any row, including every row.
+- **Failure behavior:** if a ruling cannot be evidenced from the committed characterization, if
+  validation fails, a prohibited path changes, or the base conflicts, do not broaden scope and do
+  not invent numbers. Publish Git-durable `blocked` with exact evidence, category results, and a
+  live resolution condition.
 
 ## Exact implementation behavior
 
-1. Build the seeded stratified sampler (anchor replication every tier, world-type strata minimums,
-   boundary emphasis on severe collinearity/drift/multi-channel, fixed negative-gate slice) reusing
-   `ScenarioBuilder` truth composition and the existing materializer; no new generative semantics.
-2. Execute per-world structural certification plus recovery certification through the existing
-   runners; aggregate with the existing characterization entry points; write the manifest,
-   characterization JSON, and report-only recommendations note.
-3. Add focused tests proving determinism (same seed identical manifest), N>=100 with strata
-   minimums, and report-only threshold status; keep a fast small-N smoke path for CI.
-4. Promote no threshold, edit no registry, change no gate, model, optimizer, transform, Bayesian
-   path, TrustReport promotion, or consumer contract. Do not change taskctl transitions, schema,
-   generated views beyond sync, cleanup semantics, or authority validation except via the standard
-   lifecycle on the declared branch.
+1. Tabulate committed Tier-1 observed n and pass rates per VAL row (structural n=108; decision
+   and diagnostic rows at their scored n). Cite the committed JSON; do not re-execute the batch.
+2. Rule each row: graduate to `approved` only with stated numeric bounds, version scope, and
+   scored-n rationale sufficient for a release gate; otherwise retain provisional (or
+   `research_only`) with the explicit scored-n bar required for promotion. Diagnostic rows stay
+   non-blocking; trust modifiers get severity bands, not point gates.
+3. Write the decision record with per-row ruling, cited numbers, rationale, version scope, and a
+   DR-04 sign-off line; apply registry edits exactly as ruled per §7 change control.
+4. Change no gate implementation, model, optimizer, transform, Bayesian path, TrustReport
+   promotion, or consumer contract. Do not change taskctl transitions, schema, generated views
+   beyond sync, cleanup semantics, or authority validation except via the standard lifecycle on
+   the declared branch.
 
 ## Owned paths
 
-1. `mmm/validation/synthetic/tier1_batch_runner.py`
-2. `tests/test_tier1_batch_runner.py`
-3. `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json`
-4. `docs/05_validation/monte_carlo_tier1_recommendations_001.md`
-5. `docs/execution/ACTIVE_TASK.md`
-6. `docs/execution/EXECUTION_STATE.json`
-7. `docs/execution/LATEST_COMPLETION_REPORT.md`
+1. `docs/05_validation/dr04_threshold_decision_001.md`
+2. `docs/05_validation/validation_registry.md`
+3. `docs/execution/ACTIVE_TASK.md`
+4. `docs/execution/EXECUTION_STATE.json`
+5. `docs/execution/LATEST_COMPLETION_REPORT.md`
 
 No other path is owned.
 
 ## Prohibited scope
 
-Do not change `validation_registry.md` thresholds; release gates; production readiness/promotion;
-modeling, transforms, optimizers, Bayesian paths; TrustReport promotion wiring; existing
-materializer, certification, or characterization semantics beyond calling them; taskctl production
-behavior; MIP, GeoX, analytical, public, product, package, runtime, consumer behavior; capability
-authority. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge
+Do not redefine registry row IDs or truth dot-paths; do not implement release gates; do not
+change production readiness/promotion; modeling, transforms, optimizers, Bayesian paths;
+TrustReport promotion wiring; taskctl production behavior; MIP, GeoX, analytical, public,
+product, package, runtime, consumer behavior; capability authority beyond the ruled threshold
+cells. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge
 approval commit.
 
 ## Acceptance evidence and validation
 
-On the frozen exact task-owned tree record the runner, determinism + strata + N>=100 proof,
-committed manifest/characterization/report-only recommendations with provisional-threshold
-disclaimer, source proof of no threshold promotion, changed-path proof limited to owned paths,
-JSON/taskctl/diff checks, remote feature-head equality, and Docker-backed `make validate`.
+On the frozen exact task-owned tree record the decision document, the cell-level registry diff
+exactly as ruled, per-row n/rate citations to the committed characterization, source proof of no
+unruled change, changed-path proof limited to owned paths, JSON/taskctl/docs/diff checks, remote
+feature-head equality, and Docker-backed `make validate`.
 
 Required validation: `python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null`;
-focused new-test module; `poetry run python -m mmm.execution.taskctl check`; `git diff --check`;
-`make validate`; and exact runner/batch/characterization evidence. `make validate` is mandatory.
-A required category that cannot run is `blocked`.
+`python scripts/validate_docs.py`; `poetry run python -m mmm.execution.taskctl check`;
+`git diff --check`; `make validate`; and exact decision/registry evidence. `make validate` is
+mandatory. A required category that cannot run is `blocked`.
 
 ## Authorization, publication, and stop conditions
 
-The main-only `proposed -> authorized` transition is complete. The declared feature branch is not
+The main-only `proposed -> authorized` transition is pending. The declared feature branch is not
 created by authoring; no implementation, correction, PR, merge, MIP, GeoX, analytical, sibling,
 or capability authority exists until authorized. Before creating the feature branch, re-bootstrap
 and verify this task's exact remote main authorization, identity, and ancestry.
@@ -157,10 +152,9 @@ safe authorized branch.
 
 ## Deferred successors
 
-- DR-04 threshold approval and any `approved` threshold promotion.
-- R11 public simulation export and response-surface evidence.
-- Tier-2/standard-suite Monte Carlo scale-up.
+- R11 public simulation export and response-surface evidence (needs ruled thresholds).
+- Tier-2/standard-suite Monte Carlo scale-up (for rows retained on scored-n grounds).
 - Archive moves, schema adoption, panel_exp/MIP sequencing.
-- Production modeling, gate, MIP, GeoX, analytical, or package change.
+- Production modeling, gate implementation, MIP, GeoX, analytical, or package change.
 
 **Unresolved execution-blocking design questions: none.**

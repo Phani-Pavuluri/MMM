@@ -32,22 +32,11 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-## MMM_TIER1_BATCH_RUNNER_001 — merged closure receipt
+## MMM_DR04_THRESHOLD_DECISION_001 — proposed task-authoring evidence
 
-- External approval bound the exact remote review head
-  `7d77a42f40b29ce05b8d6d573cd94e83dcfe0dc6`; `main` fast-forwarded to that head and was
-  pushed with origin equality verified.
-- Implementation lineage: `ad9bcaaae1569a0a7ebae90c2c4a60081f63ab0a`; reviewed head:
-  `7d77a42f40b29ce05b8d6d573cd94e83dcfe0dc6`.
-- Docker `make validate` passed on the exact review head before the fast-forward and the
-  lifecycle/docs/JSON/diff checks passed after it. Post-merge orphans read 13: the 12
-  pre-existing-plus-drafts plus the new recommendations note, which still needs an inventory
-  row in a follow-up docs task (outside this task's owned paths, so deliberately left).
-- N=108 evidence stands as reviewed: structural 0.76, contract 0.88, coef/transform 0.0 with
-  Δμ 1.0 on the same 13 worlds; optimizer 0.6, replay/drift/identifiability passing. All
-  recommendations report-only; thresholds provisional pending DR-04.
-- Local and remote `feat/mmm-tier1-batch-runner-001` cleanup was observed; only the task
-  branches were deleted. No PR was created.
-- No threshold promotion, registry edit, gate/modeling change, taskctl change, or non-MMM change.
-  No analytical, sibling, or capability authority changed. Deferred successors: DR-04 threshold
-  review, R11 export, Tier-2 scale-up, inventory row for the recommendations note.
+- Isolated `main` and `origin/main` equal `46bd21b1c6cc035949ea29f5de0d1eb4b03f657f` before authoring. The Tier-1 runner task is merged, so the single-active-task lifecycle permits authoring this successor. The user's exact-SHA merge approval will serve as DR-04 owner sign-off per the registry's change-control rule.
+- Scope is one MMM-only Tier 3 authority decision: rule every registry row approved or retained from the committed Tier-1 characterization, record rulings in a versioned decision document, and apply registry cells exactly as ruled. No gate implementation, modeling, promotion, or cross-repository change.
+- Authorization evidence: the main-only `proposed -> authorized` transition will authorize execution solely on `feat/mmm-dr04-threshold-decision-001`. Authoring does not create that branch or authorize implementation, correction, PR, merge, MIP, GeoX, analytical, sibling, or capability authority.
+- Future evidence requires the decision document with cited numbers and rationale, the exact cell-level registry diff, per-row n/rate citations, source proof of no unruled change, JSON/taskctl/docs/diff checks, changed-path/remote-head proof, and Docker-backed `make validate`; a required failure is Git-durable `blocked`, never invented numbers.
+- Row redefinition, gate implementation, promotion, modeling, taskctl behavior, MIP, GeoX, analytical/public/product/package behavior, capability authority beyond ruled cells, PR creation, merge, rebase, squash, and force-push are prohibited.
+- Unresolved execution-blocking design questions: none.
