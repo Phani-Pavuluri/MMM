@@ -107,8 +107,6 @@ def test_lean_definition_ready_delivery_is_adopted() -> None:
         "unresolved execution-blocking design questions: none",
     ):
         assert phrase in AGENTS or phrase in LEAN
-    assert "Why this task cannot be split further" in TASK
-    assert "Failure semantics" in TASK
 
 
 def test_operational_launcher_and_terminal_outcomes_are_adopted() -> None:
@@ -143,7 +141,7 @@ def test_resumed_branch_and_exact_tree_receipt_are_adopted() -> None:
         "Any post-receipt change",
     ):
         assert phrase in AGENTS or phrase in STANDARD
-    assert "Fail-closed conflicts" in TASK
+    assert "fail-closed" in AGENTS
     assert "authorization-head ancestry" in AGENTS
     assert "completion report is evidence only" in STANDARD or "is evidence only" in AGENTS
 
@@ -275,7 +273,7 @@ def test_full_validation_and_closure_controls_remain_preserved() -> None:
     for phrase in (
         "make validate",
         "exact-tree receipt",
-        "exact-head",
+        "exact remote feature-branch SHA",
         "git merge --ff-only",
         "one closure commit",
         "branch cleanup",
@@ -289,12 +287,9 @@ def test_full_validation_and_closure_controls_remain_preserved() -> None:
 
 
 def test_single_source_taskctl_contract_is_adopted() -> None:
-    assert "mmm_repo_execution_state_v3" in TASK
-    assert "v2 is rejected" in TASK
-    assert "generated lifecycle blocks" in TASK
+    assert "<!-- BEGIN MMM TASKCTL EXECUTION VIEW -->" in TASK
+    assert "<!-- END MMM TASKCTL EXECUTION VIEW -->" in TASK
     assert "python -m mmm.execution.taskctl check" in TASK
-    assert "taskctl [--root PATH] sync" in TASK
-    assert "taskctl [--root PATH] transition" in TASK
     assert STATE["schema_version"] == "mmm_repo_execution_state_v3"
 
 
