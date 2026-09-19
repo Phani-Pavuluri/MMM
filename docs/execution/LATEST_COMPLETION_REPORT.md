@@ -32,10 +32,11 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-## MMM_MACOS_FINDER_METADATA_HYGIENE_002 — merged closure receipt
+## MMM_MONTE_CARLO_TIER1_RELIABILITY_BATCH_001 — proposed task-authoring evidence
 
-- External approval bound the exact remote review head `397e2b99dd6775cd68d1bdccb7b26c5fc16cff3a`; `main` fast-forwarded to that head and was pushed with origin equality verified.
-- Implementation lineage: `a3022a6a44778a68eef9c90d7bfb8f5760e745bc`, then `258e3171ab3184c8fde03ac103ad41ea625f7976`; reviewed head: `397e2b99dd6775cd68d1bdccb7b26c5fc16cff3a`.
-- Docker `make validate` passed both immediately before and immediately after the fast-forward on the exact integration tree. Taskctl state validation, JSON, diff, and changed-path checks also passed.
-- Root `.DS_Store` is no longer tracked, `.gitignore` ignores Finder metadata, and local/remote `feat/mmm-macos-finder-metadata-hygiene-002` cleanup was observed.
-- No analytical, sibling, or capability authority changed. Deferred successor work: none.
+- Isolated `main` and `origin/main` equal `48746db5d439b77c6bb7e8a4ef2299f3959a074b` before authoring.
+- Scope is one MMM-only Tier 2 validation evidence task: stratified Tier-1 Monte Carlo batch (N>=100) with report-only characterization; no threshold promotion, gate change, modeling change, or cross-repository change.
+- Authorization evidence: the main-only `proposed -> authorized` transition will authorize execution solely on `feat/mmm-monte-carlo-tier1-reliability-batch-001`. Authoring does not create that branch or authorize implementation, correction, PR, merge, MIP, GeoX, analytical, sibling, or capability authority.
+- Future evidence requires focused Monte Carlo tests, batch manifest and characterization JSON, report-only recommendations with provisional disclaimer, source proof of no threshold promotion, JSON/taskctl/diff checks, changed-path/remote-head proof, and Docker-backed `make validate`; a required failure is Git-durable `blocked`.
+- Production modeling, thresholds, gates, promotion, MIP, GeoX, analytical/public/product/package behavior, capability authority, PR creation, merge, rebase, squash, and force-push are prohibited.
+- Unresolved execution-blocking design questions: none.

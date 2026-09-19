@@ -32,31 +32,79 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-**Owner:** MMM repository hygiene; MMM repository governance
+**Owner:** MMM repository governance
+**Last updated:** 2026-09-19
+**Last verified:** 2026-09-19
 
-## Identity
+## Identity and supersession prerequisite
 
-- **Task ID:** `MMM_MACOS_FINDER_METADATA_HYGIENE_002`
+- **Task ID:** `MMM_MONTE_CARLO_TIER1_RELIABILITY_BATCH_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Synchronized base:** `d50763ca616f12d5b1c7f2d4dd43409cdfcd252e`
-- **Feature branch:** `feat/mmm-macos-finder-metadata-hygiene-002`
-- **Risk tier:** Tier 1; compatibility `not_applicable`.
+- **Synchronized base:** `48746db5d439b77c6bb7e8a4ef2299f3959a074b`
+- **Declared future feature branch:** `feat/mmm-monte-carlo-tier1-reliability-batch-001`
+- **Execution mode:** `branch_and_fast_forward`
+- **Risk tier:** Tier 2 validation-only reliability batch with mandatory full repository validation
+- **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior; thresholds stay provisional, no gate promotion
 
-## Outcome
+This is an independent MMM-only successor to the merged Finder-hygiene task. Before future authorization, bootstrap a clean isolated worktree from synchronized `origin/main`, preserve the primary checkout and all drafts, and verify main equality to the declared base. This task does not overwrite, reinterpret, or alter any prior receipt or branch.
 
-Remove tracked root `.DS_Store` from Git only, preserve its local file, and add
-exactly `.DS_Store` to `.gitignore`. The tracked Finder inventory must become
-empty. No source, authority, MIP, GeoX, public, package, runtime, or behavior
-change is permitted.
+Any disagreement in main equality, task identity, branch identity, authorization ancestry, or ownership evidence is fail-closed: do not create a successor branch; publish `blocked` only on a safe authorized branch with exact mismatch, attempted evidence, validation categories, and live resolution condition.
+
+## Primary independently reviewable outcome
+
+Execute the stratified Tier-1 Monte Carlo reliability batch (N>=100) with existing `mmm/validation/synthetic/monte_carlo_reliability.py` entry points over anchor, lattice, and boundary strata, and publish a machine-readable characterization JSON plus a report-only threshold-recommendation note. No threshold is promoted to `approved`, no release gate changes, no modeling change.
+
+The work is validation evidence only. It preserves all production behavior, lifecycle semantics, authority controls, and non-validation surfaces.
+
+## Atomic boundary
+
+Tier-1 batch execution plus report-only characterization is one evidence boundary. Batch without characterization proves nothing; characterization without the deterministic batch is not reproducible. Threshold approval (DR-04), gate promotion, modeling expansion, and export work are separate successors. No production or cross-repository change is required.
+
+## Inputs, outputs, invariants, and failure behavior
+
+- **Inputs:** synchronized main at the declared base; `mmm/validation/synthetic/monte_carlo_reliability.py` (`build_pilot_characterization`, `write_pilot_characterization`, `characterize_capability_distributions`); WORLD-008–012 anchors plus lattice/boundary strata; clean isolated worktree.
+- **Outputs:** `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json`; `docs/05_validation/monte_carlo_tier1_recommendations_001.md` (report-only, thresholds stay provisional); deterministic batch manifest with world counts, strata, seeds, and pass-rate distributions.
+- **Invariants:** no `approved` threshold; no `validation_registry.md` threshold edit; no release-gate, optimizer, transform, Bayesian, TrustReport-promotion, MIP, GeoX, analytical, public, product, package, runtime, configuration, schema, contract, or capability-authority change; `mmm/execution/taskctl.py` and lifecycle semantics unchanged.
+- **Failure behavior:** if N<100 deterministic worlds cannot be executed, characterization cannot be reproduced, validation fails, a prohibited path changes, or the base conflicts, do not broaden scope. Publish Git-durable `blocked` with exact evidence, category results, and a live resolution condition.
+
+## Exact implementation behavior
+
+1. Run the Tier-1 stratified batch (N>=100: anchors in every tier, world-type strata minimums, boundary emphasis on severe collinearity/drift/multi-channel, fixed negative-gate slice) via the existing Monte Carlo entry points; record seeds and manifests.
+2. Write the machine-readable characterization JSON and the report-only recommendations note; explicitly mark all thresholds provisional and DR-04 approval as deferred.
+3. Add no new estimator, transform, optimizer, gate, promotion, or consumer contract; do not edit `validation_registry.md` thresholds.
+4. Do not change taskctl transitions, schema, generated views beyond sync, cleanup semantics, or authority validation except via the standard lifecycle on the declared branch.
 
 ## Owned paths
 
-`.DS_Store` (index only), `.gitignore`, and the three execution files only.
+1. `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json`
+2. `docs/05_validation/monte_carlo_tier1_recommendations_001.md`
+3. `docs/execution/ACTIVE_TASK.md`
+4. `docs/execution/EXECUTION_STATE.json`
+5. `docs/execution/LATEST_COMPLETION_REPORT.md`
 
-## Validation
+No other path is owned.
 
-Use `python -m mmm.execution.taskctl check`, JSON/diff checks,
-`git check-ignore -v --no-index .DS_Store`, exact inventory/path proof, and
-Docker `make validate`. Required failure is Git-durable `blocked`.
+## Prohibited scope
+
+Do not change `validation_registry.md` thresholds; release gates; production readiness/promotion; modeling, transforms, optimizers, Bayesian paths; TrustReport promotion wiring; MIP, GeoX, analytical, public, product, package, runtime, consumer behavior; capability authority; taskctl production behavior. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge approval commit.
+
+## Acceptance evidence and validation
+
+On the frozen exact task-owned tree record Tier-1 batch manifest (N, strata, seeds), characterization JSON, report-only recommendations with provisional-threshold disclaimer, changed-path proof limited to owned paths, JSON/taskctl/diff checks, remote feature-head equality, and Docker-backed `make validate`.
+
+Required validation: `python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null`; `poetry run pytest tests/test_monte_carlo_reliability.py`; `poetry run python -m mmm.execution.taskctl check`; `git diff --check`; `make validate`; and exact batch/characterization evidence. `make validate` is mandatory. A required category that cannot run is `blocked`.
+
+## Authorization, publication, and stop conditions
+
+The main-only `proposed -> authorized` transition is pending. The declared feature branch is not created by authoring; no implementation, correction, PR, merge, MIP, GeoX, analytical, sibling, or capability authority exists until authorized. Before creating the feature branch, re-bootstrap and verify this task's exact remote main authorization, identity, and ancestry.
+
+Future execution creates one implementation and one exact-tree receipt commit. Publish only `ready_for_review` with correction, merge, and PR authority false, no blockers, null reviewed/approval SHAs, and remote-head equality. A genuine failure publishes `blocked` on the safe authorized branch.
+
+## Deferred successors
+
+- DR-04 threshold approval and any `approved` threshold promotion.
+- R11 public simulation export and response-surface evidence.
+- Tier-2/standard-suite Monte Carlo scale-up.
+- Production modeling, gate, MIP, GeoX, analytical, or package change.
 
 **Unresolved execution-blocking design questions: none.**
