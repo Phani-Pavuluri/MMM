@@ -1,15 +1,15 @@
 {
   "schema_version": "mmm_repo_execution_state_v3",
   "repository": "Phani-Pavuluri/MMM",
-  "task_id": "MMM_TIER1_BATCH_RUNNER_001",
-  "status": "merged",
+  "task_id": "MMM_DR04_THRESHOLD_DECISION_001",
+  "status": "proposed",
   "execution_mode": "branch_and_fast_forward",
   "base_branch": "main",
-  "base_sha": "d04675358a1dc562717c23d4e38ee82b93bc3ed5",
-  "task_authoring_head_sha": "c6775939cf861a6a960f9d83adc1025c7f7e415e",
-  "authorization_head_sha": "c6775939cf861a6a960f9d83adc1025c7f7e415e",
-  "feature_branch": "feat/mmm-tier1-batch-runner-001",
-  "feature_branch_created": true,
+  "base_sha": "46bd21b1c6cc035949ea29f5de0d1eb4b03f657f",
+  "task_authoring_head_sha": "c35bb73136cb82b2abaf7218475a1a5ef0c52128",
+  "authorization_head_sha": "c35bb73136cb82b2abaf7218475a1a5ef0c52128",
+  "feature_branch": "feat/mmm-dr04-threshold-decision-001",
+  "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
   "completion_report_path": "docs/execution/LATEST_COMPLETION_REPORT.md",
   "canonical_mip_standard_repository": null,
@@ -19,17 +19,17 @@
   "correction_execution_authorized": false,
   "merge_authorized": false,
   "pr_creation_authorized": false,
-  "reviewed_head_sha": "7d77a42f40b29ce05b8d6d573cd94e83dcfe0dc6",
+  "reviewed_head_sha": null,
   "rejected_review_head_sha": null,
-  "implementation_commit_sha": "ad9bcaaae1569a0a7ebae90c2c4a60081f63ab0a",
+  "implementation_commit_sha": null,
   "approval_commit_sha": null,
   "capability_authorizations_changed": false,
   "last_updated": "2026-09-19",
   "blockers": [],
   "max_correction_cycles": 1,
-  "risk_tier": "tier_2_mmm_validation_tier1_batch_runner_with_mandatory_full_validation",
+  "risk_tier": "tier_3_mmm_release_gate_threshold_decision_with_mandatory_full_validation",
   "full_suite_validation_required": true,
-  "validation_scope": "tier1_runner_determinism_strata_full_batch_characterization_report_only_taskctl_check_diff_check_docker_make_validate_exact_tree_receipt_remote_head_equality",
+  "validation_scope": "dr04_row_rulings_decision_record_registry_cells_as_ruled_taskctl_check_docs_check_diff_check_docker_make_validate_exact_tree_receipt_remote_head_equality",
   "unresolved_execution_blocking_design_questions": [],
   "affected_repositories": [
     "Phani-Pavuluri/MMM"
@@ -37,7 +37,7 @@
   "modified_repositories": [
     "Phani-Pavuluri/MMM"
   ],
-  "coordination_workstream_id": "WS-MMM-TIER1-BATCH-RUNNER-001",
+  "coordination_workstream_id": "WS-MMM-DR04-THRESHOLD-DECISION-001",
   "coordination_capability_owner": "mmm_repository_governance",
   "prior_task": {
     "task_id": "MMM_DOCKER_VALIDATION_EVIDENCE_CAPTURE_001",
@@ -60,13 +60,13 @@
     "external_merge_was_authorized": false,
     "conforming_exact_head_approval_record_exists": false
   },
-  "review_decision": "merged",
+  "review_decision": "proposed",
   "review_decision_source": "docs/execution/EXECUTION_STATE.json",
-  "task_authoring_note": "Task authoring commit c6775939cf861a6a960f9d83adc1025c7f7e415e changes only ACTIVE_TASK.md and LATEST_COMPLETION_REPORT.md. This state-only commit preserves all prior receipts and proposes the independent MMM-only Tier-1 batch runner task that owns the runner the blocked batch task was forbidden to build.",
+  "task_authoring_note": "Task authoring commit c35bb73136cb82b2abaf7218475a1a5ef0c52128 changes only ACTIVE_TASK.md and LATEST_COMPLETION_REPORT.md. This state-only commit preserves all prior receipts and proposes the independent MMM-only DR-04 threshold decision task.",
   "rejected_implementation_commit_sha": null,
   "correction_cycles_completed": 0,
   "correction_cycles_remaining": 1,
   "live_resolution_condition": null,
-  "local_feature_branch_cleanup": "observed_deleted",
-  "remote_feature_branch_cleanup": "observed_deleted"
+  "local_feature_branch_cleanup": "not_required",
+  "remote_feature_branch_cleanup": "not_required"
 }
