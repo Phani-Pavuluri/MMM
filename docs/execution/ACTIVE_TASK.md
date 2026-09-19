@@ -38,19 +38,20 @@
 
 ## Identity and supersession prerequisite
 
-- **Task ID:** `MMM_AGENTS_BOOTSTRAP_REORDER_001`
+- **Task ID:** `MMM_TIER1_BATCH_RUNNER_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Synchronized base:** `d51367be1a7d4b45ddcb93aaeb7fe6d44d0cdff4`
-- **Declared future feature branch:** `feat/mmm-agents-bootstrap-reorder-001`
+- **Synchronized base:** `d04675358a1dc562717c23d4e38ee82b93bc3ed5`
+- **Declared future feature branch:** `feat/mmm-tier1-batch-runner-001`
 - **Execution mode:** `branch_and_fast_forward`
-- **Risk tier:** Tier 1 documentation-governance bootstrap reorder with mandatory full repository validation
-- **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior
+- **Risk tier:** Tier 2 validation-evidence batch runner with mandatory full repository validation
+- **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior; thresholds stay provisional, no gate promotion
 
-This is an independent MMM-only successor. The navigation-registry task is merged, so the
-single-active-task lifecycle permits authoring this successor. Before creating the feature branch,
-bootstrap a clean isolated worktree from synchronized `origin/main`, preserve the primary
-checkout and all drafts, and verify main equality to the declared base. This task does not
-overwrite, reinterpret, or alter any prior receipt or branch.
+This is an independent MMM-only successor. The AGENTS reorder task is merged and the earlier
+Tier-1 batch task is terminal `blocked` for lack of a runner, so the single-active-task lifecycle
+permits authoring this successor, which owns the runner the blocked task was forbidden to build.
+Before creating the feature branch, bootstrap a clean isolated worktree from synchronized
+`origin/main`, preserve the primary checkout and all drafts, and verify main equality to the
+declared base. This task does not overwrite, reinterpret, or alter any prior receipt or branch.
 
 Any disagreement in main equality, task identity, branch identity, authorization ancestry, or
 ownership evidence is fail-closed: do not create a successor branch; publish `blocked` only on a
@@ -59,81 +60,92 @@ resolution condition.
 
 ## Primary independently reviewable outcome
 
-Reorder the `AGENTS.md` Mandatory bootstrap read sequence to Git sync, then non-authorizing
-roadmap orientation, then execution state, then active task, then standards. Sync-first and
-fail-closed behavior is non-negotiable; the reorder inserts a read of the north star as context
-and moves no authority.
+Build a deterministic Tier-1 Monte Carlo batch runner that produces N>=100 stratified worlds,
+executes structural certification plus recovery certification per world using existing
+materializer/certification entry points, and publishes a machine-readable characterization plus
+a report-only threshold-recommendation note. No threshold is promoted to `approved`, no release
+gate changes, no modeling change.
 
 ## Atomic boundary
 
-The bootstrap reorder is one reviewable change. The sequence without the authority-preservation
-sentence risks roadmap-as-authority misreading; the sentence without the sequence changes nothing.
-Roadmap body edits, inventory/index edits, schema work, and cross-repo work are separate tasks.
-No production, modeling, validation-threshold, gate, or cross-repository change is required.
+Runner plus focused tests plus one full N>=100 execution with committed evidence is one outcome:
+the runner untested proves nothing, and the evidence without the committed runner is not
+reproducible. Threshold approval (DR-04), gate promotion, modeling expansion, and export work are
+separate successors. No production or cross-repository change is required.
 
 ## Inputs, outputs, invariants, and failure behavior
 
-- **Inputs:** synchronized main at the declared base; `AGENTS.md` Mandatory bootstrap section;
-  `docs/05_validation/platform_roadmap.md` as the stable orientation pointer; clean isolated worktree.
-- **Outputs:** `AGENTS.md` with the bootstrap read order Git sync, roadmap orientation (stable
-  pointer plus current phase, explanatory only), execution state, active task, standards; plus one
-  sentence stating roadmap orientation never overrides authority and execution authority remains
-  exclusively `docs/execution/EXECUTION_STATE.json`.
-- **Invariants:** sync-first order and fail-closed language preserved verbatim in meaning; no
-  authority moved to any roadmap or navigation document; every phrase asserted by
-  `tests/test_repo_native_execution_handoff.py` about `AGENTS.md` stays intact; no change to any
-  other file, roadmap body content, inventory, index, proposal doc, execution-state meaning,
-  taskctl code/schema, or non-MMM repo; no MIP, GeoX, panel_exp, analytical, public, product,
-  package, runtime, or capability-authority change.
-- **Failure behavior:** if the reorder cannot preserve sync-first/fail-closed meaning, an asserted
-  phrase cannot be preserved, validation fails, a prohibited path changes, or the base conflicts,
-  do not broaden scope. Publish Git-durable `blocked` with exact evidence, category results, and
-  a live resolution condition.
+- **Inputs:** synchronized main at the declared base; `ScenarioBuilder`, materializer,
+  `certification_runner`, `recovery_certification`, and `monte_carlo_reliability`
+  characterization entry points; WORLD-008–012 anchors; clean isolated worktree.
+- **Outputs:** `mmm/validation/synthetic/tier1_batch_runner.py` (seeded stratified sampler over
+  the program-doc coverage axes with anchor replication, strata minimums, and boundary emphasis;
+  per-world structural + recovery execution; aggregation via existing characterization);
+  `tests/test_tier1_batch_runner.py` (determinism: same seed identical manifest; N>=100 and
+  strata minimums on the full run or a fast small-N smoke for CI); committed
+  `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json` and
+  `docs/05_validation/monte_carlo_tier1_recommendations_001.md` (report-only, thresholds stay
+  provisional, DR-04 deferred).
+- **Invariants:** no `approved` threshold; no `validation_registry.md` threshold edit; no
+  release-gate, optimizer, transform, Bayesian, TrustReport-promotion, MIP, GeoX, analytical,
+  public, product, package, runtime, configuration, schema, contract, or capability-authority
+  change; taskctl production behavior and lifecycle semantics unchanged.
+- **Failure behavior:** if the full batch cannot complete inside the Docker gate window, if
+  determinism or strata minimums cannot be proven, validation fails, a prohibited path changes,
+  or the base conflicts, do not broaden scope and do not fabricate outcomes. Publish Git-durable
+  `blocked` with exact evidence, category results, and a live resolution condition.
 
 ## Exact implementation behavior
 
-1. In the Mandatory bootstrap section, reorder the read sequence to Git sync (steps 1–4 unchanged),
-   then roadmap orientation (stable pointer to the master roadmap plus current phase, explanatory
-   only), then execution state, then active task, then standards; renumber accordingly.
-2. Add one authority-preservation sentence: roadmap orientation is context and never overrides
-   authority; execution authority remains exclusively the synchronized execution state.
-3. Touch the canonical launcher sentence only to the minimum needed for consistency with the new
-   order; change no other `AGENTS.md` section.
-4. Verify every `AGENTS.md` phrase asserted by the repo handoff test still holds; run the full
-   Docker gate. Do not edit the test.
+1. Build the seeded stratified sampler (anchor replication every tier, world-type strata minimums,
+   boundary emphasis on severe collinearity/drift/multi-channel, fixed negative-gate slice) reusing
+   `ScenarioBuilder` truth composition and the existing materializer; no new generative semantics.
+2. Execute per-world structural certification plus recovery certification through the existing
+   runners; aggregate with the existing characterization entry points; write the manifest,
+   characterization JSON, and report-only recommendations note.
+3. Add focused tests proving determinism (same seed identical manifest), N>=100 with strata
+   minimums, and report-only threshold status; keep a fast small-N smoke path for CI.
+4. Promote no threshold, edit no registry, change no gate, model, optimizer, transform, Bayesian
+   path, TrustReport promotion, or consumer contract. Do not change taskctl transitions, schema,
+   generated views beyond sync, cleanup semantics, or authority validation except via the standard
+   lifecycle on the declared branch.
 
 ## Owned paths
 
-1. `AGENTS.md`
-2. `docs/execution/ACTIVE_TASK.md`
-3. `docs/execution/EXECUTION_STATE.json`
-4. `docs/execution/LATEST_COMPLETION_REPORT.md`
+1. `mmm/validation/synthetic/tier1_batch_runner.py`
+2. `tests/test_tier1_batch_runner.py`
+3. `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json`
+4. `docs/05_validation/monte_carlo_tier1_recommendations_001.md`
+5. `docs/execution/ACTIVE_TASK.md`
+6. `docs/execution/EXECUTION_STATE.json`
+7. `docs/execution/LATEST_COMPLETION_REPORT.md`
 
 No other path is owned.
 
 ## Prohibited scope
 
-Do not edit any roadmap body content, inventory, context index, schema proposal, execution-state
-meaning or authority beyond this task's own standard lifecycle transitions, taskctl code, schema,
-or generated-view semantics, any non-MMM repo, or analytical, public, product, package, runtime,
-configuration, or capability authority. Do not create a PR, merge, squash, rebase, force-push,
-merge commit, or pre-merge approval commit.
+Do not change `validation_registry.md` thresholds; release gates; production readiness/promotion;
+modeling, transforms, optimizers, Bayesian paths; TrustReport promotion wiring; existing
+materializer, certification, or characterization semantics beyond calling them; taskctl production
+behavior; MIP, GeoX, analytical, public, product, package, runtime, consumer behavior; capability
+authority. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge
+approval commit.
 
 ## Acceptance evidence and validation
 
-On the frozen exact task-owned tree record the reordered bootstrap, the authority-preservation
-sentence, phrase-preservation evidence against the repo handoff test, changed-path proof limited
-to owned paths, JSON/taskctl/diff checks, remote feature-head equality, and Docker-backed
-`make validate`.
+On the frozen exact task-owned tree record the runner, determinism + strata + N>=100 proof,
+committed manifest/characterization/report-only recommendations with provisional-threshold
+disclaimer, source proof of no threshold promotion, changed-path proof limited to owned paths,
+JSON/taskctl/diff checks, remote feature-head equality, and Docker-backed `make validate`.
 
 Required validation: `python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null`;
-`poetry run python -m mmm.execution.taskctl check`; `git diff --check`; `make validate`; and
-exact reorder/authority evidence. `make validate` is mandatory. A required category that cannot
-run is `blocked`.
+focused new-test module; `poetry run python -m mmm.execution.taskctl check`; `git diff --check`;
+`make validate`; and exact runner/batch/characterization evidence. `make validate` is mandatory.
+A required category that cannot run is `blocked`.
 
 ## Authorization, publication, and stop conditions
 
-The main-only `proposed -> authorized` transition is complete. The declared feature branch is not
+The main-only `proposed -> authorized` transition is pending. The declared feature branch is not
 created by authoring; no implementation, correction, PR, merge, MIP, GeoX, analytical, sibling,
 or capability authority exists until authorized. Before creating the feature branch, re-bootstrap
 and verify this task's exact remote main authorization, identity, and ancestry.
@@ -145,10 +157,10 @@ safe authorized branch.
 
 ## Deferred successors
 
-- Any archive-with-link-updates move, only after the classified inventory exists.
-- Schema adoption/implementation, only via a separately authorized task.
-- panel_exp then MIP sequencing; MIP P2-collision classification.
-- Tier-1 batch runner successor for the blocked Monte Carlo line (requires fresh authoring).
-- Production modeling, gate, threshold, MIP, GeoX, analytical, or package change.
+- DR-04 threshold approval and any `approved` threshold promotion.
+- R11 public simulation export and response-surface evidence.
+- Tier-2/standard-suite Monte Carlo scale-up.
+- Archive moves, schema adoption, panel_exp/MIP sequencing.
+- Production modeling, gate, MIP, GeoX, analytical, or package change.
 
 **Unresolved execution-blocking design questions: none.**

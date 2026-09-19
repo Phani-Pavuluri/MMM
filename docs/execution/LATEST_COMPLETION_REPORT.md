@@ -32,18 +32,11 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-## MMM_AGENTS_BOOTSTRAP_REORDER_001 — merged closure receipt
+## MMM_TIER1_BATCH_RUNNER_001 — proposed task-authoring evidence
 
-- External approval bound the exact remote review head
-  `4368747eb41397049df92525709dfad989eb1026`; `main` fast-forwarded to that head and was
-  pushed with origin equality verified.
-- Implementation lineage: `d5da2100fc16b48225b190b94ee5224fc795cadc`; reviewed head:
-  `4368747eb41397049df92525709dfad989eb1026`.
-- Docker `make validate` passed on the exact review head before the fast-forward and the
-  lifecycle/docs/JSON/diff checks passed after it. Post-merge orphans read 12 only because the
-  six local-only `docs/tasks/` drafts are counted; the tree's six pre-existing orphans are unchanged.
-- Local and remote `feat/mmm-agents-bootstrap-reorder-001` cleanup was observed; only the task
-  branches were deleted. No PR was created.
-- No roadmap body edit, inventory/index edit, execution-state meaning change, taskctl change,
-  non-MMM change, or authority change of any kind. Deferred successors: archive moves, schema
-  adoption, panel_exp/MIP sequencing, Tier-1 runner successor (requires fresh authoring).
+- Isolated `main` and `origin/main` equal `d04675358a1dc562717c23d4e38ee82b93bc3ed5` before authoring. The AGENTS reorder task is merged and the earlier Tier-1 batch task is terminal `blocked` for lack of a runner, so the single-active-task lifecycle permits authoring this successor, which owns the runner the blocked task was forbidden to build.
+- Scope is one MMM-only Tier 2 validation task: deterministic Tier-1 batch runner plus focused tests plus one full N>=100 execution with committed manifest, characterization, and report-only recommendations. No threshold promotion, gate change, modeling change, or cross-repository change.
+- Authorization evidence: the main-only `proposed -> authorized` transition will authorize execution solely on `feat/mmm-tier1-batch-runner-001`. Authoring does not create that branch or authorize implementation, correction, PR, merge, MIP, GeoX, analytical, sibling, or capability authority.
+- Future evidence requires the runner, determinism plus strata plus N>=100 proof, committed manifest/characterization/report-only recommendations with provisional disclaimer, source proof of no threshold promotion, JSON/taskctl/diff checks, changed-path/remote-head proof, and Docker-backed `make validate`; a required failure is Git-durable `blocked`, never fabricated outcomes.
+- Thresholds, gates, promotion, modeling, taskctl behavior, MIP, GeoX, analytical/public/product/package behavior, capability authority, PR creation, merge, rebase, squash, and force-push are prohibited.
+- Unresolved execution-blocking design questions: none.
