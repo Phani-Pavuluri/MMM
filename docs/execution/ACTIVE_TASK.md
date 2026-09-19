@@ -140,7 +140,7 @@ mandatory. A required category that cannot run is `blocked`.
 
 ## Authorization, publication, and stop conditions
 
-The main-only `proposed -> authorized` transition is pending. The declared feature branch is not
+The main-only `proposed -> authorized` transition is complete. The declared feature branch is not
 created by authoring; no implementation, correction, PR, merge, MIP, GeoX, analytical, sibling,
 or capability authority exists until authorized. Before creating the feature branch, re-bootstrap
 and verify this task's exact remote main authorization, identity, and ancestry.
