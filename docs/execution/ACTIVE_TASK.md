@@ -105,8 +105,8 @@ rebase, force-push, merge commit, or pre-merge approval commit.
 
 ## Acceptance evidence and validation
 
-Required: exact candidate-diff proof; focused semantic test; JSON/taskctl/diff
-checks; changed-path and remote-head proof; a single Docker-backed `make validate`
+Required: exact candidate-diff proof; focused semantic test; `python -m mmm.execution.taskctl check`; JSON/diff checks; changed-path and remote-head proof;
+a single Docker-backed `make validate`
 with retained tee output. Ruff and mypy are `not_required` separately but not
 waived from `make validate`. A required failure is `blocked`.
 
