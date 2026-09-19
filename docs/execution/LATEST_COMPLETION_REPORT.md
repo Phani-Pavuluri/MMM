@@ -32,20 +32,11 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-## MMM_DOCS_GOVERNANCE_NAVIGATION_REGISTRY_001 — merged closure receipt
+## MMM_AGENTS_BOOTSTRAP_REORDER_001 — proposed task-authoring evidence
 
-- External approval bound the exact remote review head
-  `7350c3c766efa6a6bc361fc64ba841dec07cb4ee`; `main` fast-forwarded to that head and was
-  pushed with origin equality verified.
-- Implementation lineage: `221fdff1c0539d662b73e51a7c7d7d04bd1c14bc`; reviewed head:
-  `7350c3c766efa6a6bc361fc64ba841dec07cb4ee`.
-- Docker `make validate` passed on the exact review head before the fast-forward and the
-  lifecycle/docs/JSON/diff checks passed after it. Post-merge orphans read 12 only because the
-  six local-only `docs/tasks/` drafts are counted; the tree's six pre-existing orphans are
-  unchanged and the new proposal doc is inventory-covered.
-- Local and remote `feat/mmm-docs-governance-navigation-registry-001` cleanup was observed;
-  only the task branches were deleted. No PR was created.
-- No deletion, archive move, strategy doc, schema implementation, AGENTS.md edit, roadmap body
-  rewrite, execution-state meaning change, taskctl change, or non-MMM change. No analytical,
-  sibling, or capability authority changed. Deferred successors: AGENTS.md reorder (own task),
-  archive moves, schema adoption, panel_exp/MIP sequencing.
+- Isolated `main` and `origin/main` equal `d51367be1a7d4b45ddcb93aaeb7fe6d44d0cdff4` before authoring. The navigation-registry task is merged, so the single-active-task lifecycle permits authoring this independent successor.
+- Scope is one MMM-only Tier 1 docs-governance task: reorder the `AGENTS.md` Mandatory bootstrap read sequence to Git sync, non-authorizing roadmap orientation, execution state, active task, standards, with sync-first/fail-closed preserved and an authority-preservation sentence. No other file changes.
+- Authorization evidence: the main-only `proposed -> authorized` transition will authorize execution solely on `feat/mmm-agents-bootstrap-reorder-001`. Authoring does not create that branch or authorize implementation, correction, PR, merge, MIP, GeoX, panel_exp, analytical, sibling, or capability authority.
+- Future evidence requires the reordered bootstrap, authority-preservation sentence, phrase-preservation evidence against the repo handoff test, JSON/taskctl/diff checks, changed-path/remote-head proof, and Docker-backed `make validate`; a required failure is Git-durable `blocked`.
+- Roadmap bodies, inventory, index, proposal doc, execution-state meaning, taskctl code/schema, non-MMM repos, analytical/public/product/package behavior, capability authority, PR creation, merge, rebase, squash, and force-push are prohibited.
+- Unresolved execution-blocking design questions: none.
