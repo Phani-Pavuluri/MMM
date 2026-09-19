@@ -1,0 +1,343 @@
+{
+  "axis_envelopes": {
+    "correlation_level": {
+      "anchor": {
+        "error": 0,
+        "fail": 3,
+        "n": 5,
+        "pass": 2
+      },
+      "low": {
+        "error": 0,
+        "fail": 12,
+        "n": 40,
+        "pass": 28
+      },
+      "medium": {
+        "error": 0,
+        "fail": 0,
+        "n": 24,
+        "pass": 24
+      },
+      "severe": {
+        "error": 0,
+        "fail": 11,
+        "n": 39,
+        "pass": 28
+      }
+    },
+    "drift": {
+      "anchor": {
+        "error": 0,
+        "fail": 3,
+        "n": 5,
+        "pass": 2
+      },
+      "false": {
+        "error": 0,
+        "fail": 15,
+        "n": 59,
+        "pass": 44
+      },
+      "true": {
+        "error": 0,
+        "fail": 8,
+        "n": 44,
+        "pass": 36
+      }
+    },
+    "family": {
+      "anchor": {
+        "error": 0,
+        "fail": 3,
+        "n": 5,
+        "pass": 2
+      },
+      "baseline": {
+        "error": 0,
+        "fail": 0,
+        "n": 44,
+        "pass": 44
+      },
+      "behavioral_rich_dgp": {
+        "error": 0,
+        "fail": 23,
+        "n": 23,
+        "pass": 0
+      },
+      "replay": {
+        "error": 0,
+        "fail": 0,
+        "n": 36,
+        "pass": 36
+      }
+    },
+    "noise_level": {
+      "anchor": {
+        "error": 0,
+        "fail": 3,
+        "n": 5,
+        "pass": 2
+      },
+      "high": {
+        "error": 0,
+        "fail": 9,
+        "n": 37,
+        "pass": 28
+      },
+      "low": {
+        "error": 0,
+        "fail": 10,
+        "n": 38,
+        "pass": 28
+      },
+      "medium": {
+        "error": 0,
+        "fail": 4,
+        "n": 28,
+        "pass": 24
+      }
+    },
+    "stratum": {
+      "anchor": {
+        "error": 0,
+        "fail": 3,
+        "n": 5,
+        "pass": 2
+      },
+      "behavioral_rich_dgp": {
+        "error": 0,
+        "fail": 23,
+        "n": 23,
+        "pass": 0
+      },
+      "smoke_structural": {
+        "error": 0,
+        "fail": 0,
+        "n": 80,
+        "pass": 80
+      }
+    }
+  },
+  "capability_distributions": [
+    {
+      "capability": "structural_integrity",
+      "failure_regions": [],
+      "mean_score": 0.7592592592592593,
+      "metric_class": "structural",
+      "n_observations": 108,
+      "notes": "Tier-1 batch structural overall_status",
+      "pass_rate": 0.7592592592592593
+    },
+    {
+      "capability": "platform_contract_compatibility",
+      "failure_regions": [],
+      "mean_score": 0.8796296296296297,
+      "metric_class": "structural",
+      "n_observations": 108,
+      "notes": "Tier-1 batch contract compatibility",
+      "pass_rate": 0.8796296296296297
+    },
+    {
+      "capability": "coefficient_recovery",
+      "failure_regions": [
+        "T1-L5B-exact_recovery-noise-high-corr-low-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-high-corr-low-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-high-corr-severe-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-high-corr-severe-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-low-corr-low-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-low-corr-severe-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-medium-corr-low-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-medium-corr-low-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-medium-corr-severe-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-medium-corr-severe-drift-on-replay-off",
+        "WORLD-008-exact-recovery"
+      ],
+      "mean_score": 0.0,
+      "metric_class": "diagnostic_attribution",
+      "n_observations": 13,
+      "notes": "Tier-1 batch recovery sections (report-only)",
+      "pass_rate": 0.0
+    },
+    {
+      "capability": "transform_recovery",
+      "failure_regions": [
+        "T1-L5B-exact_recovery-noise-high-corr-low-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-high-corr-low-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-high-corr-severe-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-high-corr-severe-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-low-corr-low-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-low-corr-low-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-low-corr-severe-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-low-corr-severe-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-medium-corr-low-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-medium-corr-low-drift-on-replay-off",
+        "T1-L5B-exact_recovery-noise-medium-corr-severe-drift-off-replay-off",
+        "T1-L5B-exact_recovery-noise-medium-corr-severe-drift-on-replay-off",
+        "WORLD-008-exact-recovery"
+      ],
+      "mean_score": 0.0,
+      "metric_class": "diagnostic_attribution",
+      "n_observations": 13,
+      "notes": "Tier-1 batch recovery sections (report-only)",
+      "pass_rate": 0.0
+    },
+    {
+      "capability": "delta_mu_recovery",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "decision_grade",
+      "n_observations": 13,
+      "notes": "Tier-1 batch recovery sections (report-only)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "optimizer_recovery",
+      "failure_regions": [
+        "T1-L5B-optimizer-noise-high-corr-severe-drift-off-replay-off",
+        "T1-L5B-optimizer-noise-low-corr-severe-drift-off-replay-off"
+      ],
+      "mean_score": 0.6,
+      "metric_class": "decision_grade",
+      "n_observations": 5,
+      "notes": "Tier-1 batch recovery sections (report-only)",
+      "pass_rate": 0.6
+    },
+    {
+      "capability": "replay_recovery",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "decision_grade",
+      "n_observations": 5,
+      "notes": "Tier-1 batch recovery sections (report-only)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "drift_recovery",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "trust_modifier",
+      "n_observations": 3,
+      "notes": "Tier-1 batch recovery sections (report-only)",
+      "pass_rate": 1.0
+    },
+    {
+      "capability": "identifiability_recovery",
+      "failure_regions": [],
+      "mean_score": 1.0,
+      "metric_class": "trust_modifier",
+      "n_observations": 2,
+      "notes": "Tier-1 batch recovery sections (report-only)",
+      "pass_rate": 1.0
+    }
+  ],
+  "generated_at": "2026-09-19T10:50:58.040919+00:00",
+  "limitations": [
+    "Small-panel deterministic worlds; not production-panel geometry",
+    "Smoke stratum is structural-only by design (recovery honestly unscored)",
+    "Behavioral stratum inherits WORLD-008-template DGP assumptions",
+    "Anchors re-certified read-only from committed fixtures"
+  ],
+  "recommendation_disclaimer": "Report-only. No threshold is approved; thresholds remain provisional pending DR-04. No release-gate change.",
+  "threshold_recommendations": [
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "atol": 0.08,
+        "metric_class": "diagnostic_attribution",
+        "rtol": 0.2
+      },
+      "metric_class": "diagnostic_attribution",
+      "metric_key": "VAL-001_coef",
+      "suggested_action": "report_only; must not gate releases",
+      "supporting_evidence": "tier1_batch_runner_v1.0.0 batch",
+      "tier1_n_scored": 13,
+      "tier1_pass_rate": 0.0,
+      "validation_id": "VAL-001"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "metric_class": "diagnostic_attribution",
+        "rtol": 0.05
+      },
+      "metric_class": "diagnostic_attribution",
+      "metric_key": "VAL-002_003_transform",
+      "suggested_action": "report_only; must not gate releases",
+      "supporting_evidence": "tier1_batch_runner_v1.0.0 batch",
+      "tier1_n_scored": 13,
+      "tier1_pass_rate": 0.0,
+      "validation_id": "VAL-002"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "atol": 0.15,
+        "metric_class": "decision_grade",
+        "rtol": 0.35
+      },
+      "metric_class": "decision_grade",
+      "metric_key": "VAL-004_delta_mu",
+      "suggested_action": "retain_provisional; needs DR-04 review",
+      "supporting_evidence": "tier1_batch_runner_v1.0.0 batch",
+      "tier1_n_scored": 13,
+      "tier1_pass_rate": 1.0,
+      "validation_id": "VAL-004"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "allocation_l1_atol": 4.0,
+        "allocation_l1_rtol": 0.15,
+        "metric_class": "decision_grade"
+      },
+      "metric_class": "decision_grade",
+      "metric_key": "VAL-005_optimizer",
+      "suggested_action": "retain_provisional; needs DR-04 review",
+      "supporting_evidence": "tier1_batch_runner_v1.0.0 batch",
+      "tier1_n_scored": 5,
+      "tier1_pass_rate": 0.6,
+      "validation_id": "VAL-005"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "lift_atol": 0.02,
+        "lift_rtol": 0.25,
+        "metric_class": "decision_grade"
+      },
+      "metric_class": "decision_grade",
+      "metric_key": "VAL-006_replay",
+      "suggested_action": "retain_provisional; needs DR-04 review",
+      "supporting_evidence": "tier1_batch_runner_v1.0.0 batch",
+      "tier1_n_scored": 5,
+      "tier1_pass_rate": 1.0,
+      "validation_id": "VAL-006"
+    },
+    {
+      "approval_status": "recommendation_only_not_approved",
+      "confidence_level": "low",
+      "current_threshold": {
+        "metric_class": "trust_modifier",
+        "post_pre_mae_ratio_min": 1.15
+      },
+      "metric_class": "trust_modifier",
+      "metric_key": "VAL-012_drift",
+      "suggested_action": "calibrate severity bands from tier-1 distribution; DR-04 decides",
+      "supporting_evidence": "tier1_batch_runner_v1.0.0 batch",
+      "tier1_n_scored": 3,
+      "tier1_pass_rate": 1.0,
+      "validation_id": "VAL-012"
+    }
+  ],
+  "tier": "tier_1_calibration",
+  "tier1_version": "tier1_batch_runner_v1.0.0",
+  "world_count": 108
+}
