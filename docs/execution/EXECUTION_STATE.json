@@ -1,15 +1,15 @@
 {
   "schema_version": "mmm_repo_execution_state_v3",
   "repository": "Phani-Pavuluri/MMM",
-  "task_id": "MMM_MACOS_FINDER_METADATA_HYGIENE_002",
-  "status": "merged",
+  "task_id": "MMM_MONTE_CARLO_TIER1_RELIABILITY_BATCH_001",
+  "status": "proposed",
   "execution_mode": "branch_and_fast_forward",
   "base_branch": "main",
-  "base_sha": "d50763ca616f12d5b1c7f2d4dd43409cdfcd252e",
-  "task_authoring_head_sha": "ccba40ea45d5aaa05cb1c1ec1f849f6f1270eaac",
-  "authorization_head_sha": "ccba40ea45d5aaa05cb1c1ec1f849f6f1270eaac",
-  "feature_branch": "feat/mmm-macos-finder-metadata-hygiene-002",
-  "feature_branch_created": true,
+  "base_sha": "48746db5d439b77c6bb7e8a4ef2299f3959a074b",
+  "task_authoring_head_sha": "a19f7784d782c406aca8a933c3556412d2f94506",
+  "authorization_head_sha": "a19f7784d782c406aca8a933c3556412d2f94506",
+  "feature_branch": "feat/mmm-monte-carlo-tier1-reliability-batch-001",
+  "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
   "completion_report_path": "docs/execution/LATEST_COMPLETION_REPORT.md",
   "canonical_mip_standard_repository": null,
@@ -19,17 +19,17 @@
   "correction_execution_authorized": false,
   "merge_authorized": false,
   "pr_creation_authorized": false,
-  "reviewed_head_sha": "397e2b99dd6775cd68d1bdccb7b26c5fc16cff3a",
+  "reviewed_head_sha": null,
   "rejected_review_head_sha": null,
-  "implementation_commit_sha": "258e3171ab3184c8fde03ac103ad41ea625f7976",
+  "implementation_commit_sha": null,
   "approval_commit_sha": null,
   "capability_authorizations_changed": false,
-  "last_updated": "2026-09-18",
+  "last_updated": "2026-09-19",
   "blockers": [],
   "max_correction_cycles": 1,
-  "risk_tier": "tier_1_mmm_repository_governance_merged_fixture_cleanup_with_mandatory_full_validation",
+  "risk_tier": "tier_2_mmm_validation_monte_carlo_tier1_batch_with_mandatory_full_validation",
   "full_suite_validation_required": true,
-  "validation_scope": "arbitrary_identity_state_derived_merged_fixture_cleanup_taskctl_check_diff_check_single_tee_captured_docker_make_validate_exact_tree_receipt_remote_head_equality",
+  "validation_scope": "tier1_monte_carlo_batch_characterization_report_only_taskctl_check_diff_check_docker_make_validate_exact_tree_receipt_remote_head_equality",
   "unresolved_execution_blocking_design_questions": [],
   "affected_repositories": [
     "Phani-Pavuluri/MMM"
@@ -37,7 +37,7 @@
   "modified_repositories": [
     "Phani-Pavuluri/MMM"
   ],
-  "coordination_workstream_id": "WS-MMM-TASKCTL-MERGED-FIXTURE-STATE-DERIVED-CLEANUP-001",
+  "coordination_workstream_id": "WS-MMM-MONTE-CARLO-TIER1-BATCH-001",
   "coordination_capability_owner": "mmm_repository_governance",
   "prior_task": {
     "task_id": "MMM_DOCKER_VALIDATION_EVIDENCE_CAPTURE_001",
@@ -60,13 +60,13 @@
     "external_merge_was_authorized": false,
     "conforming_exact_head_approval_record_exists": false
   },
-  "review_decision": "merged",
+  "review_decision": "proposed",
   "review_decision_source": "docs/execution/EXECUTION_STATE.json",
-  "task_authoring_note": "Task authoring commit 3e5e0837cad4cd4388889cc8e7255cc2340c6695 changes only ACTIVE_TASK.md and LATEST_COMPLETION_REPORT.md. This state-only commit preserves all prior blocked receipts and proposes the independent MMM-only fixture cleanup repair.",
+  "task_authoring_note": "Task authoring commit a19f7784d782c406aca8a933c3556412d2f94506 changes only ACTIVE_TASK.md and LATEST_COMPLETION_REPORT.md. This state-only commit preserves all prior receipts and proposes the independent MMM-only Tier-1 Monte Carlo reliability batch.",
   "rejected_implementation_commit_sha": null,
   "correction_cycles_completed": 0,
   "correction_cycles_remaining": 1,
   "live_resolution_condition": null,
-  "local_feature_branch_cleanup": "observed_deleted",
-  "remote_feature_branch_cleanup": "observed_deleted"
+  "local_feature_branch_cleanup": "not_required",
+  "remote_feature_branch_cleanup": "not_required"
 }
