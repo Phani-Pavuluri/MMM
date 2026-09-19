@@ -90,7 +90,7 @@ squash, force-push, or capability-authority changes.
 ## Acceptance evidence and validation
 
 Required: `python3 -m pytest tests/test_repository_taskctl.py`; semantic handoff
-test; JSON/taskctl/diff and changed-path proofs; remote-head equality; one
+test; JSON/taskctl/diff and changed-path proofs; exact-head remote equality; one
 Docker-backed `make validate` with retained output. Ruff and mypy are
 `not_required` separately but included in the full gate.
 
