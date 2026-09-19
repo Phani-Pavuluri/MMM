@@ -2,6 +2,52 @@
 
 Canonical docs live under `docs/` in numbered journey folders. There are **no** duplicate flat copies at `docs/*.md` (except this inventory, `README.md`, and `documentation_truth_audit.md`).
 
+## Navigation registry
+
+This inventory doubles as the repository navigation registry. Registry classifications are
+**navigation-only**: they describe what a document is for and where it sits in the program.
+They never override an artifact's declared authority, and they never authorize work.
+
+- Execution authority remains exclusively [`docs/execution/EXECUTION_STATE.json`](execution/EXECUTION_STATE.json),
+  resolved from synchronized `main` with the task-owned lifecycle controller. Start user journeys at
+  [`docs/README.md`](README.md), not here.
+- Each registry entry records its **verification commit/date** and **inbound evidence** (a page or test
+  that links to it), so later readers can tell a live pointer from a stale one.
+
+### Classification legend
+
+| Classification | Meaning |
+|----------------|---------|
+| `active` | Current direction or working contract; read it before acting in its area |
+| `supporting` | Evidence, spec, or backlog behind an `active` document; not direction by itself |
+| `historical` | Superseded narrative; kept for lineage, never a basis for new work |
+| `archive-candidate` | Proposed only; no move happens without a separately authorized task |
+
+### Classified roadmap inventory
+
+Verified at commit `a9d8cdd` (2026-09-19). Every path below was confirmed present; absent targets are
+never listed.
+
+| Path | Classification | Verified | Inbound evidence |
+|------|----------------|----------|------------------|
+| `docs/05_validation/platform_roadmap.md` | `active` | `a9d8cdd` / 2026-09-19 | `docs/README.md` journey links |
+| `docs/05_validation/synthetic_validation_roadmap.md` | `active` | `a9d8cdd` / 2026-09-19 | platform roadmap Track 2 pointer |
+| `docs/05_validation/bayesian_hierarchical_geo_mmm_roadmap.md` | `active` | `a9d8cdd` / 2026-09-19 | platform roadmap Track 4 pointer |
+| `docs/05_validation/mmm_package_side_agents_roadmap.md` | `active` | `a9d8cdd` / 2026-09-19 | platform roadmap Track 5 pointer |
+| `docs/ROADMAP_ALIGNMENT_GATE.md` | `active` | `a9d8cdd` / 2026-09-19 | `docs/ROADMAP_ALIGNMENT_REGISTRY.md` policy ref |
+| `docs/ROADMAP_ALIGNMENT_REGISTRY.md` | `active` | `a9d8cdd` / 2026-09-19 | living tier/gate/status table |
+| `docs/05_validation/validation_registry.md` | `supporting` | `a9d8cdd` / 2026-09-19 | synthetic roadmap registry pointer |
+| `docs/05_validation/groundtruth_contract.md` | `supporting` | `a9d8cdd` / 2026-09-19 | synthetic roadmap contract pointer |
+| `docs/02_concepts/calibration.md` | `supporting` | `a9d8cdd` / 2026-09-19 | planning guides link calibration |
+| `docs/06_investigations/open_investigations.md` | `supporting` | `a9d8cdd` / 2026-09-19 | `docs/06_investigations/investigation_index.md` |
+| `docs/BAYES_H2B_VALIDATION_WORLDS_001.md` | `supporting` | `a9d8cdd` / 2026-09-19 | bayesian roadmap catalog ref |
+| `docs/BAYES_H2B_VALIDATION_RUNNER_002.md` | `supporting` | `a9d8cdd` / 2026-09-19 | bayesian roadmap runner ref |
+| `docs/documentation_truth_audit.md` | `supporting` | `a9d8cdd` / 2026-09-19 | `tests/test_docs_validation.py` |
+| `docs/_archive/roadmap_causal_calibration_governance.md` | `historical` | `a9d8cdd` / 2026-09-19 | truth audit marks roadmap-only |
+
+No artifact is classified `archive-candidate` yet. Candidates may be proposed only after this
+inventory exists, and moves require a separately authorized task.
+
 | Source file | Canonical location | Status | Notes |
 |-------------|-------------------|--------|-------|
 | `docs/01_getting_started/best_practices.md` | `01_getting_started/best_practices.md` | canonical | — |
@@ -240,6 +286,7 @@ Canonical docs live under `docs/` in numbered journey folders. There are **no** 
 | `docs/dev_setup.md` | `dev_setup.md` | canonical | Development setup |
 | `docs/dev_validation_workflow.md` | `dev_validation_workflow.md` | canonical | Docker/devcontainer validation workflow |
 | `docs/track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md` | `track_d/D5_POW_SCM_UNIT_JACKKNIFE_READOUT.md` | canonical | Track D readout |
+| `docs/program/ROADMAP_TRACEABILITY_SCHEMA_PROPOSAL.md` | `program/ROADMAP_TRACEABILITY_SCHEMA_PROPOSAL.md` | canonical | Non-normative draft proposal for roadmap/phase traceability refs; not implemented |
 
 ## Deprecated redirects
 

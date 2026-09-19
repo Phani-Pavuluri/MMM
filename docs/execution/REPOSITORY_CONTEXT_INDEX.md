@@ -37,9 +37,13 @@ Use this prompt in a fresh ChatGPT chat:
 
 - `docs/execution/TASK_EXECUTION_STANDARD.md`
 - `docs/program/LEAN_REPOSITORY_DELIVERY_STANDARD.md`
-- `docs/program/CROSS_REPOSITORY_COORDINATION_PROTOCOL.md`
-- `docs/program/CROSS_REPOSITORY_COORDINATION_STATE.json`
-- `docs/program/CROSS_REPOSITORY_COORDINATION_HISTORY.md`
+- Cross-repository coordination protocol, state, and history: **no local files exist in this
+  repository** — `docs/program/CROSS_REPOSITORY_COORDINATION_PROTOCOL.md`,
+  `docs/program/CROSS_REPOSITORY_COORDINATION_STATE.json`, and
+  `docs/program/CROSS_REPOSITORY_COORDINATION_HISTORY.md` were all verified absent at commit
+  `a9d8cdd` (2026-09-19), so they are named here only as an explicit-absence record, never as
+  links. Cross-repo coordination authority lives in the pinned MIP standard named at the top
+  of this index; never infer a local replacement from chat text or stale links.
 
 ## MMM technical producer evidence
 
