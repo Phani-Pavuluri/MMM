@@ -36,7 +36,7 @@
 
 - Isolated `main` and `origin/main` equal `d51367be1a7d4b45ddcb93aaeb7fe6d44d0cdff4` before authoring. The navigation-registry task is merged, so the single-active-task lifecycle permits authoring this independent successor.
 - Scope is one MMM-only Tier 1 docs-governance task: reorder the `AGENTS.md` Mandatory bootstrap read sequence to Git sync, non-authorizing roadmap orientation, execution state, active task, standards, with sync-first/fail-closed preserved and an authority-preservation sentence. No other file changes.
-- Authorization evidence: the main-only `proposed -> authorized` transition will authorize execution solely on `feat/mmm-agents-bootstrap-reorder-001`. Authoring does not create that branch or authorize implementation, correction, PR, merge, MIP, GeoX, panel_exp, analytical, sibling, or capability authority.
+- Authorization evidence: the main-only `proposed -> authorized` transition authorized execution solely on `feat/mmm-agents-bootstrap-reorder-001`. Authoring did not create that branch and did not authorize implementation, correction, PR, merge, MIP, GeoX, panel_exp, analytical, sibling, or capability authority.
 - Future evidence requires the reordered bootstrap, authority-preservation sentence, phrase-preservation evidence against the repo handoff test, JSON/taskctl/diff checks, changed-path/remote-head proof, and Docker-backed `make validate`; a required failure is Git-durable `blocked`.
 - Roadmap bodies, inventory, index, proposal doc, execution-state meaning, taskctl code/schema, non-MMM repos, analytical/public/product/package behavior, capability authority, PR creation, merge, rebase, squash, and force-push are prohibited.
 - Unresolved execution-blocking design questions: none.

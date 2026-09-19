@@ -47,7 +47,7 @@
 - **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior
 
 This is an independent MMM-only successor. The navigation-registry task is merged, so the
-single-active-task lifecycle permits authoring this successor. Before future authorization,
+single-active-task lifecycle permits authoring this successor. Before creating the feature branch,
 bootstrap a clean isolated worktree from synchronized `origin/main`, preserve the primary
 checkout and all drafts, and verify main equality to the declared base. This task does not
 overwrite, reinterpret, or alter any prior receipt or branch.
@@ -133,7 +133,7 @@ run is `blocked`.
 
 ## Authorization, publication, and stop conditions
 
-The main-only `proposed -> authorized` transition is pending. The declared feature branch is not
+The main-only `proposed -> authorized` transition is complete. The declared feature branch is not
 created by authoring; no implementation, correction, PR, merge, MIP, GeoX, analytical, sibling,
 or capability authority exists until authorized. Before creating the feature branch, re-bootstrap
 and verify this task's exact remote main authorization, identity, and ancestry.
