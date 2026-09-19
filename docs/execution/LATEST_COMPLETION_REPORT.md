@@ -32,11 +32,11 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-## MMM_MONTE_CARLO_TIER1_RELIABILITY_BATCH_001 — proposed task-authoring evidence
+## MMM_DOCS_GOVERNANCE_NAVIGATION_REGISTRY_001 — proposed task-authoring evidence
 
-- Isolated `main` and `origin/main` equal `48746db5d439b77c6bb7e8a4ef2299f3959a074b` before authoring.
-- Scope is one MMM-only Tier 2 validation evidence task: stratified Tier-1 Monte Carlo batch (N>=100) with report-only characterization; no threshold promotion, gate change, modeling change, or cross-repository change.
-- Authorization evidence: the main-only `proposed -> authorized` transition will authorize execution solely on `feat/mmm-monte-carlo-tier1-reliability-batch-001`. Authoring does not create that branch or authorize implementation, correction, PR, merge, MIP, GeoX, analytical, sibling, or capability authority.
-- Future evidence requires focused Monte Carlo tests, batch manifest and characterization JSON, report-only recommendations with provisional disclaimer, source proof of no threshold promotion, JSON/taskctl/diff checks, changed-path/remote-head proof, and Docker-backed `make validate`; a required failure is Git-durable `blocked`.
-- Production modeling, thresholds, gates, promotion, MIP, GeoX, analytical/public/product/package behavior, capability authority, PR creation, merge, rebase, squash, and force-push are prohibited.
+- Isolated `main` and `origin/main` equal `4979e8261e884ab12a17f68062219d1afcd40c05` before authoring. The Monte Carlo Tier-1 task is terminal `blocked` on its feature branch, so the single-active-task lifecycle permits authoring this independent successor.
+- Scope is one MMM-only Tier 1 docs-governance navigation task: inventory registry extension, classified inventory, verified link repair only, and one non-normative schema proposal doc. No deletion, no archive move, no new strategy doc, no schema implementation, no AGENTS.md edit (its own successor task).
+- Authorization evidence: the main-only `proposed -> authorized` transition will authorize execution solely on `feat/mmm-docs-governance-navigation-registry-001`. Authoring does not create that branch or authorize implementation, correction, PR, merge, MIP, GeoX, panel_exp, analytical, sibling, or capability authority.
+- Future evidence requires extended registry with navigation-only statements and per-entry verification evidence, classified inventory, per-link absent-target proof, non-normative proposal doc, source proof of no deletion/move/implementation, JSON/taskctl/docs/diff checks, changed-path/remote-head proof, and Docker-backed `make validate`; a required failure is Git-durable `blocked`.
+- Execution-state meaning, taskctl code/schema, AGENTS.md, roadmap body content, archive locations, non-MMM repos, analytical/public/product/package behavior, capability authority, PR creation, merge, rebase, squash, and force-push are prohibited.
 - Unresolved execution-blocking design questions: none.

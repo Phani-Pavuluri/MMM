@@ -38,61 +38,61 @@
 
 ## Identity and supersession prerequisite
 
-- **Task ID:** `MMM_MONTE_CARLO_TIER1_RELIABILITY_BATCH_001`
+- **Task ID:** `MMM_DOCS_GOVERNANCE_NAVIGATION_REGISTRY_001`
 - **Repository:** `Phani-Pavuluri/MMM`
-- **Synchronized base:** `48746db5d439b77c6bb7e8a4ef2299f3959a074b`
-- **Declared future feature branch:** `feat/mmm-monte-carlo-tier1-reliability-batch-001`
+- **Synchronized base:** `4979e8261e884ab12a17f68062219d1afcd40c05`
+- **Declared future feature branch:** `feat/mmm-docs-governance-navigation-registry-001`
 - **Execution mode:** `branch_and_fast_forward`
-- **Risk tier:** Tier 2 validation-only reliability batch with mandatory full repository validation
-- **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior; thresholds stay provisional, no gate promotion
+- **Risk tier:** Tier 1 documentation-governance navigation repair with mandatory full repository validation
+- **Compatibility policy:** `not_applicable` for public, package, schema, data, runtime, analytical, product, consumer, MIP, and GeoX behavior
 
-This is an independent MMM-only successor to the merged Finder-hygiene task. Before future authorization, bootstrap a clean isolated worktree from synchronized `origin/main`, preserve the primary checkout and all drafts, and verify main equality to the declared base. This task does not overwrite, reinterpret, or alter any prior receipt or branch.
+This is an independent MMM-only successor. The Monte Carlo Tier-1 task reached terminal `blocked` on its feature branch, so the single-active-task lifecycle permits authoring this successor. Before future authorization, bootstrap a clean isolated worktree from synchronized `origin/main`, preserve the primary checkout and all drafts, and verify main equality to the declared base. This task does not overwrite, reinterpret, or alter any prior receipt or branch.
 
 Any disagreement in main equality, task identity, branch identity, authorization ancestry, or ownership evidence is fail-closed: do not create a successor branch; publish `blocked` only on a safe authorized branch with exact mismatch, attempted evidence, validation categories, and live resolution condition.
 
 ## Primary independently reviewable outcome
 
-Execute the stratified Tier-1 Monte Carlo reliability batch (N>=100) with existing `mmm/validation/synthetic/monte_carlo_reliability.py` entry points over anchor, lattice, and boundary strata, and publish a machine-readable characterization JSON plus a report-only threshold-recommendation note. No threshold is promoted to `approved`, no release gate changes, no modeling change.
-
-The work is validation evidence only. It preserves all production behavior, lifecycle semantics, authority controls, and non-validation surfaces.
+Separate MMM direction-layer authority from navigation: extend `docs/DOCUMENTATION_INVENTORY.md` into an explicit navigation registry (classifications declared navigation-only), publish a classified inventory of roadmap-like artifacts (`active / supporting / historical / archive-candidate`, audit trail only), repair only verified-dangling `REPOSITORY_CONTEXT_INDEX.md` references, and add one non-normative traceability-schema proposal document. No deletion, no archive move, no new strategy document, no schema implementation.
 
 ## Atomic boundary
 
-Tier-1 batch execution plus report-only characterization is one evidence boundary. Batch without characterization proves nothing; characterization without the deterministic batch is not reproducible. Threshold approval (DR-04), gate promotion, modeling expansion, and export work are separate successors. No production or cross-repository change is required.
+Registry extension plus classified inventory plus verified link repair plus the proposal doc is one navigation boundary. The registry without classification leaves later archive decisions unaudited; link repair without verification risks guessing; the schema without non-normative labeling risks accidental authority. The AGENTS.md bootstrap reorder is expressly a separate successor task, never a drive-by edit here. No production, modeling, validation-threshold, gate, or cross-repository change is required.
 
 ## Inputs, outputs, invariants, and failure behavior
 
-- **Inputs:** synchronized main at the declared base; `mmm/validation/synthetic/monte_carlo_reliability.py` (`build_pilot_characterization`, `write_pilot_characterization`, `characterize_capability_distributions`); WORLD-008–012 anchors plus lattice/boundary strata; clean isolated worktree.
-- **Outputs:** `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json`; `docs/05_validation/monte_carlo_tier1_recommendations_001.md` (report-only, thresholds stay provisional); deterministic batch manifest with world counts, strata, seeds, and pass-rate distributions.
-- **Invariants:** no `approved` threshold; no `validation_registry.md` threshold edit; no release-gate, optimizer, transform, Bayesian, TrustReport-promotion, MIP, GeoX, analytical, public, product, package, runtime, configuration, schema, contract, or capability-authority change; `mmm/execution/taskctl.py` and lifecycle semantics unchanged.
-- **Failure behavior:** if N<100 deterministic worlds cannot be executed, characterization cannot be reproduced, validation fails, a prohibited path changes, or the base conflicts, do not broaden scope. Publish Git-durable `blocked` with exact evidence, category results, and a live resolution condition.
+- **Inputs:** synchronized main at the declared base; `docs/DOCUMENTATION_INVENTORY.md`; `docs/execution/REPOSITORY_CONTEXT_INDEX.md`; roadmap-like artifacts as found in the tree; clean isolated worktree.
+- **Outputs:** extended navigation registry in `docs/DOCUMENTATION_INVENTORY.md` with navigation-only authority statements plus verification commit/date and inbound-link/test evidence per entry; classified inventory (`active / supporting / historical / archive-candidate`); `REPOSITORY_CONTEXT_INDEX.md` with only verified-dangling references repaired to real paths or explicitly marked; `docs/program/ROADMAP_TRACEABILITY_SCHEMA_PROPOSAL.md` labeled non-normative draft for later review.
+- **Invariants:** no file deleted; no archive move; no new strategy/north-star document; schema proposal stays non-normative and unimplemented; classifications never override any artifact's declared authority; execution authority remains exclusively `docs/execution/EXECUTION_STATE.json`; no roadmap body-content rewrite; no taskctl code/schema change; no execution-state meaning change beyond this task's own standard lifecycle transitions; no AGENTS.md edit; no MIP, GeoX, panel_exp, analytical, public, product, package, runtime, or capability-authority change.
+- **Failure behavior:** if a dangling reference cannot be verified absent, a classification cannot be evidenced, validation fails, a prohibited path changes, or the base conflicts, do not broaden scope. Publish Git-durable `blocked` with exact evidence, category results, and a live resolution condition.
 
 ## Exact implementation behavior
 
-1. Run the Tier-1 stratified batch (N>=100: anchors in every tier, world-type strata minimums, boundary emphasis on severe collinearity/drift/multi-channel, fixed negative-gate slice) via the existing Monte Carlo entry points; record seeds and manifests.
-2. Write the machine-readable characterization JSON and the report-only recommendations note; explicitly mark all thresholds provisional and DR-04 approval as deferred.
-3. Add no new estimator, transform, optimizer, gate, promotion, or consumer contract; do not edit `validation_registry.md` thresholds.
-4. Do not change taskctl transitions, schema, generated views beyond sync, cleanup semantics, or authority validation except via the standard lifecycle on the declared branch.
+1. Extend `docs/DOCUMENTATION_INVENTORY.md` into the navigation registry: every entry states classifications are navigation-only, execution authority remains exclusively the execution state, and records verification commit/date plus inbound links or tests.
+2. Publish the classified inventory of roadmap-like artifacts into `active / supporting / historical / archive-candidate` as the audit trail for any later archive decision; delete nothing, move nothing.
+3. Repair `REPOSITORY_CONTEXT_INDEX.md` references only after confirming each target's absence; fix to the real path or mark explicitly. Never guess a target.
+4. Add `docs/program/ROADMAP_TRACEABILITY_SCHEMA_PROPOSAL.md` proposing `roadmap_ref` plus closed-enum `phase_ref` as traceability-only, taskctl-validated-later, never independently authorizing; label it non-normative draft on page one. Implement nothing.
+5. Do not edit AGENTS.md, roadmap body content, archive locations, taskctl code/schema, execution-state meaning, or any non-MMM repo.
 
 ## Owned paths
 
-1. `docs/05_validation/archives/MMM_TIER1_MONTE_CARLO_CHARACTERIZATION_001.json`
-2. `docs/05_validation/monte_carlo_tier1_recommendations_001.md`
-3. `docs/execution/ACTIVE_TASK.md`
-4. `docs/execution/EXECUTION_STATE.json`
-5. `docs/execution/LATEST_COMPLETION_REPORT.md`
+1. `docs/DOCUMENTATION_INVENTORY.md`
+2. `docs/execution/REPOSITORY_CONTEXT_INDEX.md`
+3. `docs/program/ROADMAP_TRACEABILITY_SCHEMA_PROPOSAL.md`
+4. `docs/execution/ACTIVE_TASK.md`
+5. `docs/execution/EXECUTION_STATE.json`
+6. `docs/execution/LATEST_COMPLETION_REPORT.md`
 
 No other path is owned.
 
 ## Prohibited scope
 
-Do not change `validation_registry.md` thresholds; release gates; production readiness/promotion; modeling, transforms, optimizers, Bayesian paths; TrustReport promotion wiring; MIP, GeoX, analytical, public, product, package, runtime, consumer behavior; capability authority; taskctl production behavior. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge approval commit.
+Do not delete any file; do not move anything into or out of the archive; do not create a new strategy/north-star document; do not implement the schema (proposal doc only, non-normative); do not edit AGENTS.md; do not rewrite roadmap body content; do not change archive locations; do not change `docs/execution/EXECUTION_STATE.json` meaning or authority beyond this task's own standard lifecycle transitions; do not change taskctl code, schema, or generated-view semantics; do not change MIP, GeoX, panel_exp, or any non-MMM repo; do not change analytical, public, product, package, runtime, configuration, or capability authority. Do not create a PR, merge, squash, rebase, force-push, merge commit, or pre-merge approval commit.
 
 ## Acceptance evidence and validation
 
-On the frozen exact task-owned tree record Tier-1 batch manifest (N, strata, seeds), characterization JSON, report-only recommendations with provisional-threshold disclaimer, changed-path proof limited to owned paths, JSON/taskctl/diff checks, remote feature-head equality, and Docker-backed `make validate`.
+On the frozen exact task-owned tree record the extended registry, classified inventory, per-link verification evidence (absent-target proof plus real-path or explicit mark), the non-normative proposal doc, changed-path proof limited to owned paths, JSON/taskctl/diff checks, remote feature-head equality, and Docker-backed `make validate`.
 
-Required validation: `python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null`; `poetry run pytest tests/test_monte_carlo_reliability.py`; `poetry run python -m mmm.execution.taskctl check`; `git diff --check`; `make validate`; and exact batch/characterization evidence. `make validate` is mandatory. A required category that cannot run is `blocked`.
+Required validation: `python -m json.tool docs/execution/EXECUTION_STATE.json >/dev/null`; `python scripts/validate_docs.py`; `poetry run pytest tests/test_docs_validation.py` (or Docker-gate equivalent where the local env cannot run); `poetry run python -m mmm.execution.taskctl check`; `git diff --check`; `make validate`; and exact registry/inventory/link/proposal evidence. `make validate` is mandatory. A required category that cannot run is `blocked`.
 
 ## Authorization, publication, and stop conditions
 
@@ -102,9 +102,10 @@ Future execution creates one implementation and one exact-tree receipt commit. P
 
 ## Deferred successors
 
-- DR-04 threshold approval and any `approved` threshold promotion.
-- R11 public simulation export and response-surface evidence.
-- Tier-2/standard-suite Monte Carlo scale-up.
-- Production modeling, gate, MIP, GeoX, analytical, or package change.
+- AGENTS.md bootstrap reorder as its own reviewable docs-governance task.
+- Any archive-with-link-updates move, only after the classified inventory exists.
+- Schema adoption/implementation, only via a separately authorized task.
+- panel_exp then MIP sequencing; MIP P2-collision classification.
+- Production modeling, gate, threshold, MIP, GeoX, analytical, or package change.
 
 **Unresolved execution-blocking design questions: none.**
