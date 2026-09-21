@@ -418,19 +418,19 @@ Expected per-world skips are not penalized. See [reliability_scorecard.md](relia
 
 | `validation_id` | `metric_class` | `can_block_release` | `threshold_status` | `required_evidence` |
 |-----------------|----------------|---------------------|--------------------|---------------------|
-| VAL-001 | diagnostic_attribution | false | TBD_v1_runtime | WORLD-008, L5B exact_recovery, INV-056; per-channel transform worlds for promotion |
-| VAL-002 | diagnostic_attribution | false | TBD_v1_runtime | WORLD-008 transform sensitivity; truth-pinned ablation |
-| VAL-003 | diagnostic_attribution | false | TBD_v1_runtime | Same as VAL-002 |
-| VAL-004 | decision_grade | true | TBD_v1_runtime | WORLD-008–012; behavioral lattice; INV-056 Δμ evidence |
-| VAL-005 | decision_grade | true | TBD_v1_runtime | WORLD-009 optimizer world; corner-dominant stratum |
-| VAL-006 | decision_grade | true | TBD_v1_runtime | WORLD-010 replay world; experiment_truth enrichment |
-| VAL-007 | decision_grade | conditional | TBD_v1_runtime | VAL-006 + calibration freshness gates |
+| VAL-001 | diagnostic_attribution | false | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 independent strata across geo/panel/noise/collinearity; positive and expected-failure scoring; per-channel transform worlds |
+| VAL-002 | diagnostic_attribution | false | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 independent transform/lag strata and truth-pinned ablations; nominal Tier-1 n is not effective independent n |
+| VAL-003 | diagnostic_attribution | false | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 independent saturation/shape strata with supported-range and monotonicity evidence |
+| VAL-004 | decision_grade | true | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 independent Δμ strata across panel geometry, noise, collinearity, drift, and controls; no threshold promotion from Tier-1 n=13 |
+| VAL-005 | decision_grade | true | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 optimizer strata including saturation, dominant channels, tight constraints, and independent regret evidence; no threshold promotion from n=5 |
+| VAL-006 | decision_grade | true | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 experiment-quality and replay strata with uncertainty/coverage and expected-failure cases; no threshold promotion from n=5 |
+| VAL-007 | decision_grade | conditional | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 calibration-quality, freshness, and false-attach strata tied to VAL-006 |
 | VAL-008 | structural | true | approved (logical) | Negative worlds; artifact_truth gate match |
-| VAL-009 | structural | true | TBD_v1_runtime | Artifact contract suite; fingerprint paths |
-| VAL-010 | structural | true | TBD_v1_runtime | Reproducibility certification reference runs |
+| VAL-009 | structural | true | TBD_v1_runtime | Retained provisional by DR-04 for numeric tolerance fields; Tier-2 artifact-contract and fingerprint strata plus deterministic negative fixtures |
+| VAL-010 | structural | true | TBD_v1_runtime | Retained provisional by DR-04 for tolerance fields; Tier-2 independent reference runs and write-twice reproducibility evidence |
 | VAL-011 | structural | true | approved (logical) | Promotion workflow fixtures |
-| VAL-012 | trust_modifier | conditional | TBD_v1_runtime | WORLD-011 + L5B drift cells; `drift_detection_runner` (Phase 5E ✅) |
-| VAL-013 | trust_modifier | conditional | TBD_v1_runtime | WORLD-012; governance gate fixtures |
+| VAL-012 | trust_modifier | conditional | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 stable/drift severity strata with expected warnings/blocks and effective independent coverage; no threshold promotion from n=3 |
+| VAL-013 | trust_modifier | conditional | TBD_v1_runtime | Retained provisional by DR-04: Tier-2 governance negative worlds asserting expected gate outcomes and disagreement handling |
 | VAL-014 | structural | true | approved (logical) | Certification level match per world |
 
 **CERT-4A-001–013** (structural certification): `metric_class: structural`, `can_block_release: true`, `threshold_status: approved` where logical (bundle integrity); numeric tolerances `TBD_v1_runtime` where applicable.
