@@ -251,6 +251,8 @@ def test_correction_exhaustion_and_merged_evidence(tmp_path: Path) -> None:
                 rejected_implementation_commit_sha=sha,
             ),
         )
+
+
         taskctl.transition(root, _args("ready_for_review", implementation_sha=sha, complete_correction=True))
         state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
     with pytest.raises(taskctl.TaskControlError, match="E_CORRECTION"):
@@ -295,6 +297,98 @@ def test_correction_exhaustion_and_merged_evidence(tmp_path: Path) -> None:
     )
     state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
     assert state["status"] == "merged"
+
+
+def _exhausted_ready_fixture(tmp_path: Path) -> tuple[Path, str]:
+    root, sha = _feature_fixture(tmp_path)
+    taskctl.transition(root, _args("in_progress"))
+    taskctl.transition(root, _args("ready_for_review", implementation_sha=sha))
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    state["correction_cycles_completed"] = state["max_correction_cycles"]
+    state["correction_cycles_remaining"] = 0
+    state["rejected_review_head_sha"] = sha
+    state["rejected_implementation_commit_sha"] = sha
+    (root / taskctl.STATE_PATH).write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+    taskctl.sync(root)
+    return root, sha
+
+
+def test_exhausted_ready_review_blocks_with_rejection_lineage_and_closed_authority(tmp_path: Path) -> None:
+    root, sha = _exhausted_ready_fixture(tmp_path)
+    taskctl.transition(
+        root,
+        _args(
+            "blocked",
+            rejected_review_head_sha=sha,
+            rejected_implementation_commit_sha=sha,
+            blocker=["H6 known-truth Delta-mu/contribution recovery is not independent DGP truth"],
+            live_resolution_condition="Authorize an independent successor; do not merge this analytical head.",
+        ),
+    )
+    state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+    assert state["status"] == "blocked"
+    assert state["task_execution_authorized"] is False
+    assert state["correction_execution_authorized"] is False
+    assert state["merge_authorized"] is False
+    assert state["pr_creation_authorized"] is False
+    assert state["mmm_analytical_authority_changed"] is False
+    assert state["sibling_authority_changed"] is False
+    assert state["capability_authorizations_changed"] is False
+    assert state["rejected_review_head_sha"] == sha
+    assert state["rejected_implementation_commit_sha"] == sha
+    assert state["correction_cycles_completed"] == state["max_correction_cycles"]
+    assert state["correction_cycles_remaining"] == 0
+
+
+def test_ready_review_blocked_rejection_requires_exhaustion(tmp_path: Path) -> None:
+    root, sha = _feature_fixture(tmp_path)
+    taskctl.transition(root, _args("in_progress"))
+    taskctl.transition(root, _args("ready_for_review", implementation_sha=sha))
+    with pytest.raises(taskctl.TaskControlError, match="E_CORRECTION"):
+        taskctl.transition(root, _args("blocked", rejected_review_head_sha=sha, rejected_implementation_commit_sha=sha, blocker=["reject"], live_resolution_condition="successor"))
+
+
+@pytest.mark.parametrize(
+    ("field", "expected"),
+    [
+        ("rejected_review_head_sha", "E_EVIDENCE"),
+        ("rejected_implementation_commit_sha", "E_EVIDENCE"),
+        ("blocker", "E_LIFECYCLE"),
+        ("live_resolution_condition", "E_LIFECYCLE"),
+    ],
+)
+def test_exhausted_ready_review_requires_complete_rejection_evidence(tmp_path: Path, field: str, expected: str) -> None:
+    root, sha = _exhausted_ready_fixture(tmp_path)
+    if field in {"rejected_review_head_sha", "rejected_implementation_commit_sha"}:
+        state = json.loads((root / taskctl.STATE_PATH).read_text(encoding="utf-8"))
+        state["rejected_review_head_sha"] = None
+        state["rejected_implementation_commit_sha"] = None
+        (root / taskctl.STATE_PATH).write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+        taskctl.sync(root)
+    kwargs: dict[str, object] = {
+        "rejected_review_head_sha": sha,
+        "rejected_implementation_commit_sha": sha,
+        "blocker": ["reject"],
+        "live_resolution_condition": "successor",
+    }
+    kwargs[field] = None
+    with pytest.raises(taskctl.TaskControlError, match=expected):
+        taskctl.transition(root, _args("blocked", **kwargs))
+
+
+def test_exhausted_ready_review_requires_current_feature_head(tmp_path: Path) -> None:
+    root, sha = _exhausted_ready_fixture(tmp_path)
+    other = _git(root, "commit", "--allow-empty", "-m", "unrelated feature head")
+    with pytest.raises(taskctl.TaskControlError, match="E_REJECTION_HEAD"):
+        taskctl.transition(root, _args("blocked", rejected_review_head_sha=sha, rejected_implementation_commit_sha=sha, blocker=["reject"], live_resolution_condition="successor"))
+    assert other != sha
+
+
+def test_exhausted_ready_review_requires_declared_feature_branch(tmp_path: Path) -> None:
+    root, sha = _exhausted_ready_fixture(tmp_path)
+    _git(root, "switch", "main")
+    with pytest.raises(taskctl.TaskControlError, match="E_TRANSITION_BRANCH"):
+        taskctl.transition(root, _args("blocked", rejected_review_head_sha=sha, rejected_implementation_commit_sha=sha, blocker=["reject"], live_resolution_condition="successor"))
 
 
 @pytest.mark.parametrize("surviving_ref", ("local", "remote"))

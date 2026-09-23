@@ -59,3 +59,23 @@ authority false. Exact-head validation repeats before and after `git merge
 --ff-only`; then push, verify main equality, clean task branches, and create one
 stable-file closure commit. No PR, squash, rebase, merge commit, force update,
 or pre-merge approval commit is valid.
+
+## Exhausted review rejection and successor rotation
+
+An exact `ready_for_review` feature head may transition to the existing terminal
+`blocked` state only when its correction budget is exhausted. The transition
+must supply a valid rejected-review head and rejected-implementation SHA, the
+rejected-review SHA must equal the current feature HEAD, and it must include a
+non-empty blocker and live resolution condition. The transition closes task,
+correction, merge, and PR authority while preserving the implementation and
+correction lineage. It is not a generic escape hatch while a correction cycle
+remains, and the rejected branch is not mergeable or certified by this state.
+
+After that terminal blocked state is durably published, main may authorize a
+new independent task without merging the blocked branch only through a new
+authoring/authorization action. The successor must record the predecessor task
+ID and exact blocked remote head, and the predecessor's blocker and live
+resolution condition must require that successor. No analytical artifact from
+the blocked branch may be copied into or merged with main; the blocked branch
+remains historical evidence only. This rotation does not execute the successor
+or change the blocked task's authority.

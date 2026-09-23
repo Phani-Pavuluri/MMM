@@ -39,7 +39,7 @@ EDGES = {
     "in_progress": {"blocked", "ready_for_review"},
     "blocked": {"in_progress", "ready_for_review"},
     "changes_requested": {"in_progress", "blocked", "ready_for_review"},
-    "ready_for_review": {"changes_requested", "merged"},
+    "ready_for_review": {"changes_requested", "merged", "blocked"},
     "merged": set(),
 }
 CLEANUP_VALUES = {"not_started", "not_required", "observed_deleted"}
@@ -651,6 +651,13 @@ def transition(root: Path, args: argparse.Namespace) -> None:
     if target == "blocked":
         if clear_blockers:
             fail("E_EVIDENCE", "--clear-blockers is not valid for blocked")
+        if current["status"] == "ready_for_review":
+            if current["correction_cycles_remaining"] != 0:
+                fail("E_CORRECTION", "ready_for_review -> blocked is only allowed when correction cycles are exhausted")
+            _require_sha(candidate["rejected_review_head_sha"], "rejected review head SHA")
+            _require_sha(candidate["rejected_implementation_commit_sha"], "rejected implementation SHA")
+            if _git(root, "rev-parse", "HEAD") != candidate["rejected_review_head_sha"]:
+                fail("E_REJECTION_HEAD", "rejected review head SHA must equal the current feature HEAD")
         if args.blocker is not None:
             candidate["blockers"] = args.blocker
         if args.live_resolution_condition is not None:
