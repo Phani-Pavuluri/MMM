@@ -36,7 +36,7 @@
 
 - Source revision for the deterministic analysis: `e39bd2b236c81c925357746f2cb461ba45066da1`.
 - Rejected review head: `dc0268db68033975a2c8522607fb221ac59be42f`.
-- Correction implementation commit: `0f2274e41d91c5da0d1ef648c54bdd1473df7131` (ready-for-review publication follows after the exact-tree receipt).
+- Correction implementation commit: `0f2274e41d91c5da0d1ef648c54bdd1473df7131`; final ready-for-review remote head: `c6288c953d5b5940cea2d287b0e4e8bd89b46b95`.
 - Exact executable: report section `Exact reproduction`; Docker command uses `mmm-fixture-ready:local` Python 3.11 with deterministic BLAS thread settings.
 - Leakage boundary: fitted Ridge parameters and coefficients come only from training weeks `0:39` (39 rows per geo); the common held-out evaluation/intervention window is weeks `39:52` (13 rows per geo). Full-path design construction carries only legitimate recursive media state; held-out outcomes are not used for tuning, coefficients, nuisance fitting, or candidate selection.
 - Worlds/seeds: five existing H6 worlds, seeds 6600–6604; all channels multiplied by 1.10 on held-out weeks; equal-row mean; nuisance fixed.
@@ -45,8 +45,10 @@
 - Contribution recovery is reported per channel in the archive: truth uses `spec.transform_truth` plus row/geo-specific `spec.true_beta_gc`; fitted deltas use training-only fitted transforms and pooled coefficients. The paths are independent and this is recovery certification, not decision invariance.
 - Finding: fitted Delta-mu remains below independent generative truth in all five worlds after leakage correction; no production or decision authority changed.
 - Focused H6/Ridge tests: passed in Docker; full `make validate`: passed with existing warnings only; JSON parse, docs validation, taskctl check, and diff checks passed.
+- Exact validation commands: deterministic Docker reproduction with `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1`; focused `pytest` for H6/Ridge diagnostics (26 passed); `python3 -m json.tool`; `python3 scripts/validate_docs.py`; `python3 -m mmm.execution.taskctl check`; `git diff --check`; and mandatory `make validate` (100% suite, existing warnings only). Remote branch equality verified with `git ls-remote`.
 - No retransformation, partial pooling, decision invariance, replay, optimizer/economics, production mean-structure, MIP, GeoX, or public/package behavior changed.
 - Unresolved execution-blocking design questions: none.
+- No PR, merge, squash, rebase, force-push, or merge commit was created.
 
 ## MMM_GEO_TIME_NUISANCE_STRUCTURE_CERTIFICATION_001 — correction evidence
 
