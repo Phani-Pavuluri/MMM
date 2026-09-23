@@ -1,0 +1,87 @@
+{
+  "artifact": {
+    "kind": "MMM_GEO_TIME_NUISANCE_STRUCTURE_CERTIFICATION",
+    "version": "1.0.0",
+    "schema_id": "mmm_research_evidence_v1",
+    "task_id": "MMM_GEO_TIME_NUISANCE_STRUCTURE_CERTIFICATION_001",
+    "source_revision": "6be3fa2879aca65c3c7268a8133fa35b90f999ec",
+    "research_only": true,
+    "production_authority_changed": false
+  },
+  "preregistered_interpretation_bands": {
+    "geo_time_recovery_error": {"high": "<=0.10 truth SD", "intermediate": ">0.10-0.25", "material": ">0.25"},
+    "pooled_beta_relative_error": {"high": "<=0.10", "intermediate": ">0.10-0.25", "material": ">0.25"},
+    "delta_mu_absolute_error": {"high": "<=0.02", "intermediate": ">0.02-0.05", "material": ">0.05"},
+    "coefficient_instability": {"high": "<=0.10", "intermediate": ">0.10-0.25", "material": ">0.25"},
+    "residual_pattern_reduction": {"high": ">=0.80", "intermediate": "0.50-<0.80", "material": "<0.50"},
+    "national_channel_warning": "descriptive none/caution/non-identifiable; no release bar"
+  },
+  "worlds": [
+    {"world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS", "seed": 6600, "variant": "full_controls", "dimensions": {"geos": 20, "weeks": 52, "channels": 7}, "national_channels": ["tv"], "sparse_channels": ["radio", "local_flyer"]},
+    {"world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS", "seed": 6601, "variant": "omitted_controls", "dimensions": {"geos": 20, "weeks": 52, "channels": 7}, "national_channels": ["tv"], "sparse_channels": ["radio", "local_flyer"]},
+    {"world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS", "seed": 6602, "variant": "media_correlated_controls", "dimensions": {"geos": 20, "weeks": 52, "channels": 7}, "national_channels": ["tv"], "sparse_channels": ["radio", "local_flyer"]},
+    {"world_id": "WORLD-H6-PILOT-CPG-FULL-CONTROLS", "seed": 6603, "variant": "full_controls", "dimensions": {"geos": 20, "weeks": 52, "channels": 7}, "national_channels": ["tv"], "sparse_channels": ["radio", "local_flyer"]},
+    {"world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS", "seed": 6604, "variant": "omitted_controls", "dimensions": {"geos": 20, "weeks": 52, "channels": 7}, "national_channels": ["tv"], "sparse_channels": ["radio", "local_flyer"]}
+  ],
+  "analyses": [
+    {
+      "analysis_id": "GTS-001-BOUNDED-MEAN-STRUCTURE",
+      "audit_question": "Which geo/time nuisance family best recovers known truth without sacrificing identification?",
+      "candidate_specifications": ["global", "geo", "geo_fourier_trend", "geo_saturated_week"],
+      "metric_definitions": ["geo/time recovery error normalized by truth SD", "residual geo/time variance ratio", "lag-1 residual correlation", "pooled beta sign recovery", "rank and condition number", "in-sample RMSE secondary"],
+      "results": {
+        "ranges_across_worlds": {
+          "global": {"geo_recovery_error": [1.0, 1.0], "residual_geo_ratio": [0.954, 1.003], "residual_time_ratio": [0.126, 0.514], "lag1": [0.838, 0.892], "beta_sign_recovery": [0.5714, 0.7143]},
+          "geo": {"geo_recovery_error": [0.402, 0.672], "residual_geo_ratio": [0.0, 0.0], "residual_time_ratio": [0.119, 0.507], "lag1": [-0.029, 0.077], "beta_sign_recovery": [0.5714, 1.0]},
+          "geo_fourier_trend": {"geo_recovery_error": [0.397, 0.675], "time_recovery_error": [0.212, 0.571], "residual_geo_ratio": [0.0, 0.0], "residual_time_ratio": [0.048, 0.349], "lag1": [-0.076, 0.024], "beta_sign_recovery": [0.7143, 1.0]},
+          "geo_saturated_week": {"geo_recovery_error": [0.448, 0.665], "time_recovery_error": [1.126, 2.801], "residual_geo_ratio": [0.0, 0.0], "residual_time_ratio": [0.0, 0.0], "lag1": [-0.053, -0.005], "beta_sign_recovery": [0.7143, 0.8571]}
+        }
+      },
+      "preregistered_bands": "see artifact.preregistered_interpretation_bands",
+      "limitations": ["in-sample research comparison", "omitted-control worlds remain non-certifying", "no regularized geo-baseline implementation available within owned paths"]
+    },
+    {
+      "analysis_id": "GTS-002-NATIONAL-IDENTIFICATION",
+      "audit_question": "What happens to national-channel estimability under saturated time controls?",
+      "candidate_specifications": ["near-national TV", "exact-national TV plus intercept and saturated week effects"],
+      "metric_definitions": ["within-week variation ratio", "matrix rank/columns", "condition number"],
+      "results": {
+        "tv_within_week_ratio_across_worlds": [0.0043743962, 0.0056022495],
+        "exact_national_stress": {"columns": 64, "rank": 63, "rank_deficient": true},
+        "interpretation": "saturated week effects remove separate national-media identification; structured time only preserves estimability through stronger time-path assumptions"
+      },
+      "limitations": ["estimability is not causal identification", "stress design is a diagnostic comparator"]
+    },
+    {
+      "analysis_id": "GTS-003-FULL-PANEL-COMPATIBILITY",
+      "audit_question": "Can nuisance state be held fixed while media intervention dimensions change?",
+      "candidate_specifications": ["global", "geo", "geo_fourier_trend", "geo_saturated_week"],
+      "metric_definitions": ["mean predicted candidate-base mu delta", "known-truth transformed-media delta"],
+      "results": {"world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS", "seed": 6600, "true_delta_mu_plus_10pct_all_media": 0.0066072563, "candidate_delta_mu": {"global": 0.0173418628, "geo": 0.0257738963, "geo_fourier_trend": 0.0246025683, "geo_saturated_week": 0.0015174672}, "nuisance_fixed": true},
+      "limitations": ["one bounded intervention family; not a production decision-equivalence certification"]
+    }
+  ],
+  "metrics": [
+    {"metric_id": "tv_within_week_variation_ratio_range", "value": [0.0043743962, 0.0056022495], "units": "fraction", "aggregation_semantics": "variance of within-week geo demeaned media over total variance", "interpretation": "near-national caution"},
+    {"metric_id": "exact_national_saturated_week_rank_deficiency", "value": true, "units": "boolean", "aggregation_semantics": "intercept plus transformed design plus week effects", "interpretation": "non-identifiable"},
+    {"metric_id": "full_panel_delta_mu_true_plus_10pct", "value": 0.0066072563, "units": "log-modeling scale", "aggregation_semantics": "equal-row mean across geo-time", "interpretation": "descriptive"}
+  ],
+  "provenance": {
+    "source_sha": "6be3fa2879aca65c3c7268a8133fa35b90f999ec",
+    "runtime": "mmm-fixture-ready:local (Python 3.11)",
+    "exact_commands": [
+      "docker run --rm -e PYTHONPATH=/repo -v /tmp/geo_audit_run.py:/tmp/geo_audit_run.py -v /private/tmp/mmm-geo-time-nuisance-structure-certification-001:/repo -w /repo mmm-fixture-ready:local python /tmp/geo_audit_run.py",
+      "docker run --rm -e PYTHONPATH=/repo -v /private/tmp/mmm-geo-time-nuisance-structure-certification-001:/repo -w /repo mmm-fixture-ready:local python -c '<full-panel compatibility inline program recorded in certification report section 5>'"
+    ],
+    "composed_entry_points": ["materialize_h6_panel", "h6_ridge_config", "h6_panel_schema", "RidgeBOMMMTrainer", "build_design_matrix", "existing adstock/Hill transforms", "sklearn Ridge research fit"]
+  },
+  "recommendations": [
+    {"area": "geo_baseline", "classification": "requires_more_evidence", "supporting_evidence_ids": ["GTS-001-BOUNDED-MEAN-STRUCTURE"], "successor_milestone": "independent geo-baseline design and holdout certification"},
+    {"area": "time_baseline", "classification": "requires_more_evidence", "supporting_evidence_ids": ["GTS-001-BOUNDED-MEAN-STRUCTURE"], "successor_milestone": "structured-time recovery and holdout certification"},
+    {"area": "saturated_week_policy", "classification": "rejected", "supporting_evidence_ids": ["GTS-002-NATIONAL-IDENTIFICATION"], "successor_milestone": "national-channel identification policy"},
+    {"area": "national_channel_diagnostics", "classification": "supported_for_implementation", "supporting_evidence_ids": ["GTS-002-NATIONAL-IDENTIFICATION"], "successor_milestone": "variation/rank/conditioning diagnostic contract"},
+    {"area": "retransformation_readiness", "classification": "requires_more_evidence", "supporting_evidence_ids": ["GTS-001-BOUNDED-MEAN-STRUCTURE"], "successor_milestone": "held-out retransformation certification"},
+    {"area": "full_panel_delta_mu", "classification": "supported_for_implementation", "supporting_evidence_ids": ["GTS-003-FULL-PANEL-COMPATIBILITY"], "successor_milestone": "independent Delta-mu recovery certification"}
+  ],
+  "dr04_handoff": {"ruling_unchanged": true, "registry_promotion_by_this_certification": false}
+}
