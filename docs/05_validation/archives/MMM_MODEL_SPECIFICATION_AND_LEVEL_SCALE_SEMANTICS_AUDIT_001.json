@@ -1,0 +1,78 @@
+{
+  "artifact_kind": "MMM_MODEL_SPECIFICATION_LEVEL_SCALE_SEMANTICS_AUDIT",
+  "artifact_version": "1.0.0",
+  "task_id": "MMM_MODEL_SPECIFICATION_AND_LEVEL_SCALE_SEMANTICS_AUDIT_001",
+  "research_only": true,
+  "production_authority_changed": false,
+  "source_revision": "469e65d7f5d03fa1757ac09846b0acf9addba9a2",
+  "evidence_commands": [
+    "Docker Python 3.11 inline H6 pilot Ridge fit with source-derived residual/retransformation/variation metrics",
+    "Docker Python 3.11 inline H6 pilot Ridge fit with 40 seeded counterfactual plans and nuisance-design comparisons"
+  ],
+  "source_findings": {
+    "ridge_equation": "log(Y_gt) = alpha + X_media_gt beta + Z_gt gamma + error_gt; one global alpha, pooled beta vector, supplied controls, no geo or week effects",
+    "ridge_inverse": "exp(mu_hat), with no Duan smearing or sigma^2/2 correction",
+    "bayesian_comparator": "geo-indexed alpha and beta posterior means; exp(mu + 0.5*sigma^2), research/diagnostic only",
+    "canonical_delta_mu": "mean(mu_plan) - mean(mu_baseline) from full-panel recursive counterfactual design matrices",
+    "canonical_level_summary": "row-level exp(mu) followed by mean, or mean of per-geo row-level exp(mu)",
+    "replay_level_aggregation": "row-level level prediction differences aggregated by declared mean, sum, or geo_mean_then_global_mean",
+    "diagnostic_decomposition": "additive log-scale channel contributions; explicitly not exact business value"
+  },
+  "h6_pilot_ridge_metrics": {
+    "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+    "rows": 1040,
+    "geos": 20,
+    "weeks": 52,
+    "channels": 7,
+    "coefficient_dimension": 12,
+    "log_rmse": 0.4177325783274938,
+    "plain_exp_level_relative_bias": -0.08579628249831296,
+    "lognormal_sigma2_over_2_relative_bias": -0.002448590495699608,
+    "global_duan_smear": 1.091953810127672,
+    "global_smear_level_relative_bias": -0.001731767441150942,
+    "geo_smear_min": 0.5699459907610918,
+    "geo_smear_max": 2.054391616497698,
+    "geo_smear_mean": 1.091953810127672,
+    "mean_exp_mu_over_exp_mean_mu": 1.0135713666249566,
+    "within_week_variation_ratio": {
+      "tv": 0.004374396247817517,
+      "ctv": 0.021263264397235658,
+      "display": 0.020441785359518728,
+      "local_flyer": 0.9834174948582222,
+      "radio": 0.9860783206498195,
+      "search": 0.943937442402446,
+      "social": 0.9388951495906743
+    }
+  },
+  "nuisance_structure_comparison": {
+    "metric_definition": "(log_rmse, relative_level_bias, matrix_rank, matrix_columns)",
+    "global_intercept": [0.4102612561200348, -0.08207246490078259, 13, 13],
+    "geo_fixed_effects": [0.14107412242327583, -0.009313454044152484, 32, 32],
+    "geo_fourier_trend": [0.13726221155852925, -0.008816392177823597, 35, 35],
+    "geo_week_fixed_effects": [0.13237442981141975, -0.008168066307865169, 83, 83],
+    "warning": "These are research comparisons on one H6 pilot world; lower prediction error does not establish causal or production superiority."
+  },
+  "national_identification": {
+    "near_national_tv_within_week_ratio": 0.004374396247817517,
+    "exact_national_within_week_variance": 0.0,
+    "week_fixed_effects_plus_exact_national_columns": 53,
+    "week_fixed_effects_plus_exact_national_rank": 52,
+    "interpretation": "Exact national media is collinear with saturated week effects; structured time controls can only recover it through modeling assumptions rather than within-week identifying variation."
+  },
+  "decision_invariance": {
+    "plans": 40,
+    "seed": 991,
+    "delta_mu_vs_global_smear_expected_level_spearman": 0.9998123827392121,
+    "delta_mu_vs_geo_smear_expected_level_spearman": 0.9996247654784242,
+    "one_at_a_time_rank_delta_mu": ["display", "ctv", "radio", "social", "search", "tv", "local_flyer"],
+    "one_at_a_time_rank_global_expected_level": ["display", "ctv", "radio", "social", "search", "tv", "local_flyer"],
+    "one_at_a_time_rank_geo_expected_level": ["display", "ctv", "radio", "social", "search", "tv", "local_flyer"],
+    "interpretation": "On this pilot and seeded plan set, ranking is effectively invariant; this does not establish invariance under heteroskedastic or misspecified future worlds."
+  },
+  "scope_limitations": [
+    "H6 pilot is 20 geos by 52 weeks, not a production-scale certification.",
+    "The H6 generative truth includes geo-varying beta and seasonality, while the Ridge comparison uses a global intercept and pooled beta vector; the audit does not retrofit the model.",
+    "The empirical correction comparison is diagnostic and not a recommendation to apply a correction to residuals containing omitted structure.",
+    "No production optimizer, replay, or decision surface was modified."
+  ]
+}
