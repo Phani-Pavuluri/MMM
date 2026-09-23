@@ -98,7 +98,7 @@ docker run --rm -e PYTHONHASHSEED=0 -e PYTHONPATH=/repo \
 ```
 
 ```python
-+import sys
+import sys
 sys.modules["optuna"] = None
 import json
 import numpy as np

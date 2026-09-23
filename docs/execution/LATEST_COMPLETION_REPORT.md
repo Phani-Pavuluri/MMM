@@ -62,3 +62,5 @@ tests `26 passed`; JSON parse; documentation links (`169` files, informational o
 tests passed; pre-existing lint warnings only). The generated diagnostics archive touched by the
 gate was restored before the evidence commit. Implementation evidence commit:
 `60e9727ec8475b794ba4a4672f0b826c9d4df934`.
+The final publication also removes a formatting marker from the fenced executable while preserving
+the same deterministic program and results.
