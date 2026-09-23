@@ -1,61 +1,15 @@
 {
-  "artifact": {
-    "kind": "MMM_GEO_STRUCTURED_TIME_HOLDOUT_CERTIFICATION",
-    "version": "1.0.0",
-    "schema_id": "mmm_research_evidence_v1",
-    "task_id": "MMM_GEO_STRUCTURED_TIME_HOLDOUT_CERTIFICATION_001",
-    "source_revision": "bc4473c3ed4c3faca2ce377b21f30f1c100e26d5",
-    "research_only": true,
-    "production_authority_changed": false
-  },
-  "preregistered_interpretation_bands": {
-    "holdout_log_error_degradation": {"high": "<=0.10 vs global reference", "intermediate": ">0.10-0.25", "material": ">0.25"},
-    "pooled_beta_relative_error": {"high": "<=0.10", "intermediate": ">0.10-0.25", "material": ">0.25"},
-    "heldout_delta_mu_absolute_error": {"high": "<=0.02", "intermediate": ">0.02-0.05", "material": ">0.05"},
-    "nuisance_recovery_error": {"high": "<=0.10 truth SD", "intermediate": ">0.10-0.25", "material": ">0.25"},
-    "coefficient_instability": {"high": "<=0.10", "intermediate": ">0.10-0.25", "material": ">0.25"},
-    "short_history_degradation": {"high": "<=0.10 vs long history", "intermediate": ">0.10-0.25", "material": ">0.25"},
-    "heteroskedasticity_national_warning": "descriptive only; no release bar"
-  },
-  "worlds": [
-    {"world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS", "seed": 6600, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}},
-    {"world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS", "seed": 6601, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}},
-    {"world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS", "seed": 6602, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}},
-    {"world_id": "WORLD-H6-PILOT-CPG-FULL-CONTROLS", "seed": 6603, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}},
-    {"world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS", "seed": 6604, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}}
-  ],
-  "holdouts": {
-    "future_13": {"train_weeks": "0:39", "test_weeks": "39:52", "leakage_control": "calendar/time ordered; no test outcomes in fit"},
-    "short_26": {"future_test": "39:52", "sparse_geo_train_weeks": "0:13", "other_geo_train_weeks": "0:39"},
-    "short_13": {"future_test": "39:52", "sparse_geo_train_weeks": "0:6", "other_geo_train_weeks": "0:39"},
-    "geo_unseen_diagnostic": {"train_geos": 14, "test_geos": ["DMA_014", "DMA_015", "DMA_016", "DMA_017", "DMA_018", "DMA_019"], "fallback": "zero geo effect diagnostic only; not production"}
-  },
+  "artifact": {"kind": "MMM_GEO_STRUCTURED_TIME_HOLDOUT_CERTIFICATION", "version": "1.1.0", "schema_id": "mmm_research_evidence_v1", "task_id": "MMM_GEO_STRUCTURED_TIME_HOLDOUT_CERTIFICATION_001", "source_revision": "bc4473c3ed4c3faca2ce377b21f30f1c100e26d5", "research_only": true, "production_authority_changed": false, "rejected_head": "128da874a8b8db2273f3d3a7c54c27b3391176b5"},
+  "preregistered_interpretation_bands": {"holdout_log_error_degradation": {"high": "<=0.10 vs global", "intermediate": ">0.10-0.25", "material": ">0.25"}, "pooled_beta_relative_error": {"high": "<=0.10", "intermediate": ">0.10-0.25", "material": ">0.25"}, "heldout_delta_mu_absolute_error": {"high": "<=0.02", "intermediate": ">0.02-0.05", "material": ">0.05"}, "nuisance_recovery_error": {"high": "<=0.10 truth SD", "intermediate": ">0.10-0.25", "material": ">0.25"}, "short_history_degradation": {"high": "<=0.10", "intermediate": ">0.10-0.25", "material": ">0.25"}, "heteroskedasticity": "descriptive only; no release bar"},
+  "worlds": [{"world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS", "seed": 6600, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}}, {"world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS", "seed": 6601, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}}, {"world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS", "seed": 6602, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}}, {"world_id": "WORLD-H6-PILOT-CPG-FULL-CONTROLS", "seed": 6603, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}}, {"world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS", "seed": 6604, "dimensions": {"geos": 20, "weeks": 52, "channels": 7}}],
+  "holdouts": {"future_13": {"train": "weeks[0:39]", "test": "weeks[39:52]", "hyperparameters": "training rows only"}, "short_26": {"common_test": "weeks[39:52]", "observed_train": "weeks[0:39]", "sparse_train": "weeks[0:26]"}, "short_13": {"common_test": "weeks[39:52]", "observed_train": "weeks[0:39]", "sparse_train": "weeks[0:13]"}, "geo_unseen_diagnostic": {"train_geos": 14, "test_geos": ["DMA_014", "DMA_015", "DMA_016", "DMA_017", "DMA_018", "DMA_019"], "fallback": "zero geo effect diagnostic only"}},
   "analyses": [
-    {"analysis_id": "GSH-001-FUTURE-TIME", "audit_question": "Does the structured candidate generalize to future weeks for known geos?", "candidate_specifications": ["global", "geo", "fourier"], "metric_definitions": ["log RMSE", "plain-exp level RMSE", "pooled beta relative error", "sign recovery", "geo/time nuisance recovery", "lag-1", "descriptive heteroskedasticity"], "results": {"future_13_ranges": {"global_log_rmse": [0.422, 0.516], "geo_log_rmse": [0.153, 0.174], "fourier_log_rmse": [0.143, 0.234], "global_beta_error": [1.124, 99.405], "geo_beta_error": [0.384, 64.011], "fourier_beta_error": [0.562, 88.654]}}, "limitations": ["omitted-control worlds remain non-certifying", "RMSE is secondary"]},
-    {"analysis_id": "GSH-002-GEO-HOLDOUT", "audit_question": "Can fixed geo effects generalize to unseen geos?", "candidate_specifications": ["global", "geo", "fourier"], "metric_definitions": ["unseen-geo log/level error", "sign recovery"], "results": {"interpretation": "fixed geo effects have no identified unseen-geo effect; zero-effect fallback is diagnostic only", "log_rmse_ranges": {"global": [0.692, 39.079], "geo": [0.692, 39.079], "fourier": [0.879, 15.343]}}, "limitations": ["no fallback was invented or authorized"]},
-    {"analysis_id": "GSH-003-SHORT-HISTORY", "audit_question": "How do candidates degrade under explicit masked histories?", "candidate_specifications": ["global", "geo", "fourier"], "metric_definitions": ["short-history error degradation", "beta recovery", "time-pattern RMSE", "lag-1"], "results": {"fourier_time_pattern_rmse": {"future_13": [0.033, 0.183], "short_26": [0.075, 1.114], "short_13": [0.306, 14.231]}, "fourier_lag1_max": {"short_26": 0.773, "short_13": 0.895}, "interpretation": "material short-history degradation"}, "limitations": ["no production minimum-history threshold inferred"]}
+    {"analysis_id": "GSH-CORR-001-LEAKAGE-CLEAN-HOLDOUT", "audit_question": "Does geo/Fourier generalize when tuning is training-only?", "candidates": ["global", "geo", "fourier"], "metric_definitions": ["plain-exp log/level error", "pooled beta relative error/sign", "geo/time nuisance recovery", "lag-1", "descriptive heteroskedasticity"], "results": {"future_log_rmse": {"global": [0.421, 0.5164], "geo": [0.1523, 0.1682], "fourier": [0.1432, 0.2344]}, "future_beta_error": {"global": [1.1204, 31.1014], "geo": [0.3832, 29.5387], "fourier": [0.5629, 24.4251]}}, "limitations": ["omitted-control worlds remain non-certifying"]},
+    {"analysis_id": "GSH-CORR-002-SHORT-HISTORY-FIXED-WINDOW", "audit_question": "Does history masking degrade candidates while holding future test weeks fixed?", "candidates": ["global", "geo", "fourier"], "metric_definitions": ["short-history error", "time-pattern RMSE", "lag-1", "beta recovery"], "results": {"fourier_short_26_log_rmse": [0.1429, 0.2464], "fourier_short_13_log_rmse": [0.1448, 0.264], "fourier_short_13_delta_mu_error": [0.0013, 0.0222]}, "limitations": ["no minimum-history threshold inferred"]},
+    {"analysis_id": "GSH-CORR-003-HELDOUT-DELTA-MU", "audit_question": "Does fitted held-out intervention impact recover known truth?", "intervention": "all media multiplied by 1.10 on weeks 39:52", "aggregation": "equal-row mean over held-out geo-week rows", "nuisance_fixed": true, "metric_definitions": ["true Delta-mu", "fitted Delta-mu", "absolute error", "per-channel true/fitted contribution"], "results": {"absolute_error_ranges": {"global_future": [0.0025, 0.0216], "geo_future": [0.0009, 0.0127], "fourier_future": [0.0017, 0.0179], "global_short13": [0.0034, 0.0164], "geo_short13": [0.0005, 0.0145], "fourier_short13": [0.0013, 0.0222]}}, "limitations": ["recovery only; no decision-invariance claim"]},
+    {"analysis_id": "GSH-CORR-004-MEDIA-NATIONAL-DIAGNOSTICS", "audit_question": "Are media recovery and national conditioning visible on holdout designs?", "metric_definitions": ["contribution absolute error", "sign recovery", "TV within-week variation", "holdout rank", "condition number"], "results": {"tv_variation_range": [0.0044, 0.009], "holdout_rank": {"global": [9, 12], "geo": [28, 31], "fourier": [31, 34]}, "condition": {"global": [68.1695, 413.6443], "geo": [87.5491, 506.1885], "fourier": [451.6726, 8398.1357]}}, "limitations": ["estimability is not causal identification"]}
   ],
-  "metrics": [
-    {"metric_id": "future_time_log_rmse_fourier", "value": [0.143, 0.234], "units": "log outcome", "aggregation_semantics": "range across five worlds", "interpretation": "descriptive; media recovery remains unstable"},
-    {"metric_id": "short_history_fourier_time_pattern_rmse", "value": [0.306, 14.231], "units": "log residual", "aggregation_semantics": "range across short_13 worlds", "interpretation": "material degradation"},
-    {"metric_id": "tv_within_week_variation", "value": [0.004, 0.006], "units": "fraction", "aggregation_semantics": "inherited H6 diagnostic", "interpretation": "near-national caution"}
-  ],
-  "provenance": {
-    "source_sha": "bc4473c3ed4c3faca2ce377b21f30f1c100e26d5",
-    "runtime": "mmm-fixture-ready:local (Python 3.11)",
-    "exact_commands": ["docker run --rm -e PYTHONPATH=/repo -v /tmp/holdout_run.py:/tmp/holdout_run.py -v /Users/phani/Desktop/MMM:/repo -w /repo mmm-fixture-ready:local python /tmp/holdout_run.py"],
-    "exact_program": "Git-owned fenced program in certification report section 7, saved verbatim as /tmp/holdout_run.py",
-    "composed_entry_points": ["materialize_h6_panel", "h6_ridge_config", "h6_panel_schema", "RidgeBOMMMTrainer", "build_design_matrix", "existing adstock/Hill transforms", "sklearn Ridge research fit"],
-    "world_ids_seeds": {"WORLD-H6-PILOT-RETAIL-FULL-CONTROLS": 6600, "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS": 6601, "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS": 6602, "WORLD-H6-PILOT-CPG-FULL-CONTROLS": 6603, "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS": 6604}
-  },
-  "recommendations": [
-    {"area": "known_geo_baseline", "classification": "requires_more_evidence", "successor_milestone": "independent geo-baseline implementation design"},
-    {"area": "unseen_geo", "classification": "rejected", "successor_milestone": "unseen-geo fallback/partial-pooling certification"},
-    {"area": "structured_time", "classification": "requires_more_evidence", "successor_milestone": "matched-world structured-time holdout certification"},
-    {"area": "short_history", "classification": "rejected", "successor_milestone": "explicit minimum-data policy study"},
-    {"area": "national_channel", "classification": "supported_for_implementation", "successor_milestone": "national-channel diagnostic policy"},
-    {"area": "retransformation_readiness", "classification": "requires_more_evidence", "successor_milestone": "held-out retransformation certification"},
-    {"area": "full_panel_delta_mu", "classification": "requires_more_evidence", "successor_milestone": "independent Delta-mu recovery and decision-invariance milestones"}
-  ],
+  "provenance": {"source_sha": "bc4473c3ed4c3faca2ce377b21f30f1c100e26d5", "runtime": "mmm-fixture-ready:local (Python 3.11)", "exact_commands": ["docker run --rm -e PYTHONPATH=/repo -v /tmp/holdout_correction_run.py:/tmp/holdout_correction_run.py -v /Users/phani/Desktop/MMM:/repo -w /repo mmm-fixture-ready:local python /tmp/holdout_correction_run.py"], "exact_program": "Git-owned fenced program in certification report section 6", "world_ids_seeds": {"WORLD-H6-PILOT-RETAIL-FULL-CONTROLS": 6600, "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS": 6601, "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS": 6602, "WORLD-H6-PILOT-CPG-FULL-CONTROLS": 6603, "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS": 6604}, "composed_entry_points": ["RidgeBOMMMTrainer.fit(training_df)", "materialize_h6_panel", "build_design_matrix", "existing transforms", "sklearn Ridge research fit"]},
+  "recommendations": [{"area": "known_geo_baseline", "classification": "requires_more_evidence"}, {"area": "unseen_geo", "classification": "rejected"}, {"area": "structured_time", "classification": "requires_more_evidence"}, {"area": "short_history", "classification": "requires_more_evidence"}, {"area": "national_channel", "classification": "supported_for_implementation"}, {"area": "retransformation_readiness", "classification": "requires_more_evidence"}, {"area": "full_panel_delta_mu", "classification": "requires_more_evidence"}],
   "dr04_handoff": {"ruling_unchanged": true, "registry_promotion_by_this_certification": false}
 }
