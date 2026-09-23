@@ -8,7 +8,7 @@
 - Decision: `proposed`
 - Execution mode: `branch_and_fast_forward`
 - Base SHA: `e703de5260fb0fb040304e1f0856ba6eb768171b`
-- Task authoring SHA: `e703de5260fb0fb040304e1f0856ba6eb768171b`
+- Task authoring SHA: `eeb64e2cfa1f993571c8d3c2704652f3a2cd2079`
 - Authorization SHA: `e703de5260fb0fb040304e1f0856ba6eb768171b`
 - Feature branch: `feat/mmm-geo-structured-time-holdout-certification-001`
 - Feature branch created: `false`
