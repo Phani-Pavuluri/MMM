@@ -50,14 +50,20 @@ residual, conditioning, and coefficient changes are descriptive; no release thre
 
 Across the five worlds, known-geo nuisance correction improves held-out log RMSE (A ranges
 0.424–0.525; B 0.205–0.439; C 0.203–0.435) and lowers lag-1 residual correlation (A
-0.817–0.872; B 0.322–0.830; C 0.324–0.828). Residual geo-pattern ratios are approximately
-one for A and approximately zero for B/C; time-pattern ratios remain nonzero, especially in
-omitted-control worlds. These are fit/generalization diagnostics, not causal identification.
+0.817–0.872; B 0.322–0.830; C 0.324–0.828). The corrected serial metric is the mean of
+per-geo lag-1 correlations on holdout rows; cross-geo boundary pairs are excluded. Residual
+geo-pattern ratios are approximately one for A and approximately zero for B/C; time-pattern
+ratios remain nonzero, especially in omitted-control worlds. These are fit/generalization
+diagnostics, not causal identification.
 
 Pooled-beta relative error remains high: A `0.496–0.918`, B `0.521–0.919`, C `0.540–0.930`.
 Thus nuisance correction does not cure coefficient/transform under-recovery. Contribution deltas
 are computed per channel from the same holdout rows; their sums equal the candidate Delta-mu within
-floating-point tolerance. The archive contains the per-world candidate rows and provenance.
+floating-point tolerance. Plain-exp level diagnostics are included as diagnostic-only fields. The
+archive's `generated_candidate_rows` now contains the detailed per-world/candidate rows directly:
+per-geo serial values, level metrics, channel contributions and closure, sparse/observed summaries,
+heteroskedasticity, rank/condition, and national variation ratios. No required evidence is only in
+the fenced executable.
 
 ## Identification and limitations
 
@@ -145,6 +151,7 @@ def fit_one(wid):
     coef_a, int_a = fit_ridge(X[train_mask], y[train_mask], alpha=alpha)
 
     geos = sorted(d[schema.geo_column].astype(str).unique())
+    sparse = set(geos[int(0.7*len(geos)):])
     geo_codes = pd.Categorical(d[schema.geo_column].astype(str), categories=geos).codes
     G = np.eye(len(geos), dtype=float)[geo_codes][:, 1:]
     # Existing bounded Fourier/trend utilities: one annual harmonic plus the configured trend basis.
@@ -189,11 +196,23 @@ def fit_one(wid):
             contrib[ch] = float(np.mean((c[j]*dx)[hold_mask]))
         delta = float(np.mean((pred1-pred0)[hold_mask]))
         residual = actual_log[hold_mask]-pred0[hold_mask]
+        # Serial structure is computed within each geo; cross-geo boundary pairs are excluded.
+        lag_values=[]
+        for _, ix in d.loc[hold_mask].groupby(schema.geo_column, sort=False).groups.items():
+            loc=np.asarray(ix, dtype=int)
+            rr=(actual_log-pred0)[loc]
+            if len(rr)>1 and np.std(rr[:-1])>0 and np.std(rr[1:])>0: lag_values.append(float(np.corrcoef(rr[:-1],rr[1:])[0,1]))
+        lag_mean=float(np.mean(lag_values)) if lag_values else 0.0
+        level_pred=np.exp(pred0[hold_mask]); level_actual=np.exp(actual_log[hold_mask])
         hold_d = d.loc[hold_mask].copy(); hold_d["resid"] = residual; hold_d["actual"] = actual_log[hold_mask]
         geo_means = hold_d.groupby(schema.geo_column)["resid"].mean(); time_means=hold_d.groupby(schema.week_column)["resid"].mean(); actual_geo_means=hold_d.groupby(schema.geo_column)["actual"].mean(); actual_time_means=hold_d.groupby(schema.week_column)["actual"].mean()
         vals=np.asarray(XX); sv=svd(vals[train_mask],compute_uv=False)
         betas=np.asarray(c[:media_n]); tb=np.array([np.mean([spec.true_beta_gc[g][ch] for g in geos]) for ch in schema.channel_columns])
-        out["candidates"][name] = {"delta_mu":delta,"abs_delta_error":abs(delta-true_delta),"channel_contribution_delta":contrib,"true_channel_contribution_delta":true_contrib,"channel_abs_error":{ch:abs(contrib[ch]-true_contrib[ch]) for ch in contrib},"beta":betas.tolist(),"pooled_true_beta":tb.tolist(),"beta_rel_error":float(np.mean(np.abs((betas-tb)/(np.abs(tb)+1e-9)))),"beta_sign_recovery":float(np.mean(np.sign(betas)==np.sign(tb))),"holdout_log_rmse":float(np.sqrt(np.mean(residual**2))),"residual_geo_pattern_ratio":float(np.var(geo_means)/(np.var(actual_geo_means)+1e-9)),"residual_time_pattern_ratio":float(np.var(time_means)/(np.var(actual_time_means)+1e-9)),"residual_lag1":float(np.corrcoef(residual[:-1],residual[1:])[0,1]),"heteroskedasticity_abs_pred_resid2":float(np.corrcoef(np.abs(pred0[hold_mask]),residual**2)[0,1]),"rank_train":int(matrix_rank(vals[train_mask])),"columns":int(vals.shape[1]),"condition_train":float(sv[0]/max(sv[-1],1e-12)),"geo_effect_columns":max(0,vals.shape[1]-X.shape[1]),"national_diagnostics":{ch:{"within_week_variation_ratio":float(np.var(d.loc[hold_mask,ch].to_numpy(float)-d.loc[hold_mask].groupby(schema.week_column)[ch].transform("mean").to_numpy(float))/(np.var(d.loc[hold_mask,ch].to_numpy(float))+1e-12))} for ch in schema.channel_columns}}
+        sparse_hold = d.loc[hold_mask, schema.geo_column].astype(str).isin(sparse).to_numpy()
+        observed_hold = ~sparse_hold
+        sparse_stats = {"sparse_geos": sorted(sparse), "groups": {"sparse": {"n_rows": int(sparse_hold.sum()), "residual_bias": float(np.mean(residual[sparse_hold])), "residual_rmse": float(np.sqrt(np.mean(residual[sparse_hold]**2)))}, "observed": {"n_rows": int(observed_hold.sum()), "residual_bias": float(np.mean(residual[observed_hold])), "residual_rmse": float(np.sqrt(np.mean(residual[observed_hold]**2)))}}}
+        national = {ch: {"within_week_variation_ratio": float(np.var(d.loc[hold_mask,ch].to_numpy(float)-d.loc[hold_mask].groupby(schema.week_column)[ch].transform("mean").to_numpy(float))/(np.var(d.loc[hold_mask,ch].to_numpy(float))+1e-12))} for ch in schema.channel_columns}
+        out["candidates"][name] = {"delta_mu":delta,"abs_delta_error":abs(delta-true_delta),"channel_contribution_delta":contrib,"true_channel_contribution_delta":true_contrib,"channel_abs_error":{ch:abs(contrib[ch]-true_contrib[ch]) for ch in contrib},"contribution_sum_closure":float(sum(contrib.values())-delta),"beta":betas.tolist(),"pooled_true_beta":tb.tolist(),"beta_rel_error":float(np.mean(np.abs((betas-tb)/(np.abs(tb)+1e-9)))),"beta_sign_recovery":float(np.mean(np.sign(betas)==np.sign(tb))),"holdout_log_rmse":float(np.sqrt(np.mean(residual**2))),"holdout_level_rmse_plain_exp":float(np.sqrt(np.mean((level_pred-level_actual)**2))),"holdout_level_mean_bias_plain_exp":float(np.mean(level_pred-level_actual)),"residual_geo_pattern_ratio":float(np.var(geo_means)/(np.var(actual_geo_means)+1e-9)),"residual_time_pattern_ratio":float(np.var(time_means)/(np.var(actual_time_means)+1e-9)),"residual_lag1_within_geo_mean":lag_mean,"residual_lag1_within_geo_values":lag_values,"heteroskedasticity_abs_pred_resid2":float(np.corrcoef(np.abs(pred0[hold_mask]),residual**2)[0,1]),"rank_train":int(matrix_rank(vals[train_mask])),"columns":int(vals.shape[1]),"condition_train":float(sv[0]/max(sv[-1],1e-12)),"geo_effect_columns":max(0,vals.shape[1]-X.shape[1]),"sparse_observed_stability":sparse_stats,"national_diagnostics":national}
     return canon(out)
 
 rows=[fit_one(w) for w in H6_PILOT_WORLD_IDS]
