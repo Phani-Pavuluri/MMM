@@ -1,0 +1,1728 @@
+{
+  "analysis": {
+    "closure_tolerance_before_rounding": 0.0,
+    "interpretation_band_delta_mu_abs_error": {
+      "high_low_discrepancy": "<=0.02",
+      "intermediate_material": ">0.02-0.05",
+      "large": ">0.05"
+    },
+    "matrix": "2x3 transform x coefficient surfaces",
+    "research_only": true
+  },
+  "artifact_identity": {
+    "artifact_id": "MMM_RIDGE_HELDOUT_DELTA_MU_UNDERRECOVERY_DIAGNOSTIC_001",
+    "source_revision": "097b4957f13797e4f29d88afb96b87f03aee469e",
+    "version": "1.0.0"
+  },
+  "provenance": {
+    "exact_command": "docker run --rm -e PYTHONHASHSEED=0 -e PYTHONPATH=/repo -e OPENBLAS_NUM_THREADS=1 -e OMP_NUM_THREADS=1 -e MKL_NUM_THREADS=1 -v /Users/phani/Desktop/MMM:/repo -v /tmp/ridge_underrecovery.py:/tmp/ridge_underrecovery.py -w /repo mmm-fixture-ready:local python /tmp/ridge_underrecovery.py",
+    "no_production_changes": true,
+    "runtime": "mmm-fixture-ready:local Python 3.11; deterministic H6 seeds; PYTHONHASHSEED=0; output normalized to 3 decimals"
+  },
+  "recommendations": [
+    {
+      "area": "independent H6 truth construction",
+      "classification": "supported_for_implementation",
+      "evidence": "A uses raw transform_truth and true_beta_gc; repeated deterministic runs agree."
+    },
+    {
+      "area": "current Ridge held-out Delta-mu recovery",
+      "classification": "requires_more_evidence",
+      "evidence": "F remains below A in all five worlds; absolute gaps are 0.019-0.044."
+    },
+    {
+      "area": "transform recovery adequacy",
+      "classification": "requires_more_evidence",
+      "evidence": "Transform mismatch components vary by anchor and are not consistently dominant."
+    },
+    {
+      "area": "pooled coefficient recovery adequacy",
+      "classification": "requires_more_evidence",
+      "evidence": "Coefficient-estimation component is directionally large in four/five worlds."
+    },
+    {
+      "area": "geo-heterogeneity/pooling sensitivity",
+      "classification": "research_only",
+      "evidence": "Pooling components are small relative to estimation/transform terms; no production hierarchy is authorized."
+    },
+    {
+      "area": "control-specification sensitivity",
+      "classification": "requires_more_evidence",
+      "evidence": "Retail full/omitted/correlated worlds differ; cross-vertical confounding remains."
+    },
+    {
+      "area": "geo/time nuisance sensitivity",
+      "classification": "research_only",
+      "evidence": "No existing composable comparator was added; defer bounded nuisance sensitivity successor."
+    },
+    {
+      "area": "national-channel diagnostic readiness",
+      "classification": "supported_for_implementation",
+      "evidence": "TV variation ratios are ~0.004-0.006 versus local channels ~0.93-0.99; diagnostics remain descriptive."
+    },
+    {
+      "area": "retransformation certification readiness",
+      "classification": "requires_more_evidence",
+      "evidence": "Mean/transform/coefficient under-recovery is unresolved before retransformation."
+    },
+    {
+      "area": "decision-invariance certification readiness",
+      "classification": "research_only",
+      "evidence": "Recovery diagnostic does not establish ranking, allocation, or hurdle invariance."
+    }
+  ],
+  "schema": {
+    "cell_fields": [
+      "delta_mu",
+      "per_channel"
+    ],
+    "recommendation_fields": [
+      "area",
+      "classification",
+      "evidence"
+    ],
+    "world_fields": [
+      "world_id",
+      "seed",
+      "training_window",
+      "holdout_window",
+      "intervention",
+      "cells",
+      "decomposition_path1",
+      "decomposition_path2",
+      "closure_residual",
+      "transform_diagnostics",
+      "coefficient_diagnostics",
+      "national_local_diagnostics",
+      "provenance"
+    ]
+  },
+  "worlds": [
+    {
+      "aggregation": "equal-row mean",
+      "cells": {
+        "A": {
+          "delta_mu": 0.045,
+          "per_channel": {
+            "ctv": 0.007,
+            "display": 0.01,
+            "local_flyer": 0.006,
+            "radio": 0.006,
+            "search": 0.007,
+            "social": 0.008,
+            "tv": 0.0
+          }
+        },
+        "B": {
+          "delta_mu": 0.047,
+          "per_channel": {
+            "ctv": 0.007,
+            "display": 0.01,
+            "local_flyer": 0.007,
+            "radio": 0.007,
+            "search": 0.007,
+            "social": 0.008,
+            "tv": 0.0
+          }
+        },
+        "C": {
+          "delta_mu": 0.013,
+          "per_channel": {
+            "ctv": 0.004,
+            "display": 0.007,
+            "local_flyer": -0.001,
+            "radio": 0.002,
+            "search": 0.0,
+            "social": 0.001,
+            "tv": 0.0
+          }
+        },
+        "D": {
+          "delta_mu": 0.014,
+          "per_channel": {
+            "ctv": 0.002,
+            "display": 0.001,
+            "local_flyer": 0.005,
+            "radio": 0.004,
+            "search": 0.001,
+            "social": 0.001,
+            "tv": 0.0
+          }
+        },
+        "E": {
+          "delta_mu": 0.011,
+          "per_channel": {
+            "ctv": 0.002,
+            "display": 0.001,
+            "local_flyer": 0.004,
+            "radio": 0.003,
+            "search": 0.001,
+            "social": 0.001,
+            "tv": 0.0
+          }
+        },
+        "F": {
+          "delta_mu": 0.002,
+          "per_channel": {
+            "ctv": 0.001,
+            "display": 0.001,
+            "local_flyer": 0.0,
+            "radio": 0.001,
+            "search": 0.0,
+            "social": 0.0,
+            "tv": 0.0
+          }
+        }
+      },
+      "closure_residual": {
+        "path1": 0.0,
+        "path2": 0.0
+      },
+      "coefficient_diagnostics": {
+        "ctv": {
+          "fitted_pooled_beta": 0.228,
+          "pooled_truth_beta": 0.419,
+          "relative_error": 0.455,
+          "sign_recovery": true,
+          "true_beta_max": 0.512,
+          "true_beta_mean": 0.419,
+          "true_beta_median": 0.414,
+          "true_beta_min": 0.308
+        },
+        "display": {
+          "fitted_pooled_beta": 0.262,
+          "pooled_truth_beta": 0.371,
+          "relative_error": 0.293,
+          "sign_recovery": true,
+          "true_beta_max": 0.487,
+          "true_beta_mean": 0.371,
+          "true_beta_median": 0.372,
+          "true_beta_min": 0.25
+        },
+        "local_flyer": {
+          "fitted_pooled_beta": -0.056,
+          "pooled_truth_beta": 0.405,
+          "relative_error": 1.139,
+          "sign_recovery": false,
+          "true_beta_max": 1.035,
+          "true_beta_mean": 0.405,
+          "true_beta_median": 0.336,
+          "true_beta_min": 0.11
+        },
+        "radio": {
+          "fitted_pooled_beta": 0.118,
+          "pooled_truth_beta": 0.406,
+          "relative_error": 0.709,
+          "sign_recovery": true,
+          "true_beta_max": 0.765,
+          "true_beta_mean": 0.406,
+          "true_beta_median": 0.381,
+          "true_beta_min": 0.196
+        },
+        "search": {
+          "fitted_pooled_beta": 0.01,
+          "pooled_truth_beta": 0.325,
+          "relative_error": 0.97,
+          "sign_recovery": true,
+          "true_beta_max": 0.468,
+          "true_beta_mean": 0.325,
+          "true_beta_median": 0.313,
+          "true_beta_min": 0.17
+        },
+        "social": {
+          "fitted_pooled_beta": 0.041,
+          "pooled_truth_beta": 0.346,
+          "relative_error": 0.883,
+          "sign_recovery": true,
+          "true_beta_max": 0.489,
+          "true_beta_mean": 0.346,
+          "true_beta_median": 0.326,
+          "true_beta_min": 0.262
+        },
+        "tv": {
+          "fitted_pooled_beta": 0.002,
+          "pooled_truth_beta": 0.261,
+          "relative_error": 0.991,
+          "sign_recovery": true,
+          "true_beta_max": 0.438,
+          "true_beta_mean": 0.261,
+          "true_beta_median": 0.259,
+          "true_beta_min": 0.106
+        }
+      },
+      "decomposition_path1": {
+        "coefficient_estimation_true_transform": 0.033,
+        "geo_pooling_true_transform": -0.002,
+        "transform_mismatch_fitted_beta": 0.011
+      },
+      "decomposition_path2": {
+        "coefficient_estimation_fitted_transform": 0.009,
+        "geo_pooling_fitted_transform": 0.002,
+        "transform_mismatch_geo_beta": 0.031
+      },
+      "holdout_window": "39:52",
+      "intervention": "+10% raw media all channels on holdout",
+      "n_geos": 20,
+      "n_weeks": 52,
+      "national_local_diagnostics": {
+        "ctv": {
+          "condition_number": 424.23,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.021
+        },
+        "display": {
+          "condition_number": 431.228,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.02
+        },
+        "local_flyer": {
+          "condition_number": 46.488,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.983
+        },
+        "radio": {
+          "condition_number": 46.665,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.986
+        },
+        "search": {
+          "condition_number": 87.601,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.944
+        },
+        "social": {
+          "condition_number": 87.688,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.939
+        },
+        "tv": {
+          "condition_number": 6115.265,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.004
+        }
+      },
+      "provenance": {
+        "fitted": "RidgeBOMMMTrainer.fit(training rows only 0:39)",
+        "truth": "spec.transform_truth + spec.true_beta_gc[geo][channel]"
+      },
+      "seed": 6600,
+      "training_window": "0:39",
+      "transform_diagnostics": {
+        "ctv": {
+          "delta_f_fitted": 0.004,
+          "delta_f_truth": 0.017,
+          "fitted": {
+            "decay": 0.154,
+            "hill_half": 0.432,
+            "hill_slope": 1.983
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "display": {
+          "delta_f_fitted": 0.004,
+          "delta_f_truth": 0.027,
+          "fitted": {
+            "decay": 0.154,
+            "hill_half": 0.432,
+            "hill_slope": 1.983
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "local_flyer": {
+          "delta_f_fitted": 0.009,
+          "delta_f_truth": 0.017,
+          "fitted": {
+            "decay": 0.154,
+            "hill_half": 0.432,
+            "hill_slope": 1.983
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "radio": {
+          "delta_f_fitted": 0.009,
+          "delta_f_truth": 0.017,
+          "fitted": {
+            "decay": 0.154,
+            "hill_half": 0.432,
+            "hill_slope": 1.983
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "search": {
+          "delta_f_fitted": 0.002,
+          "delta_f_truth": 0.022,
+          "fitted": {
+            "decay": 0.154,
+            "hill_half": 0.432,
+            "hill_slope": 1.983
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "social": {
+          "delta_f_fitted": 0.002,
+          "delta_f_truth": 0.022,
+          "fitted": {
+            "decay": 0.154,
+            "hill_half": 0.432,
+            "hill_slope": 1.983
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "tv": {
+          "delta_f_fitted": 0.0,
+          "delta_f_truth": 0.002,
+          "fitted": {
+            "decay": 0.154,
+            "hill_half": 0.432,
+            "hill_slope": 1.983
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        }
+      },
+      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS"
+    },
+    {
+      "aggregation": "equal-row mean",
+      "cells": {
+        "A": {
+          "delta_mu": 0.047,
+          "per_channel": {
+            "ctv": 0.009,
+            "display": 0.012,
+            "local_flyer": 0.006,
+            "radio": 0.005,
+            "search": 0.007,
+            "social": 0.008,
+            "tv": 0.0
+          }
+        },
+        "B": {
+          "delta_mu": 0.05,
+          "per_channel": {
+            "ctv": 0.009,
+            "display": 0.012,
+            "local_flyer": 0.008,
+            "radio": 0.006,
+            "search": 0.007,
+            "social": 0.008,
+            "tv": 0.0
+          }
+        },
+        "C": {
+          "delta_mu": 0.007,
+          "per_channel": {
+            "ctv": 0.001,
+            "display": 0.002,
+            "local_flyer": 0.001,
+            "radio": 0.001,
+            "search": 0.001,
+            "social": 0.001,
+            "tv": 0.0
+          }
+        },
+        "D": {
+          "delta_mu": 0.023,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.005,
+            "local_flyer": 0.004,
+            "radio": 0.003,
+            "search": 0.003,
+            "social": 0.003,
+            "tv": 0.0
+          }
+        },
+        "E": {
+          "delta_mu": 0.023,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.005,
+            "local_flyer": 0.004,
+            "radio": 0.003,
+            "search": 0.003,
+            "social": 0.003,
+            "tv": 0.0
+          }
+        },
+        "F": {
+          "delta_mu": 0.003,
+          "per_channel": {
+            "ctv": 0.001,
+            "display": 0.001,
+            "local_flyer": 0.0,
+            "radio": 0.0,
+            "search": 0.0,
+            "social": 0.0,
+            "tv": 0.0
+          }
+        }
+      },
+      "closure_residual": {
+        "path1": 0.0,
+        "path2": 0.0
+      },
+      "coefficient_diagnostics": {
+        "ctv": {
+          "fitted_pooled_beta": 0.056,
+          "pooled_truth_beta": 0.43,
+          "relative_error": 0.87,
+          "sign_recovery": true,
+          "true_beta_max": 0.543,
+          "true_beta_mean": 0.43,
+          "true_beta_median": 0.43,
+          "true_beta_min": 0.324
+        },
+        "display": {
+          "fitted_pooled_beta": 0.066,
+          "pooled_truth_beta": 0.398,
+          "relative_error": 0.835,
+          "sign_recovery": true,
+          "true_beta_max": 0.54,
+          "true_beta_mean": 0.398,
+          "true_beta_median": 0.393,
+          "true_beta_min": 0.271
+        },
+        "local_flyer": {
+          "fitted_pooled_beta": 0.057,
+          "pooled_truth_beta": 0.462,
+          "relative_error": 0.876,
+          "sign_recovery": true,
+          "true_beta_max": 0.937,
+          "true_beta_mean": 0.462,
+          "true_beta_median": 0.391,
+          "true_beta_min": 0.123
+        },
+        "radio": {
+          "fitted_pooled_beta": 0.05,
+          "pooled_truth_beta": 0.382,
+          "relative_error": 0.868,
+          "sign_recovery": true,
+          "true_beta_max": 0.708,
+          "true_beta_mean": 0.382,
+          "true_beta_median": 0.329,
+          "true_beta_min": 0.136
+        },
+        "search": {
+          "fitted_pooled_beta": 0.047,
+          "pooled_truth_beta": 0.326,
+          "relative_error": 0.855,
+          "sign_recovery": true,
+          "true_beta_max": 0.484,
+          "true_beta_mean": 0.326,
+          "true_beta_median": 0.318,
+          "true_beta_min": 0.216
+        },
+        "social": {
+          "fitted_pooled_beta": 0.025,
+          "pooled_truth_beta": 0.352,
+          "relative_error": 0.928,
+          "sign_recovery": true,
+          "true_beta_max": 0.5,
+          "true_beta_mean": 0.352,
+          "true_beta_median": 0.353,
+          "true_beta_min": 0.218
+        },
+        "tv": {
+          "fitted_pooled_beta": 0.001,
+          "pooled_truth_beta": 0.265,
+          "relative_error": 0.997,
+          "sign_recovery": true,
+          "true_beta_max": 0.406,
+          "true_beta_mean": 0.265,
+          "true_beta_median": 0.252,
+          "true_beta_min": 0.153
+        }
+      },
+      "decomposition_path1": {
+        "coefficient_estimation_true_transform": 0.044,
+        "geo_pooling_true_transform": -0.003,
+        "transform_mismatch_fitted_beta": 0.004
+      },
+      "decomposition_path2": {
+        "coefficient_estimation_fitted_transform": 0.02,
+        "geo_pooling_fitted_transform": 0.0,
+        "transform_mismatch_geo_beta": 0.024
+      },
+      "holdout_window": "39:52",
+      "intervention": "+10% raw media all channels on holdout",
+      "n_geos": 20,
+      "n_weeks": 52,
+      "national_local_diagnostics": {
+        "ctv": {
+          "condition_number": 384.365,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.025
+        },
+        "display": {
+          "condition_number": 372.729,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.026
+        },
+        "local_flyer": {
+          "condition_number": 46.908,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.984
+        },
+        "radio": {
+          "condition_number": 48.837,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.98
+        },
+        "search": {
+          "condition_number": 90.629,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.944
+        },
+        "social": {
+          "condition_number": 91.458,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.956
+        },
+        "tv": {
+          "condition_number": 6243.976,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.005
+        }
+      },
+      "provenance": {
+        "fitted": "RidgeBOMMMTrainer.fit(training rows only 0:39)",
+        "truth": "spec.transform_truth + spec.true_beta_gc[geo][channel]"
+      },
+      "seed": 6601,
+      "training_window": "0:39",
+      "transform_diagnostics": {
+        "ctv": {
+          "delta_f_fitted": 0.013,
+          "delta_f_truth": 0.022,
+          "fitted": {
+            "decay": 0.656,
+            "hill_half": 2.45,
+            "hill_slope": 1.551
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "display": {
+          "delta_f_fitted": 0.013,
+          "delta_f_truth": 0.03,
+          "fitted": {
+            "decay": 0.656,
+            "hill_half": 2.45,
+            "hill_slope": 1.551
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "local_flyer": {
+          "delta_f_fitted": 0.009,
+          "delta_f_truth": 0.017,
+          "fitted": {
+            "decay": 0.656,
+            "hill_half": 2.45,
+            "hill_slope": 1.551
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "radio": {
+          "delta_f_fitted": 0.008,
+          "delta_f_truth": 0.016,
+          "fitted": {
+            "decay": 0.656,
+            "hill_half": 2.45,
+            "hill_slope": 1.551
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "search": {
+          "delta_f_fitted": 0.008,
+          "delta_f_truth": 0.022,
+          "fitted": {
+            "decay": 0.656,
+            "hill_half": 2.45,
+            "hill_slope": 1.551
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "social": {
+          "delta_f_fitted": 0.008,
+          "delta_f_truth": 0.022,
+          "fitted": {
+            "decay": 0.656,
+            "hill_half": 2.45,
+            "hill_slope": 1.551
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "tv": {
+          "delta_f_fitted": 0.001,
+          "delta_f_truth": 0.001,
+          "fitted": {
+            "decay": 0.656,
+            "hill_half": 2.45,
+            "hill_slope": 1.551
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        }
+      },
+      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS"
+    },
+    {
+      "aggregation": "equal-row mean",
+      "cells": {
+        "A": {
+          "delta_mu": 0.039,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.008,
+            "local_flyer": 0.006,
+            "radio": 0.005,
+            "search": 0.007,
+            "social": 0.008,
+            "tv": 0.0
+          }
+        },
+        "B": {
+          "delta_mu": 0.042,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.008,
+            "local_flyer": 0.007,
+            "radio": 0.006,
+            "search": 0.007,
+            "social": 0.008,
+            "tv": 0.0
+          }
+        },
+        "C": {
+          "delta_mu": 0.007,
+          "per_channel": {
+            "ctv": 0.002,
+            "display": 0.003,
+            "local_flyer": 0.0,
+            "radio": -0.001,
+            "search": 0.001,
+            "social": 0.001,
+            "tv": 0.0
+          }
+        },
+        "D": {
+          "delta_mu": 0.025,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.005,
+            "local_flyer": 0.003,
+            "radio": 0.003,
+            "search": 0.004,
+            "social": 0.005,
+            "tv": 0.0
+          }
+        },
+        "E": {
+          "delta_mu": 0.027,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.005,
+            "local_flyer": 0.004,
+            "radio": 0.004,
+            "search": 0.004,
+            "social": 0.005,
+            "tv": 0.0
+          }
+        },
+        "F": {
+          "delta_mu": 0.005,
+          "per_channel": {
+            "ctv": 0.002,
+            "display": 0.002,
+            "local_flyer": 0.0,
+            "radio": -0.001,
+            "search": 0.001,
+            "social": 0.001,
+            "tv": 0.0
+          }
+        }
+      },
+      "closure_residual": {
+        "path1": 0.0,
+        "path2": 0.0
+      },
+      "coefficient_diagnostics": {
+        "ctv": {
+          "fitted_pooled_beta": 0.158,
+          "pooled_truth_beta": 0.474,
+          "relative_error": 0.667,
+          "sign_recovery": true,
+          "true_beta_max": 0.593,
+          "true_beta_mean": 0.474,
+          "true_beta_median": 0.479,
+          "true_beta_min": 0.346
+        },
+        "display": {
+          "fitted_pooled_beta": 0.163,
+          "pooled_truth_beta": 0.426,
+          "relative_error": 0.617,
+          "sign_recovery": true,
+          "true_beta_max": 0.612,
+          "true_beta_mean": 0.426,
+          "true_beta_median": 0.415,
+          "true_beta_min": 0.326
+        },
+        "local_flyer": {
+          "fitted_pooled_beta": 0.021,
+          "pooled_truth_beta": 0.431,
+          "relative_error": 0.952,
+          "sign_recovery": true,
+          "true_beta_max": 0.905,
+          "true_beta_mean": 0.431,
+          "true_beta_median": 0.387,
+          "true_beta_min": 0.095
+        },
+        "radio": {
+          "fitted_pooled_beta": -0.07,
+          "pooled_truth_beta": 0.404,
+          "relative_error": 1.173,
+          "sign_recovery": false,
+          "true_beta_max": 0.864,
+          "true_beta_mean": 0.404,
+          "true_beta_median": 0.303,
+          "true_beta_min": 0.095
+        },
+        "search": {
+          "fitted_pooled_beta": 0.066,
+          "pooled_truth_beta": 0.315,
+          "relative_error": 0.79,
+          "sign_recovery": true,
+          "true_beta_max": 0.422,
+          "true_beta_mean": 0.315,
+          "true_beta_median": 0.33,
+          "true_beta_min": 0.146
+        },
+        "social": {
+          "fitted_pooled_beta": 0.055,
+          "pooled_truth_beta": 0.355,
+          "relative_error": 0.846,
+          "sign_recovery": true,
+          "true_beta_max": 0.488,
+          "true_beta_mean": 0.355,
+          "true_beta_median": 0.358,
+          "true_beta_min": 0.262
+        },
+        "tv": {
+          "fitted_pooled_beta": 0.0,
+          "pooled_truth_beta": 0.273,
+          "relative_error": 1.0,
+          "sign_recovery": false,
+          "true_beta_max": 0.375,
+          "true_beta_mean": 0.273,
+          "true_beta_median": 0.275,
+          "true_beta_min": 0.17
+        }
+      },
+      "decomposition_path1": {
+        "coefficient_estimation_true_transform": 0.035,
+        "geo_pooling_true_transform": -0.003,
+        "transform_mismatch_fitted_beta": 0.002
+      },
+      "decomposition_path2": {
+        "coefficient_estimation_fitted_transform": 0.022,
+        "geo_pooling_fitted_transform": -0.002,
+        "transform_mismatch_geo_beta": 0.013
+      },
+      "holdout_window": "39:52",
+      "intervention": "+10% raw media all channels on holdout",
+      "n_geos": 20,
+      "n_weeks": 52,
+      "national_local_diagnostics": {
+        "ctv": {
+          "condition_number": 445.124,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.023
+        },
+        "display": {
+          "condition_number": 450.974,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.022
+        },
+        "local_flyer": {
+          "condition_number": 47.113,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.985
+        },
+        "radio": {
+          "condition_number": 49.562,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.979
+        },
+        "search": {
+          "condition_number": 91.825,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.949
+        },
+        "social": {
+          "condition_number": 90.347,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.935
+        },
+        "tv": {
+          "condition_number": 6634.498,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.005
+        }
+      },
+      "provenance": {
+        "fitted": "RidgeBOMMMTrainer.fit(training rows only 0:39)",
+        "truth": "spec.transform_truth + spec.true_beta_gc[geo][channel]"
+      },
+      "seed": 6602,
+      "training_window": "0:39",
+      "transform_diagnostics": {
+        "ctv": {
+          "delta_f_fitted": 0.011,
+          "delta_f_truth": 0.011,
+          "fitted": {
+            "decay": 0.284,
+            "hill_half": 1.952,
+            "hill_slope": 2.771
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "display": {
+          "delta_f_fitted": 0.012,
+          "delta_f_truth": 0.019,
+          "fitted": {
+            "decay": 0.284,
+            "hill_half": 1.952,
+            "hill_slope": 2.771
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "local_flyer": {
+          "delta_f_fitted": 0.01,
+          "delta_f_truth": 0.016,
+          "fitted": {
+            "decay": 0.284,
+            "hill_half": 1.952,
+            "hill_slope": 2.771
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "radio": {
+          "delta_f_fitted": 0.009,
+          "delta_f_truth": 0.016,
+          "fitted": {
+            "decay": 0.284,
+            "hill_half": 1.952,
+            "hill_slope": 2.771
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "search": {
+          "delta_f_fitted": 0.013,
+          "delta_f_truth": 0.022,
+          "fitted": {
+            "decay": 0.284,
+            "hill_half": 1.952,
+            "hill_slope": 2.771
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "social": {
+          "delta_f_fitted": 0.013,
+          "delta_f_truth": 0.022,
+          "fitted": {
+            "decay": 0.284,
+            "hill_half": 1.952,
+            "hill_slope": 2.771
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "tv": {
+          "delta_f_fitted": 0.0,
+          "delta_f_truth": 0.001,
+          "fitted": {
+            "decay": 0.284,
+            "hill_half": 1.952,
+            "hill_slope": 2.771
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        }
+      },
+      "world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS"
+    },
+    {
+      "aggregation": "equal-row mean",
+      "cells": {
+        "A": {
+          "delta_mu": 0.044,
+          "per_channel": {
+            "ctv": 0.008,
+            "display": 0.01,
+            "local_flyer": 0.006,
+            "radio": 0.005,
+            "search": 0.007,
+            "social": 0.008,
+            "tv": 0.001
+          }
+        },
+        "B": {
+          "delta_mu": 0.047,
+          "per_channel": {
+            "ctv": 0.008,
+            "display": 0.01,
+            "local_flyer": 0.007,
+            "radio": 0.007,
+            "search": 0.007,
+            "social": 0.008,
+            "tv": 0.001
+          }
+        },
+        "C": {
+          "delta_mu": 0.005,
+          "per_channel": {
+            "ctv": 0.002,
+            "display": 0.002,
+            "local_flyer": 0.0,
+            "radio": 0.0,
+            "search": 0.0,
+            "social": 0.0,
+            "tv": 0.0
+          }
+        },
+        "D": {
+          "delta_mu": 0.046,
+          "per_channel": {
+            "ctv": 0.011,
+            "display": 0.009,
+            "local_flyer": 0.006,
+            "radio": 0.005,
+            "search": 0.006,
+            "social": 0.007,
+            "tv": 0.001
+          }
+        },
+        "E": {
+          "delta_mu": 0.048,
+          "per_channel": {
+            "ctv": 0.011,
+            "display": 0.009,
+            "local_flyer": 0.007,
+            "radio": 0.006,
+            "search": 0.006,
+            "social": 0.007,
+            "tv": 0.001
+          }
+        },
+        "F": {
+          "delta_mu": 0.005,
+          "per_channel": {
+            "ctv": 0.002,
+            "display": 0.002,
+            "local_flyer": 0.0,
+            "radio": 0.0,
+            "search": 0.0,
+            "social": 0.0,
+            "tv": 0.0
+          }
+        }
+      },
+      "closure_residual": {
+        "path1": 0.0,
+        "path2": 0.0
+      },
+      "coefficient_diagnostics": {
+        "ctv": {
+          "fitted_pooled_beta": 0.097,
+          "pooled_truth_beta": 0.449,
+          "relative_error": 0.784,
+          "sign_recovery": true,
+          "true_beta_max": 0.582,
+          "true_beta_mean": 0.449,
+          "true_beta_median": 0.441,
+          "true_beta_min": 0.342
+        },
+        "display": {
+          "fitted_pooled_beta": 0.095,
+          "pooled_truth_beta": 0.377,
+          "relative_error": 0.748,
+          "sign_recovery": true,
+          "true_beta_max": 0.473,
+          "true_beta_mean": 0.377,
+          "true_beta_median": 0.384,
+          "true_beta_min": 0.224
+        },
+        "local_flyer": {
+          "fitted_pooled_beta": 0.003,
+          "pooled_truth_beta": 0.397,
+          "relative_error": 0.992,
+          "sign_recovery": true,
+          "true_beta_max": 1.0,
+          "true_beta_mean": 0.397,
+          "true_beta_median": 0.363,
+          "true_beta_min": 0.041
+        },
+        "radio": {
+          "fitted_pooled_beta": 0.009,
+          "pooled_truth_beta": 0.413,
+          "relative_error": 0.979,
+          "sign_recovery": true,
+          "true_beta_max": 0.894,
+          "true_beta_mean": 0.413,
+          "true_beta_median": 0.331,
+          "true_beta_min": 0.105
+        },
+        "search": {
+          "fitted_pooled_beta": 0.019,
+          "pooled_truth_beta": 0.318,
+          "relative_error": 0.941,
+          "sign_recovery": true,
+          "true_beta_max": 0.432,
+          "true_beta_mean": 0.318,
+          "true_beta_median": 0.298,
+          "true_beta_min": 0.149
+        },
+        "social": {
+          "fitted_pooled_beta": 0.005,
+          "pooled_truth_beta": 0.353,
+          "relative_error": 0.987,
+          "sign_recovery": true,
+          "true_beta_max": 0.423,
+          "true_beta_mean": 0.353,
+          "true_beta_median": 0.351,
+          "true_beta_min": 0.27
+        },
+        "tv": {
+          "fitted_pooled_beta": 0.001,
+          "pooled_truth_beta": 0.303,
+          "relative_error": 0.997,
+          "sign_recovery": true,
+          "true_beta_max": 0.417,
+          "true_beta_mean": 0.303,
+          "true_beta_median": 0.303,
+          "true_beta_min": 0.181
+        }
+      },
+      "decomposition_path1": {
+        "coefficient_estimation_true_transform": 0.042,
+        "geo_pooling_true_transform": -0.003,
+        "transform_mismatch_fitted_beta": 0.0
+      },
+      "decomposition_path2": {
+        "coefficient_estimation_fitted_transform": 0.043,
+        "geo_pooling_fitted_transform": -0.002,
+        "transform_mismatch_geo_beta": -0.001
+      },
+      "holdout_window": "39:52",
+      "intervention": "+10% raw media all channels on holdout",
+      "n_geos": 20,
+      "n_weeks": 52,
+      "national_local_diagnostics": {
+        "ctv": {
+          "condition_number": 520.736,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.021
+        },
+        "display": {
+          "condition_number": 496.61,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.023
+        },
+        "local_flyer": {
+          "condition_number": 46.537,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.979
+        },
+        "radio": {
+          "condition_number": 47.434,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.978
+        },
+        "search": {
+          "condition_number": 90.533,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.956
+        },
+        "social": {
+          "condition_number": 91.021,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.944
+        },
+        "tv": {
+          "condition_number": 5879.076,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.006
+        }
+      },
+      "provenance": {
+        "fitted": "RidgeBOMMMTrainer.fit(training rows only 0:39)",
+        "truth": "spec.transform_truth + spec.true_beta_gc[geo][channel]"
+      },
+      "seed": 6603,
+      "training_window": "0:39",
+      "transform_diagnostics": {
+        "ctv": {
+          "delta_f_fitted": 0.025,
+          "delta_f_truth": 0.019,
+          "fitted": {
+            "decay": 0.328,
+            "hill_half": 2.458,
+            "hill_slope": 1.656
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "display": {
+          "delta_f_fitted": 0.025,
+          "delta_f_truth": 0.026,
+          "fitted": {
+            "decay": 0.328,
+            "hill_half": 2.458,
+            "hill_slope": 1.656
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "local_flyer": {
+          "delta_f_fitted": 0.017,
+          "delta_f_truth": 0.017,
+          "fitted": {
+            "decay": 0.328,
+            "hill_half": 2.458,
+            "hill_slope": 1.656
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "radio": {
+          "delta_f_fitted": 0.015,
+          "delta_f_truth": 0.016,
+          "fitted": {
+            "decay": 0.328,
+            "hill_half": 2.458,
+            "hill_slope": 1.656
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "search": {
+          "delta_f_fitted": 0.02,
+          "delta_f_truth": 0.021,
+          "fitted": {
+            "decay": 0.328,
+            "hill_half": 2.458,
+            "hill_slope": 1.656
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "social": {
+          "delta_f_fitted": 0.021,
+          "delta_f_truth": 0.022,
+          "fitted": {
+            "decay": 0.328,
+            "hill_half": 2.458,
+            "hill_slope": 1.656
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "tv": {
+          "delta_f_fitted": 0.004,
+          "delta_f_truth": 0.002,
+          "fitted": {
+            "decay": 0.328,
+            "hill_half": 2.458,
+            "hill_slope": 1.656
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        }
+      },
+      "world_id": "WORLD-H6-PILOT-CPG-FULL-CONTROLS"
+    },
+    {
+      "aggregation": "equal-row mean",
+      "cells": {
+        "A": {
+          "delta_mu": 0.039,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.008,
+            "local_flyer": 0.006,
+            "radio": 0.005,
+            "search": 0.008,
+            "social": 0.008,
+            "tv": 0.0
+          }
+        },
+        "B": {
+          "delta_mu": 0.042,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.008,
+            "local_flyer": 0.007,
+            "radio": 0.007,
+            "search": 0.008,
+            "social": 0.008,
+            "tv": 0.0
+          }
+        },
+        "C": {
+          "delta_mu": 0.028,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.005,
+            "local_flyer": -0.002,
+            "radio": 0.004,
+            "search": 0.01,
+            "social": 0.007,
+            "tv": 0.0
+          }
+        },
+        "D": {
+          "delta_mu": 0.027,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.004,
+            "local_flyer": 0.004,
+            "radio": 0.003,
+            "search": 0.005,
+            "social": 0.005,
+            "tv": 0.0
+          }
+        },
+        "E": {
+          "delta_mu": 0.029,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.004,
+            "local_flyer": 0.005,
+            "radio": 0.005,
+            "search": 0.005,
+            "social": 0.005,
+            "tv": 0.0
+          }
+        },
+        "F": {
+          "delta_mu": 0.02,
+          "per_channel": {
+            "ctv": 0.005,
+            "display": 0.003,
+            "local_flyer": -0.001,
+            "radio": 0.003,
+            "search": 0.007,
+            "social": 0.005,
+            "tv": 0.0
+          }
+        }
+      },
+      "closure_residual": {
+        "path1": 0.0,
+        "path2": 0.0
+      },
+      "coefficient_diagnostics": {
+        "ctv": {
+          "fitted_pooled_beta": 0.445,
+          "pooled_truth_beta": 0.44,
+          "relative_error": 0.01,
+          "sign_recovery": true,
+          "true_beta_max": 0.533,
+          "true_beta_mean": 0.44,
+          "true_beta_median": 0.443,
+          "true_beta_min": 0.353
+        },
+        "display": {
+          "fitted_pooled_beta": 0.266,
+          "pooled_truth_beta": 0.414,
+          "relative_error": 0.356,
+          "sign_recovery": true,
+          "true_beta_max": 0.526,
+          "true_beta_mean": 0.414,
+          "true_beta_median": 0.417,
+          "true_beta_min": 0.265
+        },
+        "local_flyer": {
+          "fitted_pooled_beta": -0.123,
+          "pooled_truth_beta": 0.413,
+          "relative_error": 1.299,
+          "sign_recovery": false,
+          "true_beta_max": 0.837,
+          "true_beta_mean": 0.413,
+          "true_beta_median": 0.402,
+          "true_beta_min": 0.11
+        },
+        "radio": {
+          "fitted_pooled_beta": 0.233,
+          "pooled_truth_beta": 0.389,
+          "relative_error": 0.401,
+          "sign_recovery": true,
+          "true_beta_max": 1.034,
+          "true_beta_mean": 0.389,
+          "true_beta_median": 0.291,
+          "true_beta_min": 0.119
+        },
+        "search": {
+          "fitted_pooled_beta": 0.438,
+          "pooled_truth_beta": 0.333,
+          "relative_error": 0.316,
+          "sign_recovery": true,
+          "true_beta_max": 0.48,
+          "true_beta_mean": 0.333,
+          "true_beta_median": 0.318,
+          "true_beta_min": 0.214
+        },
+        "social": {
+          "fitted_pooled_beta": 0.303,
+          "pooled_truth_beta": 0.355,
+          "relative_error": 0.147,
+          "sign_recovery": true,
+          "true_beta_max": 0.448,
+          "true_beta_mean": 0.355,
+          "true_beta_median": 0.365,
+          "true_beta_min": 0.232
+        },
+        "tv": {
+          "fitted_pooled_beta": 0.016,
+          "pooled_truth_beta": 0.293,
+          "relative_error": 0.945,
+          "sign_recovery": true,
+          "true_beta_max": 0.406,
+          "true_beta_mean": 0.293,
+          "true_beta_median": 0.289,
+          "true_beta_min": 0.175
+        }
+      },
+      "decomposition_path1": {
+        "coefficient_estimation_true_transform": 0.013,
+        "geo_pooling_true_transform": -0.003,
+        "transform_mismatch_fitted_beta": 0.008
+      },
+      "decomposition_path2": {
+        "coefficient_estimation_fitted_transform": 0.009,
+        "geo_pooling_fitted_transform": -0.002,
+        "transform_mismatch_geo_beta": 0.012
+      },
+      "holdout_window": "39:52",
+      "intervention": "+10% raw media all channels on holdout",
+      "n_geos": 20,
+      "n_weeks": 52,
+      "national_local_diagnostics": {
+        "ctv": {
+          "condition_number": 500.312,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.026
+        },
+        "display": {
+          "condition_number": 528.807,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.024
+        },
+        "local_flyer": {
+          "condition_number": 47.776,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.975
+        },
+        "radio": {
+          "condition_number": 47.373,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.979
+        },
+        "search": {
+          "condition_number": 87.906,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.934
+        },
+        "social": {
+          "condition_number": 87.957,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": false,
+          "within_week_variation_ratio": 0.953
+        },
+        "tv": {
+          "condition_number": 6427.05,
+          "design_columns": 53,
+          "design_rank": 53,
+          "near_national_warning": true,
+          "within_week_variation_ratio": 0.005
+        }
+      },
+      "provenance": {
+        "fitted": "RidgeBOMMMTrainer.fit(training rows only 0:39)",
+        "truth": "spec.transform_truth + spec.true_beta_gc[geo][channel]"
+      },
+      "seed": 6604,
+      "training_window": "0:39",
+      "transform_diagnostics": {
+        "ctv": {
+          "delta_f_fitted": 0.011,
+          "delta_f_truth": 0.011,
+          "fitted": {
+            "decay": 0.391,
+            "hill_half": 2.419,
+            "hill_slope": 2.536
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "display": {
+          "delta_f_fitted": 0.011,
+          "delta_f_truth": 0.019,
+          "fitted": {
+            "decay": 0.391,
+            "hill_half": 2.419,
+            "hill_slope": 2.536
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "local_flyer": {
+          "delta_f_fitted": 0.011,
+          "delta_f_truth": 0.016,
+          "fitted": {
+            "decay": 0.391,
+            "hill_half": 2.419,
+            "hill_slope": 2.536
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "radio": {
+          "delta_f_fitted": 0.012,
+          "delta_f_truth": 0.017,
+          "fitted": {
+            "decay": 0.391,
+            "hill_half": 2.419,
+            "hill_slope": 2.536
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "search": {
+          "delta_f_fitted": 0.015,
+          "delta_f_truth": 0.023,
+          "fitted": {
+            "decay": 0.391,
+            "hill_half": 2.419,
+            "hill_slope": 2.536
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "social": {
+          "delta_f_fitted": 0.015,
+          "delta_f_truth": 0.023,
+          "fitted": {
+            "decay": 0.391,
+            "hill_half": 2.419,
+            "hill_slope": 2.536
+          },
+          "truth": {
+            "decay": 0.3,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        },
+        "tv": {
+          "delta_f_fitted": 0.0,
+          "delta_f_truth": 0.001,
+          "fitted": {
+            "decay": 0.391,
+            "hill_half": 2.419,
+            "hill_slope": 2.536
+          },
+          "truth": {
+            "decay": 0.5,
+            "hill_half": 2.5,
+            "hill_slope": 1.8
+          }
+        }
+      },
+      "world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS"
+    }
+  ]
+}
+
