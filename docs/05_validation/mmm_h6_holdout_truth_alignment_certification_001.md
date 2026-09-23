@@ -30,15 +30,19 @@ parameters, design matrix, and pooled coefficients only for comparison.
 
 | World | Seed | Independent true Delta-mu | Fitted Delta-mu | Absolute error | Max channel contribution error |
 |---|---:|---:|---:|---:|---:|
-| WORLD-H6-PILOT-RETAIL-FULL-CONTROLS | 6600 | 0.045 | 0.003 | 0.042 | 0.010 |
-| WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS | 6601 | 0.047 | 0.004 | 0.044 | 0.012 |
-| WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS | 6602 | 0.039 | 0.006 | 0.033 | 0.008 |
-| WORLD-H6-PILOT-CPG-FULL-CONTROLS | 6603 | 0.044 | 0.007 | 0.037 | 0.009 |
-| WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS | 6604 | 0.039 | 0.002 | 0.037 | 0.008 |
+| WORLD-H6-PILOT-RETAIL-FULL-CONTROLS | 6600 | 0.045 | 0.002 | 0.042 | 0.009 |
+| WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS | 6601 | 0.047 | 0.003 | 0.044 | 0.011 |
+| WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS | 6602 | 0.039 | 0.005 | 0.034 | 0.007 |
+| WORLD-H6-PILOT-CPG-FULL-CONTROLS | 6603 | 0.044 | 0.005 | 0.039 | 0.008 |
+| WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS | 6604 | 0.039 | 0.020 | 0.019 | 0.007 |
 
-The fitted Delta-mu is materially below independent truth in all five worlds. This is evidence
-that the prior holdout recovery was not a valid known-truth comparison when it reused fitted
-transform parameters and pooled beta truth. It is not a production decision-surface change.
+The fitted Delta-mu is materially below independent truth in all five worlds. The fitted
+comparator is now leakage-clean: every transform parameter and pooled coefficient is selected
+by `RidgeBOMMMTrainer.fit(train)` on weeks `0:39` only. Full-path design construction uses those
+training-derived parameters and carries only legitimate recursive media state into weeks `39:52`;
+held-out outcomes never enter tuning, coefficients, nuisance fitting, or candidate selection.
+The truth and fitted paths are independent, and this is recovery evidence rather than decision
+invariance or production authority.
 
 ## Conclusions
 
@@ -58,7 +62,7 @@ artifact_identity: {artifact_id, version, source_revision}
 analysis: {analysis_id, truth_method, fitted_method, metrics}
 worlds[]: {
   world_id, seed, n_geos, n_weeks, channels, holdout,
-  transform_truth, true_beta_gc_source, fitted_params, fitted_pooled_beta,
+  transform_truth, true_beta_gc_source, fitted_params, fitted_parameter_provenance,
   true_delta_mu, fitted_delta_mu, delta_mu_abs_error,
   true_contribution_delta, fitted_contribution_delta, contribution_abs_error
 }
@@ -68,10 +72,11 @@ The JSON is diagnostic evidence only and is not a production/package contract.
 
 ## Exact reproduction
 
-Run from source revision `e39bd2b236c81c925357746f2cb461ba45066da1`:
+Run from source revision `e39bd2b236c81c925357746f2cb461ba45066da1` (the `/tmp` file is only a
+runtime copy of the Git-owned fenced program):
 
 ```sh
-docker run --rm -e PYTHONPATH=/repo -v /Users/phani/Desktop/MMM:/repo -v /tmp/h6_truth_alignment.py:/tmp/h6_truth_alignment.py -w /repo mmm-fixture-ready:local python /tmp/h6_truth_alignment.py
+docker run --rm -e PYTHONPATH=/repo -e OPENBLAS_NUM_THREADS=1 -e OMP_NUM_THREADS=1 -e MKL_NUM_THREADS=1 -v /Users/phani/Desktop/MMM:/repo -v /tmp/h6_truth_alignment.py:/tmp/h6_truth_alignment.py -w /repo mmm-fixture-ready:local python /tmp/h6_truth_alignment.py
 ```
 
 The complete executable used for the reported numbers is preserved below; it composes only
@@ -129,7 +134,11 @@ def run_world(world_id: str) -> dict[str, object]:
     schema = h6_panel_schema(spec)
     config = h6_ridge_config(spec)
     trainer = RidgeBOMMMTrainer(config, schema)
-    fit = trainer.fit(panel)
+    ordered_panel = panel.sort_values(["geo_id", "week_start_date"]).reset_index(drop=True)
+    train = ordered_panel.loc[
+        ordered_panel.groupby("geo_id", sort=False).cumcount() < HOLDOUT_START
+    ].copy()
+    fit = trainer.fit(train)
     art = fit["artifacts"]
     params = {k: float(v) for k, v in art.best_params.items()}
     bundle = build_design_matrix(panel, schema, config, decay=params["decay"], hill_half=params["hill_half"], hill_slope=params["hill_slope"])
@@ -146,7 +155,7 @@ def run_world(world_id: str) -> dict[str, object]:
     _, truth_alt = truth_media(panel, spec, intervention=True)
     mask = bundle.df_aligned.groupby("geo_id", sort=False).cumcount().between(HOLDOUT_START, HOLDOUT_END - 1).to_numpy()
     truth_delta_by_channel = {ch: float(np.mean((truth_alt[ch] - truth_base[ch])[mask])) for ch in spec.channels}
-    fitted_delta_by_channel = {ch: float(np.mean((bundle_alt.X[:, i] - bundle.X[:, i]) * art.coef[i])) for i, ch in enumerate(spec.channels)}
+    fitted_delta_by_channel = {ch: float(np.mean(((bundle_alt.X[:, i] - bundle.X[:, i]) * art.coef[i])[mask])) for i, ch in enumerate(spec.channels)}
     true_delta = float(np.mean(np.sum([truth_alt[ch][mask] - truth_base[ch][mask] for ch in spec.channels], axis=0)))
     fitted_delta_mu = float(np.mean(fitted_delta[mask]))
     return {
@@ -155,16 +164,18 @@ def run_world(world_id: str) -> dict[str, object]:
         "n_geos": spec.n_geos,
         "n_weeks": spec.n_weeks,
         "channels": list(spec.channels),
-        "holdout": {"start_week_index": HOLDOUT_START, "end_week_index_exclusive": HOLDOUT_END, "intervention": "all channels multiplied by 1.10 on held-out weeks", "aggregation": "equal-row mean", "nuisance_fixed": True},
+        "training_window": {"start_week_index": 0, "end_week_index_exclusive": HOLDOUT_START, "rows_per_geo": HOLDOUT_START, "fit_outcomes": "training rows only"},
+        "holdout": {"start_week_index": HOLDOUT_START, "end_week_index_exclusive": HOLDOUT_END, "rows_per_geo": HOLDOUT_END - HOLDOUT_START, "intervention": "all channels multiplied by 1.10 on held-out weeks", "aggregation": "equal-row mean", "nuisance_fixed": True},
         "transform_truth": spec.transform_truth,
         "true_beta_gc_source": "spec.true_beta_gc[geo][channel]",
-        "fitted_params": params,
-        "fitted_pooled_beta": {ch: float(art.coef[i]) for i, ch in enumerate(spec.channels)},
+        "fitted_params": {k: round(v, 2) for k, v in params.items()},
+        "fitted_parameter_provenance": "RidgeBOMMMTrainer.fit(training rows week indices 0:39 only); full-path design construction carries legitimate recursive media state",
+        "truth_parameter_provenance": "spec.transform_truth and spec.true_beta_gc[geo][channel], independently reconstructed from raw H6 media",
         "true_delta_mu": round(true_delta, 3),
         "fitted_delta_mu": round(fitted_delta_mu, 3),
         "delta_mu_abs_error": round(abs(fitted_delta_mu - true_delta), 3),
         "true_contribution_delta": {ch: round(v, 3) for ch, v in truth_delta_by_channel.items()},
-        "fitted_contribution_delta": {ch: round(v, 3) for ch, v in fitted_delta_by_channel.items()},
+        "fitted_contribution_delta": {ch: (0.0 if abs(v) < 0.0005 else round(v, 3)) for ch, v in fitted_delta_by_channel.items()},
         "contribution_abs_error": {ch: round(abs(fitted_delta_by_channel[ch] - truth_delta_by_channel[ch]), 3) for ch in spec.channels},
     }
 

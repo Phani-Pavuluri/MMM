@@ -1,100 +1,560 @@
 {
-  "artifact_identity": {
-    "artifact_id": "MMM_H6_HOLDOUT_TRUTH_ALIGNMENT_CERTIFICATION_001",
-    "version": "1.0.0",
-    "source_revision": "e39bd2b236c81c925357746f2cb461ba45066da1"
-  },
   "analysis": {
     "analysis_id": "H6-TRUTH-ALIGN-001",
-    "truth_method": "raw H6 media -> spec.transform_truth adstock/saturation over full geo-time path -> spec.true_beta_gc[geo][channel]",
-    "fitted_method": "existing RidgeBOMMMTrainer and design-matrix transform parameters",
+    "fitted_method": "existing RidgeBOMMMTrainer.fit on training rows 0:39 only; full-path design construction with training-derived transforms and coefficients",
     "metrics": [
       "true_delta_mu",
       "fitted_delta_mu",
       "delta_mu_abs_error",
       "per_channel_contribution_abs_error"
-    ]
+    ],
+    "truth_method": "raw H6 media -> spec.transform_truth adstock/saturation over full geo-time path -> spec.true_beta_gc[geo][channel]"
+  },
+  "artifact_identity": {
+    "artifact_id": "MMM_H6_HOLDOUT_TRUTH_ALIGNMENT_CERTIFICATION_001",
+    "source_revision": "e39bd2b236c81c925357746f2cb461ba45066da1",
+    "version": "1.1.0"
+  },
+  "holdout_boundary": {
+    "heldout_outcomes_used_for_fit": false,
+    "holdout_rows_per_geo": 13,
+    "holdout_week_indices": "39:52",
+    "training_rows_per_geo": 39,
+    "training_week_indices": "0:39"
+  },
+  "provenance": {
+    "durable_program": "report section Exact reproduction (fenced Python program); /tmp copy is runtime-only",
+    "exact_command": "docker run --rm -e PYTHONPATH=/repo -e OPENBLAS_NUM_THREADS=1 -e OMP_NUM_THREADS=1 -e MKL_NUM_THREADS=1 -v /Users/phani/Desktop/MMM:/repo -v /tmp/h6_truth_alignment.py:/tmp/h6_truth_alignment.py -w /repo mmm-fixture-ready:local python /tmp/h6_truth_alignment.py",
+    "metric_rounding": "three decimals for recovery metrics; fitted params retained to two decimals; solver floating-point noise is normalized out",
+    "no_production_changes": true,
+    "runtime": "mmm-fixture-ready:local Python 3.11; deterministic H6 seeds",
+    "source_revision": "e39bd2b236c81c925357746f2cb461ba45066da1"
   },
   "worlds": [
     {
-      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
-      "seed": 6600,
-      "n_geos": 20,
-      "n_weeks": 52,
-      "true_delta_mu": 0.045,
-      "fitted_delta_mu": 0.003,
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "contribution_abs_error": {
+        "ctv": 0.006,
+        "display": 0.009,
+        "local_flyer": 0.006,
+        "radio": 0.005,
+        "search": 0.007,
+        "social": 0.008,
+        "tv": 0.0
+      },
       "delta_mu_abs_error": 0.042,
-      "max_contribution_abs_error": 0.010
-    },
-    {
-      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
-      "seed": 6601,
-      "n_geos": 20,
-      "n_weeks": 52,
-      "true_delta_mu": 0.047,
-      "fitted_delta_mu": 0.004,
-      "delta_mu_abs_error": 0.044,
-      "max_contribution_abs_error": 0.012
-    },
-    {
-      "world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS",
-      "seed": 6602,
-      "n_geos": 20,
-      "n_weeks": 52,
-      "true_delta_mu": 0.039,
-      "fitted_delta_mu": 0.006,
-      "delta_mu_abs_error": 0.033,
-      "max_contribution_abs_error": 0.008
-    },
-    {
-      "world_id": "WORLD-H6-PILOT-CPG-FULL-CONTROLS",
-      "seed": 6603,
-      "n_geos": 20,
-      "n_weeks": 52,
-      "true_delta_mu": 0.044,
-      "fitted_delta_mu": 0.007,
-      "delta_mu_abs_error": 0.037,
-      "max_contribution_abs_error": 0.009
-    },
-    {
-      "world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS",
-      "seed": 6604,
-      "n_geos": 20,
-      "n_weeks": 52,
-      "true_delta_mu": 0.039,
+      "fitted_contribution_delta": {
+        "ctv": 0.001,
+        "display": 0.001,
+        "local_flyer": -0.001,
+        "radio": 0.001,
+        "search": 0.0,
+        "social": 0.0,
+        "tv": 0.0
+      },
       "fitted_delta_mu": 0.002,
-      "delta_mu_abs_error": 0.037,
-      "max_contribution_abs_error": 0.008
-    }
-  ],
-  "holdout": {
-    "start_week_index": 39,
-    "end_week_index_exclusive": 52,
-    "intervention": "all channels multiplied by 1.10 on held-out weeks",
-    "aggregation": "equal-row mean",
-    "nuisance_fixed": true
-  },
-  "provenance": {
-    "exact_command": "docker run --rm -e PYTHONPATH=/repo -v /Users/phani/Desktop/MMM:/repo -v /tmp/h6_truth_alignment.py:/tmp/h6_truth_alignment.py -w /repo mmm-fixture-ready:local python /tmp/h6_truth_alignment.py",
-    "runtime": "mmm-fixture-ready:local Python 3.11; deterministic H6 seeds; metrics rounded to 3 decimals to absorb solver floating-point noise",
-    "durable_program": "report section Exact reproduction",
-    "no_production_changes": true
-  },
-  "recommendations": [
-    {
-      "area": "independent H6 truth construction",
-      "classification": "supported_for_implementation",
-      "successor": "use transform_truth and true_beta_gc in all future recovery certification"
+      "fitted_parameter_provenance": "RidgeBOMMMTrainer.fit(training rows week indices 0:39 only); full-path design construction carries legitimate recursive media state",
+      "fitted_params": {
+        "decay": 0.15,
+        "hill_half": 0.43,
+        "hill_slope": 1.98,
+        "log_alpha": 0.78
+      },
+      "holdout": {
+        "aggregation": "equal-row mean",
+        "end_week_index_exclusive": 52,
+        "intervention": "all channels multiplied by 1.10 on held-out weeks",
+        "nuisance_fixed": true,
+        "rows_per_geo": 13,
+        "start_week_index": 39
+      },
+      "n_geos": 20,
+      "n_weeks": 52,
+      "seed": 6600,
+      "training_window": {
+        "end_week_index_exclusive": 39,
+        "fit_outcomes": "training rows only",
+        "rows_per_geo": 39,
+        "start_week_index": 0
+      },
+      "transform_truth": {
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "true_beta_gc_source": "spec.true_beta_gc[geo][channel]",
+      "true_contribution_delta": {
+        "ctv": 0.007,
+        "display": 0.01,
+        "local_flyer": 0.006,
+        "radio": 0.006,
+        "search": 0.007,
+        "social": 0.008,
+        "tv": 0.0
+      },
+      "true_delta_mu": 0.045,
+      "truth_parameter_provenance": "spec.transform_truth and spec.true_beta_gc[geo][channel], independently reconstructed from raw H6 media",
+      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS"
     },
     {
-      "area": "held-out Delta-mu and contribution recovery",
-      "classification": "requires_more_evidence",
-      "successor": "broaden independent-truth worlds and preregister channel-level bars"
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "contribution_abs_error": {
+        "ctv": 0.009,
+        "display": 0.011,
+        "local_flyer": 0.006,
+        "radio": 0.004,
+        "search": 0.007,
+        "social": 0.008,
+        "tv": 0.0
+      },
+      "delta_mu_abs_error": 0.044,
+      "fitted_contribution_delta": {
+        "ctv": 0.001,
+        "display": 0.001,
+        "local_flyer": 0.0,
+        "radio": 0.0,
+        "search": 0.0,
+        "social": 0.0,
+        "tv": 0.0
+      },
+      "fitted_delta_mu": 0.003,
+      "fitted_parameter_provenance": "RidgeBOMMMTrainer.fit(training rows week indices 0:39 only); full-path design construction carries legitimate recursive media state",
+      "fitted_params": {
+        "decay": 0.66,
+        "hill_half": 2.45,
+        "hill_slope": 1.55,
+        "log_alpha": 1.71
+      },
+      "holdout": {
+        "aggregation": "equal-row mean",
+        "end_week_index_exclusive": 52,
+        "intervention": "all channels multiplied by 1.10 on held-out weeks",
+        "nuisance_fixed": true,
+        "rows_per_geo": 13,
+        "start_week_index": 39
+      },
+      "n_geos": 20,
+      "n_weeks": 52,
+      "seed": 6601,
+      "training_window": {
+        "end_week_index_exclusive": 39,
+        "fit_outcomes": "training rows only",
+        "rows_per_geo": 39,
+        "start_week_index": 0
+      },
+      "transform_truth": {
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "true_beta_gc_source": "spec.true_beta_gc[geo][channel]",
+      "true_contribution_delta": {
+        "ctv": 0.009,
+        "display": 0.012,
+        "local_flyer": 0.006,
+        "radio": 0.005,
+        "search": 0.007,
+        "social": 0.008,
+        "tv": 0.0
+      },
+      "true_delta_mu": 0.047,
+      "truth_parameter_provenance": "spec.transform_truth and spec.true_beta_gc[geo][channel], independently reconstructed from raw H6 media",
+      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS"
     },
     {
-      "area": "production numerical behavior",
-      "classification": "rejected",
-      "successor": "none in this evidence-only task"
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "contribution_abs_error": {
+        "ctv": 0.004,
+        "display": 0.006,
+        "local_flyer": 0.005,
+        "radio": 0.005,
+        "search": 0.006,
+        "social": 0.007,
+        "tv": 0.0
+      },
+      "delta_mu_abs_error": 0.034,
+      "fitted_contribution_delta": {
+        "ctv": 0.002,
+        "display": 0.002,
+        "local_flyer": 0.0,
+        "radio": -0.001,
+        "search": 0.001,
+        "social": 0.001,
+        "tv": 0.0
+      },
+      "fitted_delta_mu": 0.005,
+      "fitted_parameter_provenance": "RidgeBOMMMTrainer.fit(training rows week indices 0:39 only); full-path design construction carries legitimate recursive media state",
+      "fitted_params": {
+        "decay": 0.28,
+        "hill_half": 1.95,
+        "hill_slope": 2.77,
+        "log_alpha": 1.49
+      },
+      "holdout": {
+        "aggregation": "equal-row mean",
+        "end_week_index_exclusive": 52,
+        "intervention": "all channels multiplied by 1.10 on held-out weeks",
+        "nuisance_fixed": true,
+        "rows_per_geo": 13,
+        "start_week_index": 39
+      },
+      "n_geos": 20,
+      "n_weeks": 52,
+      "seed": 6602,
+      "training_window": {
+        "end_week_index_exclusive": 39,
+        "fit_outcomes": "training rows only",
+        "rows_per_geo": 39,
+        "start_week_index": 0
+      },
+      "transform_truth": {
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "true_beta_gc_source": "spec.true_beta_gc[geo][channel]",
+      "true_contribution_delta": {
+        "ctv": 0.005,
+        "display": 0.008,
+        "local_flyer": 0.006,
+        "radio": 0.005,
+        "search": 0.007,
+        "social": 0.008,
+        "tv": 0.0
+      },
+      "true_delta_mu": 0.039,
+      "truth_parameter_provenance": "spec.transform_truth and spec.true_beta_gc[geo][channel], independently reconstructed from raw H6 media",
+      "world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS"
+    },
+    {
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "contribution_abs_error": {
+        "ctv": 0.006,
+        "display": 0.008,
+        "local_flyer": 0.006,
+        "radio": 0.005,
+        "search": 0.006,
+        "social": 0.008,
+        "tv": 0.001
+      },
+      "delta_mu_abs_error": 0.039,
+      "fitted_contribution_delta": {
+        "ctv": 0.002,
+        "display": 0.002,
+        "local_flyer": 0.0,
+        "radio": 0.0,
+        "search": 0.0,
+        "social": 0.0,
+        "tv": 0.0
+      },
+      "fitted_delta_mu": 0.005,
+      "fitted_parameter_provenance": "RidgeBOMMMTrainer.fit(training rows week indices 0:39 only); full-path design construction carries legitimate recursive media state",
+      "fitted_params": {
+        "decay": 0.33,
+        "hill_half": 2.46,
+        "hill_slope": 1.66,
+        "log_alpha": 2.11
+      },
+      "holdout": {
+        "aggregation": "equal-row mean",
+        "end_week_index_exclusive": 52,
+        "intervention": "all channels multiplied by 1.10 on held-out weeks",
+        "nuisance_fixed": true,
+        "rows_per_geo": 13,
+        "start_week_index": 39
+      },
+      "n_geos": 20,
+      "n_weeks": 52,
+      "seed": 6603,
+      "training_window": {
+        "end_week_index_exclusive": 39,
+        "fit_outcomes": "training rows only",
+        "rows_per_geo": 39,
+        "start_week_index": 0
+      },
+      "transform_truth": {
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "true_beta_gc_source": "spec.true_beta_gc[geo][channel]",
+      "true_contribution_delta": {
+        "ctv": 0.008,
+        "display": 0.01,
+        "local_flyer": 0.006,
+        "radio": 0.005,
+        "search": 0.007,
+        "social": 0.008,
+        "tv": 0.001
+      },
+      "true_delta_mu": 0.044,
+      "truth_parameter_provenance": "spec.transform_truth and spec.true_beta_gc[geo][channel], independently reconstructed from raw H6 media",
+      "world_id": "WORLD-H6-PILOT-CPG-FULL-CONTROLS"
+    },
+    {
+      "channels": [
+        "tv",
+        "search",
+        "social",
+        "display",
+        "ctv",
+        "radio",
+        "local_flyer"
+      ],
+      "contribution_abs_error": {
+        "ctv": 0.0,
+        "display": 0.005,
+        "local_flyer": 0.007,
+        "radio": 0.002,
+        "search": 0.001,
+        "social": 0.003,
+        "tv": 0.0
+      },
+      "delta_mu_abs_error": 0.019,
+      "fitted_contribution_delta": {
+        "ctv": 0.005,
+        "display": 0.003,
+        "local_flyer": -0.001,
+        "radio": 0.003,
+        "search": 0.007,
+        "social": 0.005,
+        "tv": 0.0
+      },
+      "fitted_delta_mu": 0.02,
+      "fitted_parameter_provenance": "RidgeBOMMMTrainer.fit(training rows week indices 0:39 only); full-path design construction carries legitimate recursive media state",
+      "fitted_params": {
+        "decay": 0.39,
+        "hill_half": 2.42,
+        "hill_slope": 2.54,
+        "log_alpha": 0.5
+      },
+      "holdout": {
+        "aggregation": "equal-row mean",
+        "end_week_index_exclusive": 52,
+        "intervention": "all channels multiplied by 1.10 on held-out weeks",
+        "nuisance_fixed": true,
+        "rows_per_geo": 13,
+        "start_week_index": 39
+      },
+      "n_geos": 20,
+      "n_weeks": 52,
+      "seed": 6604,
+      "training_window": {
+        "end_week_index_exclusive": 39,
+        "fit_outcomes": "training rows only",
+        "rows_per_geo": 39,
+        "start_week_index": 0
+      },
+      "transform_truth": {
+        "ctv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "display": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "local_flyer": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "radio": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "search": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "social": {
+          "decay": 0.3,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        },
+        "tv": {
+          "decay": 0.5,
+          "hill_half": 2.5,
+          "hill_slope": 1.8
+        }
+      },
+      "true_beta_gc_source": "spec.true_beta_gc[geo][channel]",
+      "true_contribution_delta": {
+        "ctv": 0.005,
+        "display": 0.008,
+        "local_flyer": 0.006,
+        "radio": 0.005,
+        "search": 0.008,
+        "social": 0.008,
+        "tv": 0.0
+      },
+      "true_delta_mu": 0.039,
+      "truth_parameter_provenance": "spec.transform_truth and spec.true_beta_gc[geo][channel], independently reconstructed from raw H6 media",
+      "world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS"
     }
   ]
 }
