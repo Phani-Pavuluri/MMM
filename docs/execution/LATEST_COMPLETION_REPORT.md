@@ -8,8 +8,8 @@
 - Decision: `authorized`
 - Execution mode: `branch_and_fast_forward`
 - Base SHA: `30f26ad5c8c754baa3ae41f8ab267de3c3239b2d`
-- Task authoring SHA: `30f26ad5c8c754baa3ae41f8ab267de3c3239b2d`
-- Authorization SHA: `30f26ad5c8c754baa3ae41f8ab267de3c3239b2d`
+- Task authoring SHA: `81eb1155177cebf978ccced6ff0c2f6cb5d26da6`
+- Authorization SHA: `81eb1155177cebf978ccced6ff0c2f6cb5d26da6`
 - Feature branch: `feat/mmm-geo-time-nuisance-structure-certification-001`
 - Feature branch created: `true`
 - Task execution authorized: `true`
