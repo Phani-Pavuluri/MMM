@@ -142,8 +142,8 @@
     "source_sha": "469e65d7f5d03fa1757ac09846b0acf9addba9a2",
     "runtime": "mmm-fixture-ready:local (Python 3.11)",
     "exact_commands": [
-      "docker run --rm -v /private/tmp/mmm-model-specification-level-scale-semantics-audit-001:/repo -w /repo mmm-fixture-ready:local python -c <inline A7 script: H6 materialize_h6_panel -> RidgeBOMMMTrainer.fit -> ridge_context_from_fit -> optimize_budget_via_simulation and repository scipy.optimize SLSQP over simulate.mean_kpi_level_plan>",
-      "docker run --rm -v /private/tmp/mmm-model-specification-level-scale-semantics-audit-001:/repo -w /repo mmm-fixture-ready:local python -c <inline A9 script: run_h5_h6_benchmark(..., fast_mcmc=True)> (expected limitation: pymc unavailable)"
+      "docker run --rm -v $PWD:/repo -w /repo mmm-fixture-ready:local python - (exact heredoc program preserved under the report section 'Exact A7 reproduction program (preserved inline)'; H6 materialize -> RidgeBOMMMTrainer.fit -> ridge_context_from_fit -> optimize_budget_via_simulation -> repository scipy.optimize SLSQP over simulate.mean_kpi_level_plan)",
+      "docker run --rm -v $PWD:/repo -w /repo mmm-fixture-ready:local python -c 'from mmm.research.h6_synthetic.production_shapes import get_h6_world,materialize_h6_panel; from mmm.research.h6_synthetic.benchmark_harness import run_h5_h6_benchmark; s=get_h6_world(\"WORLD-H6-PILOT-RETAIL-FULL-CONTROLS\"); print(run_h5_h6_benchmark(s,materialize_h6_panel(s),fast_mcmc=True,enable_h5=True))' (expected limitation: pymc unavailable)"
     ]
   },
   "recommendations": [

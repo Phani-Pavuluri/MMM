@@ -373,3 +373,31 @@ Correction validation also reruns every exact command recorded in the evidence a
 validation, documentation/lifecycle checks, `git diff --check`, and the repository Docker-backed
 `make validate` gate. The Bayesian partial-pooling command is recorded as an expected runtime
 limitation (`pymc` unavailable) rather than silently substituted.
+
+### Exact A7 reproduction program (preserved inline)
+
+Run from the feature worktree with `mmm-fixture-ready:local` (Python 3.11):
+
+```bash
+docker run --rm -v "$PWD":/repo -w /repo mmm-fixture-ready:local python - <<'PY'
+import numpy as np
+from scipy.optimize import minimize
+from mmm.research.h6_synthetic.production_shapes import get_h6_world, materialize_h6_panel, h6_ridge_config, h6_panel_schema
+from mmm.models.ridge_bo.trainer import RidgeBOMMMTrainer
+from mmm.planning.context import ridge_context_from_fit
+from mmm.planning.baseline import bau_baseline_from_panel
+from mmm.planning.decision_simulate import simulate
+from mmm.optimization.budget.simulation_optimizer import optimize_budget_via_simulation
+from mmm.decision.gates import allow_decision_pipeline
+s=get_h6_world("WORLD-H6-PILOT-RETAIL-FULL-CONTROLS"); p=materialize_h6_panel(s)
+c=h6_ridge_config(s); z=h6_panel_schema(s); t=RidgeBOMMMTrainer(c,z); f=t.fit(p)
+ctx=ridge_context_from_fit(p,z,c,{"artifacts":f["artifacts"]}); b=bau_baseline_from_panel(p,z)
+names=list(z.channel_columns); n=len(names); total=float(sum(b.spend_by_channel.values()))
+lo=np.zeros(n); hi=np.full(n,total); cur=np.array([b.spend_by_channel[q] for q in names])
+with allow_decision_pipeline(): dm=optimize_budget_via_simulation(ctx,current_spend=cur,total_budget=total,channel_min=lo,channel_max=hi)
+adm=np.array([dm["recommended_spend_plan"][q] for q in names])
+def level(x): return float(simulate({names[i]:float(x[i]) for i in range(n)},ctx,baseline_plan=b,uncertainty_mode="point").mean_kpi_level_plan or 0.0)
+res=minimize(lambda x:-level(x),cur,method="SLSQP",bounds=[(0,total)]*n,constraints=[{"type":"eq","fun":lambda x:float(np.sum(x))-total}],options={"maxiter":300,"ftol":1e-9})
+alv=res.x; print({"normalized_allocation_distance":float(np.sum(np.abs(adm-alv))/(2*total)),"decision_regret":float(max(0.0,level(alv)-level(adm))/max(abs(level(alv)),1e-9)),"canonical_success":bool(dm["optimizer_success"]),"level_success":bool(res.success)})
+PY
+```
