@@ -1,0 +1,100 @@
+{
+  "artifact_identity": {
+    "artifact_id": "MMM_H6_HOLDOUT_TRUTH_ALIGNMENT_CERTIFICATION_001",
+    "version": "1.0.0",
+    "source_revision": "e39bd2b236c81c925357746f2cb461ba45066da1"
+  },
+  "analysis": {
+    "analysis_id": "H6-TRUTH-ALIGN-001",
+    "truth_method": "raw H6 media -> spec.transform_truth adstock/saturation over full geo-time path -> spec.true_beta_gc[geo][channel]",
+    "fitted_method": "existing RidgeBOMMMTrainer and design-matrix transform parameters",
+    "metrics": [
+      "true_delta_mu",
+      "fitted_delta_mu",
+      "delta_mu_abs_error",
+      "per_channel_contribution_abs_error"
+    ]
+  },
+  "worlds": [
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+      "seed": 6600,
+      "n_geos": 20,
+      "n_weeks": 52,
+      "true_delta_mu": 0.045,
+      "fitted_delta_mu": 0.003,
+      "delta_mu_abs_error": 0.042,
+      "max_contribution_abs_error": 0.010
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS",
+      "seed": 6601,
+      "n_geos": 20,
+      "n_weeks": 52,
+      "true_delta_mu": 0.047,
+      "fitted_delta_mu": 0.004,
+      "delta_mu_abs_error": 0.044,
+      "max_contribution_abs_error": 0.012
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS",
+      "seed": 6602,
+      "n_geos": 20,
+      "n_weeks": 52,
+      "true_delta_mu": 0.039,
+      "fitted_delta_mu": 0.006,
+      "delta_mu_abs_error": 0.033,
+      "max_contribution_abs_error": 0.008
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-CPG-FULL-CONTROLS",
+      "seed": 6603,
+      "n_geos": 20,
+      "n_weeks": 52,
+      "true_delta_mu": 0.044,
+      "fitted_delta_mu": 0.007,
+      "delta_mu_abs_error": 0.037,
+      "max_contribution_abs_error": 0.009
+    },
+    {
+      "world_id": "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS",
+      "seed": 6604,
+      "n_geos": 20,
+      "n_weeks": 52,
+      "true_delta_mu": 0.039,
+      "fitted_delta_mu": 0.002,
+      "delta_mu_abs_error": 0.037,
+      "max_contribution_abs_error": 0.008
+    }
+  ],
+  "holdout": {
+    "start_week_index": 39,
+    "end_week_index_exclusive": 52,
+    "intervention": "all channels multiplied by 1.10 on held-out weeks",
+    "aggregation": "equal-row mean",
+    "nuisance_fixed": true
+  },
+  "provenance": {
+    "exact_command": "docker run --rm -e PYTHONPATH=/repo -v /Users/phani/Desktop/MMM:/repo -v /tmp/h6_truth_alignment.py:/tmp/h6_truth_alignment.py -w /repo mmm-fixture-ready:local python /tmp/h6_truth_alignment.py",
+    "runtime": "mmm-fixture-ready:local Python 3.11; deterministic H6 seeds; metrics rounded to 3 decimals to absorb solver floating-point noise",
+    "durable_program": "report section Exact reproduction",
+    "no_production_changes": true
+  },
+  "recommendations": [
+    {
+      "area": "independent H6 truth construction",
+      "classification": "supported_for_implementation",
+      "successor": "use transform_truth and true_beta_gc in all future recovery certification"
+    },
+    {
+      "area": "held-out Delta-mu and contribution recovery",
+      "classification": "requires_more_evidence",
+      "successor": "broaden independent-truth worlds and preregister channel-level bars"
+    },
+    {
+      "area": "production numerical behavior",
+      "classification": "rejected",
+      "successor": "none in this evidence-only task"
+    }
+  ]
+}
