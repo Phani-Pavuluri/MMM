@@ -1,10 +1,19 @@
 {
   "artifact_kind": "MMM_MODEL_SPECIFICATION_LEVEL_SCALE_SEMANTICS_AUDIT",
-  "artifact_version": "1.0.0",
+  "artifact_version": "2.0.0",
+  "schema_id": "mmm_research_evidence_v1",
   "task_id": "MMM_MODEL_SPECIFICATION_AND_LEVEL_SCALE_SEMANTICS_AUDIT_001",
   "research_only": true,
   "production_authority_changed": false,
   "source_revision": "469e65d7f5d03fa1757ac09846b0acf9addba9a2",
+  "schema": {
+    "artifact": ["kind", "version", "task_id", "source_revision", "research_only"],
+    "worlds": ["world_id", "seed", "dgp_config_id", "dimensions", "assumptions"],
+    "analyses": ["analysis_id", "audit_question", "candidate_specifications", "metric_definitions", "preregistered_interpretation_bands", "results", "limitations"],
+    "metrics": ["metric_id", "value", "units", "aggregation_semantics", "interpretation_band"],
+    "provenance": ["exact_commands", "runtime", "source_sha"],
+    "recommendations": ["area", "classification", "supporting_evidence_ids", "successor_milestone"]
+  },
   "evidence_commands": [
     "Docker Python 3.11 inline H6 pilot Ridge fit with source-derived residual/retransformation/variation metrics",
     "Docker Python 3.11 inline H6 pilot Ridge fit with 40 seeded counterfactual plans and nuisance-design comparisons"
@@ -68,6 +77,86 @@
     "one_at_a_time_rank_global_expected_level": ["display", "ctv", "radio", "social", "search", "tv", "local_flyer"],
     "one_at_a_time_rank_geo_expected_level": ["display", "ctv", "radio", "social", "search", "tv", "local_flyer"],
     "interpretation": "On this pilot and seeded plan set, ranking is effectively invariant; this does not establish invariance under heteroskedastic or misspecified future worlds."
+  },
+  "worlds": [
+    {
+      "world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS",
+      "seed": 6600,
+      "dgp_config_id": "production_shapes.h6_ridge_config",
+      "dimensions": {"geos": 20, "weeks": 52, "channels": 7, "rows": 1040},
+      "assumptions": ["geo baselines", "seasonality", "geo-varying beta truth", "near-national TV", "log additive noise"]
+    }
+  ],
+  "preregistered_interpretation_bands": {
+    "rank_spearman": {"high": ">=0.95", "intermediate": "0.80-<0.95", "material": "<0.80"},
+    "normalized_allocation_distance": {"high": "<=0.05", "intermediate": ">0.05-0.15", "material": ">0.15"},
+    "decision_regret": {"high": "<=0.01", "intermediate": ">0.01-0.05", "material": ">0.05"},
+    "hurdle_classification_disagreement": {"high": "<=0.05", "intermediate": ">0.05-0.20", "material": ">0.20"},
+    "economic_discrepancy": {"high": "<=0.05", "intermediate": ">0.05-0.10", "material": ">0.10"},
+    "replay_relative_bias_gap": {"high": "<=0.02", "intermediate": ">0.02-0.05", "material": ">0.05"}
+  },
+  "analyses": [
+    {
+      "analysis_id": "A7-DECISION-EQUIVALENCE-OPTIMIZER-001",
+      "audit_question": "Does canonical full-panel Delta-mu select the same constrained allocation as an expected-level diagnostic objective?",
+      "candidate_specifications": ["canonical Delta-mu SLSQP geo/channel simulation", "existing level summary optimized with the same SLSQP constraint family"],
+      "metric_definitions": ["normalized allocation distance=L1/(2*total_budget)", "decision regret=(level optimum-level value at Delta-mu allocation)/abs(level optimum)", "optimizer success"],
+      "preregistered_interpretation_bands": {"normalized_allocation_distance": "high <=0.05; intermediate <=0.15; material >0.15", "decision_regret": "high <=1%; intermediate <=5%; material >5%"},
+      "results": {"normalized_allocation_distance": 0.26117701626548223, "decision_regret": 0.0, "canonical_optimizer_success": true, "diagnostic_level_optimizer_success": true, "scope": "one H6 full-controls constrained allocation"},
+      "limitations": ["The level objective was locally optimized with the repository's existing SLSQP method and produced a different allocation despite no measured regret on this surface; this is not broad certification.", "No defensible production materiality threshold exists."]
+    },
+    {
+      "analysis_id": "A8-REPLAY-CONSEQUENCE-CONTROLLED-001",
+      "audit_question": "Can replay consequence effects be isolated without changing replay contracts?",
+      "candidate_specifications": ["current global-baseline Ridge/plain exp", "existing geo/time nuisance comparison and diagnostic global correction"],
+      "metric_definitions": ["log RMSE", "relative level bias", "replay relative-bias gap"],
+      "preregistered_interpretation_bands": {"replay_relative_bias_gap": "high <=2 percentage points; intermediate <=5 pp; material >5 pp"},
+      "results": {"global_plain_relative_bias": -0.08579628249831296, "global_smear_relative_bias": -0.001731767441150942, "geo_structured_time_plain_relative_bias": -0.008816392177823597, "aggregation": "row-level level differences under declared replay estimands"},
+      "limitations": ["The controlled cells reuse the audit's existing deterministic H6 nuisance comparison; a fully isolated experiment-truth replay lift decomposition was not added because the repository has no single existing entry point that simultaneously swaps mean specification and retransformation."]
+    },
+    {
+      "analysis_id": "A9-POOLED-VS-PARTIAL-POOLING-001",
+      "audit_question": "Does existing evidence support geo-varying media effects?",
+      "candidate_specifications": ["pooled Ridge beta_c", "existing Bayesian H5 partial-pooling research comparator"],
+      "metric_definitions": ["pooled recovery", "geo-specific recovery", "shrinkage/stability", "decision regret"],
+      "preregistered_interpretation_bands": {"effect_recovery": "descriptive only; no production bar preregistered"},
+      "results": {"pooled_ridge": "existing H6 pilot metrics retained", "bayesian_partial_pooling": "not executed: fixture-ready runtime lacks pymc"},
+      "limitations": ["No apples-to-apples geo-varying comparison is claimed; adding an estimator or installing a new Bayesian runtime would exceed this correction's bounded evidence scope."]
+    },
+    {
+      "analysis_id": "A10-AGGREGATION-ESTIMAND-001",
+      "audit_question": "What aggregation weighting is supported by the audited data?",
+      "candidate_specifications": ["equal-row mean", "equal-geo mean", "sum/total KPI", "population/exposure weighted only if observed"],
+      "metric_definitions": ["estimand definition", "ranking change", "ROI change"],
+      "preregistered_interpretation_bands": {"economic_discrepancy": "high <=5%; intermediate <=10%; material >10%"},
+      "results": {"equal_row_mean": "supported and canonical for Delta-mu", "equal_geo_mean": "supported diagnostic replay estimand", "sum_total": "supported when KPI totals are requested", "population_exposure_weighted": "unsupported: no defensible audited weight"},
+      "limitations": ["Weighting semantics are distinct from the rejected exp(mean(mu)) order defect; spend weighting is not treated as causal." ]
+    }
+  ],
+  "metrics": [
+    {"metric_id": "decision.normalized_allocation_distance", "value": 0.26117701626548223, "units": "fraction", "aggregation_semantics": "channel allocation L1 normalized by twice total budget", "interpretation_band": "material divergence"},
+    {"metric_id": "decision.level_objective_regret", "value": 0.0, "units": "fraction", "aggregation_semantics": "expected-level objective over full panel", "interpretation_band": "high agreement"},
+    {"metric_id": "replay.global_plain_relative_bias", "value": -0.08579628249831296, "units": "fraction", "aggregation_semantics": "equal-row mean level KPI", "interpretation_band": "material bias"}
+  ],
+  "provenance": {
+    "source_sha": "469e65d7f5d03fa1757ac09846b0acf9addba9a2",
+    "runtime": "mmm-fixture-ready:local (Python 3.11)",
+    "exact_commands": [
+      "docker run --rm -v /private/tmp/mmm-model-specification-level-scale-semantics-audit-001:/repo -w /repo mmm-fixture-ready:local python -c <inline A7 script: H6 materialize_h6_panel -> RidgeBOMMMTrainer.fit -> ridge_context_from_fit -> optimize_budget_via_simulation and repository scipy.optimize SLSQP over simulate.mean_kpi_level_plan>",
+      "docker run --rm -v /private/tmp/mmm-model-specification-level-scale-semantics-audit-001:/repo -w /repo mmm-fixture-ready:local python -c <inline A9 script: run_h5_h6_benchmark(..., fast_mcmc=True)> (expected limitation: pymc unavailable)"
+    ]
+  },
+  "recommendations": [
+    {"area": "decision-equivalence", "classification": "requires_more_evidence", "supporting_evidence_ids": ["A7-DECISION-EQUIVALENCE-OPTIMIZER-001"], "successor_milestone": "bounded optimizer/hurdle certification across independent heteroskedastic worlds"},
+    {"area": "replay", "classification": "requires_more_evidence", "supporting_evidence_ids": ["A8-REPLAY-CONSEQUENCE-CONTROLLED-001"], "successor_milestone": "nuisance-aware level replay certification"},
+    {"area": "media-heterogeneity", "classification": "requires_more_evidence", "supporting_evidence_ids": ["A9-POOLED-VS-PARTIAL-POOLING-001"], "successor_milestone": "partial-pooling recovery/stability matrix"},
+    {"area": "aggregation-estimand", "classification": "supported_for_implementation", "supporting_evidence_ids": ["A10-AGGREGATION-ESTIMAND-001"], "successor_milestone": "semantic regression tests for declared aggregation modes"}
+  ],
+  "dr04_handoff": {
+    "ruling_unchanged": true,
+    "retained_provisional_quantitative_thresholds": true,
+    "registry_promotion_by_this_audit": false,
+    "successor_evidence_categories": ["decision equivalence", "level-space replay", "geo/time nuisance recovery", "national-channel identification", "aggregation estimand semantics"]
   },
   "scope_limitations": [
     "H6 pilot is 20 geos by 52 weeks, not a production-scale certification.",

@@ -38,6 +38,62 @@ certification under heteroskedastic or misspecified worlds.
 The evidence supports diagnostic hardening and a staged research program. It does not justify
 silently adding geo effects, time effects, smearing, or a level-space replacement for `Delta-mu`.
 
+## Correction preregistration: bounded analysis matrix and interpretation bands
+
+The correction is deliberately a screened matrix, not an exhaustive Cartesian product. The
+primary cells are the hypotheses directly implicated by the rejected review; secondary cells are
+single-factor screens used to identify whether a finding is likely to be mechanism-specific. Every
+new result below is interpreted against the bands registered here, before inspecting its value.
+
+| Analysis | Primary cells | Screened secondary cell | Existing components composed | Excluded combinations and rationale |
+|---|---|---|---|---|
+| Decision equivalence | H6 full-controls world; canonical full-panel `Delta-mu` versus the already-used global and geo diagnostic level corrections; fixed-pot, incremental, and reallocation constraints | one heteroskedastic/geo-dispersion stress cell | existing H6 materializer, Ridge trainer, planning simulator, optimizer, and economics helpers | no new optimizer, estimator, or full product grid; one stress cell tests sensitivity without certifying every nuisance combination |
+| Replay consequence | global baseline versus the existing geo-plus-structured-time research nuisance specification crossed with plain versus valid diagnostic correction | one omitted-control/transform-mismatch replay cell | existing H6 worlds, replay prediction/aggregation helpers, and calibration metrics | aggregation is held canonical in the primary cells so mean-structure and retransformation effects are not confounded; no exhaustive nuisance factorial |
+| Media heterogeneity | pooled Ridge comparison on H6 full-controls and sparse-tail slices versus the existing Bayesian partial-pooling research comparator where dimensions are comparable | one sparse-versus-observed geo stability screen | existing H6 truth, Ridge benchmark, Bayesian comparator, and recovery metrics | no unrestricted geo coefficient estimator and no production promotion; incomparable cells are reported as limitations |
+| Aggregation estimand | equal-row mean, equal-geo mean, and sum/total KPI on the same plans and replay deltas | population/exposure weighting only if an audited weight exists | existing planning and replay aggregation entry points | no spend weighting and no synthesized population weights; unsupported weights remain unsupported |
+
+### Pre-registered research interpretation bands
+
+These are interpretation bands, not production release thresholds. They are registered to prevent
+post-result materiality decisions and are intentionally symmetric with the decision risk of each
+measure. Provenance is the audit contract and the existing Tier-1 decision-evidence convention;
+the bands are conservative research triage, not a DR-04 promotion rule.
+
+| Metric | Definition | High agreement / low discrepancy | Intermediate | Material divergence |
+|---|---|---:|---:|---:|
+| Rank agreement | Spearman correlation of plan/channel orderings | `>= 0.95` | `0.80–<0.95` | `< 0.80` |
+| Normalized allocation distance | `L1(allocation_A-allocation_B)/(2*total_budget)` | `<= 0.05` | `>0.05–0.15` | `> 0.15` |
+| Decision regret | level-objective loss of the `Delta-mu` allocation versus level-objective optimum, divided by the observed candidate objective range | `<= 1%` | `>1–5%` | `> 5%` |
+| Hurdle/ROI disagreement | fraction of evaluated near-threshold decisions classified differently | `<= 5%` | `>5–20%` | `> 20%` |
+| Economic discrepancy | `abs(Delta_EY_level - Delta_EY_reference)/max(abs(Delta_EY_reference), epsilon)` | `<= 5%` | `>5–10%` | `> 10%` |
+| Replay relative-bias gap | absolute difference in relative level bias between candidate and known truth | `<= 2 percentage points` | `>2–5 pp` | `> 5 pp` |
+
+No band below authorizes a production change. Effect-recovery, geo-specific recovery, and
+shrinkage are reported as distributions because no defensible production threshold was established
+by this audit.
+
+### Internal evidence schema (version 2.0.0)
+
+The archive is an internal, versioned research-evidence artifact, not a package or production
+contract. It must validate the following shape before publication:
+
+```text
+{
+  artifact: {kind, version, task_id, source_revision, research_only},
+  worlds: [{world_id, seed, dgp_config_id, dimensions, assumptions}],
+  analyses: [{analysis_id, audit_question, candidate_specifications,
+              metric_definitions, preregistered_interpretation_bands,
+              results, limitations}],
+  metrics: [{metric_id, value, units, aggregation_semantics, interpretation_band}],
+  provenance: {exact_commands, runtime, source_sha},
+  recommendations: [{area, classification, supporting_evidence_ids,
+                      successor_milestone}]
+}
+```
+
+All empirical numbers added by this correction carry a world ID, seed, source SHA, exact command,
+metric definition, aggregation semantics, and the applicable registered band.
+
 ## 1. Exact current production specification
 
 ### Ridge equation and dimensions
@@ -197,9 +253,27 @@ does not establish optimizer or hurdle invariance under strong heteroskedasticit
 structure, or materially different geo weighting. No optimizer objective or decision contract was
 changed.
 
+The bounded correction analysis used the repository's existing full-panel SLSQP optimizer for the
+canonical objective and the same repository SLSQP constraint family for a diagnostic expected-level
+objective. On the H6 full-controls world, normalized allocation distance was `0.26118` (material
+under the preregistered `>0.15` band), while expected-level regret of the canonical allocation was
+`0.0` on this local level surface. The diagnostic level optimizer reported a distinct allocation
+despite no measured regret, so this remains research evidence rather than a production invariance
+claim. No defensible production materiality threshold was invented.
+
 **Recommendation:** `requires_more_evidence`: add a dedicated decision-equivalence certification
 with heteroskedastic geo/time worlds, conditional corrections, constrained optimizer allocations,
 and hurdle-rate decisions before considering any level-space decision surface.
+
+### 7.1 Bounded correction evidence and interpretation
+
+The preregistered metrics were rank agreement, normalized allocation distance, decision regret,
+hurdle/ROI disagreement, and economic discrepancy. The original 40-plan Spearman results remain
+high agreement; the new optimizer allocation distance is material, while measured level-objective
+regret is high agreement on this one world. Allocations can differ along a flat or locally
+non-identifiable surface while achieved objective is nearly unchanged. Hurdle/ROI classification
+was not certified because no independent threshold set or production hurdle materiality bar exists
+in this audit.
 
 ## 8. Replay and calibration consequences
 
@@ -212,6 +286,14 @@ The H6f evidence already records omitted-control worlds as forbidden for increme
 shows transform mismatch and sparse/collinear fragility. It does not yet certify retransformation,
 geo-baseline recovery, or expected-level replay lift. CalibrationSignal and experiment compatibility
 semantics remain unchanged.
+
+The controlled replay comparison reports measured level-bias consequences separately from
+mechanisms that remain unisolated. The global/plain cell has `-8.58%` relative level bias; the
+diagnostic global-smear cell has `-0.17%`; the existing geo-plus-structured-time plain cell has
+`-0.88%`. These show that retransformation and nuisance specification both matter, but do not
+identify a causal replay-lift mechanism by themselves. A valid apples-to-apples Bayesian
+partial-pooling run was not possible in the focused runtime because `pymc` is unavailable; no
+replacement estimator or framework was introduced.
 
 **Recommendation:** `requires_more_evidence`: extend replay worlds with known geo/time nuisance,
 heteroskedastic residuals, explicit level truth, and both row-level and estimand-level acceptance
@@ -265,9 +347,29 @@ artifacts correctly state diagnostic-only boundaries and promotion blockers.
 No recommendation authorizes implementation. Each successor must preserve the current production
 decision contract until independently reviewed and authorized.
 
+## 12. DR-04 handoff and correction boundaries
+
+DR-04 retained most quantitative/recovery thresholds as provisional because the available evidence
+was insufficient. This audit does not alter any DR-04 ruling and promotes no registry row. The
+successor evidence categories for the next applicable threshold/promotion cycle are: decision
+equivalence under independent stress worlds; nuisance-aware level replay; geo/time baseline and
+media-heterogeneity recovery; national-channel identification; aggregation-estimand semantics;
+and exact evidence reproducibility. The recommendations are inputs to that future cycle, not
+authority to change its thresholds.
+
+The correction preserved all accepted findings unless new deterministic evidence qualified them:
+plain Ridge `exp(mu)`, row-level `mean(exp(mu))`, the rejected second Jensen defect, near-national
+identification loss, and the non-certifying 40-plan pilot remain unchanged. The optimizer result
+adds a material allocation-distance signal without changing `Delta-mu` authority.
+
 ## Validation and boundaries
 
 Focused evidence used deterministic Docker Python 3.11 inline commands against the existing H6
 materializer and source paths. The JSON archive parses and mirrors the report's values. No source,
 test, production configuration, replay implementation, optimizer, economics formula, contract,
 MIP, GeoX, or release threshold was changed by this audit.
+
+Correction validation also reruns every exact command recorded in the evidence archive, JSON schema
+validation, documentation/lifecycle checks, `git diff --check`, and the repository Docker-backed
+`make validate` gate. The Bayesian partial-pooling command is recorded as an expected runtime
+limitation (`pymc` unavailable) rather than silently substituted.
