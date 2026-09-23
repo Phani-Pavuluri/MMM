@@ -167,9 +167,10 @@ The frozen tree must contain source citations for every canonical numerical path
 Bayesian equations; empirical nuisance/media/identification/retransformation/aggregation/Delta-mu/
 replay comparisons; H6 DGP parity/mismatch; prior-audit blind spots; classified recommendations;
 and a changed-path proof limited to owned paths. Record exact deterministic commands and evidence
-inputs, focused research/audit test results, JSON validity, documentation-link validation, taskctl
-check, `git diff --check`, and Docker-backed `make validate` (mandatory for this Tier-3 analytical
-task). Required categories that cannot run are `blocked`; no tests or thresholds may be weakened.
+inputs, focused research/audit test results, JSON validity, documentation-link validation,
+`python -m mmm.execution.taskctl check`, `git diff --check`, and Docker-backed `make validate`
+(mandatory for this Tier-3 analytical task). Required categories that cannot run are `blocked`; no
+tests or thresholds may be weakened.
 
 ## Authorization, publication, and stop conditions
 
