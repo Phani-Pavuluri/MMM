@@ -59,6 +59,25 @@
       "metric_definitions": ["mean predicted candidate-base mu delta", "known-truth transformed-media delta"],
       "results": {"world_id": "WORLD-H6-PILOT-RETAIL-FULL-CONTROLS", "seed": 6600, "true_delta_mu_plus_10pct_all_media": 0.0066072563, "candidate_delta_mu": {"global": 0.0173418628, "geo": 0.0257738963, "geo_fourier_trend": 0.0246025683, "geo_saturated_week": 0.0015174672}, "nuisance_fixed": true},
       "limitations": ["one bounded intervention family; not a production decision-equivalence certification"]
+    },
+    {
+      "analysis_id": "GTS-CORR-001-SPARSE-STABILITY-RESIDUALS",
+      "audit_question": "Do nuisance and coefficient findings remain stable for sparse versus observed H6 geos, and what residual heteroskedasticity remains?",
+      "candidate_specifications": ["global", "geo", "geo_fourier_trend", "geo_saturated_week"],
+      "metric_definitions": ["sparse/observed residual bias and RMSE", "sparse/observed absolute geo bias", "pooled beta relative error and sign recovery", "median pairwise relative coefficient change across five deterministic worlds", "correlation(abs fitted log prediction, residual squared) descriptive heteroskedasticity", "residual geo/time variance ratio and lag-1 correlation"],
+      "preregistered_bands": {"coefficient_instability": "<=0.10 high; >0.10-0.25 intermediate; >0.25 material", "heteroskedasticity": "descriptive only; no preregistered numeric bar"},
+      "results": {
+        "sparse_geos": ["DMA_014", "DMA_015", "DMA_016", "DMA_017", "DMA_018", "DMA_019"],
+        "observed_geos": 14,
+        "residual_rmse_ranges": {"global": {"sparse": [0.251, 0.392], "observed": [0.430, 0.548]}, "geo": {"sparse": [0.145, 0.163], "observed": [0.154, 0.176]}, "geo_fourier_trend": {"sparse": [0.138, 0.155], "observed": [0.147, 0.169]}, "geo_saturated_week": {"sparse": [0.132, 0.143], "observed": [0.138, 0.164]}},
+        "absolute_geo_bias_ranges": {"global": {"sparse": [0.162, 0.309], "observed": [0.334, 0.428]}, "geo": {"sparse": [0.0, 3.2e-8], "observed": [0.0, 1.4e-8]}, "geo_fourier_trend": {"sparse": [0.0, 3.2e-8], "observed": [0.0, 1.4e-8]}, "geo_saturated_week": {"sparse": [0.0, 3.2e-8], "observed": [0.0, 1.4e-8]}},
+        "pooled_beta_relative_error_ranges": {"geo": [0.006, 0.584], "geo_fourier_trend": [0.006, 1.080], "geo_saturated_week": [0.020, 0.789]},
+        "median_pairwise_relative_coefficient_change": {"global": 1.163, "geo": 0.967, "geo_fourier_trend": 0.913, "geo_saturated_week": 0.948},
+        "p90_pairwise_relative_coefficient_change": {"global": 4.600, "geo": 5.100, "geo_fourier_trend": 8.070, "geo_saturated_week": 9.370},
+        "heteroskedasticity_correlation_ranges": {"global": [0.001, 0.157], "geo": [-0.042, 0.057], "geo_fourier_trend": [-0.051, 0.084], "geo_saturated_week": [-0.046, 0.075]},
+        "interpretation": "Geo and structured-time candidates do not materially degrade in the existing sparse tail, but coefficient instability is material across heterogeneous worlds; short-history stability remains untested."
+      },
+      "limitations": ["H6 sparse tail has the same 52-week history as observed geos", "cross-world coefficient changes conflate DGP/control differences", "heteroskedasticity is descriptive only"]
     }
   ],
   "metrics": [
@@ -70,9 +89,12 @@
     "source_sha": "6be3fa2879aca65c3c7268a8133fa35b90f999ec",
     "runtime": "mmm-fixture-ready:local (Python 3.11)",
     "exact_commands": [
-      "docker run --rm -e PYTHONPATH=/repo -v /tmp/geo_audit_run.py:/tmp/geo_audit_run.py -v /private/tmp/mmm-geo-time-nuisance-structure-certification-001:/repo -w /repo mmm-fixture-ready:local python /tmp/geo_audit_run.py",
+      "docker run --rm -e PYTHONPATH=/repo -v /tmp/geo_correction_run.py:/tmp/geo_correction_run.py -v /private/tmp/mmm-geo-time-nuisance-structure-certification-001:/repo -w /repo mmm-fixture-ready:local python /tmp/geo_correction_run.py",
       "docker run --rm -e PYTHONPATH=/repo -v /private/tmp/mmm-geo-time-nuisance-structure-certification-001:/repo -w /repo mmm-fixture-ready:local python -c '<full-panel compatibility inline program recorded in certification report section 5>'"
     ],
+    "exact_program": "Git-owned fenced program in certification report section 5A (save as /tmp/geo_correction_run.py verbatim)",
+    "world_ids_seeds": {"WORLD-H6-PILOT-RETAIL-FULL-CONTROLS": 6600, "WORLD-H6-PILOT-RETAIL-OMITTED-CONTROLS": 6601, "WORLD-H6-PILOT-RETAIL-MEDIA-CORRELATED-CONTROLS": 6602, "WORLD-H6-PILOT-CPG-FULL-CONTROLS": 6603, "WORLD-H6-PILOT-AUTO-OMITTED-CONTROLS": 6604},
+    "metric_definitions": "GTS-CORR-001 metric_definitions and preregistered_bands; sparse tail is final six of twenty geos",
     "composed_entry_points": ["materialize_h6_panel", "h6_ridge_config", "h6_panel_schema", "RidgeBOMMMTrainer", "build_design_matrix", "existing adstock/Hill transforms", "sklearn Ridge research fit"]
   },
   "recommendations": [
