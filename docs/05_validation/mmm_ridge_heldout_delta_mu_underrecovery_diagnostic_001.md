@@ -63,7 +63,9 @@ estimation at fitted transforms) are:
 
 The interaction/path-dependence is material: transform and coefficient components change
 substantially with the anchor. Coefficient estimation is directionally large in four of five
-worlds; transform mismatch is large for Retail full and CPG only under the geo-beta anchor.
+worlds; under the geo-beta anchor, transform mismatch is large for Retail full (0.031),
+intermediate for Retail omitted (0.024), and small for Retail media-correlated (0.013), CPG
+(-0.001), and Auto (0.012). It is therefore not large for CPG.
 Pooling itself is small relative to those terms in these worlds. This supports an interacting
 diagnosis, not a unique causal attribution.
 
