@@ -2,7 +2,7 @@
   "schema_version": "mmm_repo_execution_state_v3",
   "repository": "Phani-Pavuluri/MMM",
   "task_id": "MMM_RIDGE_HELDOUT_GEO_TIME_NUISANCE_SENSITIVITY_CERTIFICATION_001",
-  "status": "authorized",
+  "status": "in_progress",
   "execution_mode": "branch_and_fast_forward",
   "base_branch": "main",
   "base_sha": "3711a3e6d0354ecaa46a8491c605936712facfb8",
@@ -58,7 +58,7 @@
     "external_merge_was_authorized": false,
     "conforming_exact_head_approval_record_exists": false
   },
-  "review_decision": "authorized",
+  "review_decision": "in_progress",
   "review_decision_source": "docs/execution/EXECUTION_STATE.json",
   "task_authoring_note": "Authoring and authorization are separate main commits. This independent nuisance-sensitivity successor consumes only merged under-recovery evidence; no feature branch is created by authoring and no analytical artifact is copied.",
   "rejected_implementation_commit_sha": null,
