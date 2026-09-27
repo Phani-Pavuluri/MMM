@@ -32,27 +32,69 @@
 - Capability authorizations changed: `false`
 <!-- END MMM TASKCTL EXECUTION VIEW -->
 
-## MMM_RIDGE_GEO_TIME_NUISANCE_TRUTH_RECOVERY_CERTIFICATION_001 — authoring evidence
+## MMM_RIDGE_GEO_TIME_NUISANCE_TRUTH_RECOVERY_CERTIFICATION_001 — correction evidence
 
-Authoring contract prepared on synchronized main `a0053e9331797ce8745ba7a82b1825d116e6f382`.
-This is an independent evidence-only successor to blocked predecessor
-`MMM_RIDGE_HELDOUT_GEO_TIME_NUISANCE_SENSITIVITY_CERTIFICATION_001`, blocked remote head
-`d77900e23d6d27317727bd47f0c58254e9d14fff`, rejected review head
-`1c98ac57e370f63ee9ea14c2a75abfe5b854fea1`. No predecessor analytical artifact is copied or
-merged. The task is not executed and no feature branch is created during authoring.
+Review head `a9e956df7c8f0e138f1973845c70a47cfc663b93` was rejected because the completion
+handoff did not contain exact validation commands and exact results. The original analytical
+implementation commit remains `b032203185f9bc74b89e8ded7a496b565771b68e`; correction lifecycle
+receipts are `5236ac05ac0d3da384c9f4c2fe1060ed80ffb0d3` and
+`e653f5cc53196d1b74334afd8137f7e45f1ae4a8`. The analytical certification conclusions and
+analytical artifact diff are unchanged.
 
-Authoring validation: `python -m mmm.execution.taskctl check`, `git diff --check`, and
-`python3 scripts/validate_docs.py` pass. Full Docker validation is required at analytical
-execution, not authoring. No production, sibling, analytical, or capability authority changed.
+### Exact validation commands and results
 
-## Execution evidence
+- Deterministic certification program, run 1 and run 2:
+  `docker run --rm -e PYTHONHASHSEED=0 -e PYTHONPATH=/repo -e OPENBLAS_NUM_THREADS=1 -e OMP_NUM_THREADS=1 -e MKL_NUM_THREADS=1 -v /Users/phani/Desktop/MMM:/repo -v /tmp/nuisance_sensitivity_run.py:/tmp/nuisance_sensitivity_run.py -w /repo mmm-fixture-ready:local python /tmp/nuisance_sensitivity_run.py`
+  Both exited `0`; each wrote `36,174` bytes; each SHA256 was
+  `e5ae2fcebf0bec092b59b92bb5ecba386af84617858b7367b60b4dca16b9ddc9`; byte equality was
+  `True`; `world_count=5`, candidate counts were `[3, 3, 3, 3, 3]`, and program rows matched
+  the five archived rows exactly.
+- Focused suite, initial exact command without slow exclusion: the Docker run exited `1` with
+  `1 failed` because the slow H5 benchmark attempted to import unavailable `pymc`. This result
+  was not used as a passing gate.
+- Focused required suite:
+  `docker run --rm -e PYTHONHASHSEED=0 -e PYTHONPATH=/repo -e OPENBLAS_NUM_THREADS=1 -e OMP_NUM_THREADS=1 -e MKL_NUM_THREADS=1 -v /Users/phani/Desktop/MMM:/repo -w /repo mmm-fixture-ready:local python -m pytest -m 'not slow' tests/research/test_h6_synthetic_lane.py tests/diagnostics/test_ridge_production_diagnostics.py tests/diagnostics/test_ridge_diagnostic_summary.py tests/test_synthetic_dgp_recovery.py tests/test_synthetic_dgp_certification.py tests/test_design_masks_cv.py`
+  Result: `42 passed, 1 deselected, 4 warnings in 2.41s`. Warnings were the two NumPy
+  `RuntimeWarning: invalid value encountered in divide` locations in the sparse-channel
+  diagnostic tests.
+- Handoff/taskctl tests:
+  `docker run --rm -e PYTHONHASHSEED=0 -e PYTHONPATH=/repo -v /Users/phani/Desktop/MMM:/repo -w /repo mmm-fixture-ready:local python -m pytest tests/test_repo_native_execution_handoff.py tests/test_repository_taskctl.py`
+  Result: `71 passed in 2.05s`.
+- JSON/schema/archive validation:
+  `python3 -m json.tool docs/05_validation/archives/MMM_RIDGE_GEO_TIME_NUISANCE_TRUTH_RECOVERY_CERTIFICATION_001.json >/dev/null`
+  and the execution-state JSON parse plus archive schema/status/row-count/equality assertions
+  exited `0`; schema `mmm_research_evidence_v1`, status `research_only`, and five generated
+  rows were verified.
+- Documentation validation: `python3 scripts/validate_docs.py` returned
+  `OK: 169 markdown files, links resolve.` It reported `19` informational orphan pages and no
+  broken links.
+- Lifecycle validation: `PYTHONPATH=. python3 -m mmm.execution.taskctl check` passed. The
+  repository `.venv/bin/python` was not usable because its interpreter symlink target is absent;
+  the equivalent repository invocation with host `python3` was used.
+- Docker gate: `make validate` exited `0`. Its guardrail smoke test completed with `13 passed`;
+  the full `pytest tests/ -q -m "not slow"` completed with `1,388 passed, 6 skipped, 0 failed`.
+  The six skips were optional `xarray`, `pymc`, and `arviz` imports. Warnings were the three
+  sparse-channel NumPy divide warnings, seventeen CLI data-loader date-format warnings, four
+  curve-bundle warnings, eight decision-artifact warnings, and one analysis-only train/decide
+  warning. Docker emitted the standard root pip warning. No gate failure occurred.
+- Exact-tree checks: `git diff --check` returned `0`; changed-path verification found only the
+  three execution files relative to the reviewed implementation lineage, with no source, test,
+  config, package, runtime, or analytical certification artifact changes. The three diagnostic
+  archive files temporarily rewritten by test side effects were restored before publication.
+- Worktree and remote checks: the final task-owned tree was frozen after the receipt commit;
+  permitted pre-existing `docs/tasks/` untracked paths remained uncommitted. The final local
+  feature head equals its remote feature head exactly. No merge or PR validation was run or
+  required.
 
-The bounded five-world A/B/C certification ran with the authorized 0:39 / 39:52 boundary.
-Independent nuisance truth is recorded for `true_alpha_g` and the H6 smooth seasonal baseline;
-within-geo serial values exclude cross-geo boundaries. The deterministic executable and archive
-rows match exactly across two runs. Focused H6/Ridge tests passed; handoff tests passed; JSON,
-documentation, taskctl, and diff checks passed; Docker `make validate` passed with only existing
-warnings. No production or decision authority changed.
+### Validation not run or not required
 
-Implementation evidence commit: `b032203185f9bc74b89e8ded7a496b565771b68e`. The frozen
-publication tree contains only the two certification artifacts and the three execution files.
+Host `python3 -m pytest` was not a valid project gate because host Python is `3.9` while the
+project requires Python `3.11` syntax; it failed collection with six `TypeError` errors and was
+superseded by the Docker Python 3.11 gates above. A separate full-suite run against the base
+Docker image without project installation was also not a gate and failed collection with missing
+project dependencies; `make validate` installed the project and passed. No real-data, pilot,
+production, recommendation, optimization, sibling-repository, merge, or PR validation was
+required or run.
+
+Research-only status remains unchanged. Analytical authority, sibling authority, production
+promotion, capability authorization, and runtime behavior remain unchanged.
