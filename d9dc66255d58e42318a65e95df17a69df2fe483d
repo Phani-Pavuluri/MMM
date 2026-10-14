@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "receipt_kind": "supervised_owner_standing_approval_exception",
+  "receipt_id": "b8f61f85-0da5-4edb-adcd-0e15e6ee2d3d",
+  "repository": "Phani-Pavuluri/MMM",
+  "task_id": "MMM_WORKER_REVIEW_ROLE_ADOPTION_RECOVERY_001",
+  "feature_branch": "docs/mmm-worker-review-role-adoption-recovery-001",
+  "authorization_sha": "d46b2fd9c9c471b8ba22e92840bed9f541699321",
+  "implementation_sha": "93340faa5df48594c8d754c95d94e7685c27ad21",
+  "reviewed_remote_head_sha": "d9dc66255d58e42318a65e95df17a69df2fe483d",
+  "reviewer_role": "independent_codex_coordinator",
+  "reviewer_session_id": "01a13bbb-b564-7960-96e8-dca067bfd32a",
+  "implementation_agent_session_id": "ses_f4771d8acffesi1EN188IoCcYz",
+  "reviewer_authored_implementation": false,
+  "decision": "approve_exact_reviewed_head",
+  "issued_at": "2026-10-14T22:07:14.960778+00:00",
+  "owner_authority": "Owner explicitly reaffirmed bypassing routine merge approvals on 2026-10-14 after approving the cross-repository role model and directing setup implementation. These MMM-only docs implement that approved role decision without new task, analytical or sibling authority.",
+  "policy_exception": "Supervised manual exact-head decision under latest owner standing instruction; no automatic delegated policy activation. Declared Tier 3 full gate preserved.",
+  "validation": {
+    "docker_make_validate": "exit 0 in independent isolated exact-head checkout; guardrails 13 passed; full suite 1388 passed, 6 skipped",
+    "taskctl": "passed",
+    "git_diff_ownership": "passed",
+    "evidence_receipt": "corrected full Git receipt/report identify actual commands, counts and dispositions",
+    "ruff": "57 pre-existing findings in unchanged source/tests/scripts; non-blocking in committed gate, disclosed rather than waived"
+  },
+  "authority_impact": "MMM implementation/reviewer guidance only; no analytical/sibling/capability/task or automatic merge authority.",
+  "limitations": [
+    "Manual supervised exception, not automatic merge verification.",
+    "Existing non-blocking lint debt remains; no out-of-scope repair."
+  ]
+}
