@@ -1,4 +1,10 @@
-# MMM Codex Execution Rules
+# MMM Execution Rules — Muse-Spark implementation / Codex independent review
+
+Role split: Muse-Spark owns implementation approach and execution within
+MMM-authorized tasks; Codex independently reviews exact completion heads,
+evidence, required files, and goal alignment. See
+`docs/execution/PARALLEL_WORKER_REVIEW_ROLES.md`. The reviewer must not have
+authored the implementation under review.
 
 Durable task instructions live in Git. Prompts cannot repair, expand, or
 reinterpret a missing or incomplete active task.
@@ -27,7 +33,8 @@ Git-durable `ready_for_review` or `blocked` outcome. Stop externally only when n
 
 Synchronized `main/docs/execution/EXECUTION_STATE.json` owns repository
 identity, task identity, authorization provenance, authorization head, and the
-declared feature branch. Codex resolves that branch from synchronized main,
+declared feature branch. The implementation worker resolves that branch from synchronized main,
+and the independent reviewer verifies the same resolution,
 fetches the exact remote branch, and verifies repository identity, task ID,
 declared branch name, and authorization-head ancestry. The verified remote feature branch state owns `authorized`, `in_progress`, `blocked`,
 `changes_requested`, and `ready_for_review`, plus blockers, corrections,
@@ -37,7 +44,8 @@ validation, and stop conditions. `LATEST_COMPLETION_REPORT.md` is evidence only;
 it cannot authorize execution, correction, merge, sibling, analytical,
 or capability work.
 
-Codex never chooses whichever file appears newer. Conflicting repository, task,
+The implementation worker never chooses whichever file appears newer, and the independent
+reviewer verifies that no newer-file substitution occurred. Conflicting repository, task,
 branch, ancestry, implementation, lifecycle, or authority evidence produces no
 implementation continuation and requires a Git-durable blocked state on the
 safe authorized branch with exact mismatch, attempted evidence, affected
