@@ -54,7 +54,9 @@ eligible work, validation debt, and authority impact.
 
 ## Review and closure
 
-Approval names the exact remote review SHA. Reviewed trees keep merge and PR
+Approval names the exact remote review SHA. The approval source is the owner,
+or the independent reviewer for policy-eligible heads under the adopted
+routine-merge policy. Reviewed trees keep merge and PR
 authority false. Exact-head validation repeats before and after `git merge
 --ff-only`; then push, verify main equality, clean task branches, and create one
 stable-file closure commit. No PR, squash, rebase, merge commit, force update,

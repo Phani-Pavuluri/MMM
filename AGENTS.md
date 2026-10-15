@@ -64,7 +64,9 @@ one-line command is optional shorthand only when the executor already follows
 these committed rules; it is not exclusive and carries no task meaning.
 Correction uses the same launcher and obtains rejected SHAs and defects from
 Git. Merge uses the same launcher and adds only `Approved exact remote head:
-<FULL_SHA>`.
+<FULL_SHA>`. For policy-eligible heads under the adopted routine-merge
+policy, the merge record is instead `Codex-reviewed exact head <FULL_SHA>
+under routine-merge policy MMM_ROUTINE_MERGE_POLICY_ADOPTION_001`.
 
 Canonical launcher:
 
@@ -93,7 +95,9 @@ analytical or capability authority.
 
 Correction uses the same launcher and reads rejected SHAs/fixes from the
 branch's Git-authored state. Merge adds only `Approved exact remote head:
-<FULL_SHA>`. Successful or blocked handoff requires only repository, feature
+<FULL_SHA>`, or for policy-eligible heads under the adopted routine-merge
+policy, `Codex-reviewed exact head <FULL_SHA> under routine-merge policy
+MMM_ROUTINE_MERGE_POLICY_ADOPTION_001`. Successful or blocked handoff requires only repository, feature
 branch, and exact remote head SHA; chat output is diagnostic context only.
 
 ## Execute the active task
@@ -137,7 +141,9 @@ authorize sibling work.
 
 ## Merge and closure
 
-External user approval binds the exact remote feature-branch SHA. Re-bootstrap,
+External user approval binds the exact remote feature-branch SHA, except for
+policy-eligible heads under the adopted routine-merge policy, which are bound
+instead by the independent Codex exact-head approval record. Re-bootstrap,
 verify unchanged authorization ancestry and exact head, rerun the exact-tree
 gate, use only `git merge --ff-only`, rerun the gate after fast-forward, push
 and verify main equality, and delete only the task branches. Never create a PR,

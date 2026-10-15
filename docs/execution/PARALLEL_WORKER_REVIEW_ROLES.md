@@ -62,7 +62,9 @@ agent claims and plans. Never promise background reports before verification.
 - No session binding/occupancy enforcement (a future implementation must reject
   duplicates and ambiguous restarts; deferred, not built here).
 - No delegated or automatic merge/task approval; external user exact-head
-  approval remains mandatory for every merge.
+  approval remains mandatory for every merge except policy-eligible heads
+  under the routine-merge policy (§8), which complete on the independent
+  reviewer approval record.
 - No plan approval/materialization, advisory integration, or shared monitoring.
 - No analytical, model, contract, sibling, or capability change of any kind.
 
@@ -81,3 +83,34 @@ agent claims and plans. Never promise background reports before verification.
 | Advisory discussion, no auto controls; corrections need budget/successor | §4 |
 | Plain owner reporting; no pre-verification promises | §5 |
 | Deferred items not activated | §6 |
+
+## 8. Routine-merge policy (owner-adopted)
+
+Owner decision, quoted verbatim: *"approved, also fix the process so we dont
+need these kind of approvals"*. This policy removes the repeated owner merge
+prompt for eligible routine heads only. It grants no task, scope, analytical,
+sibling, capability, or automation authority. Per-task exact-head-approval
+boilerplate is resolved per task against this policy, not deleted globally.
+
+Task authorization (owner, Git) and merge review (independent Codex
+exact-head review with evidence) remain mandatory for every head. Only merge
+execution for eligible heads proceeds on the reviewer approval record.
+
+A head is eligible only if all of the following hold; any ambiguity fails
+closed to an owner prompt:
+
+1. Tier 1 routine only: tests-only, docs-only, or exact-receipt/closure
+   commits; no production, analytical, contract-meaning, or package change.
+2. Within approved goals and the current roadmap phase; no scope, goal,
+   architecture, capability, authority, sibling, production/promotion, or
+   interface change; all analytical/sibling/capability flags false.
+3. Full required gate green on the exact tree, never waived.
+4. Task execution was owner-authorized in Git; the reviewer did not author
+   the implementation and records exact-head approval with this checklist in
+   `refs/notes/` and the completion report.
+
+Owner-retained decisions (§3) always require an owner prompt and are never
+eligible. This policy cannot be amended or extended except by a new
+owner-authorized task (no self-extension). The owner may revoke or narrow
+this policy at any time via a successor task; use after revocation is
+unauthorized.
