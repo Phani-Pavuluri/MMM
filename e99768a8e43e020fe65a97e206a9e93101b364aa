@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "receipt_kind": "owner_approved_publication_post_merge_audit",
+  "receipt_id": "ab2351ca-7167-43c8-88bf-f05d552fe328",
+  "repository": "Phani-Pavuluri/MMM",
+  "approved_remote_head": "e598a61e6b3daa1839e66bde84ac99c51a7a1344",
+  "published_closure": "e99768a8e43e020fe65a97e206a9e93101b364aa",
+  "owner_decision_verbatim": "yes, approve",
+  "approval_scope": "Publication of PROPOSED document only; no adoption or implementation.",
+  "approval_provenance": "Coordinating conversation exact-head question and user reply; local control OWNER_DECISIONS.md commit60c6b83a1e714868faef6c72d7b674372f237d25.",
+  "observed_lineage": {
+    "implementation": "e598a61e6b3daa1839e66bde84ac99c51a7a1344",
+    "single_metadata_closure": "e99768a8e43e020fe65a97e206a9e93101b364aa"
+  },
+  "actual_remote_branch_cleanup": "observed_deleted",
+  "actual_reviewer_clone_branch_cleanup": "observed_deleted_after_detaching_frozen_review_worktree",
+  "validation": {
+    "native_state_view_check": "pass",
+    "handoff_tests": "pass",
+    "documentation_links": "pass",
+    "json": "pass",
+    "diff": "pass",
+    "full_docker_make_validate": "pass",
+    "logs": [
+      "/Users/phani/.codex/quota-resume/mmm-published-closure-verification.log",
+      "/Users/phani/.codex/quota-resume/mmm-published-closure-docker.log"
+    ]
+  },
+  "authority_impact": {
+    "contract_adoption": false,
+    "implementation": false,
+    "analytical": false,
+    "sibling": false,
+    "production": false
+  },
+  "limitations": [
+    "The background operator completed the merge before the foreground attempt acquired its lock; the foreground stopped without repeating it.",
+    "The pushed closure contains native lifecycle metadata but omitted the requested human-authored approval/validation narrative. This external audit supplies actual provenance and retrospective verification without rewriting history or claiming the original closure included it.",
+    "Do not treat a producer validation claim as proof of a separately rerun pre-merge operator gate; this audit certifies only commands actually run here on the published closure."
+  ],
+  "observed_at": "2026-10-15T23:34:09.677638+00:00"
+}
