@@ -58,7 +58,7 @@
   },
   "review_decision": "proposed",
   "review_decision_source": "docs/execution/EXECUTION_STATE.json",
-  "task_authoring_note": "Owner direction: independent MIP, GeoX and MMM work progresses in parallel; the tests-only calibration-compatibility coverage proposal fits the existing reliability goal and preserves current semantics. This authors a proposed tests-only successor with no product/evaluator change; execution, correction, merge and PR remain unauthorized pending a separate authorization action.",
+  "task_authoring_note": "Owner repeatedly directed implementation and independent parallel work across MIP, GeoX and MMM, approved bounded follow-up work within existing goals, directed Git owner-report publication, and requested continuation. This action records that existing scope authority in Git; it does not approve merges or add goals, capabilities, architecture, analytical meaning or sibling authority. Reviewed bounded task: MMM_CALIBRATION_COMPATIBILITY_TEST_COMPLETENESS_001. Scope and validation remain as proposed; canonical execution authority is finalized separately.",
   "rejected_implementation_commit_sha": null,
   "correction_cycles_completed": 0,
   "correction_cycles_remaining": 1,
