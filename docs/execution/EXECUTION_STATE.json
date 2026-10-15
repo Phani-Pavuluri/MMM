@@ -1,15 +1,15 @@
 {
   "schema_version": "mmm_repo_execution_state_v3",
   "repository": "Phani-Pavuluri/MMM",
-  "task_id": "MMM_LIVE_STATUS_REFRESH_001",
-  "status": "merged",
+  "task_id": "MMM_MIP_HANDOFF_V1_RESPONSE_SURFACE_EVIDENCE_CONTRACT_001",
+  "status": "proposed",
   "execution_mode": "branch_and_fast_forward",
   "base_branch": "main",
-  "base_sha": "82cd37948ad3d2bce0910f14e8a167aa001150a3",
-  "task_authoring_head_sha": "82cd37948ad3d2bce0910f14e8a167aa001150a3",
-  "authorization_head_sha": "82cd37948ad3d2bce0910f14e8a167aa001150a3",
-  "feature_branch": "docs/mmm-live-status-refresh-001",
-  "feature_branch_created": true,
+  "base_sha": "8928fb8e544df6109d84a60399a429161dfecec3",
+  "task_authoring_head_sha": "8928fb8e544df6109d84a60399a429161dfecec3",
+  "authorization_head_sha": "8928fb8e544df6109d84a60399a429161dfecec3",
+  "feature_branch": "docs/mmm-response-surface-evidence-contract-001",
+  "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
   "completion_report_path": "docs/execution/LATEST_COMPLETION_REPORT.md",
   "canonical_mip_standard_repository": null,
@@ -19,17 +19,17 @@
   "correction_execution_authorized": false,
   "merge_authorized": false,
   "pr_creation_authorized": false,
-  "reviewed_head_sha": "22a6fe77c6103d260e33202341f19c02007224aa",
+  "reviewed_head_sha": null,
   "rejected_review_head_sha": null,
-  "implementation_commit_sha": "8675054a3fbdc95bde3838d7a34b08e3d29590b6",
+  "implementation_commit_sha": null,
   "approval_commit_sha": null,
   "capability_authorizations_changed": false,
   "last_updated": "2026-10-15",
   "blockers": [],
   "max_correction_cycles": 1,
-  "risk_tier": "tier_1_operational_documentation",
+  "risk_tier": "tier_3_proposed_analytical_contract_documentation_only",
   "full_suite_validation_required": true,
-  "validation_scope": "taskctl_json_docs_links_git_diff_owned_paths_exact_tree_receipt",
+  "validation_scope": "proposed_document_source_semantics_links_taskctl_json_handoff_docker_make_validate_owned_paths_exact_tree_receipt",
   "unresolved_execution_blocking_design_questions": [],
   "affected_repositories": [
     "Phani-Pavuluri/MMM"
@@ -37,14 +37,14 @@
   "modified_repositories": [
     "Phani-Pavuluri/MMM"
   ],
-  "coordination_workstream_id": "WS-MMM-LIVE-STATUS-REFRESH-001",
+  "coordination_workstream_id": "WS-MMM-R12-PROPOSED-CONTRACT-PUBLICATION-001",
   "coordination_capability_owner": "mmm_repository_governance",
   "prior_task": {
-    "task_id": "MMM_ROUTINE_MERGE_POLICY_ADOPTION_001",
+    "task_id": "MMM_LIVE_STATUS_REFRESH_001",
     "status": "merged",
-    "merged_remote_head_sha": "190551050c728866420ec380d5f410fb46f43b0a",
-    "closure_commit_sha": "82cd37948ad3d2bce0910f14e8a167aa001150a3",
-    "resolution_condition": "This successor is independently proposed; predecessor completion grants no execution authority."
+    "merged_remote_head_sha": "22a6fe77c6103d260e33202341f19c02007224aa",
+    "closure_commit_sha": "8928fb8e544df6109d84a60399a429161dfecec3",
+    "resolution_condition": "Reporting task closed; this separate owner-approved definition publication grants no analytical implementation or contract adoption authority."
   },
   "mmm_analytical_authority_changed": false,
   "sibling_authority_changed": false,
@@ -56,13 +56,13 @@
     "external_merge_was_authorized": false,
     "conforming_exact_head_approval_record_exists": false
   },
-  "review_decision": "merged",
+  "review_decision": "proposed",
   "review_decision_source": "docs/execution/EXECUTION_STATE.json",
-  "task_authoring_note": "Owner-authorized ongoing Git-backed plain-language reporting scope: correct live MMM status descriptions against merged evidence without changing goals, analytical meaning, contracts, or sibling authority. This proposal grants no execution, correction, merge, or PR authority.",
+  "task_authoring_note": "Owner explicitly directed: Prepare the contract definition, and do you have next steps for geox and mip? Owner decision recorded October 15 authorizes preparing and publishing a separate PROPOSED diagnostic response-surface evidence document only. This task materializes that existing direction, with no accepted public interface, analytical implementation, changed model math, schema/parser/fixture work, production or sibling authority. Proposal preparation approval must not be asked again; contract adoption and implementation remain separate.",
   "rejected_implementation_commit_sha": null,
   "correction_cycles_completed": 0,
   "correction_cycles_remaining": 1,
   "live_resolution_condition": null,
-  "local_feature_branch_cleanup": "observed_deleted",
-  "remote_feature_branch_cleanup": "observed_deleted"
+  "local_feature_branch_cleanup": "not_started",
+  "remote_feature_branch_cleanup": "not_started"
 }
