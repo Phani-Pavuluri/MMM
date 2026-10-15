@@ -241,6 +241,70 @@ def test_public_contract_is_exported_and_evaluator_has_no_model_side_effect_path
     assert contract_package.parse_mmm_calibration_compatibility_result is parse_mmm_calibration_compatibility_result
 
 
+def test_research_only_method_status_is_blocked_by_name() -> None:
+    result = evaluate_mmm_calibration_compatibility(
+        _request(method_status=MMMCalibrationMethodStatus.RESEARCH_ONLY)
+    )
+    assert result.compatibility_state == MMMCalibrationCompatibilityState.BLOCKED
+    assert MMMCalibrationCompatibilityReasonCode.METHOD_STATUS_NOT_GOVERNED in result.reason_codes
+    assert result.blockers and result.warnings == []
+
+
+def test_partial_window_overlap_warns_without_overriding_mismatch_precedence() -> None:
+    warning_only = evaluate_mmm_calibration_compatibility(
+        _request(
+            model={
+                "model_window_start": NOW - timedelta(days=14),
+                "model_window_end": NOW + timedelta(days=14),
+            }
+        )
+    )
+    assert warning_only.compatibility_state == MMMCalibrationCompatibilityState.COMPATIBLE_WITH_WARNING
+    assert warning_only.reason_codes == [MMMCalibrationCompatibilityReasonCode.TIME_WINDOW_PARTIAL_OVERLAP]
+
+    with_mismatch = evaluate_mmm_calibration_compatibility(
+        _request(
+            kpi_id="conversions",
+            model={
+                "model_window_start": NOW - timedelta(days=14),
+                "model_window_end": NOW + timedelta(days=14),
+            },
+        )
+    )
+    assert with_mismatch.compatibility_state == MMMCalibrationCompatibilityState.INCOMPATIBLE
+    assert MMMCalibrationCompatibilityReasonCode.KPI_MISMATCH in with_mismatch.reason_codes
+    assert MMMCalibrationCompatibilityReasonCode.TIME_WINDOW_PARTIAL_OVERLAP in [
+        issue.reason_code for issue in with_mismatch.warnings
+    ]
+
+
+def test_naive_datetimes_and_unknown_source_identities_fail_closed() -> None:
+    naive_start = NOW.replace(tzinfo=None) - timedelta(days=28)
+    naive_end = NOW.replace(tzinfo=None)
+    with pytest.raises(ValidationError):
+        _request(evidence_window_start=naive_start, evidence_window_end=naive_end)
+    with pytest.raises(ValidationError, match="safe known identity"):
+        _request(source_readout_id="unknown")
+    with pytest.raises(ValidationError, match="safe known identity"):
+        _request(channel_id="n/a")
+
+
+def test_tampered_rule_order_and_duplicate_reason_codes_are_rejected() -> None:
+    ordered = evaluate_mmm_calibration_compatibility(_request()).to_json_dict()
+    tampered_order = {
+        **ordered,
+        "evaluated_rule_order": list(reversed(ordered["evaluated_rule_order"])),
+    }
+    with pytest.raises(ValidationError):
+        parse_mmm_calibration_compatibility_result(tampered_order)
+
+    mismatched = evaluate_mmm_calibration_compatibility(_request(kpi_id="conversions")).to_json_dict()
+    assert mismatched["reason_codes"] == [MMMCalibrationCompatibilityReasonCode.KPI_MISMATCH.value]
+    duplicated = {**mismatched, "reason_codes": [mismatched["reason_codes"][0]] * 2}
+    with pytest.raises(ValidationError):
+        parse_mmm_calibration_compatibility_result(duplicated)
+
+
 @pytest.mark.parametrize(
     "name",
     [
