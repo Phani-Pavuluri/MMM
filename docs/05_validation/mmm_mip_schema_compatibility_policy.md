@@ -72,7 +72,7 @@ Failure packets do not authorize recommendations, optimization, candidate-plan s
 
 ## Status and examples
 
-R15 is implemented as documented, deterministic compatibility policy evidence. It does **not** freeze the MMM–MIP interface: current versions remain subject to governed additive evolution, and breaking changes require a new version and evidence. R11 and R12 remain partial; R16 MIP consumer readiness remains blocked. Interface freeze requires a separate authorization artifact.
+R15 is implemented as documented, deterministic compatibility policy evidence. It does **not** freeze the MMM–MIP interface: current versions remain subject to governed additive evolution, and breaking changes require a new version and evidence. R11 is implemented; R12 remains partial; R16 MIP consumer readiness remains blocked. Interface freeze requires a separate authorization artifact.
 
 Examples:
 
@@ -96,5 +96,5 @@ behavior, authorize an interface freeze, or unblock R16 MIP consumer readiness.
 `supported_range_v1` fixture collection; it leaves `golden_v1` semantics
 unchanged. The contract is additive to the current manifest/export composition
 through an optional stable reference, but future serialized changes need a new
-compatibility review. R11/R12 remain partial, R16 remains blocked, and interface
+compatibility review. R11 is implemented, R12 remains partial, R16 remains blocked, and interface
 freeze remains unauthorized.

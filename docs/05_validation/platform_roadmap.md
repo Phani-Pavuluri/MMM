@@ -172,11 +172,12 @@ Supported-range evidence is now implemented as the MMM-owned, versioned
 `MMMSupportedRangeEvidence` contract with typed bounds, scope, availability,
 extrapolation, restrictions, and additive manifest/export references. It records
 only existing observed/training-domain and explicit restriction evidence; it
-does not derive new numerical support. R11 and R12 remain partial, R16 remains
-blocked, interface freeze remains unauthorized, and all downstream authorization
-flags remain false. Based on post-range evidence, the next narrow producer task
-is `MMM_MIP_HANDOFF_V1_PUBLIC_SIMULATION_EXPORT_001`; it is not authorized by
-this status update.
+does not derive new numerical support. R11 is now implemented as the
+MMM-owned, versioned `MMMPublicSimulationExport` contract with strict parser
+and `simulation_v1` golden fixtures; R12 remains partial, R16 remains
+blocked, interface freeze remains unauthorized, and all downstream
+authorization flags remain false. The remaining narrow producer gap is R12
+response-surface evidence, which is not authorized by this status update.
 
 ---
 

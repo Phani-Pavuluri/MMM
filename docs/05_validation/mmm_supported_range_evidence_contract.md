@@ -69,7 +69,8 @@ observed-only unavailable evidence, boundary restriction, blocked unsupported
 extrapolation, pre-model insufficiency, Bayesian research-only evidence, and
 non-interchangeable multi-channel evidence.
 
-R11 public simulation export and R12 response-surface evidence remain partial.
+R11 public simulation export is implemented (`MMMPublicSimulationExport` with
+`simulation_v1` golden fixtures); R12 response-surface evidence remains partial.
 R16 MIP consumer readiness remains blocked and the producer interface remains
 unauthorized for freeze. In-range status does not authorize recommendations;
 supported-range evidence is not a response surface, simulation, or TrustReport.
