@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "receipt_kind": "owner_directed_process_repair_acceptance",
+  "receipt_id": "209a5a7b-52ae-4030-8bd9-e4e96f782a01",
+  "repository": "Phani-Pavuluri/MMM",
+  "task_id": "MMM_ROUTINE_MERGE_POLICY_ADOPTION_001",
+  "feature_branch": "docs/mmm-routine-merge-policy-adoption-001",
+  "reviewed_remote_head_sha": "190551050c728866420ec380d5f410fb46f43b0a",
+  "reviewed_tree_sha": "480e71e7a3b7aaa1c21e48dabf43ff936b4929a2",
+  "implementation_sha": "198db0a946eae0e57009891810bfeb622fbd7494",
+  "main_baseline_sha": "403f0b47fb297ae66ffb8c9f32ba8b64d1f87dc9",
+  "authorization_head_sha": "3fd19e37b59234fdbc7f0a1800035b4aa115527d",
+  "owner_decision_verbatim": "approved, also fix the process so we dont need these kind of approvals",
+  "owner_decision_ref": "https://github.com/Phani-Pavuluri/MMM/blob/3fd19e37b59234fdbc7f0a1800035b4aa115527d/docs/execution/ACTIVE_TASK.md",
+  "approval_source": "external_owner_directed_bounded_process_repair; not delegation by the policy being introduced",
+  "decision": "implementation_conforms_to_owner_authorized_process_repair",
+  "reviewer": {
+    "role": "independent_codex_reviewer",
+    "thread_id": "01a13da7-26df-71f0-ab2c-54673880841b",
+    "implementation_session_id": "ses_ec21c787cffeyPL9QTsKYx74cZ",
+    "reviewer_authored_implementation": false,
+    "evidence": "Actual coordinator source review plus supervised operator exact-tree gate; private Codex rollout and policy-MMM-preflight logs"
+  },
+  "validation": {
+    "handoff_passed": 26,
+    "native_docker_passed": 1392,
+    "native_docker_skipped": 6,
+    "native_gate_exit": 0,
+    "docs_links": "pass",
+    "json_taskctl_diff_scope_ancestry": "pass",
+    "preflight_log_sha256": "0be20297fa9caddf68c752aaa0bd4b2bc896a28c106ba01aa3b0848519fa04a1",
+    "docker_log_sha256": "7c5a97973c170ba694a83de6eb78b4bfaa21f74df5f2aa2defdd8f658514e296",
+    "ruff": "existing global lint debt disclosed; no code touched; native script result retained"
+  },
+  "issued_at": "2026-10-15T08:51:33.845676+00:00",
+  "limitations": [
+    "This exact adoption executes the owner decision already recorded before implementation; it is not a claim the owner separately supplied this new head SHA.",
+    "No future Tier 3 or policy amendment is approved; no task or analytical/sibling capability authority.",
+    "Procedural independent review, not cryptographic isolation between same-user processes."
+  ]
+}
