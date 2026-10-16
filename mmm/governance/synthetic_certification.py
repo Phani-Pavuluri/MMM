@@ -84,24 +84,25 @@ def _check_semi_log_delta_mu_exact() -> None:
         raise AssertionError(f"semi_log delta_mu inconsistent: got {res.delta_mu}, expected {expected}")
 
 
-def _check_geometric_adstock_carryover() -> None:
-    decay = 0.5
+def _check_geometric_adstock_carryover(*, decay: float = 0.5) -> dict[str, Any]:
     ad = GeometricAdstock(decay)
     out = ad.transform(np.array([100.0, 0.0, 0.0, 0.0]))
     if abs(float(out[1]) - decay * 100.0) > 1e-12:
         raise AssertionError(f"adstock week-1 carryover expected {decay * 100}, got {out[1]}")
+    return {"decay": decay, "week1_carryover": float(out[1]), "expected": decay * 100.0, "tolerance": 1e-12}
 
 
-def _check_hill_saturation_analytic() -> None:
-    half, slope, x = 10.0, 2.0, 5.0
+def _check_hill_saturation_analytic(*, half_max: float = 10.0, slope: float = 2.0) -> dict[str, Any]:
+    half, slope, x = half_max, slope, 5.0
     sat = HillSaturation(half_max=half, slope=slope)
     expected = x**slope / (half**slope + x**slope + 1e-12)
     got = float(sat.transform(np.array([x]))[0])
     if abs(got - expected) > 1e-12:
         raise AssertionError(f"hill transform mismatch: {got} vs {expected}")
+    return {"half_max": half, "slope": slope, "probe": x, "measured": got, "expected": expected, "tolerance": 1e-12}
 
 
-def _check_geometric_adstock_design_matrix() -> None:
+def _check_geometric_adstock_design_matrix(*, decay: float = 0.5) -> dict[str, Any]:
     spend = [100.0, 0, 0, 0, 10.0]
     rows = [{"geo_id": "G0", "week_start_date": i, "revenue": 10.0, "tv": s} for i, s in enumerate(spend)]
     panel = pd.DataFrame(rows)
@@ -115,13 +116,14 @@ def _check_geometric_adstock_design_matrix() -> None:
             "channel_columns": ["tv"],
         },
     )
-    b0 = build_design_matrix(panel, schema, cfg, decay=0.5, hill_half=1e6, hill_slope=1.0)
-    b1 = build_design_matrix(panel.assign(tv=0.0), schema, cfg, decay=0.5, hill_half=1e6, hill_slope=1.0)
+    b0 = build_design_matrix(panel, schema, cfg, decay=decay, hill_half=1e6, hill_slope=1.0)
+    b1 = build_design_matrix(panel.assign(tv=0.0), schema, cfg, decay=decay, hill_half=1e6, hill_slope=1.0)
     if not float(b0.X[1, 0]) > float(b1.X[1, 0]):
         raise AssertionError("design matrix adstock carryover not preserved")
+    return {"decay": decay, "impulse_response": float(b0.X[1, 0]), "zeroed_response": float(b1.X[1, 0])}
 
 
-def _check_hill_monotone_design_matrix() -> None:
+def _check_hill_monotone_design_matrix(*, hill_half: float = 10.0, hill_slope: float = 2.0) -> dict[str, Any]:
     spends = np.linspace(1.0, 50.0, 10)
     xs: list[float] = []
     for s in spends:
@@ -136,10 +138,16 @@ def _check_hill_monotone_design_matrix() -> None:
                 "channel_columns": ["tv"],
             },
         )
-        b = build_design_matrix(panel, schema, cfg, decay=0.01, hill_half=10.0, hill_slope=2.0)
+        b = build_design_matrix(panel, schema, cfg, decay=0.01, hill_half=hill_half, hill_slope=hill_slope)
         xs.append(float(b.X[0, 0]))
     if not np.all(np.diff(xs) >= -1e-9):
         raise AssertionError("hill saturation not monotone in design matrix path")
+    return {
+        "hill_half": hill_half,
+        "hill_slope": hill_slope,
+        "min_diff": float(np.min(np.diff(xs))),
+        "tolerance": -1e-9,
+    }
 
 
 def _check_two_channel_optimizer_direction() -> None:
