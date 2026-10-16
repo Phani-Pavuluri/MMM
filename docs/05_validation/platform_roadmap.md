@@ -290,6 +290,7 @@ All items below are **Track 4 only** until Phase **5C–5E** complete. They must
 | **Robust optimization** | Research extension only |
 | **Nevergrad / additional search optimizers** | After VAL-005 evidence; not prod |
 | **Additional transforms** (Weibull, logistic, log adstock in prod) | Canonical stack first |
+| **Evidence-based transform/model selection** | Deferred planning only — see below; no prod change |
 | **Additional optimizers** (beyond simulation path) | Research Sandbox |
 | **Online adaptation / adaptive calibration** | Not v1 scope |
 | **Auto-retrain** | Operations research — not autonomous prod |
@@ -298,6 +299,14 @@ All items below are **Track 4 only** until Phase **5C–5E** complete. They must
 | Autonomous orchestration | Track 5 |
 
 **Research docs:** [bayesian.md](../02_concepts/bayesian.md), [hierarchical_borrowing.md](../02_concepts/hierarchical_borrowing.md), [robust_optimization_research.md](../02_concepts/robust_optimization_research.md), [ridge_uncertainty_research.md](../04_governance/ridge_uncertainty_research.md).
+
+### Deferred planning item — evidence-based transform/model selection
+
+**Status:** deferred planning record only — **not** an adopted direction and **not** production behavior. Audit and phased plan: [transform_selection_audit.md](transform_selection_audit.md).
+
+**Gap:** canonical production fits shared geometric adstock + Hill saturation; per-channel adstock/saturation families (including delayed-peak kernels), transform order/prior discipline, and evidence-based family selection are unevaluated. Geometric/Hill is not replaced; no per-channel families, delayed/negative-binomial support, or new production behavior exists. Current fixes and handoff work keep priority; a long modeling detour stays postponed.
+
+**Revisit trigger:** a recovery world demonstrating shared-geometric failure for a channel class, or an explicit owner goal requesting per-channel lag (Phase 0 version-pinned verification first). No production model change until Track-2 reliability worlds and certifications pass for any selected family.
 
 Historical synthetic “non-goals” remain in [synthetic_validation_roadmap.md §12–13](synthetic_validation_roadmap.md#12-deferred-capability-expansion-after-reliability-program).
 
