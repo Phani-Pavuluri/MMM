@@ -34,14 +34,9 @@
 
 ## Current outcome
 
-Four existing controlled transform predicates are now evaluated against
-recorded world parameters with per-world diagnostic rows, implementation
-`d412869`, full gate green on the exact tree. Delta-mu construction,
-optimizer/policy generalizations, R12, transform expansion, and
-production/sibling authority remain deferred and unchanged. Pending:
-independent exact-head review and merge approval.
+The initial publication was independently reviewed and correction is now authorized for the contract findings recorded below. Prior implementation/gate claims are superseded initial-publication evidence, not a claim of corrected acceptance or approval. Muse must implement and revalidate the bounded correction; no merge or policy/interface adoption.
 
-## MMM_WORLD_TRANSFORM_CHECK_EVALUATION_001 — implementation evidence
+## Historical initial-publication evidence — superseded by current correction
 
 - Implementation lineage: `d412869d207feddcceeff66c01ace96b0595e914` on
   `feat/mmm-world-transform-check-evaluation-001`, branched from current
@@ -71,3 +66,14 @@ independent exact-head review and merge approval.
   no sibling reads/writes.
 - Unresolved execution-blocking design questions: none.
 - Correction/merge/PR authority: false. `pr_creation_authorized: false`.
+
+
+## Independent exact-head source review — bounded existing-contract correction
+
+Reviewed head3d0e03ba1a30d32010542286a66ee29b3bdaffe7, Git tree369773583cfd5f60698afc11a9adfd7b31eac210, implementationd412869d207feddcceeff66c01ace96b0595e914. MMM-WORLD-TRANSFORM-CHECK-CONTRACT-001 collects five actual current-contract findings, sustained by Muse msg_14630e111001Ky4cMxUntvuqNI. Row actual currently dict and tolerance string violate the authorized scalar/explanatory-string and finite-number/null fields. Preserve complete diagnostic details in permitted evidence fields while keeping exact row/channel field meanings. One malformed/nonfinite channel currently discards all channels; preserve each identifiable channel outcome and all simultaneous errors, with affected row failing and no silent defaults/skips. Oversized integer10**400 currently raises OverflowError before failure-row handling; invalid/malformed/nonfinite/domain-invalid numeric truth must produce explicit diagnostic failure outcomes without escaping into pre-existing report callers. Actual independent probes: milestones/MMM-transform-check-independent-contract-probes.log, command/head/tree/exit captured.
+
+All four shared zero-argument predicates now return dict instead of originalNone. Preserve original zero-argument callable behavior/outcome along with unchanged numerical/error meanings; default-preserving diagnostic measurement design remains Muse-owned. Declaring the changed interface adopted is not a remedy within this task; no new interface or authority is adopted by review. Actual unchanged consumer suite output alone does not prove unchanged direct callable behavior.
+
+The named acceptance requires real comparison of existing certification report fields and actual production_readiness output to merged baseline69fde801 on the same fixtures. Current test only calls _resolve_certification_level on fabricated checks and cannot prove that requirement. Supply meaningful real baseline/candidate evidence for all existing fields and actual readiness values; static keysets/counts alone are insufficient. Source-only baseline subprocess/operator exports are permitted factual evidence, without modifying read-only baseline or existing fixtures/tests. Existing report status/certification/readiness/gate semantics remain unchanged; diagnostics remain additive and do not certify anything.
+
+Boundary discussion msg_14631b290001bTVsAiYJ1fEZWK clarifies existing requirements, no new task meaning, row schema, capability, policy, scientific threshold or implementation prescription. Owned four implementation/test paths and stable3 stay unchanged. Retain excluded three predicate bytes, registry membership, all legacy controlled comparisons/default values/error behavior, fixtures, deselections, dependencies and historical metadata. Human ACTIVE_TASK wording immutable. One existing correction cycle only; explicitly complete it natively after all declared exact-tree gates, accurate Current outcome/evidence and durable validation receipt. Full Docker and all named focused/native/docs/JSON/diff/ownership/ancestry/protected-authority gates apply to corrected frozen tree; no paid full rerun was spent on already-known invalid output schema. No waived validation, merge/PR, owner decision or successor authority follows.
