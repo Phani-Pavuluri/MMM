@@ -7,7 +7,7 @@
   "base_branch": "main",
   "base_sha": "bc7cb8892e4832974912cb2582abadee80ab833a",
   "task_authoring_head_sha": "08a96269ee7f6e9f25902a3254b7c6896e853013",
-  "authorization_head_sha": "08a96269ee7f6e9f25902a3254b7c6896e853013",
+  "authorization_head_sha": "c1a25c957ccfef83f8d3991c2d6ae341d9b1fa63",
   "feature_branch": "chore/mmm-existing-lint-debt-cleanup-001",
   "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
