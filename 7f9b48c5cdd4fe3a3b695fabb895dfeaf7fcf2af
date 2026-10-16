@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "receipt_kind": "external_user_exact_head_approval",
+  "receipt_id": "74eb125f-5e6b-4fc8-a7e7-8f9115a4632b",
+  "repository": "Phani-Pavuluri/MMM",
+  "task_id": "MMM_VALIDATION_RUNNER_FAILURE_PROPAGATION_001",
+  "feature_branch": "fix/mmm-validation-runner-failure-propagation-001",
+  "reviewed_remote_head_sha": "7f9b48c5cdd4fe3a3b695fabb895dfeaf7fcf2af",
+  "reviewed_tree_sha": "f2daba45a1a2ab0b17e8b4319f04c27e46755818",
+  "implementation_sha": "01294f028e89f3a0904e56116906500d0aa9e8eb",
+  "main_baseline_sha": "4966d4718f811a1791ae993734adb43bcf7bd8df",
+  "authorization_head_sha": "cd4b1f0c9d55d1d8262b08197da620e90fcbe5c2",
+  "owner_decision_verbatim": "approve and continue your work across all arms",
+  "owner_decision_context": "Direct response to the pending exact-head MMM question and explanation naming 7f9b48c5cdd4fe3a3b695fabb895dfeaf7fcf2af. Durable control OWNER_DECISIONS.md records approval; no routine policy expansion.",
+  "approval_scope": "Publish existing bounded reviewed runner reliability outcome only; no policy/model-family/schema/certification/new capability authority.",
+  "independent_review": "Foreground source, lineage, owned scope and declared gates verified; implementation is Muse-owned. Reported Current outcome finding resolved; exact frozen tree verified.",
+  "validation": {
+    "preflight": "/Users/phani/.codex/quota-resume/mmm-validation-runner-owner-approved-20261016-preflight.log"
+  },
+  "limitations": [
+    "No new analytical/model-family/R12/certification/production authority; inherited lint cleanup is already delivered and full current runner must pass."
+  ],
+  "issued_at": "2026-10-16T18:36:46.830179+00:00"
+}
