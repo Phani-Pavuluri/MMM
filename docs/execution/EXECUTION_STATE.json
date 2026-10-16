@@ -7,7 +7,7 @@
   "base_branch": "main",
   "base_sha": "d4f8deb94ceff69fdf606567513bffac15f66170",
   "task_authoring_head_sha": "c4ed15f357e2ee1abec3a5d3b7f928782b84c751",
-  "authorization_head_sha": "c4ed15f357e2ee1abec3a5d3b7f928782b84c751",
+  "authorization_head_sha": "b172124e3b66ac6b975df9613f62714b87529fbe",
   "feature_branch": "feat/mmm-world-transform-check-evaluation-001",
   "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
