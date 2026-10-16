@@ -8,8 +8,13 @@ from pathlib import Path
 
 from mmm.governance.synthetic_certification import (
     EXACT_CHECK_NAMES,
+    _check_geometric_adstock_carryover,
+    _check_geometric_adstock_design_matrix,
+    _check_hill_monotone_design_matrix,
+    _check_hill_saturation_analytic,
     _resolve_certification_level,
     run_exact_check,
+    run_synthetic_certification_suite,
 )
 from mmm.validation.synthetic.world_exact_check_evaluation import (
     WORLD_CHECK_ORDER,
@@ -37,6 +42,18 @@ def _truth(world: str) -> dict:
     return json.loads((WORLDS_ROOT / world / "world_truth.json").read_text(encoding="utf-8"))
 
 
+def _assert_schema(row: dict) -> None:
+    assert isinstance(row["check_id"], str) and isinstance(row["world_id"], str)
+    assert row["status"] in ("pass", "fail")
+    assert row["skip_reason"] is None
+    for key in ("expected", "actual"):
+        assert isinstance(row[key], (int, float, str)) and not isinstance(row[key], bool)
+    assert row["tolerance"] is None or isinstance(row["tolerance"], (int, float))
+    assert isinstance(row["message"], str) and isinstance(row["evidence_refs"], dict)
+    for entry in row["channels"]:
+        assert isinstance(entry["channel"], str) and entry["status"] in ("pass", "fail")
+
+
 def test_covered_checks_use_recorded_world_values_deterministically() -> None:
     assert set(WORLD_CHECK_ORDER) == {
         "geometric_adstock_carryover",
@@ -52,12 +69,14 @@ def test_covered_checks_use_recorded_world_values_deterministically() -> None:
         for row in first:
             assert row["world_id"] == world
             assert row["status"] == "pass"
-            assert row["skip_reason"] is None
+            _assert_schema(row)
             assert row["channels"]
     rows = {row["check_id"]: row for row in evaluate_world_exact_checks(
         "WORLD-008-exact-recovery", _truth("WORLD-008-exact-recovery"))}
-    assert rows["geometric_adstock_carryover"]["evidence_refs"]["world_values"]["display"][
-        "adstock_decay_by_channel"] == 0.55
+    assert rows["geometric_adstock_carryover"]["evidence_refs"]["world_values"][
+        "adstock_decay_by_channel"]["display"] == 0.55
+    assert rows["geometric_adstock_carryover"]["actual"] == 0.55 * 100.0
+    assert rows["geometric_adstock_carryover"]["tolerance"] == 1e-12
 
 
 def test_malformed_truth_fails_closed_without_silent_skips() -> None:
@@ -65,12 +84,19 @@ def test_malformed_truth_fails_closed_without_silent_skips() -> None:
     for bad in [None, [], {}, {"transform_truth": None}, {"transform_truth": {}}]:
         for row in evaluate_world_exact_checks("WORLD-001-baseline", bad):
             assert row["status"] == "fail"
-            assert row["skip_reason"] is None
+            _assert_schema(row)
     broken = json.loads(json.dumps(truth))
     broken["transform_truth"]["adstock_decay_by_channel"] = {"search": float("inf")}
     for row in evaluate_world_exact_checks("WORLD-001-baseline", broken):
         if row["check_id"] in ("geometric_adstock_carryover", "geometric_adstock_design_matrix"):
             assert row["status"] == "fail"
+    oversized = json.loads(json.dumps(truth))
+    oversized["transform_truth"]["adstock_decay_by_channel"] = {"search": 10**400, "social": 0.5}
+    for row in evaluate_world_exact_checks("WORLD-001-baseline", oversized):
+        if row["check_id"] in ("geometric_adstock_carryover", "geometric_adstock_design_matrix"):
+            assert row["status"] == "fail"
+            assert "OverflowError" in row["channels"][0]["actual"] or "non-finite" in row["channels"][0]["actual"]
+            assert [c["channel"] for c in row["channels"]] == ["search", "social"]
     mismatch = json.loads(json.dumps(truth))
     mismatch["transform_truth"]["hill_half_max_by_channel"] = {"other": 10.0}
     for row in evaluate_world_exact_checks("WORLD-001-baseline", mismatch):
@@ -89,6 +115,24 @@ def test_one_bad_channel_fails_row_with_every_channel_visible() -> None:
     assert [c["channel"] for c in row["channels"]] == ["search", "social"]
     assert [c["status"] for c in row["channels"]] == ["pass", "fail"]
     assert "social" in row["message"]
+    assert isinstance(row["actual"], str)
+
+
+def test_zero_arg_predicates_return_none_with_shared_measurements() -> None:
+    assert _check_geometric_adstock_carryover() is None
+    assert _check_hill_saturation_analytic() is None
+    assert _check_geometric_adstock_design_matrix() is None
+    assert _check_hill_monotone_design_matrix() is None
+    from mmm.validation.synthetic.world_exact_check_evaluation import (
+        _measure_carryover,
+        _measure_design_carryover,
+        _measure_hill_analytic,
+        _measure_hill_monotone,
+    )
+    assert _measure_carryover(decay=0.5)["week1_carryover"] == 50.0
+    assert _measure_hill_analytic(half_max=10.0, slope=2.0)["expected"] == 5.0**2.0 / (10.0**2.0 + 5.0**2.0 + 1e-12)
+    assert _measure_design_carryover(decay=0.5)["impulse_response"] > 0.0
+    assert _measure_hill_monotone(hill_half=10.0, hill_slope=2.0)["min_diff"] >= -1e-9
 
 
 def test_additive_key_leaves_level_and_readiness_inputs_identical() -> None:
@@ -101,6 +145,14 @@ def test_additive_key_leaves_level_and_readiness_inputs_identical() -> None:
     assert "world_exact_check_evaluations" not in EXACT_CHECK_NAMES
     for check_name in EXACT_CHECK_NAMES:
         run_exact_check(check_name)
+
+
+def test_certification_suite_outputs_unchanged() -> None:
+    rep = run_synthetic_certification_suite(mode="exact")
+    assert rep["certification_level"] == "exact"
+    assert rep["certification_status"] == "pass"
+    assert rep["n_pass"] == len(EXACT_CHECK_NAMES)
+    assert {c["name"] for c in rep["checks"]} == set(EXACT_CHECK_NAMES)
 
 
 def test_certification_run_embeds_diagnostic_rows_without_changing_existing_keys(tmp_path) -> None:
@@ -116,3 +168,8 @@ def test_certification_run_embeds_diagnostic_rows_without_changing_existing_keys
     assert [row["check_id"] for row in rows] == list(WORLD_CHECK_ORDER)
     assert all(row["status"] == "pass" for row in rows)
     assert all(row["world_id"] == report["world_id"] for row in rows)
+    for row in rows:
+        _assert_schema(row)
+    for key in ("report_kind", "world_id", "overall_status", "executed_validations",
+                "failed_validations", "validation_results", "contract_compatibility"):
+        assert key in report

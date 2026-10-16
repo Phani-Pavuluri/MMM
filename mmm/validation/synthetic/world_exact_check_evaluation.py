@@ -1,9 +1,10 @@
 """World-parameterized evaluation of existing exact transform checks.
 
 Calls the same shared registry predicate implementations as the
-zero-argument CI/runtime paths, passing recorded world parameters.
-Diagnostic evidence only: emitted rows never enter certification
-levels, readiness, thresholds, or gates.
+zero-argument CI/runtime paths (which return None), and the shared
+measurement helpers for diagnostic numbers. Diagnostic evidence only:
+emitted rows never enter certification levels, readiness, thresholds,
+or gates.
 """
 
 from __future__ import annotations
@@ -16,6 +17,10 @@ from mmm.governance.synthetic_certification import (
     _check_geometric_adstock_design_matrix,
     _check_hill_monotone_design_matrix,
     _check_hill_saturation_analytic,
+    _measure_carryover,
+    _measure_design_carryover,
+    _measure_hill_analytic,
+    _measure_hill_monotone,
 )
 
 WORLD_CHECK_ORDER: tuple[str, ...] = (
@@ -30,6 +35,13 @@ _CHECK_FNS = {
     "hill_saturation_analytic": _check_hill_saturation_analytic,
     "geometric_adstock_design_matrix": _check_geometric_adstock_design_matrix,
     "hill_saturation_monotone_design_matrix": _check_hill_monotone_design_matrix,
+}
+
+_MEASURE_FNS = {
+    "geometric_adstock_carryover": _measure_carryover,
+    "hill_saturation_analytic": _measure_hill_analytic,
+    "geometric_adstock_design_matrix": _measure_design_carryover,
+    "hill_saturation_monotone_design_matrix": _measure_hill_monotone,
 }
 
 _PARAM_FIELDS = {
@@ -52,85 +64,141 @@ _CALL_KWARGS = {
     },
 }
 
+# Row-level scalar selectors: (expected_key, actual_key, tolerance_key).
+# Ordering predicates report the compared pair; tolerance is None where
+# the predicate is an ordering rather than a closed-form equality.
+_ROW_SCALARS = {
+    "geometric_adstock_carryover": ("expected", "week1_carryover", "tolerance"),
+    "hill_saturation_analytic": ("expected", "measured", "tolerance"),
+    "geometric_adstock_design_matrix": ("zeroed_response", "impulse_response", None),
+    "hill_saturation_monotone_design_matrix": ("floor", "min_diff", None),
+}
+
 
 def _finite_number(value: Any) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(float(value))
+    """Finite check that never converts: oversized ints fail closed."""
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, int):
+        return abs(value) < 2**1024
+    if isinstance(value, float):
+        return math.isfinite(value)
+    return False
 
 
-def _channel_params(truth: Any, check_id: str) -> tuple[list[str], dict[str, dict[str, float]], str | None]:
-    """Resolve per-channel parameters or a fail-closed error reason."""
-    if not isinstance(truth, dict):
-        return [], {}, "world truth is not a mapping"
-    transform = truth.get("transform_truth")
-    if not isinstance(transform, dict):
-        return [], {}, "missing transform_truth mapping"
-    fields = _PARAM_FIELDS[check_id]
-    maps: dict[str, dict[str, float]] = {}
-    for field in fields:
-        raw = transform.get(field)
-        if not isinstance(raw, dict) or not raw:
-            return [], {}, f"missing or empty {field}"
-        values: dict[str, float] = {}
-        for channel, number in raw.items():
-            if not isinstance(channel, str) or not channel or not _finite_number(number):
-                return [], {}, f"invalid entry in {field} for channel {channel!r}"
-            values[channel] = float(number)
-        maps[field] = values
-    channels = sorted(maps[fields[0]])
+def _check_channels(
+    transform: dict[str, Any], fields: tuple[str, ...]
+) -> tuple[list[str], str | None]:
+    """Resolve the channel set from the primary field; coverage must match exactly."""
+    primary = transform.get(fields[0])
+    if not isinstance(primary, dict) or not primary:
+        return [], f"missing or empty {fields[0]}"
+    channels = sorted(c for c in primary if isinstance(c, str) and c)
+    if not channels:
+        return [], f"missing or empty {fields[0]}"
     for field in fields[1:]:
-        if sorted(maps[field]) != channels:
-            return [], {}, f"channel coverage mismatch in {field}"
-    params = {channel: {field: maps[field][channel] for field in fields} for channel in channels}
-    return channels, params, None
+        raw = transform.get(field)
+        if not isinstance(raw, dict) or sorted(raw) != channels:
+            return [], f"channel coverage mismatch in {field}"
+    return channels, None
+
+
+def _resolve_channel(
+    transform: dict[str, Any], fields: tuple[str, ...], channel: str
+) -> tuple[dict[str, float] | None, str | None]:
+    """Resolve one channel's finite values, or a fail-closed reason."""
+    try:
+        params: dict[str, float] = {}
+        for field in fields:
+            number = transform[field][channel]
+            if not _finite_number(number):
+                return None, f"non-finite {field} for channel {channel!r}"
+            params[field] = float(number)
+        return params, None
+    except Exception as exc:
+        return None, f"{type(exc).__name__}: {exc}"
+
+
+def _evaluate_channel(
+    check_id: str, channel: str, params: dict[str, float] | None, error: str | None
+) -> dict[str, Any]:
+    if error is not None or params is None:
+        return {
+            "channel": channel,
+            "expected": "valid recorded world parameters",
+            "actual": error or "unresolved parameters",
+            "status": "fail",
+        }
+    try:
+        kwargs = _CALL_KWARGS[check_id](params)
+        _CHECK_FNS[check_id](**kwargs)
+        measured = _MEASURE_FNS[check_id](**kwargs)
+        expected_key, actual_key, tolerance_key = _ROW_SCALARS[check_id]
+        tolerance = measured[tolerance_key] if tolerance_key is not None else None
+        if check_id == "hill_saturation_monotone_design_matrix":
+            expected: Any = -1e-9
+        else:
+            expected = measured[expected_key]
+        return {
+            "channel": channel,
+            "expected": expected,
+            "actual": measured[actual_key],
+            "tolerance": tolerance,
+            "status": "pass",
+        }
+    except Exception as exc:
+        return {
+            "channel": channel,
+            "expected": "predicate holds within inherited tolerance",
+            "actual": f"{type(exc).__name__}: {exc}",
+            "tolerance": None,
+            "status": "fail",
+        }
 
 
 def _evaluate_one(check_id: str, world_id: str, truth: Any) -> dict[str, Any]:
-    fn = _CHECK_FNS[check_id]
-    channels, params, error = _channel_params(truth, check_id)
-    evidence_refs: dict[str, Any] = {"transform_truth_fields": list(_PARAM_FIELDS[check_id])}
-    if error is not None:
+    try:
+        transform = truth.get("transform_truth") if isinstance(truth, dict) else None
+        if not isinstance(transform, dict) or not transform:
+            raise ValueError("missing transform_truth mapping")
+        channels, coverage_error = _check_channels(transform, _PARAM_FIELDS[check_id])
+        if coverage_error is not None:
+            raise ValueError(coverage_error)
+        channel_results = [
+            _evaluate_channel(check_id, channel, *_resolve_channel(transform, _PARAM_FIELDS[check_id], channel))
+            for channel in channels
+        ]
+    except Exception as exc:
         return {
             "check_id": check_id,
             "world_id": world_id,
             "status": "fail",
             "expected": "valid recorded world parameters",
-            "actual": error,
+            "actual": f"{type(exc).__name__}: {exc}",
             "tolerance": None,
-            "message": error,
+            "message": f"{type(exc).__name__}: {exc}",
             "skip_reason": None,
-            "evidence_refs": evidence_refs,
+            "evidence_refs": {"transform_truth_fields": list(_PARAM_FIELDS[check_id])},
             "channels": [],
         }
-    channel_results = []
-    for channel in channels:
-        try:
-            measured = fn(**_CALL_KWARGS[check_id](params[channel]))
-            channel_results.append({
-                "channel": channel,
-                "expected": "predicate holds within inherited tolerance",
-                "actual": measured,
-                "status": "pass",
-            })
-        except Exception as exc:  # fail closed with the exact reason
-            channel_results.append({
-                "channel": channel,
-                "expected": "predicate holds within inherited tolerance",
-                "actual": f"{type(exc).__name__}: {exc}",
-                "status": "fail",
-            })
     failed = [c for c in channel_results if c["status"] == "fail"]
     binding = failed[0] if failed else channel_results[0]
-    evidence_refs["world_values"] = params
     return {
         "check_id": check_id,
         "world_id": world_id,
         "status": "fail" if failed else "pass",
         "expected": binding["expected"],
         "actual": binding["actual"],
-        "tolerance": "inherited per-check tolerance (1e-12 analytic, -1e-9 monotone floor)",
+        "tolerance": binding.get("tolerance"),
         "message": f"binding channel {binding['channel']}: {binding['status']}",
         "skip_reason": None,
-        "evidence_refs": evidence_refs,
+        "evidence_refs": {
+            "transform_truth_fields": list(_PARAM_FIELDS[check_id]),
+            "world_values": {
+                field: transform[field] for field in _PARAM_FIELDS[check_id]
+                if isinstance(transform.get(field), dict)
+            },
+        },
         "channels": channel_results,
     }
 
@@ -139,6 +207,20 @@ def evaluate_world_exact_checks(world_id: str, truth: Any) -> list[dict[str, Any
     """Evaluate covered checks against recorded world parameters.
 
     Deterministic: fixed check order, lexical channel order. Never
-    raises for malformed input — malformed inputs yield fail rows.
+    raises — every failure mode yields fail rows.
     """
-    return [_evaluate_one(check_id, world_id, truth) for check_id in WORLD_CHECK_ORDER]
+    try:
+        return [_evaluate_one(check_id, world_id, truth) for check_id in WORLD_CHECK_ORDER]
+    except Exception as exc:
+        return [{
+            "check_id": check_id,
+            "world_id": world_id,
+            "status": "fail",
+            "expected": "valid recorded world parameters",
+            "actual": f"{type(exc).__name__}: {exc}",
+            "tolerance": None,
+            "message": f"{type(exc).__name__}: {exc}",
+            "skip_reason": None,
+            "evidence_refs": {},
+            "channels": [],
+        } for check_id in WORLD_CHECK_ORDER]
