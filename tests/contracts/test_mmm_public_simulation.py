@@ -10,7 +10,9 @@ from mmm.contracts.mip_failure import MMMFailureCode, MMMFailureStage, build_mmm
 from mmm.contracts.public_simulation import (
     MMM_PACKAGE_VERSION,
     MMM_PUBLIC_SIMULATION_SCHEMA_VERSION,
+    MMMExtrapolationClassification,
     MMMPublicSimulationExport,
+    MMMRangeRelation,
     MMMSimulationComparison,
     MMMSimulationMetricResult,
     MMMSimulationPlan,
@@ -1143,6 +1145,68 @@ def test_missing_ambiguous_and_extrapolated_range_blocks_have_matching_manifests
         )
         assert out.blocking_references == [reason]
     assert not called.called and c.items[0].spend == 20
+
+
+@pytest.mark.parametrize(
+    ("spend", "lower_inclusive", "upper_inclusive", "expected_status"),
+    [
+        (0.0, True, True, MMMSimulationStatus.SUCCEEDED),
+        (10.0, True, True, MMMSimulationStatus.SUCCEEDED),
+        (0.0, False, True, MMMSimulationStatus.BLOCKED),
+        (10.0, True, False, MMMSimulationStatus.BLOCKED),
+        (0.5, False, False, MMMSimulationStatus.SUCCEEDED),
+        (9.5, False, False, MMMSimulationStatus.SUCCEEDED),
+        (10.5, True, True, MMMSimulationStatus.BLOCKED),
+    ],
+)
+def test_exclusive_endpoints_are_outside_supported_range(
+    monkeypatch, spend, lower_inclusive, upper_inclusive, expected_status
+):
+    ctx = SimpleNamespace(schema=SimpleNamespace(channel_columns=("search",), target_column="revenue"))
+    b = plan(MMMSimulationPlanRole.BASELINE)
+    c = plan(MMMSimulationPlanRole.CANDIDATE, spend)
+    result = SimpleNamespace(aggregation_semantics="full_panel", baseline_mu=1.0, plan_mu=3.0, delta_mu=2.0)
+    called = Mock(return_value=result)
+    monkeypatch.setattr(public_simulation, "simulate", called)
+    record = MMMSupportedRangeRecord(
+        range_record_id="range",
+        run_id="run",
+        model_id=None,
+        model_family=None,
+        scope=MMMRangeScope(channel="search"),
+        supported_lower=MMMRangeBound(value=0, unit="USD", inclusive=lower_inclusive),
+        supported_upper=MMMRangeBound(value=10, unit="USD", inclusive=upper_inclusive),
+        evidence_basis=[MMMRangeEvidenceBasis.OBSERVED_DATA],
+        availability_status=MMMRangeAvailabilityStatus.AVAILABLE,
+        simulation_eligibility=MMMSupportedRangeSimulationEligibility.ELIGIBLE_FOR_TECHNICAL_SIMULATION,
+    )
+    evidence = MMMSupportedRangeEvidence(
+        evidence_id="range-evidence", run_id="run", created_at=NOW, producer_package_version="0", records=[record]
+    )
+    out = build_mmm_public_simulation_export(
+        export_id="endpoint",
+        run_id="run",
+        created_at=NOW,
+        ctx=ctx,
+        baseline_plan=b,
+        candidate_plan=c,
+        supported_range_evidence=evidence,
+    )
+    assert out.status == expected_status
+    assert out.candidate_plan.items[0].spend == spend
+    if expected_status == MMMSimulationStatus.BLOCKED:
+        assert not called.called
+        assert out.comparison is None
+        assert out.failure_packet and out.failure_packet.code == MMMFailureCode.UNSUPPORTED_EXTRAPOLATION
+        assert out.blocking_references == ["Candidate spend exceeds the supported range and was not changed."]
+    else:
+        assert called.called
+        assert out.comparison is not None
+        assert out.failure_packet is None
+        evaluation = out.comparison.range_evaluations[0]
+        assert evaluation.candidate_relation == MMMRangeRelation.WITHIN_SUPPORTED_RANGE
+        assert evaluation.extrapolation == MMMExtrapolationClassification.INTERPOLATION
+        assert evaluation.blocked is False
 
 
 @pytest.mark.parametrize(

@@ -595,6 +595,16 @@ def _range_evidence_unusable(
     )
 
 
+def _below_lower(bound, spend: float) -> bool:
+    """True when spend is below a lower bound, honoring its inclusive flag."""
+    return spend < bound.value or (spend == bound.value and not bound.inclusive)
+
+
+def _above_upper(bound, spend: float) -> bool:
+    """True when spend is above an upper bound, honoring its inclusive flag."""
+    return spend > bound.value or (spend == bound.value and not bound.inclusive)
+
+
 def _resolve_range_record(
     evidence: MMMSupportedRangeEvidence, item: MMMSimulationPlanItem, scope: MMMSimulationScope | None
 ):
@@ -896,8 +906,8 @@ def build_mmm_public_simulation_export(
         outside = (
             r.supported_lower is None
             or r.supported_upper is None
-            or c.spend < r.supported_lower.value
-            or c.spend > r.supported_upper.value
+            or _below_lower(r.supported_lower, c.spend)
+            or _above_upper(r.supported_upper, c.spend)
         )
         ev.append(
             MMMSimulationRangeEvaluation(
