@@ -74,7 +74,9 @@ def _text(value: str, name: str) -> str:
     value = value.strip()
     if not value:
         raise ValueError(f"{name} must be non-empty")
-    if value.startswith(("/", "~")) or any(x in value.lower() for x in ("traceback", "stack trace", "secret=", "password=", "token=")):
+    if value.startswith(("/", "~")) or any(
+        x in value.lower() for x in ("traceback", "stack trace", "secret=", "password=", "token=")
+    ):
         raise ValueError(f"{name} must not contain paths, stack traces, or secrets")
     return value
 
@@ -94,7 +96,15 @@ class MMMAffectedScope(BaseModel):
     export_artifact_id: str | None = None
     technical_claims: list[MMMTechnicalClaim] = Field(default_factory=list)
 
-    @field_validator("run_id", "model_id", "model_family", "kpi", "time_window", "candidate_plan_id", "export_artifact_id")
+    @field_validator(
+        "run_id",
+        "model_id",
+        "model_family",
+        "kpi",
+        "time_window",
+        "candidate_plan_id",
+        "export_artifact_id",
+    )
     @classmethod
     def _optional_text(cls, value: str | None, info: Any) -> str | None:
         return None if value is None else _text(value, info.field_name)
@@ -159,7 +169,17 @@ class MMMDiagnosticRecord(BaseModel):
     failure_packet: MMMFailurePacket | None = None
     claim_effects: list[MMMClaimEffect] = Field(default_factory=list)
 
-    @field_validator("diagnostic_id", "diagnostic_code", "contract_version", "producer_component", "technical_summary", "policy_reference", "observed_reference", "calibration_lineage_id", "run_manifest_step")
+    @field_validator(
+        "diagnostic_id",
+        "diagnostic_code",
+        "contract_version",
+        "producer_component",
+        "technical_summary",
+        "policy_reference",
+        "observed_reference",
+        "calibration_lineage_id",
+        "run_manifest_step",
+    )
     @classmethod
     def _fields(cls, value: str | None, info: Any) -> str | None:
         return None if value is None else _text(value, info.field_name)
@@ -180,9 +200,13 @@ class MMMDiagnosticRecord(BaseModel):
     def _status_consistency(self) -> MMMDiagnosticRecord:
         if self.status == MMMDiagnosticStatus.PASSED and self.failure_packet is not None:
             raise ValueError("passed diagnostics cannot carry a failure packet")
-        if self.status == MMMDiagnosticStatus.UNAVAILABLE and any(effect.disposition == MMMTechnicalClaimDisposition.SUPPORTED for effect in self.claim_effects):
+        if self.status == MMMDiagnosticStatus.UNAVAILABLE and any(
+            effect.disposition == MMMTechnicalClaimDisposition.SUPPORTED for effect in self.claim_effects
+        ):
             raise ValueError("unavailable diagnostics cannot support claims")
-        if self.status == MMMDiagnosticStatus.NOT_APPLICABLE and any(effect.disposition == MMMTechnicalClaimDisposition.BLOCKED for effect in self.claim_effects):
+        if self.status == MMMDiagnosticStatus.NOT_APPLICABLE and any(
+            effect.disposition == MMMTechnicalClaimDisposition.BLOCKED for effect in self.claim_effects
+        ):
             raise ValueError("not-applicable diagnostics cannot block claims")
         return self
 
@@ -204,7 +228,14 @@ class MMMLimitationRecord(BaseModel):
     calibration_lineage_id: str | None = None
     research_only: bool = False
 
-    @field_validator("limitation_id", "limitation_code", "technical_summary", "required_condition", "run_manifest_id", "calibration_lineage_id")
+    @field_validator(
+        "limitation_id",
+        "limitation_code",
+        "technical_summary",
+        "required_condition",
+        "run_manifest_id",
+        "calibration_lineage_id",
+    )
     @classmethod
     def _fields(cls, value: str | None, info: Any) -> str | None:
         return None if value is None else _text(value, info.field_name)
@@ -218,7 +249,14 @@ class MMMLimitationRecord(BaseModel):
     def _production_guard(self) -> MMMLimitationRecord:
         if self.research_only:
             for effect in self.claim_effects:
-                if effect.claim == MMMTechnicalClaim.PRODUCTION_USE and effect.disposition in {MMMTechnicalClaimDisposition.SUPPORTED, MMMTechnicalClaimDisposition.SUPPORTED_WITH_WARNING}:
+                if (
+                    effect.claim == MMMTechnicalClaim.PRODUCTION_USE
+                    and effect.disposition
+                    in {
+                        MMMTechnicalClaimDisposition.SUPPORTED,
+                        MMMTechnicalClaimDisposition.SUPPORTED_WITH_WARNING,
+                    }
+                ):
                     raise ValueError("research-only limitations cannot imply production-supported claims")
         return self
 
@@ -239,7 +277,15 @@ class MMMDiagnosticsLimitations(BaseModel):
     terminal_failure: MMMFailurePacket | None = None
     claim_dispositions: dict[str, str] | None = None
 
-    @field_validator("aggregate_id", "run_id", "producer_package_name", "producer_package_version", "run_manifest_id", "export_artifact_id", "calibration_lineage_id")
+    @field_validator(
+        "aggregate_id",
+        "run_id",
+        "producer_package_name",
+        "producer_package_version",
+        "run_manifest_id",
+        "export_artifact_id",
+        "calibration_lineage_id",
+    )
     @classmethod
     def _fields(cls, value: str | None, info: Any) -> str | None:
         return None if value is None else _text(value, info.field_name)
@@ -257,7 +303,8 @@ class MMMDiagnosticsLimitations(BaseModel):
             raise ValueError("diagnostics must have contiguous deterministic sequence values")
         if [item.sequence for item in self.limitations] != list(range(len(self.limitations))):
             raise ValueError("limitations must have contiguous deterministic sequence values")
-        effects = [effect for record in self.diagnostics for effect in record.claim_effects] + [effect for record in self.limitations for effect in record.claim_effects]
+        effects = [effect for record in self.diagnostics for effect in record.claim_effects]
+        effects = effects + [effect for record in self.limitations for effect in record.claim_effects]
         derived = {effect.claim.value: effect.disposition.value for effect in effects}
         if self.claim_dispositions is not None and self.claim_dispositions != derived:
             raise ValueError("claim_dispositions must be derived exactly from records")

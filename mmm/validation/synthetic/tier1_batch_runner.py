@@ -510,25 +510,6 @@ def _tier1_recommendations(dists: list[CapabilityDistribution]) -> list[dict[str
             }
         )
     return recs
-    return {
-        "tier1_version": TIER1_VERSION,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "tier": "tier_1_calibration",
-        "world_count": batch.get("world_count"),
-        "capability_distributions": [d.to_dict() for d in dists],
-        "axis_envelopes": boundaries["reliability_envelopes"],
-        "threshold_recommendations": recs,
-        "recommendation_disclaimer": (
-            "Report-only. No threshold is approved; thresholds remain provisional "
-            "pending DR-04. No release-gate change."
-        ),
-        "limitations": [
-            "Small-panel deterministic worlds; not production-panel geometry",
-            "Smoke stratum is structural-only by design (recovery honestly unscored)",
-            "Behavioral stratum inherits WORLD-008-template DGP assumptions",
-            "Anchors re-certified read-only from committed fixtures",
-        ],
-    }
 
 
 def write_tier1_characterization(

@@ -5,10 +5,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs/05_validation/MMM_MIP_HANDOFF_V1_POST_COMPATIBILITY_GAP_SELECTION_AUDIT_001_REPORT.md"
-SUMMARY = ROOT / "docs/05_validation/archives/MMM_MIP_HANDOFF_V1_POST_COMPATIBILITY_GAP_SELECTION_AUDIT_001_summary.json"
+SUMMARY = (
+    ROOT / "docs/05_validation/archives/MMM_MIP_HANDOFF_V1_POST_COMPATIBILITY_GAP_SELECTION_AUDIT_001_summary.json"
+)
 ROADMAP = ROOT / "docs/05_validation/platform_roadmap.md"
 INVENTORY = ROOT / "docs/DOCUMENTATION_INVENTORY.md"
 
@@ -23,7 +24,12 @@ def test_post_compatibility_gap_selection_audit_is_complete_and_conservative() -
     assert summary["r11_assessment"]["status"] == "PARTIAL"
     assert summary["r12_assessment"]["status"] == "PARTIAL"
     models = summary["dependency_models_considered"]
-    assert set(models) == {"A_R12_before_R11", "B_R11_before_R12", "C_narrow_shared_prerequisite_first", "D_parallel_independent_work"}
+    assert set(models) == {
+        "A_R12_before_R11",
+        "B_R11_before_R12",
+        "C_narrow_shared_prerequisite_first",
+        "D_parallel_independent_work",
+    }
     assert summary["selected_dependency_model"] == "C_narrow_shared_prerequisite_first"
     assert summary["narrower_prerequisite_findings"]["exists"] is True
     assert summary["selected_next_task"]["task_id"] == "MMM_MIP_HANDOFF_V1_SUPPORTED_RANGE_EVIDENCE_001"

@@ -6,7 +6,6 @@ from mmm.contracts.diagnostics_limitations import MMMDiagnosticsLimitations
 from mmm.contracts.mip_failure import MMMFailurePacket
 from mmm.contracts.run_manifest import MMMRunManifest
 
-
 ROOT = Path(__file__).resolve().parents[1] / "fixtures" / "mip_export" / "golden_v1"
 
 
@@ -15,7 +14,16 @@ def test_golden_fixture_index_is_deterministic_and_references_public_contracts()
     assert index["schema_version"] == "mmm_producer_golden_fixture_set_v1"
     scenarios = index["scenarios"]
     assert len({item["scenario_id"] for item in scenarios}) == len(scenarios) == 8
-    assert {item["scenario_id"] for item in scenarios} >= {"ridge_success", "warning_restriction", "blocked_insufficient_history", "failed_input_validation", "calibration_scope_rejection", "unsupported_extrapolation", "bayesian_research_only", "mixed_claims"}
+    assert {item["scenario_id"] for item in scenarios} >= {
+        "ridge_success",
+        "warning_restriction",
+        "blocked_insufficient_history",
+        "failed_input_validation",
+        "calibration_scope_rejection",
+        "unsupported_extrapolation",
+        "bayesian_research_only",
+        "mixed_claims",
+    }
     for scenario in scenarios:
         for kind, relative in scenario["components"].items():
             payload = json.loads((ROOT / relative).resolve().read_text())
@@ -49,5 +57,7 @@ def test_golden_fixture_scenarios_preserve_terminal_and_safety_boundaries():
             assert failure.code.value == scenario["failure_code"]
             assert manifest is None or manifest.failure_packet is not None
         if scenario["scenario_id"] == "bayesian_research_only":
-            diagnostics = MMMDiagnosticsLimitations.model_validate(json.loads((ROOT / components["diagnostics"]).resolve().read_text()))
+            diagnostics = MMMDiagnosticsLimitations.model_validate(
+                json.loads((ROOT / components["diagnostics"]).resolve().read_text())
+            )
             assert diagnostics.limitations[0].research_only is True

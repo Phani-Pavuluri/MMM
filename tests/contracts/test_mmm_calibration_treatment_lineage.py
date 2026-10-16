@@ -44,7 +44,11 @@ def _record(**changes: object) -> MMMCalibrationTreatmentRecord:
 
 def _lineage(*records: MMMCalibrationTreatmentRecord) -> MMMCalibrationTreatmentLineage:
     return MMMCalibrationTreatmentLineage(
-        lineage_id="lineage-001", run_id="run-cal-001", created_at=NOW, producer_package_version="0.1.0", records=list(records)
+        lineage_id="lineage-001",
+        run_id="run-cal-001",
+        created_at=NOW,
+        producer_package_version="0.1.0",
+        records=list(records),
     )
 
 
@@ -78,7 +82,8 @@ def test_treatment_dispositions_freshness_compatibility_and_roles_remain_distinc
         _record(sequence=0, disposition=MMMCalibrationTreatmentDisposition.ACCEPTED_NOT_APPLIED),
         _record(sequence=1, signal_id="signal-rejected", disposition=MMMCalibrationTreatmentDisposition.REJECTED,
                 compatibility_status=MMMCalibrationCompatibilityStatus.INCOMPATIBLE,
-                compatibility_reasons=[MMMCalibrationCompatibilityReason.GEO_SCOPE_MISMATCH], application_roles=[MMMCalibrationApplicationRole.NONE]),
+                compatibility_reasons=[MMMCalibrationCompatibilityReason.GEO_SCOPE_MISMATCH],
+                application_roles=[MMMCalibrationApplicationRole.NONE]),
         _record(sequence=2, signal_id="signal-stale", freshness_status=MMMCalibrationFreshnessStatus.STALE,
                 disposition=MMMCalibrationTreatmentDisposition.ACCEPTED_NOT_APPLIED),
         _record(sequence=3, signal_id="signal-blocked", disposition=MMMCalibrationTreatmentDisposition.BLOCKED,
@@ -92,39 +97,76 @@ def test_treatment_dispositions_freshness_compatibility_and_roles_remain_distinc
 
 def test_validation_rejects_invalid_application_and_stale_or_incompatible_application() -> None:
     with pytest.raises(ValidationError, match="non-NONE"):
-        _record(disposition=MMMCalibrationTreatmentDisposition.APPLIED, application_roles=[MMMCalibrationApplicationRole.NONE])
+        _record(
+            disposition=MMMCalibrationTreatmentDisposition.APPLIED,
+            application_roles=[MMMCalibrationApplicationRole.NONE],
+        )
     with pytest.raises(ValidationError, match="fit-affecting"):
-        _record(disposition=MMMCalibrationTreatmentDisposition.REJECTED, application_roles=[MMMCalibrationApplicationRole.PRIOR], research_only=True)
+        _record(
+            disposition=MMMCalibrationTreatmentDisposition.REJECTED,
+            application_roles=[MMMCalibrationApplicationRole.PRIOR],
+            research_only=True,
+        )
     with pytest.raises(ValidationError, match="expired"):
-        _record(freshness_status=MMMCalibrationFreshnessStatus.EXPIRED, disposition=MMMCalibrationTreatmentDisposition.APPLIED, application_roles=[MMMCalibrationApplicationRole.DIAGNOSTIC_ONLY])
+        _record(
+            freshness_status=MMMCalibrationFreshnessStatus.EXPIRED,
+            disposition=MMMCalibrationTreatmentDisposition.APPLIED,
+            application_roles=[MMMCalibrationApplicationRole.DIAGNOSTIC_ONLY],
+        )
     with pytest.raises(ValidationError, match="incompatible"):
-        _record(compatibility_status=MMMCalibrationCompatibilityStatus.INCOMPATIBLE, disposition=MMMCalibrationTreatmentDisposition.APPLIED, application_roles=[MMMCalibrationApplicationRole.DIAGNOSTIC_ONLY])
+        _record(
+            compatibility_status=MMMCalibrationCompatibilityStatus.INCOMPATIBLE,
+            disposition=MMMCalibrationTreatmentDisposition.APPLIED,
+            application_roles=[MMMCalibrationApplicationRole.DIAGNOSTIC_ONLY],
+        )
     with pytest.raises(ValidationError, match="downweight"):
-        _record(freshness_status=MMMCalibrationFreshnessStatus.STALE, disposition=MMMCalibrationTreatmentDisposition.APPLIED, application_roles=[MMMCalibrationApplicationRole.DIAGNOSTIC_ONLY])
+        _record(
+            freshness_status=MMMCalibrationFreshnessStatus.STALE,
+            disposition=MMMCalibrationTreatmentDisposition.APPLIED,
+            application_roles=[MMMCalibrationApplicationRole.DIAGNOSTIC_ONLY],
+        )
 
 
 def test_research_only_bayesian_role_and_ordered_transformations_are_explicit() -> None:
     record = _record(
         disposition=MMMCalibrationTreatmentDisposition.APPLIED,
-        application_roles=[MMMCalibrationApplicationRole.LIKELIHOOD], model_family="bayesian", research_only=True,
-        governing_policy_reference="bayes_h2_calibration_signal_mapping_v1:R5", applied_weight=0.25,
+        application_roles=[MMMCalibrationApplicationRole.LIKELIHOOD],
+        model_family="bayesian",
+        research_only=True,
+        governing_policy_reference="bayes_h2_calibration_signal_mapping_v1:R5",
+        applied_weight=0.25,
         transformations=[
-            MMMCalibrationTransformationStep(sequence=0, transformation_code="lift_scale_conversion", transformation_version="v1"),
-            MMMCalibrationTransformationStep(sequence=1, transformation_code="freshness_downweight", transformation_version="v1"),
+            MMMCalibrationTransformationStep(
+                sequence=0, transformation_code="lift_scale_conversion", transformation_version="v1"
+            ),
+            MMMCalibrationTransformationStep(
+                sequence=1, transformation_code="freshness_downweight", transformation_version="v1"
+            ),
         ],
     )
     assert record.research_only is True
     with pytest.raises(ValidationError, match="contiguous"):
-        _record(transformations=[MMMCalibrationTransformationStep(sequence=1, transformation_code="x", transformation_version="v1")])
+        _record(
+            transformations=[
+                MMMCalibrationTransformationStep(sequence=1, transformation_code="x", transformation_version="v1")
+            ]
+        )
 
 
 def test_failure_links_reuse_existing_calibration_failure_taxonomy() -> None:
-    scope = _record(disposition=MMMCalibrationTreatmentDisposition.REJECTED, application_roles=[MMMCalibrationApplicationRole.NONE],
-                    compatibility_status=MMMCalibrationCompatibilityStatus.INCOMPATIBLE,
-                    failure_packet=_packet(MMMFailureCode.CALIBRATION_SCOPE_MISMATCH))
-    expired = _record(signal_id="expired", freshness_status=MMMCalibrationFreshnessStatus.EXPIRED,
-                      disposition=MMMCalibrationTreatmentDisposition.REJECTED, application_roles=[MMMCalibrationApplicationRole.NONE],
-                      failure_packet=_packet(MMMFailureCode.CALIBRATION_SIGNAL_EXPIRED))
+    scope = _record(
+        disposition=MMMCalibrationTreatmentDisposition.REJECTED,
+        application_roles=[MMMCalibrationApplicationRole.NONE],
+        compatibility_status=MMMCalibrationCompatibilityStatus.INCOMPATIBLE,
+        failure_packet=_packet(MMMFailureCode.CALIBRATION_SCOPE_MISMATCH),
+    )
+    expired = _record(
+        signal_id="expired",
+        freshness_status=MMMCalibrationFreshnessStatus.EXPIRED,
+        disposition=MMMCalibrationTreatmentDisposition.REJECTED,
+        application_roles=[MMMCalibrationApplicationRole.NONE],
+        failure_packet=_packet(MMMFailureCode.CALIBRATION_SIGNAL_EXPIRED),
+    )
     assert scope.failure_packet is not None and expired.failure_packet is not None
 
 

@@ -345,7 +345,16 @@ def test_ready_review_blocked_rejection_requires_exhaustion(tmp_path: Path) -> N
     taskctl.transition(root, _args("in_progress"))
     taskctl.transition(root, _args("ready_for_review", implementation_sha=sha))
     with pytest.raises(taskctl.TaskControlError, match="E_CORRECTION"):
-        taskctl.transition(root, _args("blocked", rejected_review_head_sha=sha, rejected_implementation_commit_sha=sha, blocker=["reject"], live_resolution_condition="successor"))
+        taskctl.transition(
+            root,
+            _args(
+                "blocked",
+                rejected_review_head_sha=sha,
+                rejected_implementation_commit_sha=sha,
+                blocker=["reject"],
+                live_resolution_condition="successor",
+            ),
+        )
 
 
 @pytest.mark.parametrize(
@@ -380,7 +389,16 @@ def test_exhausted_ready_review_requires_current_feature_head(tmp_path: Path) ->
     root, sha = _exhausted_ready_fixture(tmp_path)
     other = _git(root, "commit", "--allow-empty", "-m", "unrelated feature head")
     with pytest.raises(taskctl.TaskControlError, match="E_REJECTION_HEAD"):
-        taskctl.transition(root, _args("blocked", rejected_review_head_sha=sha, rejected_implementation_commit_sha=sha, blocker=["reject"], live_resolution_condition="successor"))
+        taskctl.transition(
+            root,
+            _args(
+                "blocked",
+                rejected_review_head_sha=sha,
+                rejected_implementation_commit_sha=sha,
+                blocker=["reject"],
+                live_resolution_condition="successor",
+            ),
+        )
     assert other != sha
 
 
@@ -388,7 +406,16 @@ def test_exhausted_ready_review_requires_declared_feature_branch(tmp_path: Path)
     root, sha = _exhausted_ready_fixture(tmp_path)
     _git(root, "switch", "main")
     with pytest.raises(taskctl.TaskControlError, match="E_TRANSITION_BRANCH"):
-        taskctl.transition(root, _args("blocked", rejected_review_head_sha=sha, rejected_implementation_commit_sha=sha, blocker=["reject"], live_resolution_condition="successor"))
+        taskctl.transition(
+            root,
+            _args(
+                "blocked",
+                rejected_review_head_sha=sha,
+                rejected_implementation_commit_sha=sha,
+                blocker=["reject"],
+                live_resolution_condition="successor",
+            ),
+        )
 
 
 @pytest.mark.parametrize("surviving_ref", ("local", "remote"))
