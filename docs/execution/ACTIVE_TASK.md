@@ -9,7 +9,7 @@
 - Execution mode: `branch_and_fast_forward`
 - Base SHA: `46e0f5440eeb2f2ef21cd11cc11a947b7577534a`
 - Task authoring SHA: `74b8bc5e95da3eab2bd038373203c2d102bfe33e`
-- Authorization SHA: `74b8bc5e95da3eab2bd038373203c2d102bfe33e`
+- Authorization SHA: `c10d92f0b53d79852896da63593c2d5e780aa10c`
 - Feature branch: `fix/mmm-public-simulation-exclusive-endpoint-recovery-001`
 - Feature branch created: `false`
 - Task execution authorized: `true`

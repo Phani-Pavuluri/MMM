@@ -7,7 +7,7 @@
   "base_branch": "main",
   "base_sha": "46e0f5440eeb2f2ef21cd11cc11a947b7577534a",
   "task_authoring_head_sha": "74b8bc5e95da3eab2bd038373203c2d102bfe33e",
-  "authorization_head_sha": "74b8bc5e95da3eab2bd038373203c2d102bfe33e",
+  "authorization_head_sha": "c10d92f0b53d79852896da63593c2d5e780aa10c",
   "feature_branch": "fix/mmm-public-simulation-exclusive-endpoint-recovery-001",
   "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
