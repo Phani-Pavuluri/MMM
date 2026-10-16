@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "receipt_kind": "external_user_exact_head_approval",
+  "receipt_id": "64f510de-4afc-4e91-845d-96998e695424",
+  "repository": "Phani-Pavuluri/MMM",
+  "task_id": "MMM_TRANSFORM_SELECTION_AUDIT_001",
+  "feature_branch": "docs/mmm-transform-selection-audit-001",
+  "reviewed_remote_head_sha": "e527759c68ffa3c6e52319d22d6a84b95589a579",
+  "reviewed_tree_sha": "8f4a5e1b653c81152912ef10f240553ccdc15566",
+  "implementation_sha": "12116ff4b387af0c56be9ad03bf46b721f985900",
+  "main_baseline_sha": "00cad45de5f9f04c41a6eed51ccbc22149a42b54",
+  "authorization_head_sha": "4ccf8ca417cc010f860b4848bc03b4901a56850a",
+  "owner_decision_verbatim": "Approve this exact publication",
+  "owner_decision_context": "Response to the explicit exact-head publication-only merge question in the coordinating conversation; durable local control OWNER_DECISIONS.md commitrecorded with the current GeoX direction approval.",
+  "approval_scope": "Publish the audit and deferred plan only; no contract adoption, parser/schema/fixtures, analytical implementation, production or sibling authority.",
+  "independent_review": "Foreground Codex verified corrected report/receipt and unchanged proposed-document scope; actual native/handoff/docs/JSON/diff and full Docker logs tied to this exact head/tree. Reviewer did not author the proposed document.",
+  "validation_logs": [
+    "mmm-approved-transform-audit-preflight.log",
+    "mmm-approved-transform-audit-preflight-docker.log"
+  ],
+  "issued_at": "2026-10-16T05:30:27.375238+00:00"
+}
