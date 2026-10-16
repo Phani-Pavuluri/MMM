@@ -81,8 +81,12 @@ per-channel — the largest structural gap. Global defaults only for
 bounds/priors/lag windows (Meridian's max_lag + prior-curve practice is
 the template). Fixed adstock→saturation order (Meridian ships an order
 switch). No transform-family recovery worlds; decay↔slope↔β compensation
-unmeasured on the production path; calibration enters diagnostics, not
-selection. Compute: shared Ridge BO is cheap; per-channel family search
+unmeasured on the production path. Replay calibration enters BO trial
+selection only when explicitly enabled (`use_replay_calibration`, default
+off) with mode `full_panel_refit` or `fold_aligned` (calibration weight
+default 1.0 in the normalized composite); `holdout_only_diagnostic` stays
+diagnostic-only. Replay fit quality informs selection mechanics, never
+causal identification. Compute: shared Ridge BO is cheap; per-channel family search
 multiplies BO dimension (Robyn precedent, still CPU-feasible); Bayesian
 per-channel inference is GPU/NUTS-class (PyMC precedent) — excluded until
 H-track gates pass.
@@ -91,8 +95,10 @@ H-track gates pass.
 
 - S-shaped Hill as default (Meridian convergence/optimization warnings;
   keep concave-default).
-- Negative-binomial delay kernel as a borrowed item (no source ships it;
-  evaluate only if Weibull/delayed alternatives fail recovery worlds).
+- Negative-binomial delay kernel: not evidenced as a supported or
+  unsupported family — only its absence from the verified Meridian source
+  is established. Evaluate only if Weibull/delayed alternatives fail
+  recovery worlds.
 - Full Bayesian per-channel transform inference now (cost + H-gate order).
 - Time-varying media efficiency (GP-class; revisit after static
   per-channel selection proves out).
@@ -102,8 +108,9 @@ H-track gates pass.
 - **Phase 0 (docs-only, small):** pin upstream versions, verify §2
   recheck items against pinned APIs, record exclusions.
 - **Phase 1:** per-channel decay/Hill search in BO fast path (bounded,
-  CPU) + family-recovery worlds (geometric vs Weibull vs binomial-class)
-  measuring decay↔slope↔β compensation.
+  CPU) + family-recovery worlds (adstock: geometric vs Weibull vs
+  binomial-class; saturation: Hill vs logistic vs log) measuring
+  decay↔slope↔β compensation.
 - **Phase 2:** order switch + lag-window/prior discipline;
   calibration-informed priors.
 - **Phase 3 (gated):** Bayesian per-channel inference only after H-track
@@ -112,3 +119,16 @@ H-track gates pass.
   failing a channel class, or an explicit owner goal requests per-channel
   lag. This plan displaces no current fixes or handoff work; a long
   detour stays postponed.
+
+## 6. Proposed roadmap pointer (for future application — not applied here)
+
+`platform_roadmap.md` is outside this task's owned paths, so the live
+roadmap is unchanged by this correction. For a separately authorized
+follow-up, the proposed Track 4 planning entry is:
+
+> *Track 4 deferred: evidence-based transform/model selection
+> (per-channel adstock/saturation families, delayed-peak kernels,
+> order/prior discipline) — see `transform_selection_audit.md`. Entry
+> requires a Phase-0 version-pinned audit and a failing recovery world or
+> explicit owner goal. No production model change until Track-2
+> reliability worlds + certifications pass for the selected family.*
