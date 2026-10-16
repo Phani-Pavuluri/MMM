@@ -7,7 +7,7 @@
   "base_branch": "main",
   "base_sha": "87835ad0aaf7ddd1db4249d531c8b3b6c9c2ce65",
   "task_authoring_head_sha": "828c30802a8c9ab66609de123bbfdb3fcc49e033",
-  "authorization_head_sha": "828c30802a8c9ab66609de123bbfdb3fcc49e033",
+  "authorization_head_sha": "1b35fb1431f1e153bf4502159a61a08ef28605e6",
   "feature_branch": "docs/mmm-transform-audit-roadmap-followup-001",
   "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
