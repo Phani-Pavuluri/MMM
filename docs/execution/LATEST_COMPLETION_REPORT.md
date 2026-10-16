@@ -9,7 +9,7 @@
 - Execution mode: `branch_and_fast_forward`
 - Base SHA: `69fde80142e6a686f95f60a1101e38dfaa06c5c7`
 - Task authoring SHA: `e66d3be8ede6c0495765ef6b2820b6ce48a55c11`
-- Authorization SHA: `e66d3be8ede6c0495765ef6b2820b6ce48a55c11`
+- Authorization SHA: `68d5077c128d66a555b609bf43544491fee03c44`
 - Feature branch: `fix/mmm-world-transform-check-acceptance-recovery-002`
 - Feature branch created: `false`
 - Task execution authorized: `true`
