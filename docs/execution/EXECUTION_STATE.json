@@ -1,15 +1,15 @@
 {
   "schema_version": "mmm_repo_execution_state_v3",
   "repository": "Phani-Pavuluri/MMM",
-  "task_id": "MMM_EXISTING_LINT_DEBT_CLEANUP_001",
-  "status": "merged",
+  "task_id": "MMM_VALIDATION_RUNNER_FAILURE_PROPAGATION_001",
+  "status": "proposed",
   "execution_mode": "branch_and_fast_forward",
   "base_branch": "main",
-  "base_sha": "bc7cb8892e4832974912cb2582abadee80ab833a",
-  "task_authoring_head_sha": "08a96269ee7f6e9f25902a3254b7c6896e853013",
-  "authorization_head_sha": "c1a25c957ccfef83f8d3991c2d6ae341d9b1fa63",
-  "feature_branch": "chore/mmm-existing-lint-debt-cleanup-001",
-  "feature_branch_created": true,
+  "base_sha": "b84105f820eb96ea8a3187f56a9b2c1bf1e7f941",
+  "task_authoring_head_sha": "b84105f820eb96ea8a3187f56a9b2c1bf1e7f941",
+  "authorization_head_sha": "b84105f820eb96ea8a3187f56a9b2c1bf1e7f941",
+  "feature_branch": "fix/mmm-validation-runner-failure-propagation-001",
+  "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
   "completion_report_path": "docs/execution/LATEST_COMPLETION_REPORT.md",
   "canonical_mip_standard_repository": null,
@@ -19,17 +19,17 @@
   "correction_execution_authorized": false,
   "merge_authorized": false,
   "pr_creation_authorized": false,
-  "reviewed_head_sha": "d7d7a88a74b3719c74f46dfe46b4c630d776ceff",
+  "reviewed_head_sha": null,
   "rejected_review_head_sha": null,
-  "implementation_commit_sha": "8be5c1f2638d40bbe6ebff8e893b3c2c1453454a",
+  "implementation_commit_sha": null,
   "approval_commit_sha": null,
   "capability_authorizations_changed": false,
   "last_updated": "2026-10-16",
   "blockers": [],
   "max_correction_cycles": 1,
-  "risk_tier": "tier_2_existing_code_lint_cleanup_no_behavior_change",
+  "risk_tier": "tier_1_validation_script_maintenance",
   "full_suite_validation_required": true,
-  "validation_scope": "ruff_0_17_1_zero_full_repo_semantic_preservation_full_taskctl_handoff_docs_json_diff_docker_make_validate_exact_tree",
+  "validation_scope": "shell_syntax_named_step_failure_propagation_real_negative_control_zero_lint_full_docker_native_handoff_json_diff_exact_tree",
   "unresolved_execution_blocking_design_questions": [],
   "affected_repositories": [
     "Phani-Pavuluri/MMM"
@@ -37,14 +37,14 @@
   "modified_repositories": [
     "Phani-Pavuluri/MMM"
   ],
-  "coordination_workstream_id": "WS-MMM-EXISTING-LINT-DEBT-CLEANUP-001",
+  "coordination_workstream_id": "WS-MMM-VALIDATION-FAILURE-PROPAGATION-001",
   "coordination_capability_owner": "mmm_validation_reliability",
   "prior_task": {
-    "task_id": "MMM_PUBLIC_SIMULATION_EXCLUSIVE_ENDPOINT_RECOVERY_001",
+    "task_id": "MMM_EXISTING_LINT_DEBT_CLEANUP_001",
     "status": "merged",
-    "reviewed_head_sha": "ab7e9b02f7442f2a0e0daa051efe49abb3c3b4a8",
-    "closure_commit_sha": "bc7cb8892e4832974912cb2582abadee80ab833a",
-    "resolution_condition": "Existing endpoint repair is merged/closed; preserve it and prior branches, no repeated review or merge."
+    "reviewed_head_sha": "d7d7a88a74b3719c74f46dfe46b4c630d776ceff",
+    "closure_commit_sha": "b84105f820eb96ea8a3187f56a9b2c1bf1e7f941",
+    "resolution_condition": "Lint cleanup is closed at zero Ruff0.17.1 findings; no reopening or baseline exemption."
   },
   "mmm_analytical_authority_changed": false,
   "sibling_authority_changed": false,
@@ -56,13 +56,13 @@
     "external_merge_was_authorized": false,
     "conforming_exact_head_approval_record_exists": false
   },
-  "review_decision": "merged",
+  "review_decision": "proposed",
   "review_decision_source": "docs/execution/EXECUTION_STATE.json",
-  "task_authoring_note": "Owner requested continuous useful development with Muse-owned bounded milestones, reviewer feedback, recommended ordinary approvals and high-level reports. Independent review exposed existing57 Ruff0.17.1 findings and a false-green runner. This first unit removes existing lint debt with behavior preserved and pins the already-used dev lint version; fail-closed runner repair is a separate successor. No lint exemption/baseline acceptance, numerical/contract/analytical/capability or roadmap expansion is adopted.",
+  "task_authoring_note": "Owner requested continued parallel useful work, Muse-owned bounded implementation, independent review and recommended routine decisions. Existing reliability follow-up explicitly deferred runner failure propagation until lint zero. That prerequisite is now merged. This task restores truthful validation exit status without changing validation categories, acceptance policy, analytical behavior, roadmap or capabilities.",
   "rejected_implementation_commit_sha": null,
   "correction_cycles_completed": 0,
   "correction_cycles_remaining": 1,
   "live_resolution_condition": null,
-  "local_feature_branch_cleanup": "observed_deleted",
-  "remote_feature_branch_cleanup": "observed_deleted"
+  "local_feature_branch_cleanup": "not_started",
+  "remote_feature_branch_cleanup": "not_started"
 }
