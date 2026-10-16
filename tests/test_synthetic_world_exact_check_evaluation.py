@@ -102,7 +102,11 @@ def test_malformed_truth_fails_closed_without_silent_skips() -> None:
     for row in evaluate_world_exact_checks("WORLD-001-baseline", mismatch):
         if row["check_id"] in ("hill_saturation_analytic", "hill_saturation_monotone_design_matrix"):
             assert row["status"] == "fail"
-            assert "mismatch" in row["message"]
+            by_channel = {c["channel"]: c for c in row["channels"]}
+            assert set(by_channel) == {"other", "search", "social"}
+            assert "unknown extra" in by_channel["other"]["actual"]
+            assert "mismatch" in by_channel["search"]["actual"]
+            assert "binding channel other" in row["message"]
 
 
 def test_one_bad_channel_fails_row_with_every_channel_visible() -> None:
@@ -287,3 +291,37 @@ def test_measured_evidence_refs_match_produced_measurements() -> None:
         for detail in measured.values():
             assert isinstance(detail, dict) and detail
     assert rows["geometric_adstock_carryover"]["evidence_refs"]["measured"]["search"]["week1_carryover"] == 0.5 * 100.0
+
+
+def test_whitespace_identifier_fails_closed() -> None:
+    rows = _rows_for("WORLD-001-baseline", lambda t: t["transform_truth"].update(
+        {"adstock_decay_by_channel": {"search": 0.5, " ": 0.5}}))
+    row = rows["geometric_adstock_carryover"]
+    assert row["status"] == "fail"
+    by_channel = {c["channel"]: c for c in row["channels"]}
+    assert by_channel["search"]["status"] == "pass"
+    assert by_channel[" "]["status"] == "fail"
+    assert "malformed" in by_channel[" "]["actual"]
+
+
+def test_binding_follows_lexical_order_not_declared_order() -> None:
+    truth = json.loads(json.dumps(_truth("WORLD-001-baseline")))
+    truth["media_truth"]["channels"] = ["social", "search"]
+    truth["transform_truth"]["adstock_decay_by_channel"] = {"search": 1.5, "social": 1.5}
+    rows = {row["check_id"]: row
+            for row in evaluate_world_exact_checks("WORLD-001-baseline", truth)}
+    row = rows["geometric_adstock_carryover"]
+    assert row["status"] == "fail"
+    assert [c["channel"] for c in row["channels"]] == ["search", "social"]
+    assert "binding channel search" in row["message"]
+
+
+def test_malformed_inventory_entry_preserves_valid_siblings() -> None:
+    rows = _rows_for("WORLD-001-baseline", lambda t: t["media_truth"].update(
+        {"channels": ["search", "social", ""]}))
+    row = rows["geometric_adstock_carryover"]
+    assert row["status"] == "fail"
+    by_channel = {c["channel"]: c for c in row["channels"]}
+    assert by_channel["search"]["status"] == "pass"
+    assert by_channel["social"]["status"] == "pass"
+    assert by_channel[""]["status"] == "fail"

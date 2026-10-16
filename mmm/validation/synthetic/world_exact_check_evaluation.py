@@ -103,25 +103,31 @@ def _safe_evidence(value: Any) -> Any:
     return repr(value)
 
 
-def _declared_channels(truth: Any) -> tuple[list[str] | None, str | None]:
-    """Declared world channel inventory, or a fail-closed reason."""
+def _declared_channels(truth: Any) -> tuple[list[str] | None, list[Any], str | None]:
+    """Split the declared inventory into valid identifiers and malformed entries.
+
+    Returns (valid, malformed, fatal_error). A structurally invalid
+    inventory (missing/non-list/empty/duplicates) is fatal for all rows;
+    individually malformed identifiers become explicit fail entries
+    while valid siblings still evaluate.
+    """
     media = truth.get("media_truth") if isinstance(truth, dict) else None
     if not isinstance(media, dict):
-        return None, "missing media_truth mapping for declared channel inventory"
+        return None, [], "missing media_truth mapping for declared channel inventory"
     channels = media.get("channels")
     if not isinstance(channels, list) or not channels:
-        return None, "missing or empty declared channel inventory"
-    if any(not isinstance(c, str) or not c for c in channels):
-        return None, "invalid declared channel identifier in inventory"
-    if len(set(channels)) != len(channels):
-        return None, "duplicate declared channel identifier in inventory"
-    return list(channels), None
+        return None, [], "missing or empty declared channel inventory"
+    if len({repr(c) for c in channels}) != len(channels):
+        return None, [], "duplicate declared channel identifier in inventory"
+    valid = [c for c in channels if isinstance(c, str) and c.strip() != ""]
+    malformed = [c for c in channels if not isinstance(c, str) or c.strip() == ""]
+    return valid, malformed, None
 
 
 def _evaluate_channel(
     check_id: str, channel: Any, transform: dict[str, Any], declared: list[str]
 ) -> dict[str, Any]:
-    if not isinstance(channel, str) or not channel:
+    if not isinstance(channel, str) or channel.strip() == "":
         return {
             "channel": channel if isinstance(channel, str) else repr(channel),
             "expected": "valid channel identifier",
@@ -190,7 +196,7 @@ def _evaluate_one(check_id: str, world_id: str, truth: Any) -> dict[str, Any]:
         transform = truth.get("transform_truth") if isinstance(truth, dict) else None
         if not isinstance(transform, dict) or not transform:
             raise ValueError("missing transform_truth mapping")
-        declared, inventory_error = _declared_channels(truth)
+        declared, malformed, inventory_error = _declared_channels(truth)
         if inventory_error is not None or declared is None:
             raise ValueError(inventory_error or "invalid declared channel inventory")
         universe: list[Any] = list(declared)
@@ -201,11 +207,17 @@ def _evaluate_one(check_id: str, world_id: str, truth: Any) -> dict[str, Any]:
             if not isinstance(raw, dict):
                 raise ValueError(f"malformed {field} parameter map")
             for key in raw:
-                if key not in universe:
+                if key not in universe and key not in malformed:
                     universe.append(key)
-        ordered = [c for c in declared if c in universe] + sorted(
-            [c for c in universe if c not in declared], key=repr
+        ordered = sorted(
+            [c for c in universe if isinstance(c, str) and c.strip() != ""]
+        ) + sorted(
+            [c for c in universe if not isinstance(c, str) or c.strip() == ""],
+            key=repr,
         )
+        for bad in malformed:
+            if bad not in ordered:
+                ordered.append(bad)
         channel_results = [_evaluate_channel(check_id, channel, transform, declared) for channel in ordered]
     except Exception as exc:
         return {
