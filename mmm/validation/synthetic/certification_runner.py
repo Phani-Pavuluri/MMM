@@ -33,6 +33,7 @@ from mmm.validation.synthetic.recovery_certification import (
 )
 from mmm.validation.synthetic.replay_units import lift_scale_supported
 from mmm.validation.synthetic.validator import validate_bundle, verify_checksums
+from mmm.validation.synthetic.world_exact_check_evaluation import evaluate_world_exact_checks
 
 ALLOWED_MATERIALIZATION_VERSIONS = frozenset(
     {MATERIALIZATION_VERSION, DGP_MATERIALIZATION_VERSION}
@@ -541,6 +542,9 @@ def _build_report(
         "estimand_compatibility": contract.get("estimand_compatibility", {}),
         "calibration_signal_compatibility": contract.get("calibration_signal_compatibility", {}),
         "release_gate_compatibility": contract.get("release_gate_compatibility", {}),
+        "world_exact_check_evaluations": evaluate_world_exact_checks(
+            str(meta.get("world_id", bundle.name)), truth
+        ),
     }
     if recovery_result is not None:
         report.update(recovery_result.to_report_sections())
