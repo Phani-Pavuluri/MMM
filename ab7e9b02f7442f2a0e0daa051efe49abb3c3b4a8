@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "receipt_kind": "external_user_exact_head_approval",
+  "receipt_id": "4197dce6-e19a-41e0-b84c-d24c6865fa4f",
+  "repository": "Phani-Pavuluri/MMM",
+  "task_id": "MMM_PUBLIC_SIMULATION_EXCLUSIVE_ENDPOINT_RECOVERY_001",
+  "feature_branch": "fix/mmm-public-simulation-exclusive-endpoint-recovery-001",
+  "reviewed_remote_head_sha": "ab7e9b02f7442f2a0e0daa051efe49abb3c3b4a8",
+  "reviewed_tree_sha": "3a470f676e18dea808d8347834dd6e3ebdc65e12",
+  "implementation_sha": "8eef56951ce071afe7284d69e32854be79cf7613",
+  "main_baseline_sha": "c907841d0d162d174ea044fabb97ee604a23918e",
+  "authorization_head_sha": "c10d92f0b53d79852896da63593c2d5e780aa10c",
+  "owner_decision_verbatim": "keep working till you runout of credits and go with your recommendations for approvals, and resume after credits reset, make sure to create high level reports including those choices for my knowledge",
+  "owner_decision_context": "Direct response to pending combined question recommending approval of both explicitly listed GeoX a52c5f49674be8ff06d6fa77c571b73815f49843 and MMM ab7e9b02f7442f2a0e0daa051efe49abb3c3b4a8. Durable control OWNER_DECISIONS.md commit eb02440b05827e79a8c5e5fc2f3ef61d7a87f145.",
+  "approval_scope": "Publish existing bounded reviewed outcome only; no export/model-family/schema/certification/new capability authority.",
+  "independent_review": "Foreground source, lineage, owned scope and declared gates verified; implementation is Muse-owned. Both prior findings resolved; exact frozen tree verified.",
+  "validation": {
+    "preflight": "/Users/phani/.codex/quota-resume/mmm-owner-milestone-20261016-preflight.log"
+  },
+  "limitations": [
+    "MMM only: full Docker exits0 while57 existing global Ruff findings remain, byte-identical to authorized main; changed files independently pass Ruff0.17.1. Runner reliability follow-up remains separate."
+  ],
+  "issued_at": "2026-10-16T09:04:01.970738+00:00"
+}
