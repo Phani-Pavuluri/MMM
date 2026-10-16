@@ -9,7 +9,7 @@
 - Execution mode: `branch_and_fast_forward`
 - Base SHA: `b84105f820eb96ea8a3187f56a9b2c1bf1e7f941`
 - Task authoring SHA: `aff16dcd5df599c1ed99f1ce5f77218759bde92b`
-- Authorization SHA: `aff16dcd5df599c1ed99f1ce5f77218759bde92b`
+- Authorization SHA: `cd4b1f0c9d55d1d8262b08197da620e90fcbe5c2`
 - Feature branch: `fix/mmm-validation-runner-failure-propagation-001`
 - Feature branch created: `false`
 - Task execution authorized: `true`
