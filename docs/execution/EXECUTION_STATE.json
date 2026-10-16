@@ -7,7 +7,7 @@
   "base_branch": "main",
   "base_sha": "e99768a8e43e020fe65a97e206a9e93101b364aa",
   "task_authoring_head_sha": "cbefe2cf2f591fa335d7a823816929eacece871c",
-  "authorization_head_sha": "cbefe2cf2f591fa335d7a823816929eacece871c",
+  "authorization_head_sha": "48967088b2ad1c015a67997f0bbee4651a924ca1",
   "feature_branch": "fix/mmm-public-simulation-exclusive-endpoint-001",
   "feature_branch_created": false,
   "task_path": "docs/execution/ACTIVE_TASK.md",
