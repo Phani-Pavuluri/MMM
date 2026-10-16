@@ -15,12 +15,20 @@ docker run --rm \
   --mount "type=bind,source=${ROOT},target=/source,readonly" \
   "${IMAGE}" \
   bash -lc '
-    cp -a /source /tmp/mmm
-    cd /tmp/mmm
-    python -m pip install -U pip
-    python -m pip install -e ".[dev,tracking]"
-    ruff check mmm tests scripts
-    python -m mmm.validation.synthetic.hierarchy_evidence_validator --smoke VAL-BAYES-H2B-SMOKE
-    pytest tests/research/test_bayes_h3_sandbox_guardrails.py -q -m "not slow"
-    pytest tests/ -q -m "not slow"
+    set -euo pipefail
+    run() {
+      local name="$1"
+      shift
+      echo "### STEP: ${name}"
+      "$@" && echo "### PASS: ${name}" || { echo "### FAIL: ${name}"; return 1; }
+    }
+    run copy-source cp -a /source /tmp/mmm
+    run enter-tree cd /tmp/mmm
+    run pip-setup python -m pip install -U pip
+    run install-package python -m pip install -e ".[dev,tracking]"
+    run ruff-check ruff check mmm tests scripts
+    run hierarchy-smoke python -m mmm.validation.synthetic.hierarchy_evidence_validator --smoke VAL-BAYES-H2B-SMOKE
+    run guardrails-pytest pytest tests/research/test_bayes_h3_sandbox_guardrails.py -q -m "not slow"
+    run full-pytest pytest tests/ -q -m "not slow"
+    echo "### ALL STEPS PASSED"
   '
